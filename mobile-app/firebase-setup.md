@@ -5,7 +5,7 @@
 Your Firebase project configuration:
 ```typescript
 const firebaseConfig = {
-  apiKey: "AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w",
+  apiKey: "your_firebase_api_key_here", // Replace with your actual Firebase API key
   authDomain: "damp-smart-drinkware.firebaseapp.com",
   projectId: "damp-smart-drinkware", 
   storageBucket: "damp-smart-drinkware.firebasestorage.app",

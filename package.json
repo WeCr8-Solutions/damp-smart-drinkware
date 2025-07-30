@@ -1,16 +1,36 @@
 {
+  "name": "damp-smart-drinkware",
+  "version": "1.0.0",
+  "description": "DAMP Smart Drinkware - Secure Development Environment",
+  "private": true,
   "scripts": {
-    "build:products": "node build/product-builder.js",
-    "dev:products": "node build/product-builder.js --watch",
-    "dev": "npm run build:products && npm run dev:products & npm run dev:server",
-    "dev:server": "npx http-server . -p 3000 -c-1"
+    "install-security": "npm install --save-dev @commitlint/cli @commitlint/config-conventional husky lint-staged detect-secrets gitleaks",
+    "setup-hooks": "husky install && npm run setup-pre-commit",
+    "setup-pre-commit": "npx husky add .husky/pre-commit 'npx lint-staged'",
+    "scan-secrets": "gitleaks detect --verbose",
+    "scan-secrets-staged": "gitleaks protect --staged --verbose",
+    "validate-env": "node scripts/validate-environment.js",
+    "security-check": "npm run scan-secrets && npm run validate-env"
+  },
+  "lint-staged": {
+    "*": [
+      "gitleaks protect --staged --verbose",
+      "node scripts/validate-secrets.js"
+    ],
+    "*.{js,ts,tsx,jsx,html}": [
+      "node scripts/check-hardcoded-secrets.js"
+    ]
   },
   "devDependencies": {
-    "chokidar": "^3.5.3",
-    "glob": "^10.3.3",
-    "gray-matter": "^4.0.3"
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0"
   },
-  "dependencies": {
-    "http-server": "^14.1.1"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }

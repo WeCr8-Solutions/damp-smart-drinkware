@@ -5,7 +5,7 @@ export const firebaseConfig = {
   projectId: "damp-smart-drinkware",
   appId: "1:309818614427:web:db15a4851c05e58aa25c3e", // Will be updated when mobile apps are created
   storageBucket: "damp-smart-drinkware.firebasestorage.app",
-  apiKey: "AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w",
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY || "your_firebase_api_key_here",
   authDomain: "damp-smart-drinkware.firebaseapp.com",
   messagingSenderId: "309818614427",
   measurementId: "G-YW2BN4SVPQ"

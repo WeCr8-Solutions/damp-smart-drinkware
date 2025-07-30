@@ -1,0 +1,79 @@
+# DAMP Smart Drinkware - Gitleaks Configuration
+# Detects secrets and prevents them from being committed
+
+[extend]
+path = "https://raw.githubusercontent.com/zricethezav/gitleaks/master/config/gitleaks.toml"
+
+# Custom rules for DAMP-specific secrets
+[[rules]]
+id = "damp-firebase-key"
+description = "DAMP Firebase API Key"
+regex = '''AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w'''
+tags = ["firebase", "api-key", "damp"]
+
+[[rules]]
+id = "firebase-api-key"
+description = "Firebase API Key"
+regex = '''AIza[0-9A-Za-z-_]{35}'''
+tags = ["firebase", "api-key"]
+
+[[rules]]
+id = "stripe-secret-key"
+description = "Stripe Secret Key"
+regex = '''sk_(test|live)_[0-9a-zA-Z]{24,}'''
+tags = ["stripe", "secret-key"]
+
+[[rules]]
+id = "stripe-restricted-key" 
+description = "Stripe Restricted Key"
+regex = '''rk_(test|live)_[0-9a-zA-Z]{24,}'''
+tags = ["stripe", "restricted-key"]
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key"
+regex = '''AKIA[0-9A-Z]{16}'''
+tags = ["aws", "access-key"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key"
+regex = '''(?i)(api[_-]?key|apikey|access[_-]?key)[\s]*[:=][\s]*['""][^'""\\s]{16,}['""]'''
+tags = ["api-key", "generic"]
+
+[[rules]]
+id = "database-url-with-credentials"
+description = "Database URL with embedded credentials"
+regex = '''(mongodb|postgres|mysql):\/\/[^:\s]+:[^@\s]+@'''
+tags = ["database", "credentials"]
+
+# Allowlist for placeholder values
+[allowlist]
+description = "Allowlist for placeholder and example values"
+regexes = [
+    '''your_.*_key_here''',
+    '''your_.*_secret_here''',
+    '''placeholder''',
+    '''example''',
+    '''sk_test_your_stripe_secret_key_here''',
+    '''pk_test_your_stripe_publishable_key_here''',
+    '''whsec_your_webhook_secret_here''',
+    '''your_firebase_api_key_here''',
+    '''your-project-id''',
+    '''your-project\.firebaseapp\.com''',
+    '''123456789000''',
+    '''1:123456789000:web:abcdef123456''',
+    '''GA_MEASUREMENT_ID''',
+    '''your_database_url_here''',
+    '''your_email_service_api_key_here''',
+    '''your-secure-admin-key-here'''
+]
+
+paths = [
+    '''docs/.*\.md''',
+    '''README\.md''',
+    '''\.env\.example''',
+    '''config-template\.env''',
+    '''.*-template\..*''',
+    '''.*\.example\..*'''
+] 

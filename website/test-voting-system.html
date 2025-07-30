@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAMP Voting System Test</title>
+    
+    <!-- Environment Configuration (Load First) -->
+    <script src="./assets/js/env-config.js"></script>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        
+        .success { background: rgba(0, 255, 136, 0.2); border: 1px solid rgba(0, 255, 136, 0.4); }
+        .error { background: rgba(255, 71, 87, 0.2); border: 1px solid rgba(255, 71, 87, 0.4); }
+        .info { background: rgba(0, 212, 255, 0.2); border: 1px solid rgba(0, 212, 255, 0.4); }
+        
+        button {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+        
+        .log-container {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🗳️ DAMP Voting System Diagnostic</h1>
+        <p>This page tests the voting system components and identifies any issues.</p>
+        
+        <div class="test-section">
+            <h2>🔧 System Status</h2>
+            <div id="systemStatus">
+                <p>🔄 Initializing tests...</p>
+            </div>
+            <button onclick="runSystemTests()">Run System Tests</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔥 Firebase Integration</h2>
+            <div id="firebaseStatus">
+                <p>Checking Firebase services...</p>
+            </div>
+            <button onclick="testFirebase()">Test Firebase</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🗳️ Voting Functions</h2>
+            <div id="votingStatus">
+                <p>Testing voting functionality...</p>
+            </div>
+            <button onclick="testVotingSystem()">Test Voting</button>
+            <button onclick="testPublicVote()">Test Public Vote</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🧪 Manual Tests</h2>
+            <p>Use these buttons to manually test voting functionality:</p>
+            <button onclick="simulateVote('handle', 'public')">Vote for Handle (Public)</button>
+            <button onclick="simulateVote('siliconeBottom', 'public')">Vote for Silicone Bottom (Public)</button>
+            <button onclick="clearLocalVotes()">Clear Local Votes</button>
+            <button onclick="viewStoredData()">View Stored Data</button>
+        </div>
+        
+        <div class="log-container" id="logContainer">
+            <strong>📋 Test Log:</strong><br>
+        </div>
+    </div>
+
+    <!-- Load Firebase services first -->
+    <script type="module">
+        window.testLog = [];
+        
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            window.testLog.push({ message: logEntry, type });
+            
+            const logContainer = document.getElementById('logContainer');
+            const logDiv = document.createElement('div');
+            logDiv.className = `test-result ${type}`;
+            logDiv.textContent = logEntry;
+            logContainer.appendChild(logDiv);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            
+            console.log(`[VOTING-TEST] ${message}`);
+        }
+        
+        window.addLog = addLog;
+        
+        // Try to load Firebase services
+        try {
+            addLog('🔄 Loading Firebase services...', 'info');
+            
+            const { 
+                authService, 
+                statsService, 
+                votingService, 
+                adminService, 
+                initializeFirebaseServices,
+                analyticsService
+            } = await import('./js/firebase-services.js');
+            
+            window.firebaseServices = {
+                authService,
+                statsService,
+                votingService,
+                adminService,
+                initializeFirebaseServices,
+                analyticsService
+            };
+            
+            addLog('✅ Firebase services loaded successfully', 'success');
+            
+        } catch (error) {
+            addLog(`❌ Firebase services loading error: ${error.message}`, 'error');
+            window.firebaseServices = null;
+        }
+    </script>
+    
+    <!-- Load the fixed voting system -->
+    <script src="./assets/js/voting-system-fix.js"></script>
+    
+    <script>
+        // Wait for everything to load
+        document.addEventListener('DOMContentLoaded', () => {
+            addLog('📄 Page loaded, running initial tests...', 'info');
+            setTimeout(runSystemTests, 1000);
+        });
+        
+        function runSystemTests() {
+            addLog('🔧 Running system diagnostics...', 'info');
+            
+            const results = [];
+            
+            // Test 1: Check if voting system is loaded
+            if (typeof FixedVotingSystem !== 'undefined') {
+                results.push({ test: 'Fixed Voting System Class', status: 'success', message: '✅ Class loaded' });
+            } else {
+                results.push({ test: 'Fixed Voting System Class', status: 'error', message: '❌ Class not found' });
+            }
+            
+            // Test 2: Check if instance exists
+            if (window.fixedVotingSystem) {
+                results.push({ test: 'Voting System Instance', status: 'success', message: '✅ Instance created' });
+            } else {
+                results.push({ test: 'Voting System Instance', status: 'error', message: '❌ Instance not found' });
+            }
+            
+            // Test 3: Check localStorage functionality
+            try {
+                localStorage.setItem('test_voting', 'test');
+                localStorage.removeItem('test_voting');
+                results.push({ test: 'LocalStorage', status: 'success', message: '✅ Working' });
+            } catch (error) {
+                results.push({ test: 'LocalStorage', status: 'error', message: `❌ Error: ${error.message}` });
+            }
+            
+            // Test 4: Check browser fingerprinting
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                    results.push({ test: 'Browser Fingerprinting', status: 'success', message: '✅ Canvas available' });
+                } else {
+                    results.push({ test: 'Browser Fingerprinting', status: 'error', message: '❌ Canvas not available' });
+                }
+            } catch (error) {
+                results.push({ test: 'Browser Fingerprinting', status: 'error', message: `❌ Error: ${error.message}` });
+            }
+            
+            // Display results
+            const statusDiv = document.getElementById('systemStatus');
+            statusDiv.innerHTML = results.map(result => 
+                `<div class="test-result ${result.status}">
+                    <strong>${result.test}:</strong> ${result.message}
+                </div>`
+            ).join('');
+            
+            results.forEach(result => {
+                addLog(`${result.test}: ${result.message}`, result.status);
+            });
+        }
+        
+        function testFirebase() {
+            addLog('🔥 Testing Firebase integration...', 'info');
+            
+            const results = [];
+            
+            // Test Firebase services availability
+            if (window.firebaseServices) {
+                results.push({ test: 'Firebase Services', status: 'success', message: '✅ Services available' });
+                
+                // Test individual services
+                const services = ['authService', 'votingService', 'statsService', 'analyticsService'];
+                services.forEach(serviceName => {
+                    if (window.firebaseServices[serviceName]) {
+                        results.push({ test: serviceName, status: 'success', message: '✅ Available' });
+                    } else {
+                        results.push({ test: serviceName, status: 'error', message: '❌ Not available' });
+                    }
+                });
+                
+            } else {
+                results.push({ test: 'Firebase Services', status: 'error', message: '❌ Services not loaded' });
+            }
+            
+            // Display results
+            const statusDiv = document.getElementById('firebaseStatus');
+            statusDiv.innerHTML = results.map(result => 
+                `<div class="test-result ${result.status}">
+                    <strong>${result.test}:</strong> ${result.message}
+                </div>`
+            ).join('');
+            
+            results.forEach(result => {
+                addLog(`Firebase ${result.test}: ${result.message}`, result.status);
+            });
+        }
+        
+        function testVotingSystem() {
+            addLog('🗳️ Testing voting system...', 'info');
+            
+            const results = [];
+            
+            if (window.fixedVotingSystem) {
+                // Test voting system properties
+                const properties = ['products', 'currentMode', 'browserFingerprint'];
+                properties.forEach(prop => {
+                    if (window.fixedVotingSystem[prop] !== undefined) {
+                        results.push({ test: prop, status: 'success', message: `✅ ${prop} initialized` });
+                    } else {
+                        results.push({ test: prop, status: 'error', message: `❌ ${prop} not found` });
+                    }
+                });
+                
+                // Test methods
+                const methods = ['vote', 'switchMode', 'getTotalVotes'];
+                methods.forEach(method => {
+                    if (typeof window.fixedVotingSystem[method] === 'function') {
+                        results.push({ test: method, status: 'success', message: `✅ ${method} method available` });
+                    } else {
+                        results.push({ test: method, status: 'error', message: `❌ ${method} method missing` });
+                    }
+                });
+                
+            } else {
+                results.push({ test: 'Voting System', status: 'error', message: '❌ System not initialized' });
+            }
+            
+            // Display results
+            const statusDiv = document.getElementById('votingStatus');
+            statusDiv.innerHTML = results.map(result => 
+                `<div class="test-result ${result.status}">
+                    <strong>${result.test}:</strong> ${result.message}
+                </div>`
+            ).join('');
+            
+            results.forEach(result => {
+                addLog(`Voting ${result.test}: ${result.message}`, result.status);
+            });
+        }
+        
+        function testPublicVote() {
+            addLog('🌍 Testing public vote functionality...', 'info');
+            
+            if (!window.fixedVotingSystem) {
+                addLog('❌ Voting system not available', 'error');
+                return;
+            }
+            
+            try {
+                // Switch to public mode
+                window.fixedVotingSystem.switchMode('public');
+                addLog('✅ Switched to public mode', 'success');
+                
+                // Check if we can vote
+                const localVote = localStorage.getItem('damp_public_vote');
+                if (localVote) {
+                    addLog('⚠️ Device already has a vote recorded', 'info');
+                } else {
+                    addLog('✅ Device ready to vote', 'success');
+                }
+                
+                // Test browser fingerprint generation
+                const fingerprint = window.fixedVotingSystem.browserFingerprint;
+                if (fingerprint) {
+                    addLog(`✅ Browser fingerprint: ${fingerprint}`, 'success');
+                } else {
+                    addLog('❌ Browser fingerprint not generated', 'error');
+                }
+                
+            } catch (error) {
+                addLog(`❌ Public vote test error: ${error.message}`, 'error');
+            }
+        }
+        
+        function simulateVote(productId, voteType) {
+            addLog(`🗳️ Simulating ${voteType} vote for ${productId}...`, 'info');
+            
+            if (!window.fixedVotingSystem) {
+                addLog('❌ Voting system not available', 'error');
+                return;
+            }
+            
+            try {
+                // Switch mode if needed
+                window.fixedVotingSystem.switchMode(voteType);
+                
+                // Attempt to vote
+                window.fixedVotingSystem.vote(productId);
+                addLog(`✅ Vote submitted for ${productId}`, 'success');
+                
+            } catch (error) {
+                addLog(`❌ Vote simulation error: ${error.message}`, 'error');
+            }
+        }
+        
+        function clearLocalVotes() {
+            addLog('🧹 Clearing local votes...', 'info');
+            
+            try {
+                localStorage.removeItem('damp_public_vote');
+                localStorage.removeItem('damp_customer_vote');
+                localStorage.removeItem('damp_voting_fallback');
+                
+                addLog('✅ Local votes cleared', 'success');
+                
+                // Refresh voting system if available
+                if (window.fixedVotingSystem) {
+                    window.fixedVotingSystem.refreshData();
+                }
+                
+            } catch (error) {
+                addLog(`❌ Clear votes error: ${error.message}`, 'error');
+            }
+        }
+        
+        function viewStoredData() {
+            addLog('📋 Viewing stored data...', 'info');
+            
+            const keys = ['damp_public_vote', 'damp_customer_vote', 'damp_voting_fallback'];
+            
+            keys.forEach(key => {
+                const data = localStorage.getItem(key);
+                if (data) {
+                    try {
+                        const parsed = JSON.parse(data);
+                        addLog(`📄 ${key}: ${JSON.stringify(parsed, null, 2)}`, 'info');
+                    } catch (error) {
+                        addLog(`📄 ${key}: ${data}`, 'info');
+                    }
+                } else {
+                    addLog(`📄 ${key}: Not found`, 'info');
+                }
+            });
+        }
+        
+        // Auto-refresh logs
+        setInterval(() => {
+            if (window.testLog.length > 50) {
+                const logContainer = document.getElementById('logContainer');
+                const oldLogs = logContainer.querySelectorAll('.test-result');
+                if (oldLogs.length > 30) {
+                    for (let i = 0; i < 10; i++) {
+                        if (oldLogs[i]) oldLogs[i].remove();
+                    }
+                }
+            }
+        }, 5000);
+    </script>
+</body>
+</html> 

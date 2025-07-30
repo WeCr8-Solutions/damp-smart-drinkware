@@ -7,14 +7,25 @@ import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
 
 const firebaseConfig = {
-  projectId: "damp-smart-drinkware",
-  appId: "1:309818614427:web:db15a4851c05e58aa25c3e",
-  storageBucket: "damp-smart-drinkware.firebasestorage.app",
-  apiKey: "AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w",
+  apiKey: window.FIREBASE_CONFIG?.apiKey || window.DAMP_CONFIG?.firebase?.apiKey || "your_firebase_api_key_here",
   authDomain: "damp-smart-drinkware.firebaseapp.com",
+  projectId: "damp-smart-drinkware",
+  storageBucket: "damp-smart-drinkware.firebasestorage.app",
   messagingSenderId: "309818614427",
-  measurementId: "G-YW2BN4SVPQ"
+  appId: "1:309818614427:web:db15a4851c05e58aa25c3e",
+  measurementId: "G-YW2BN4SVPQ",
+  databaseURL: "https://damp-smart-drinkware-default-rtdb.firebaseio.com"
 };
+
+// Validate configuration
+if (firebaseConfig.apiKey === "your_firebase_api_key_here") {
+  console.warn('⚠️ Firebase API key not configured - voting system will use fallback mode');
+}
+
+console.log('🔥 Firebase config loaded:', { 
+  hasApiKey: firebaseConfig.apiKey !== "your_firebase_api_key_here",
+  projectId: firebaseConfig.projectId 
+});
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

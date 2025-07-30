@@ -12,6 +12,9 @@
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     
+    <!-- Environment Configuration (Load First) -->
+    <script src="../assets/js/env-config.js"></script>
+    
     <!-- SEO Meta Tags -->
     <title>DAMP Product Voting - Help Us Prioritize Development | Community Choice</title>
     <meta name="description" content="Vote for your favorite DAMP Smart Drinkware product! Help us prioritize development by voting for Handle, Silicone Bottom, Cup Sleeve, or Baby Bottle.">
@@ -1143,28 +1146,43 @@
     
     <!-- Firebase Configuration -->
     <script type="module">
-        // Import Firebase services
-        import { 
-            authService, 
-            statsService, 
-            votingService, 
-            adminService, 
-            initializeFirebaseServices,
-            analyticsService
-        } from '../js/firebase-services.js';
-        
-        // Make services globally available
-        window.firebaseServices = {
-            authService,
-            statsService,
-            votingService,
-            adminService,
-            initializeFirebaseServices,
-            analyticsService
-        };
-        
-        console.log('✅ Firebase services loaded successfully');
+        try {
+            // Import Firebase services
+            const { 
+                authService, 
+                statsService, 
+                votingService, 
+                adminService, 
+                initializeFirebaseServices,
+                analyticsService
+            } = await import('../js/firebase-services.js');
+            
+            // Make services globally available
+            window.firebaseServices = {
+                authService,
+                statsService,
+                votingService,
+                adminService,
+                initializeFirebaseServices,
+                analyticsService
+            };
+            
+            console.log('✅ Firebase services loaded successfully');
+            
+            // Trigger custom event to notify fixed voting system
+            window.dispatchEvent(new CustomEvent('firebaseServicesReady'));
+            
+        } catch (error) {
+            console.error('❌ Firebase services loading error:', error);
+            console.log('🔄 Fixed voting system will use fallback mode');
+            
+            // Trigger event even on error so fixed system knows to use fallback
+            window.dispatchEvent(new CustomEvent('firebaseServicesError', { detail: error }));
+        }
     </script>
+    
+    <!-- Fixed Voting System -->
+    <script src="../assets/js/voting-system-fix.js"></script>
 
     <!-- Enhanced Real-Time Voting System -->
     <script>

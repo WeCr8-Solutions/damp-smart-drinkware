@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "damp-smart-drinkware"
-  }
-} 
+    "default": "damp-smart-drinkware",
+    "voting": "damp-smart-drinkware"
+  },
+  "targets": {},
+  "etags": {}
+}
