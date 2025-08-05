@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0f0f23">
     
     <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.gstatic.com https://js.stripe.com https://firebasestorage.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://www.googletagmanager.com https://firebasestorage.googleapis.com; connect-src 'self' https://www.google-analytics.com https://api.stripe.com https://firestore.googleapis.com https://firebasestorage.googleapis.com https://fcm.googleapis.com https://firebaseremoteconfig.googleapis.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.gstatic.com https://js.stripe.com https://firebasestorage.googleapis.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://www.googletagmanager.com https://firebasestorage.googleapis.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; connect-src 'self' https://www.google-analytics.com https://api.stripe.com https://firestore.googleapis.com https://firebasestorage.googleapis.com https://fcm.googleapis.com https://firebaseremoteconfig.googleapis.com https://pagead2.googlesyndication.com; frame-src https://googleads.g.doubleclick.net;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
@@ -49,13 +49,20 @@
     <!-- PERFORMANCE OPTIMIZATION: Resource Hints -->
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com">
     <link rel="dns-prefetch" href="https://js.stripe.com">
+    
+    <!-- AdSense Integration -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3639153716376265"
+            crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-3639153716376265">
     
     <!-- Load Main Styles Immediately -->
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/navigation.css">
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/auth-styles.css">
+    <link rel="stylesheet" href="assets/css/adsense-styles.css">
     
     <!-- Enhanced Visual Styles with Animations -->
     <style>
@@ -825,6 +832,9 @@
             </div>
         </section>
 
+        <!-- Strategic Ad Placement: After Hero -->
+        <div id="ad-after-hero"></div>
+
         <!-- Pain Points Section (Red Theme) -->
         <section class="section pain-points-section">
             <div class="container">
@@ -921,6 +931,9 @@
             </div>
         </section>
 
+        <!-- Strategic Ad Placement: Between Features and Products -->
+        <div id="ad-between-features"></div>
+
         <!-- Products Section -->
         <section class="section">
             <div class="container">
@@ -976,6 +989,9 @@
                 </div>
             </div>
         </section>
+
+        <!-- Strategic Ad Placement: Before Testimonials -->
+        <div id="ad-before-testimonials"></div>
 
         <!-- Testimonials Section -->
         <section class="section">
@@ -1249,6 +1265,53 @@
 
     <!-- Authentication Module -->
     <script type="module" src="assets/js/auth-modal.js"></script>
+    
+    <!-- AdSense Manager -->
+    <script src="assets/js/adsense-manager.js"></script>
+    
+    <!-- Initialize Homepage Ads -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for AdSense manager to initialize
+            setTimeout(function() {
+                if (window.dampAdsense && window.dampAdsense.initialized) {
+                    // Place strategic ads on homepage
+                    const afterHero = document.getElementById('ad-after-hero');
+                    const betweenFeatures = document.getElementById('ad-between-features');
+                    const beforeTestimonials = document.getElementById('ad-before-testimonials');
+                    
+                    if (afterHero) {
+                        const heroAd = window.dampAdsense.createAdUnit({
+                            format: 'banner',
+                            placement: 'homepage',
+                            className: 'damp-ad-after-hero'
+                        });
+                        afterHero.appendChild(heroAd);
+                    }
+                    
+                    if (betweenFeatures) {
+                        const featuresAd = window.dampAdsense.createAdUnit({
+                            format: 'rectangle',
+                            placement: 'homepage',
+                            className: 'damp-ad-between-features'
+                        });
+                        betweenFeatures.appendChild(featuresAd);
+                    }
+                    
+                    if (beforeTestimonials) {
+                        const testimonialsAd = window.dampAdsense.createAdUnit({
+                            format: 'banner',
+                            placement: 'homepage',
+                            className: 'damp-ad-before-testimonials'
+                        });
+                        beforeTestimonials.appendChild(testimonialsAd);
+                    }
+                    
+                    console.log('✅ DAMP Homepage ads initialized');
+                }
+            }, 1000);
+        });
+    </script>
 
     <!-- Firebase Services & Analytics -->
     <script type="module" src="assets/js/firebase-services.js"></script>

@@ -32,6 +32,24 @@ window.DAMP_CONFIG = {
     },
     analytics: {
         gaId: "G-YW2BN4SVPQ"
+    },
+    adsense: {
+        clientId: "ca-pub-3639153716376265",
+        enabled: true,
+        autoAds: true,
+        testMode: false,
+        adFormats: {
+            banner: "728x90",
+            rectangle: "300x250", 
+            mobile: "320x50",
+            responsive: "auto"
+        },
+        placements: {
+            homepage: ["after-hero", "between-features", "before-testimonials"],
+            productPages: ["after-specifications", "before-cta"],
+            contentPages: ["mid-content", "before-footer"],
+            ecommerce: ["cart-sidebar", "success-celebration"]
+        }
     }
 };
 
