@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "309818614427",
+    "firebase_url": "https://damp-smart-drinkware-default-rtdb.firebaseio.com",
+    "project_id": "damp-smart-drinkware",
+    "storage_bucket": "damp-smart-drinkware.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309818614427:android:your_android_app_id_here",
+        "android_client_info": {
+          "package_name": "com.dampdrink.smartdrinkware"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309818614427-your_android_client_id.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dampdrink.smartdrinkware",
+            "certificate_hash": "your_sha1_certificate_fingerprint"
+          }
+        },
+        {
+          "client_id": "309818614427-your_web_client_id.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "your_android_api_key_here"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309818614427-your_web_client_id.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "309818614427-your_ios_client_id.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dampdrink.smartdrinkware"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

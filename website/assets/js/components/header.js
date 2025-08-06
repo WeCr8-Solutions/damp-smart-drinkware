@@ -63,6 +63,27 @@ class DAMPHeader extends HTMLElement {
                         <li><a href="${this.basePath}pages/pre-order.html" class="nav-cta" data-analytics="nav-preorder">Pre-Order</a></li>
                     </ul>
                     
+                    <!-- Authentication Buttons -->
+                    <div class="auth-buttons" id="authButtons">
+                        <button class="auth-btn sign-in" data-auth="signin" data-analytics="nav-signin">
+                            🔑 Sign In
+                        </button>
+                        <button class="auth-btn sign-up" data-auth="signup" data-analytics="nav-signup">
+                            📝 Sign Up
+                        </button>
+                        <div class="auth-user-menu" id="authUserMenu" style="display: none;">
+                            <button class="auth-btn user-profile" id="userProfile" data-analytics="nav-profile">
+                                <span class="user-avatar">👤</span>
+                                <span class="user-name">User</span>
+                            </button>
+                            <div class="user-dropdown" id="userDropdown" style="display: none;">
+                                <a href="${this.basePath}pages/profile.html" data-analytics="nav-profile-page">👤 Profile</a>
+                                <a href="${this.basePath}pages/orders.html" data-analytics="nav-orders">📦 Orders</a>
+                                <button data-auth="signout" data-analytics="nav-signout">🚪 Sign Out</button>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <button class="hamburger" 
                             aria-label="Toggle mobile menu" 
                             aria-expanded="false" 
@@ -99,6 +120,48 @@ class DAMPHeader extends HTMLElement {
                     
                     <!-- Primary Navigation -->
                     <nav class="mobile-nav" role="navigation">
+                        <!-- Authentication Section -->
+                        <div class="mobile-nav-section auth-section" id="mobileAuthSection">
+                            <h3 class="mobile-nav-section-title">🔐 Account</h3>
+                            <div class="mobile-auth-buttons" id="mobileAuthButtons">
+                                <a class="mobile-nav-cta-primary" data-auth="signin" data-analytics="mobile-nav-signin">
+                                    <span class="mobile-nav-icon">🔑</span>
+                                    <div class="mobile-nav-content">
+                                        <span class="mobile-nav-text">Sign In</span>
+                                        <span class="mobile-nav-subtitle">Access your DAMP account</span>
+                                    </div>
+                                </a>
+                                <a data-auth="signup" data-analytics="mobile-nav-signup">
+                                    <span class="mobile-nav-icon">📝</span>
+                                    <div class="mobile-nav-content">
+                                        <span class="mobile-nav-text">Create Account</span>
+                                        <span class="mobile-nav-subtitle">Join the DAMP community</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="mobile-user-info" id="mobileUserInfo" style="display: none;">
+                                <div class="mobile-user-profile">
+                                    <span class="mobile-user-avatar">👤</span>
+                                    <div class="mobile-user-details">
+                                        <span class="mobile-user-name" id="mobileUserName">User</span>
+                                        <span class="mobile-user-email" id="mobileUserEmail">user@example.com</span>
+                                    </div>
+                                </div>
+                                <a href="${this.basePath}pages/profile.html" data-analytics="mobile-nav-profile">
+                                    <span class="mobile-nav-icon">👤</span>
+                                    <span class="mobile-nav-text">Profile</span>
+                                </a>
+                                <a href="${this.basePath}pages/orders.html" data-analytics="mobile-nav-orders">
+                                    <span class="mobile-nav-icon">📦</span>
+                                    <span class="mobile-nav-text">Orders</span>
+                                </a>
+                                <a data-auth="signout" data-analytics="mobile-nav-signout">
+                                    <span class="mobile-nav-icon">🚪</span>
+                                    <span class="mobile-nav-text">Sign Out</span>
+                                </a>
+                            </div>
+                        </div>
+                        
                         <!-- Quick Actions (Most Important) -->
                         <div class="mobile-nav-section featured-section">
                             <h3 class="mobile-nav-section-title">🚀 Get Started</h3>
@@ -830,6 +893,108 @@ class DAMPHeader extends HTMLElement {
         window.addEventListener('stats:updated', (e) => {
             this.updateLiveStats(e.detail.preOrders, e.detail.rating);
         });
+        
+        // Initialize authentication integration
+        this.initializeAuthentication();
+    }
+    
+    // Initialize authentication integration
+    initializeAuthentication() {
+        // Wait for auth service to be available
+        const checkAuthService = () => {
+            if (window.firebaseServices?.authService) {
+                this.setupAuthStateListener();
+                this.setupAuthEventHandlers();
+            } else {
+                setTimeout(checkAuthService, 500);
+            }
+        };
+        
+        setTimeout(checkAuthService, 1000);
+    }
+    
+    // Setup authentication state listener
+    setupAuthStateListener() {
+        const authService = window.firebaseServices.authService;
+        if (authService && authService.onAuthStateChange) {
+            authService.onAuthStateChange((user) => {
+                this.updateAuthUI(user);
+            });
+        }
+    }
+    
+    // Setup authentication event handlers
+    setupAuthEventHandlers() {
+        // User profile dropdown toggle
+        const userProfile = this.querySelector('#userProfile');
+        const userDropdown = this.querySelector('#userDropdown');
+        
+        if (userProfile && userDropdown) {
+            userProfile.addEventListener('click', () => {
+                const isVisible = userDropdown.style.display === 'block';
+                userDropdown.style.display = isVisible ? 'none' : 'block';
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!userProfile.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userDropdown.style.display = 'none';
+                }
+            });
+        }
+    }
+    
+    // Update authentication UI based on user state
+    updateAuthUI(user) {
+        const authButtons = this.querySelector('#authButtons');
+        const authUserMenu = this.querySelector('#authUserMenu');
+        const mobileAuthButtons = this.querySelector('#mobileAuthButtons');
+        const mobileUserInfo = this.querySelector('#mobileUserInfo');
+        
+        if (!authButtons || !authUserMenu || !mobileAuthButtons || !mobileUserInfo) {
+            return; // Elements not found
+        }
+        
+        if (user) {
+            // User is signed in
+            const displayName = user.displayName || user.email?.split('@')[0] || 'User';
+            const email = user.email || '';
+            
+            // Update desktop UI
+            authButtons.querySelector('.sign-in').style.display = 'none';
+            authButtons.querySelector('.sign-up').style.display = 'none';
+            authUserMenu.style.display = 'block';
+            
+            const userName = authButtons.querySelector('.user-name');
+            if (userName) {
+                userName.textContent = displayName;
+            }
+            
+            // Update mobile UI
+            mobileAuthButtons.style.display = 'none';
+            mobileUserInfo.style.display = 'block';
+            
+            const mobileUserName = this.querySelector('#mobileUserName');
+            const mobileUserEmail = this.querySelector('#mobileUserEmail');
+            
+            if (mobileUserName) {
+                mobileUserName.textContent = displayName;
+            }
+            if (mobileUserEmail) {
+                mobileUserEmail.textContent = email;
+            }
+            
+        } else {
+            // User is signed out
+            // Update desktop UI
+            authButtons.querySelector('.sign-in').style.display = 'inline-block';
+            authButtons.querySelector('.sign-up').style.display = 'inline-block';
+            authUserMenu.style.display = 'none';
+            
+            // Update mobile UI
+            mobileAuthButtons.style.display = 'block';
+            mobileUserInfo.style.display = 'none';
+        }
     }
 
     disconnectedCallback() {

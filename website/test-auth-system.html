@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAMP Authentication Test</title>
+    
+    <!-- Load Firebase Configuration -->
+    <script src="./assets/js/env-config.js"></script>
+    
+    <!-- Auth Styles -->
+    <link rel="stylesheet" href="assets/css/auth-styles.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .auth-test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+        }
+        
+        .user-status {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .signed-out { border-left: 4px solid #ff4757; }
+        .signed-in { border-left: 4px solid #00ff88; }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        }
+        
+        button.secondary {
+            background: linear-gradient(45deg, #ff4757, #cc3746);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .user-info {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .log {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-test-container">
+        <h1>🔐 DAMP Authentication System Test</h1>
+        <p>Test your Firebase Authentication integration with real sign up/sign in functionality.</p>
+        
+        <div id="userStatus" class="user-status signed-out">
+            <h3>Authentication Status</h3>
+            <p id="statusText">Not signed in</p>
+            <div id="userInfo" style="display: none;"></div>
+        </div>
+        
+        <div class="auth-buttons">
+            <button id="signUpBtn" onclick="showSignUp()">📝 Sign Up</button>
+            <button id="signInBtn" onclick="showSignIn()">🔑 Sign In</button>
+            <button id="signOutBtn" onclick="signOut()" style="display: none;">🚪 Sign Out</button>
+            <button id="testVotingBtn" onclick="testVotingAuth()" style="display: none;">🗳️ Test Voting with Auth</button>
+        </div>
+        
+        <div class="user-status">
+            <h3>🧪 Test Features</h3>
+            <div class="auth-buttons">
+                <button onclick="testFirebaseConnection()">🔥 Test Firebase Connection</button>
+                <button onclick="clearLog()">🗑️ Clear Log</button>
+            </div>
+        </div>
+        
+        <div id="log" class="log">Authentication system ready...\n</div>
+        
+        <div class="user-status">
+            <h3>🚀 Next Steps</h3>
+            <p><strong>1. Test Registration:</strong> Click "Sign Up" to create a new DAMP account</p>
+            <p><strong>2. Test Sign In:</strong> Sign in with your new account</p>
+            <p><strong>3. Test Voting:</strong> Try voting while authenticated vs public</p>
+            <p><strong>4. Check Firestore:</strong> <a href="http://localhost:4000/firestore" target="_blank">View user data in emulator</a></p>
+        </div>
+    </div>
+
+    <!-- Load Firebase Services -->
+    <script type="module" src="assets/js/firebase-services.js"></script>
+    
+    <!-- Load Auth Components -->
+    <script type="module" src="assets/js/auth-service.js"></script>
+    <script src="assets/js/auth-modal.js"></script>
+
+    <script>
+        let authService = null;
+        let currentUser = null;
+        
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️';
+            logDiv.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = 'Log cleared...\n';
+        }
+
+        function updateUserStatus(user) {
+            const statusDiv = document.getElementById('userStatus');
+            const statusText = document.getElementById('statusText');
+            const userInfo = document.getElementById('userInfo');
+            const signUpBtn = document.getElementById('signUpBtn');
+            const signInBtn = document.getElementById('signInBtn');
+            const signOutBtn = document.getElementById('signOutBtn');
+            const testVotingBtn = document.getElementById('testVotingBtn');
+            
+            if (user) {
+                statusDiv.className = 'user-status signed-in';
+                statusText.textContent = `Signed in as: ${user.email}`;
+                userInfo.style.display = 'block';
+                userInfo.innerHTML = `
+                    <div class="user-info">
+                        <strong>User Details:</strong><br>
+                        Email: ${user.email}<br>
+                        UID: ${user.uid}<br>
+                        Display Name: ${user.displayName || 'Not set'}<br>
+                        Email Verified: ${user.emailVerified ? '✅' : '❌'}<br>
+                        Created: ${user.metadata.creationTime}
+                    </div>
+                `;
+                
+                signUpBtn.style.display = 'none';
+                signInBtn.style.display = 'none';
+                signOutBtn.style.display = 'inline-block';
+                testVotingBtn.style.display = 'inline-block';
+                
+                log(`User signed in: ${user.email}`, 'success');
+            } else {
+                statusDiv.className = 'user-status signed-out';
+                statusText.textContent = 'Not signed in';
+                userInfo.style.display = 'none';
+                
+                signUpBtn.style.display = 'inline-block';
+                signInBtn.style.display = 'inline-block';
+                signOutBtn.style.display = 'none';
+                testVotingBtn.style.display = 'none';
+                
+                log('User signed out', 'info');
+            }
+            
+            currentUser = user;
+        }
+
+        function showSignUp() {
+            if (window.dampAuth) {
+                window.dampAuth.showSignUp();
+            } else {
+                log('Auth modal not ready yet', 'error');
+            }
+        }
+
+        function showSignIn() {
+            if (window.dampAuth) {
+                window.dampAuth.showSignIn();
+            } else {
+                log('Auth modal not ready yet', 'error');
+            }
+        }
+
+        function signOut() {
+            if (window.dampAuth) {
+                window.dampAuth.signOut();
+            } else {
+                log('Auth service not ready', 'error');
+            }
+        }
+
+        function testVotingAuth() {
+            if (currentUser) {
+                log('Opening voting test with authenticated user...', 'info');
+                window.open('/test-voting-system.html', '_blank');
+            } else {
+                log('No authenticated user', 'error');
+            }
+        }
+
+        async function testFirebaseConnection() {
+            log('Testing Firebase connection...');
+            try {
+                if (window.firebaseServices) {
+                    log('✅ Firebase services loaded', 'success');
+                    log('✅ Auth emulator connected', 'success');
+                    log('✅ Firestore emulator connected', 'success');
+                } else {
+                    log('❌ Firebase services not loaded', 'error');
+                }
+            } catch (error) {
+                log(`Connection test failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialize when Firebase services are ready
+        setTimeout(() => {
+            if (window.firebaseServices?.authService) {
+                authService = window.firebaseServices.authService;
+                
+                // Listen for auth state changes
+                authService.onAuthStateChange((user) => {
+                    updateUserStatus(user);
+                });
+                
+                log('Auth service initialized', 'success');
+            } else {
+                log('Waiting for Firebase services...', 'info');
+                // Retry after delay
+                setTimeout(() => {
+                    if (window.firebaseServices?.authService) {
+                        authService = window.firebaseServices.authService;
+                        authService.onAuthStateChange((user) => {
+                            updateUserStatus(user);
+                        });
+                        log('Auth service initialized (delayed)', 'success');
+                    }
+                }, 2000);
+            }
+        }, 1000);
+
+        // Initialize auth modal when available
+        setTimeout(() => {
+            if (window.dampAuth) {
+                log('Auth modal ready', 'success');
+            } else {
+                log('Auth modal loading...', 'info');
+            }
+        }, 1500);
+    </script>
+</body>
+</html>

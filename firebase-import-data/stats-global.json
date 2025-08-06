@@ -1,0 +1,36 @@
+{
+  "totalVotes": 0,
+  "totalUsers": 0,
+  "totalPublicVotes": 0,
+  "votingStartDate": {
+    "__datatype__": "timestamp",
+    "value": "2025-01-15T00:00:00.000Z"
+  },
+  "lastVoteAt": null,
+  "products": {
+    "handle": {
+      "votes": 0,
+      "percentage": 0
+    },
+    "siliconeBottom": {
+      "votes": 0,
+      "percentage": 0
+    },
+    "cupSleeve": {
+      "votes": 0,
+      "percentage": 0
+    },
+    "babyBottle": {
+      "votes": 0,
+      "percentage": 0
+    }
+  },
+  "createdAt": {
+    "__datatype__": "timestamp",
+    "value": "2025-01-15T00:00:00.000Z"
+  },
+  "updatedAt": {
+    "__datatype__": "timestamp",
+    "value": "2025-01-15T00:00:00.000Z"
+  }
+}

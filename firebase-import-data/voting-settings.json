@@ -1,0 +1,19 @@
+{
+  "votingEnabled": true,
+  "publicVotingEnabled": true,
+  "moderationEnabled": false,
+  "antiSpamEnabled": true,
+  "maxVotesPerIP": 1,
+  "maxVotesPerFingerprint": 1,
+  "votingEndDate": null,
+  "resultsVisible": true,
+  "allowVoteChanging": true,
+  "createdAt": {
+    "__datatype__": "timestamp",
+    "value": "2025-01-15T00:00:00.000Z"
+  },
+  "updatedAt": {
+    "__datatype__": "timestamp",
+    "value": "2025-01-15T00:00:00.000Z"
+  }
+}

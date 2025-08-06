@@ -1,8 +1,12 @@
 /**
- * DAMP Smart Drinkware - Global Authentication Service
+ * DAMP Smart Drinkware - Web Authentication Service
  * 
- * Unified authentication system for website, mobile app, and e-commerce
- * Handles user profiles, preferences, and seamless cross-platform experience
+ * Web implementation of the unified cross-platform authentication system
+ * Compatible with iOS and Android mobile apps via shared Firebase project
+ * 
+ * @see /mobile/services/AuthService.js - Mobile implementation
+ * @see /mobile/schemas/user-schema.js - Unified user data schema
+ * @see /docs/CROSS_PLATFORM_AUTH.md - Complete documentation
  */
 
 import { 

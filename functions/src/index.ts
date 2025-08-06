@@ -1,643 +1,756 @@
+/**
+ * DAMP Smart Drinkware - Firebase Cloud Functions
+ * Backend services for Web, iOS, and Android apps
+ * Copyright 2025 WeCr8 Solutions LLC
+ */
+
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import * as cors from 'cors';
 import * as express from 'express';
-import Stripe from 'stripe';
 
 // Initialize Firebase Admin
 admin.initializeApp();
 
-// Initialize Firestore
-const db = admin.firestore();
-
-// Initialize CORS
 const corsHandler = cors({ origin: true });
-
-// Initialize Stripe (you'll need to add your secret key to Firebase Functions config)
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2023-10-16',
-});
-
-// Express app for API endpoints
 const app = express();
 app.use(corsHandler);
-app.use(express.json());
 
-// ==================== AUTHENTICATION TRIGGERS ====================
+// =============================================================================
+// USER MANAGEMENT FUNCTIONS
+// =============================================================================
 
 /**
- * Trigger when a new user is created
- * Creates user profile in Firestore
+ * Create user profile after authentication
+ * Triggered when new user signs up
  */
-export const onUserCreate = functions.auth.user().onCreate(async (user) => {
+export const createUserProfile = functions.auth.user().onCreate(async (user) => {
+  const { uid, email, displayName, photoURL, phoneNumber } = user;
+  
   try {
-    const userDoc = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName || null,
-      photoURL: user.photoURL || null,
+    const userData = {
+      uid,
+      email: email || null,
+      displayName: displayName || null,
+      photoURL: photoURL || null,
+      phoneNumber: phoneNumber || null,
+      emailVerified: user.emailVerified,
+      
+      // Platform tracking
+      platform: 'unknown', // Will be updated on first login
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      lastLoginAt: admin.firestore.FieldValue.serverTimestamp(),
-      role: 'user',
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      lastSignIn: admin.firestore.FieldValue.serverTimestamp(),
+      isOnline: true,
+      
+      // Default preferences
       preferences: {
         notifications: {
-          drinkAlerts: true,
-          batteryWarnings: true,
-          temperatureAlerts: true,
-          marketingEmails: false,
+          push: true,
+          email: true,
+          sms: false,
+          marketing: true,
+          productUpdates: true,
+          orderUpdates: true,
+          votingReminders: true,
         },
-        units: {
-          temperature: 'fahrenheit',
-          volume: 'oz',
+        app: {
+          darkMode: false,
+          language: 'en',
+          currency: 'USD',
+          units: 'fahrenheit',
+          autoSync: true,
         },
+        privacy: {
+          shareAnalytics: true,
+          shareLocation: false,
+          profileVisibility: 'public',
+          activityVisibility: 'friends',
+        },
+        device: {
+          biometricEnabled: false,
+          autoLock: 5,
+          hapticFeedback: true,
+          soundEffects: true,
+        }
       },
+      
+      // Activity stats
       stats: {
-        devicesConnected: 0,
-        totalDrinks: 0,
+        votesCount: 0,
+        ordersCount: 0,
+        reviewsCount: 0,
+        loyaltyPoints: 100, // Welcome bonus
+        referralsCount: 0,
         streakDays: 0,
+        totalSpent: 0,
+        platformStats: {
+          web: { sessionsCount: 0, totalTimeSpent: 0 },
+          mobile: { appOpens: 0, pushNotificationClicks: 0 }
+        }
       },
+      
+      // Social & loyalty
+      social: {
+        following: [],
+        followers: [],
+        blockedUsers: [],
+        friendRequests: [],
+      },
+      
+      loyalty: {
+        tier: 'bronze',
+        points: 100,
+        lifetimePoints: 100,
+        nextTierRequirement: 500,
+        rewards: [],
+        redemptions: [],
+      },
+      
+      // Connected devices
+      devices: [],
+      
+      // Subscription info
+      subscription: {
+        plan: 'free',
+        status: 'active',
+        startDate: admin.firestore.FieldValue.serverTimestamp(),
+        endDate: null,
+        stripeCustomerId: null,
+        paymentMethods: [],
+        billingHistory: [],
+      },
+      
+      // Marketing data
+      marketing: {
+        source: null,
+        campaign: null,
+        referredBy: null,
+        utmSource: null,
+        utmMedium: null,
+        utmCampaign: null,
+      },
+      
+      // Role and permissions
+      role: 'user',
+      permissions: [],
+      
+      // Beta testing
+      beta: {
+        isBetaTester: false,
+        betaFeatures: [],
+        feedbackCount: 0,
+      },
+      
+      // Security
+      security: {
+        lastPasswordChange: admin.firestore.FieldValue.serverTimestamp(),
+        loginAttempts: 0,
+        accountLocked: false,
+        twoFactorEnabled: false,
+        backupCodes: [],
+        ipAddress: null,
+        userAgent: null,
+      }
     };
-
-    await db.collection('users').doc(user.uid).set(userDoc);
     
-    functions.logger.info(`User profile created for ${user.email}`);
+    // Create user document
+    await admin.firestore().collection('users').doc(uid).set(userData);
+    
+    // Update global stats
+    await admin.firestore().collection('stats').doc('global').update({
+      totalUsers: admin.firestore.FieldValue.increment(1),
+      newUsersToday: admin.firestore.FieldValue.increment(1),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+    
+    console.log(`User profile created for ${uid}`);
+    
   } catch (error) {
-    functions.logger.error('Error creating user profile:', error);
+    console.error('Error creating user profile:', error);
+    throw error;
   }
 });
 
 /**
- * Trigger when user is deleted
- * Clean up user data
+ * Clean up user data when account is deleted
  */
-export const onUserDelete = functions.auth.user().onDelete(async (user) => {
+export const deleteUserData = functions.auth.user().onDelete(async (user) => {
+  const { uid } = user;
+  
   try {
-    // Delete user document
-    await db.collection('users').doc(user.uid).delete();
+    const batch = admin.firestore().batch();
     
-    // Delete user's devices
-    const devicesSnapshot = await db.collection('devices')
-      .where('ownerId', '==', user.uid)
+    // Delete user document
+    const userRef = admin.firestore().collection('users').doc(uid);
+    batch.delete(userRef);
+    
+    // Delete user's votes
+    const votesQuery = await admin.firestore()
+      .collection('userVotes')
+      .where('userId', '==', uid)
       .get();
     
-    const batch = db.batch();
-    devicesSnapshot.docs.forEach((doc) => {
+    votesQuery.forEach(doc => {
       batch.delete(doc.ref);
     });
+    
+    // Delete user's devices
+    const devicesQuery = await admin.firestore()
+      .collection('devices')
+      .where('userId', '==', uid)
+      .get();
+    
+    devicesQuery.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+    
     await batch.commit();
     
-    functions.logger.info(`User data cleaned up for ${user.email}`);
+    // Update global stats
+    await admin.firestore().collection('stats').doc('global').update({
+      totalUsers: admin.firestore.FieldValue.increment(-1),
+      deletedUsersToday: admin.firestore.FieldValue.increment(1),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+    
+    console.log(`User data deleted for ${uid}`);
+    
   } catch (error) {
-    functions.logger.error('Error cleaning up user data:', error);
+    console.error('Error deleting user data:', error);
   }
 });
 
-// ==================== DEVICE MANAGEMENT ====================
+// =============================================================================
+// DEVICE MANAGEMENT FUNCTIONS
+// =============================================================================
 
 /**
- * Cloud Function to handle device pairing
+ * Register a new DAMP device
  */
-export const pairDevice = functions.https.onCall(async (data, context) => {
-  // Ensure user is authenticated
+export const registerDevice = functions.https.onCall(async (data, context) => {
+  // Verify user authentication
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
   }
-
-  const { deviceId, deviceName, deviceType, bluetoothAddress } = data;
-
-  if (!deviceId || !deviceName || !deviceType) {
-    throw new functions.https.HttpsError('invalid-argument', 'Missing required device information');
-  }
-
+  
+  const { deviceId, deviceType, name, macAddress, firmwareVersion } = data;
+  const userId = context.auth.uid;
+  
   try {
-    const deviceDoc = {
-      deviceId: deviceId,
-      name: deviceName,
-      type: deviceType,
-      bluetoothAddress: bluetoothAddress,
-      ownerId: context.auth.uid,
-      pairedAt: admin.firestore.FieldValue.serverTimestamp(),
+    // Validate device data
+    if (!deviceId || !deviceType || !macAddress) {
+      throw new functions.https.HttpsError('invalid-argument', 'Missing required device information');
+    }
+    
+    // Check if device is already registered
+    const existingDevice = await admin.firestore()
+      .collection('devices')
+      .doc(deviceId)
+      .get();
+    
+    if (existingDevice.exists) {
+      throw new functions.https.HttpsError('already-exists', 'Device is already registered');
+    }
+    
+    const deviceData = {
+      deviceId,
+      deviceType, // 'handle', 'bottom', 'sleeve', 'bottle'
+      name: name || `DAMP ${deviceType}`,
+      macAddress,
+      firmwareVersion: firmwareVersion || '1.0.0',
+      userId,
+      registeredAt: admin.firestore.FieldValue.serverTimestamp(),
       lastSeen: admin.firestore.FieldValue.serverTimestamp(),
-      status: 'connected',
+      isActive: true,
       batteryLevel: 100,
-      firmwareVersion: '1.0.0',
       settings: {
         alertDistance: 10, // meters
-        temperatureAlerts: true,
+        batteryWarning: 20, // percentage
+        notificationCooldown: 15, // minutes
         vibrationEnabled: true,
+        ledEnabled: true,
       },
+      stats: {
+        totalAlerts: 0,
+        batteryChanges: 0,
+        connectionAttempts: 0,
+        lastFirmwareUpdate: null,
+      }
     };
-
-    const docRef = await db.collection('devices').add(deviceDoc);
     
-    // Update user stats
-    await db.collection('users').doc(context.auth.uid).update({
-      'stats.devicesConnected': admin.firestore.FieldValue.increment(1),
+    // Register device
+    await admin.firestore().collection('devices').doc(deviceId).set(deviceData);
+    
+    // Add device to user's device list
+    await admin.firestore().collection('users').doc(userId).update({
+      devices: admin.firestore.FieldValue.arrayUnion({
+        deviceId,
+        deviceType,
+        name: deviceData.name,
+        registeredAt: admin.firestore.FieldValue.serverTimestamp()
+      }),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
-
-    return { success: true, deviceDocId: docRef.id };
+    
+    // Update global device stats
+    await admin.firestore().collection('stats').doc('global').update({
+      totalDevices: admin.firestore.FieldValue.increment(1),
+      [`${deviceType}Count`]: admin.firestore.FieldValue.increment(1),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+    
+    return { success: true, deviceId };
+    
   } catch (error) {
-    functions.logger.error('Error pairing device:', error);
-    throw new functions.https.HttpsError('internal', 'Failed to pair device');
+    console.error('Error registering device:', error);
+    throw error;
   }
 });
 
 /**
- * Cloud Function to handle device status updates
+ * Update device status (battery, location, etc.)
  */
 export const updateDeviceStatus = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
   }
-
-  const { deviceDocId, status, batteryLevel, temperature, lastSeen } = data;
-
+  
+  const { deviceId, batteryLevel, location, temperature, isConnected } = data;
+  const userId = context.auth.uid;
+  
   try {
-    const updateData: any = {
+    // Verify device ownership
+    const deviceDoc = await admin.firestore().collection('devices').doc(deviceId).get();
+    
+    if (!deviceDoc.exists) {
+      throw new functions.https.HttpsError('not-found', 'Device not found');
+    }
+    
+    const deviceData = deviceDoc.data();
+    if (deviceData?.userId !== userId) {
+      throw new functions.https.HttpsError('permission-denied', 'Access denied');
+    }
+    
+    const updates: any = {
       lastSeen: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
     };
-
-    if (status) updateData.status = status;
-    if (batteryLevel !== undefined) updateData.batteryLevel = batteryLevel;
-    if (temperature !== undefined) updateData['currentData.temperature'] = temperature;
-
-    await db.collection('devices').doc(deviceDocId).update(updateData);
-
-    // Send low battery notification if needed
-    if (batteryLevel !== undefined && batteryLevel < 20) {
-      await sendLowBatteryNotification(context.auth.uid, deviceDocId, batteryLevel);
+    
+    if (batteryLevel !== undefined) {
+      updates.batteryLevel = batteryLevel;
+      
+      // Check for low battery alert
+      if (batteryLevel <= (deviceData.settings?.batteryWarning || 20)) {
+        await sendBatteryAlert(userId, deviceId, batteryLevel);
+      }
     }
-
+    
+    if (location !== undefined) {
+      updates.location = location;
+      updates.locationHistory = admin.firestore.FieldValue.arrayUnion({
+        ...location,
+        timestamp: admin.firestore.FieldValue.serverTimestamp()
+      });
+    }
+    
+    if (temperature !== undefined) {
+      updates.temperature = temperature;
+    }
+    
+    if (isConnected !== undefined) {
+      updates.isConnected = isConnected;
+      updates.isActive = isConnected;
+    }
+    
+    await admin.firestore().collection('devices').doc(deviceId).update(updates);
+    
     return { success: true };
+    
   } catch (error) {
-    functions.logger.error('Error updating device status:', error);
-    throw new functions.https.HttpsError('internal', 'Failed to update device status');
+    console.error('Error updating device status:', error);
+    throw error;
   }
 });
 
-// ==================== NOTIFICATIONS ====================
-
 /**
- * Send drink abandonment alert
+ * Send low battery alert
  */
-export const sendDrinkAlert = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
-  }
-
-  const { deviceDocId, location } = data;
-
+async function sendBatteryAlert(userId: string, deviceId: string, batteryLevel: number) {
   try {
-    // Get user's FCM token
-    const userDoc = await db.collection('users').doc(context.auth.uid).get();
-    const fcmToken = userDoc.data()?.fcmToken;
-
-    if (fcmToken) {
-      const message = {
-        token: fcmToken,
-        notification: {
-          title: '🥤 Don\'t forget your drink!',
-          body: 'You\'re moving away from your DAMP device. Don\'t leave your drink behind!',
-        },
-        data: {
-          type: 'drink_alert',
-          deviceId: deviceDocId,
-          location: location || '',
-        },
-      };
-
-      await admin.messaging().send(message);
+    // Get user's notification preferences
+    const userDoc = await admin.firestore().collection('users').doc(userId).get();
+    const userData = userDoc.data();
+    
+    if (!userData?.preferences?.notifications?.push) {
+      return; // User has disabled push notifications
     }
-
-    // Log the alert
-    await db.collection('alerts').add({
-      userId: context.auth.uid,
-      deviceId: deviceDocId,
-      type: 'drink_abandonment',
-      location: location,
-      timestamp: admin.firestore.FieldValue.serverTimestamp(),
-      resolved: false,
+    
+    // Get user's FCM tokens (for mobile push notifications)
+    const tokensQuery = await admin.firestore()
+      .collection('fcmTokens')
+      .where('userId', '==', userId)
+      .get();
+    
+    const tokens: string[] = [];
+    tokensQuery.forEach(doc => {
+      tokens.push(doc.data().token);
     });
-
-    return { success: true };
-  } catch (error) {
-    functions.logger.error('Error sending drink alert:', error);
-    throw new functions.https.HttpsError('internal', 'Failed to send drink alert');
-  }
-});
-
-/**
- * Send low battery notification
- */
-async function sendLowBatteryNotification(userId: string, deviceId: string, batteryLevel: number) {
-  try {
-    const userDoc = await db.collection('users').doc(userId).get();
-    const fcmToken = userDoc.data()?.fcmToken;
-
-    if (fcmToken) {
-      const message = {
-        token: fcmToken,
-        notification: {
-          title: '🔋 Low Battery Alert',
-          body: `Your DAMP device battery is at ${batteryLevel}%. Please charge soon.`,
-        },
-        data: {
-          type: 'low_battery',
-          deviceId: deviceId,
-          batteryLevel: batteryLevel.toString(),
-        },
-      };
-
-      await admin.messaging().send(message);
+    
+    if (tokens.length === 0) {
+      return; // No FCM tokens found
     }
+    
+    // Send push notification
+    const message = {
+      notification: {
+        title: 'DAMP Device Low Battery',
+        body: `Your device battery is at ${batteryLevel}%. Please charge soon.`
+      },
+      data: {
+        type: 'battery_alert',
+        deviceId,
+        batteryLevel: batteryLevel.toString()
+      },
+      tokens
+    };
+    
+    await admin.messaging().sendMulticast(message);
+    
   } catch (error) {
-    functions.logger.error('Error sending low battery notification:', error);
+    console.error('Error sending battery alert:', error);
   }
 }
 
-// ==================== E-COMMERCE ====================
+// =============================================================================
+// VOTING SYSTEM FUNCTIONS
+// =============================================================================
 
 /**
- * Create Stripe checkout session for pre-orders
+ * Cast a vote (with duplicate prevention)
  */
-export const createCheckoutSession = functions.https.onCall(async (data, context) => {
-  const { priceId, quantity = 1, successUrl, cancelUrl } = data;
-
+export const castVote = functions.https.onCall(async (data, context) => {
+  const { productId, userId, voteType } = data;
+  
   try {
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: quantity,
-        },
-      ],
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-      customer_email: context.auth?.token.email,
-      metadata: {
-        userId: context.auth?.uid || '',
-      },
+    // Create unique vote ID
+    const voteId = `${productId}_${userId || 'anonymous'}_${Date.now()}`;
+    
+    // Check for existing vote (authenticated users only)
+    if (userId && context.auth) {
+      const existingVote = await admin.firestore()
+        .collection('userVotes')
+        .where('userId', '==', userId)
+        .where('productId', '==', productId)
+        .get();
+      
+      if (!existingVote.empty) {
+        throw new functions.https.HttpsError('already-exists', 'User has already voted for this product');
+      }
+    }
+    
+    const batch = admin.firestore().batch();
+    
+    // Record the vote
+    const voteData = {
+      voteId,
+      productId,
+      userId: userId || null,
+      voteType: voteType || 'upvote',
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      isAuthenticated: !!userId,
+      platform: data.platform || 'web'
+    };
+    
+    if (userId) {
+      // Authenticated vote
+      batch.set(admin.firestore().collection('userVotes').doc(voteId), voteData);
+      
+      // Update user stats
+      batch.update(admin.firestore().collection('users').doc(userId), {
+        'stats.votesCount': admin.firestore.FieldValue.increment(1),
+        'stats.loyaltyPoints': admin.firestore.FieldValue.increment(10),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+    } else {
+      // Public vote
+      batch.set(admin.firestore().collection('publicVotes').doc(voteId), voteData);
+    }
+    
+    // Update product vote count
+    batch.update(admin.firestore().collection('voting').doc('productVoting'), {
+      [`products.${productId}.votes`]: admin.firestore.FieldValue.increment(1),
+      [`products.${productId}.lastVote`]: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
-
-    return { sessionId: session.id, url: session.url };
+    
+    // Update global stats
+    batch.update(admin.firestore().collection('stats').doc('global'), {
+      totalVotes: admin.firestore.FieldValue.increment(1),
+      votesToday: admin.firestore.FieldValue.increment(1),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+    
+    await batch.commit();
+    
+    return { success: true, voteId };
+    
   } catch (error) {
-    functions.logger.error('Error creating checkout session:', error);
-    throw new functions.https.HttpsError('internal', 'Failed to create checkout session');
+    console.error('Error casting vote:', error);
+    throw error;
   }
 });
 
+// =============================================================================
+// NOTIFICATION FUNCTIONS
+// =============================================================================
+
 /**
- * Handle successful payments
+ * Store FCM token for push notifications
  */
-export const handlePaymentSuccess = functions.https.onRequest(async (req, res) => {
-  const sig = req.headers['stripe-signature'] as string;
-  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-  if (!endpointSecret) {
-    res.status(400).send('Webhook secret not configured');
-    return;
+export const saveFCMToken = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
   }
-
+  
+  const { token, platform } = data;
+  const userId = context.auth.uid;
+  
   try {
-    const event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object as Stripe.Checkout.Session;
-      
-      // Create order record
-      await db.collection('orders').add({
-        stripeSessionId: session.id,
-        userId: session.metadata?.userId || null,
-        customerEmail: session.customer_email,
-        amount: session.amount_total,
-        currency: session.currency,
-        status: 'paid',
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-
-      functions.logger.info(`Payment successful for session ${session.id}`);
-    }
-
-    res.status(200).send('Webhook handled');
+    await admin.firestore().collection('fcmTokens').doc(token).set({
+      token,
+      userId,
+      platform: platform || 'web',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      lastUsed: admin.firestore.FieldValue.serverTimestamp()
+    });
+    
+    return { success: true };
+    
   } catch (error) {
-    functions.logger.error('Webhook error:', error);
-    res.status(400).send('Webhook error');
+    console.error('Error saving FCM token:', error);
+    throw error;
   }
 });
 
-// ==================== ANALYTICS ====================
-
 /**
- * Aggregate daily analytics
+ * Send notification to user
  */
-export const aggregateDailyAnalytics = functions.pubsub
-  .schedule('0 1 * * *') // Run daily at 1 AM UTC
-  .onRun(async (context) => {
-    try {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      
-      // Get all devices that were active yesterday
-      const devicesSnapshot = await db.collection('devices')
-        .where('lastSeen', '>=', yesterday)
-        .get();
-
-      const analytics = {
-        date: yesterday.toISOString().split('T')[0],
-        activeDevices: devicesSnapshot.size,
-        totalAlerts: 0,
-        averageBatteryLevel: 0,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      };
-
-      // Calculate additional metrics
-      let totalBattery = 0;
-      devicesSnapshot.docs.forEach((doc) => {
-        const data = doc.data();
-        totalBattery += data.batteryLevel || 0;
-      });
-      
-      analytics.averageBatteryLevel = devicesSnapshot.size > 0 
-        ? Math.round(totalBattery / devicesSnapshot.size) 
-        : 0;
-
-      // Get alerts count for yesterday
-      const alertsSnapshot = await db.collection('alerts')
-        .where('timestamp', '>=', yesterday)
-        .get();
-      
-      analytics.totalAlerts = alertsSnapshot.size;
-
-      // Save analytics
-      await db.collection('daily_analytics').add(analytics);
-      
-      functions.logger.info(`Daily analytics aggregated: ${JSON.stringify(analytics)}`);
-    } catch (error) {
-      functions.logger.error('Error aggregating daily analytics:', error);
+export const sendNotification = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+  }
+  
+  const { userId, title, body, type, additionalData } = data;
+  
+  try {
+    // Get user's FCM tokens
+    const tokensQuery = await admin.firestore()
+      .collection('fcmTokens')
+      .where('userId', '==', userId)
+      .get();
+    
+    const tokens: string[] = [];
+    tokensQuery.forEach(doc => {
+      tokens.push(doc.data().token);
+    });
+    
+    if (tokens.length === 0) {
+      throw new functions.https.HttpsError('not-found', 'No FCM tokens found for user');
     }
-  });
-
-// ==================== API ENDPOINTS ====================
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
+    
+    const message = {
+      notification: { title, body },
+      data: {
+        type: type || 'general',
+        ...additionalData
+      },
+      tokens
+    };
+    
+    const response = await admin.messaging().sendMulticast(message);
+    
+    // Clean up invalid tokens
+    const invalidTokens: string[] = [];
+    response.responses.forEach((resp, idx) => {
+      if (!resp.success) {
+        invalidTokens.push(tokens[idx]);
+      }
+    });
+    
+    // Remove invalid tokens
+    const batch = admin.firestore().batch();
+    invalidTokens.forEach(token => {
+      batch.delete(admin.firestore().collection('fcmTokens').doc(token));
+    });
+    await batch.commit();
+    
+    return { 
+      success: true, 
+      successCount: response.successCount,
+      failureCount: response.failureCount 
+    };
+    
+  } catch (error) {
+    console.error('Error sending notification:', error);
+    throw error;
+  }
 });
 
-// Get user dashboard data
-app.get('/api/dashboard/:userId', async (req, res) => {
+// =============================================================================
+// ANALYTICS FUNCTIONS
+// =============================================================================
+
+/**
+ * Track user activity
+ */
+export const trackActivity = functions.https.onCall(async (data, context) => {
+  const { event, properties, userId } = data;
+  
+  try {
+    const activityData = {
+      event,
+      properties: properties || {},
+      userId: userId || null,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      isAuthenticated: !!userId,
+      platform: properties?.platform || 'web'
+    };
+    
+    // Store activity
+    await admin.firestore().collection('analytics').add(activityData);
+    
+    // Update user stats if authenticated
+    if (userId && context.auth) {
+      const updates: any = {
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      };
+      
+      // Track platform-specific stats
+      if (properties?.platform === 'web') {
+        updates['stats.platformStats.web.sessionsCount'] = admin.firestore.FieldValue.increment(1);
+      } else if (properties?.platform === 'ios' || properties?.platform === 'android') {
+        updates['stats.platformStats.mobile.appOpens'] = admin.firestore.FieldValue.increment(1);
+      }
+      
+      await admin.firestore().collection('users').doc(userId).update(updates);
+    }
+    
+    return { success: true };
+    
+  } catch (error) {
+    console.error('Error tracking activity:', error);
+    throw error;
+  }
+});
+
+// =============================================================================
+// ADMIN FUNCTIONS
+// =============================================================================
+
+/**
+ * Get admin dashboard data
+ */
+export const getAdminDashboard = functions.https.onCall(async (data, context) => {
+  // Verify admin access
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Authentication required');
+  }
+  
+  try {
+    // Check if user is admin
+    const userDoc = await admin.firestore().collection('users').doc(context.auth.uid).get();
+    const userData = userDoc.data();
+    
+    if (userData?.role !== 'admin') {
+      throw new functions.https.HttpsError('permission-denied', 'Admin access required');
+    }
+    
+    // Get global stats
+    const statsDoc = await admin.firestore().collection('stats').doc('global').get();
+    const stats = statsDoc.data();
+    
+    // Get recent activity
+    const recentActivity = await admin.firestore()
+      .collection('analytics')
+      .orderBy('timestamp', 'desc')
+      .limit(50)
+      .get();
+    
+    const activities = recentActivity.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    
+    return {
+      stats,
+      recentActivity: activities
+    };
+    
+  } catch (error) {
+    console.error('Error getting admin dashboard:', error);
+    throw error;
+  }
+});
+
+// =============================================================================
+// HTTP ENDPOINTS
+// =============================================================================
+
+/**
+ * Health check endpoint
+ */
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
+  });
+});
+
+/**
+ * User profile management
+ */
+app.put('/user/:userId/profile', async (req, res) => {
   try {
     const { userId } = req.params;
+    const updates = req.body;
     
-    // Get user devices
-    const devicesSnapshot = await db.collection('devices')
-      .where('ownerId', '==', userId)
-      .get();
+    // Add timestamp
+    updates.updatedAt = admin.firestore.FieldValue.serverTimestamp();
     
-    const devices = devicesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    await admin.firestore().collection('users').doc(userId).update(updates);
     
-    // Get recent alerts
-    const alertsSnapshot = await db.collection('alerts')
-      .where('userId', '==', userId)
-      .orderBy('timestamp', 'desc')
-      .limit(10)
-      .get();
-    
-    const alerts = alertsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    
-    res.json({
-      devices,
-      alerts,
-      stats: {
-        totalDevices: devices.length,
-        activeDevices: devices.filter(d => d.status === 'connected').length,
-        recentAlerts: alerts.length,
-      },
-    });
+    res.json({ success: true });
   } catch (error) {
-    functions.logger.error('Error fetching dashboard data:', error);
+    console.error('Error updating user profile:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// ==================== STRIPE INTEGRATION ====================
-
-// Subscription configuration matching our website config
-const SUBSCRIPTION_PRODUCTS = {
-  'price_1ReWLYCcrIDahSGRUnhZ9GpV': {
-    tier: 'damp_plus',
-    name: 'DAMP+',
-    maxDevices: 3,
-    maxSafeZones: 5
-  },
-  'price_1ReWMUCcrIDahSGRJgVqS4ns': {
-    tier: 'damp_family', 
-    name: 'DAMP Family',
-    maxDevices: 10,
-    maxSafeZones: -1 // Unlimited
-  }
-};
-
 /**
- * Create Stripe Checkout Session
- * Used by subscription page to initiate payments
+ * Device management endpoint
  */
-export const createCheckoutSession = functions.https.onCall(async (data, context) => {
-  // Verify user is authenticated
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
-  }
-
+app.get('/user/:userId/devices', async (req, res) => {
   try {
-    const { priceId, successUrl, cancelUrl } = data;
-
-    // Validate price ID
-    if (!SUBSCRIPTION_PRODUCTS[priceId]) {
-      throw new functions.https.HttpsError('invalid-argument', 'Invalid price ID');
-    }
-
-    const product = SUBSCRIPTION_PRODUCTS[priceId];
-    const userId = context.auth.uid;
-
-    // Get user email from Firebase Auth
-    const userRecord = await admin.auth().getUser(userId);
+    const { userId } = req.params;
     
-    // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
-      customer_email: userRecord.email,
-      client_reference_id: userId,
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      mode: 'subscription',
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-      metadata: {
-        userId: userId,
-        tier: product.tier,
-      },
-      subscription_data: {
-        metadata: {
-          userId: userId,
-          tier: product.tier,
-        },
-      },
-    });
-
-    functions.logger.info(`Created checkout session for user ${userId}: ${session.id}`);
+    const devicesQuery = await admin.firestore()
+      .collection('devices')
+      .where('userId', '==', userId)
+      .get();
     
-    return { 
-      sessionId: session.id,
-      url: session.url 
-    };
+    const devices = devicesQuery.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    
+    res.json({ devices });
   } catch (error) {
-    functions.logger.error('Error creating checkout session:', error);
-    throw new functions.https.HttpsError('internal', 'Failed to create checkout session');
+    console.error('Error getting user devices:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-/**
- * Handle Stripe Webhook Events
- * Processes subscription status changes
- */
-export const stripeWebhook = functions.https.onRequest(async (req, res) => {
-  const sig = req.headers['stripe-signature'] as string;
-  const endpointSecret = functions.config().stripe.webhook_secret;
-
-  let event: Stripe.Event;
-
-  try {
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    functions.logger.info(`Received Stripe webhook: ${event.type}`);
-  } catch (err) {
-    functions.logger.error('Webhook signature verification failed:', err);
-    res.status(400).send('Webhook signature verification failed');
-    return;
-  }
-
-  try {
-    switch (event.type) {
-      case 'checkout.session.completed':
-        await handleCheckoutCompleted(event.data.object as Stripe.Checkout.Session);
-        break;
-      
-      case 'customer.subscription.created':
-      case 'customer.subscription.updated':
-        await handleSubscriptionChange(event.data.object as Stripe.Subscription);
-        break;
-      
-      case 'customer.subscription.deleted':
-        await handleSubscriptionCanceled(event.data.object as Stripe.Subscription);
-        break;
-      
-      case 'invoice.payment_succeeded':
-        await handlePaymentSucceeded(event.data.object as Stripe.Invoice);
-        break;
-      
-      case 'invoice.payment_failed':
-        await handlePaymentFailed(event.data.object as Stripe.Invoice);
-        break;
-      
-      default:
-        functions.logger.info(`Unhandled event type: ${event.type}`);
-    }
-
-    res.json({ received: true });
-  } catch (error) {
-    functions.logger.error('Error processing webhook:', error);
-    res.status(500).json({ error: 'Webhook processing failed' });
-  }
-});
-
-// Helper function to handle completed checkout
-async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
-  const userId = session.client_reference_id;
-  const subscriptionId = session.subscription as string;
-  
-  if (!userId) {
-    functions.logger.error('No user ID in checkout session');
-    return;
-  }
-
-  // Get subscription details
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-  const priceId = subscription.items.data[0].price.id;
-  const product = SUBSCRIPTION_PRODUCTS[priceId];
-
-  if (!product) {
-    functions.logger.error(`Unknown price ID: ${priceId}`);
-    return;
-  }
-
-  // Update user subscription in Firestore
-  await db.collection('users').doc(userId).update({
-    'subscription.tier': product.tier,
-    'subscription.status': 'active',
-    'subscription.priceId': priceId,
-    'subscription.stripeSubscriptionId': subscriptionId,
-    'subscription.stripeCustomerId': subscription.customer,
-    'subscription.currentPeriodStart': new Date(subscription.current_period_start * 1000),
-    'subscription.currentPeriodEnd': new Date(subscription.current_period_end * 1000),
-    'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
-  });
-
-  functions.logger.info(`Updated subscription for user ${userId} to ${product.tier}`);
-}
-
-// Helper function to handle subscription changes
-async function handleSubscriptionChange(subscription: Stripe.Subscription) {
-  const userId = subscription.metadata.userId;
-  const priceId = subscription.items.data[0].price.id;
-  const product = SUBSCRIPTION_PRODUCTS[priceId];
-
-  if (!userId || !product) {
-    functions.logger.error('Missing user ID or unknown product in subscription');
-    return;
-  }
-
-  await db.collection('users').doc(userId).update({
-    'subscription.status': subscription.status,
-    'subscription.currentPeriodStart': new Date(subscription.current_period_start * 1000),
-    'subscription.currentPeriodEnd': new Date(subscription.current_period_end * 1000),
-    'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
-  });
-}
-
-// Helper function to handle subscription cancellation
-async function handleSubscriptionCanceled(subscription: Stripe.Subscription) {
-  const userId = subscription.metadata.userId;
-
-  if (!userId) {
-    functions.logger.error('No user ID in canceled subscription');
-    return;
-  }
-
-  await db.collection('users').doc(userId).update({
-    'subscription.tier': 'free',
-    'subscription.status': 'canceled',
-    'subscription.canceledAt': admin.firestore.FieldValue.serverTimestamp(),
-    'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
-  });
-
-  functions.logger.info(`Canceled subscription for user ${userId}`);
-}
-
-// Helper function to handle successful payments
-async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  functions.logger.info(`Payment succeeded for subscription: ${invoice.subscription}`);
-  // Add any additional logic for successful payments
-}
-
-// Helper function to handle failed payments
-async function handlePaymentFailed(invoice: Stripe.Invoice) {
-  functions.logger.error(`Payment failed for subscription: ${invoice.subscription}`);
-  // Add logic to handle failed payments (email notifications, etc.)
-}
 
 // Export the Express app as a Firebase Function
-export const api = functions.https.onRequest(app); 
+export const api = functions.https.onRequest(app);
