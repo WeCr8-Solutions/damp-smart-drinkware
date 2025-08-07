@@ -30,6 +30,35 @@ yarn-error.*
 # local env files
 .env*.local
 .env
+.env.development
+.env.staging 
+.env.production
+
+# secrets and sensitive data
+.secrets-discovery.json
+*.secret*
+scripts/*.secret*
+
+# netlify
+.netlify/
+dist/
+.env.netlify
+functions-build/
+
+# build outputs
+web-build/
+build/
+ios/
+android/
+
+# app store preparation files
+app-info-export.json
+app-store-info.json
+play-store-info.json
+asset-requirements.json
+submission-checklist.json
+store-config.json
+google-service-account.json
 
 # typescript
 *.tsbuildinfo

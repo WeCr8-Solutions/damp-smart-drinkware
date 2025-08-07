@@ -1,0 +1,110 @@
+[build]
+  # Expo web build configuration
+  publish = "dist"
+  command = "npm run build:netlify"
+  
+  # Environment setup
+  environment = { NODE_VERSION = "20", NPM_VERSION = "10" }
+
+[build.processing]
+  # Enable asset optimization
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
+[[redirects]]
+  # Handle client-side routing for Expo Router
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  # Security headers for web app (PWA disabled temporarily - focusing on native apps)
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # PWA features temporarily disabled
+    X-Robots-Tag = "noindex, nofollow"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googleapis.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebase.googleapis.com https://*.firebaseio.com https://api.stripe.com https://*.supabase.co wss://*.supabase.co; frame-src https://js.stripe.com;"
+
+[[headers]]
+  # Cache static assets
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  # Cache images and fonts
+  for = "*.{jpg,jpeg,png,gif,ico,svg,woff,woff2,ttf,eot}"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+
+# Environment-specific settings
+[context.production]
+  # Production build with optimizations
+  command = "npm run build:netlify:production"
+  
+  [context.production.environment]
+    NODE_ENV = "production"
+    EXPO_PUBLIC_ENVIRONMENT = "production"
+
+[context.deploy-preview]
+  # Deploy preview (staging) settings
+  command = "npm run build:netlify:staging"
+  
+  [context.deploy-preview.environment]
+    NODE_ENV = "staging"  
+    EXPO_PUBLIC_ENVIRONMENT = "staging"
+
+[context.branch-deploy]
+  # Branch preview settings
+  command = "npm run build:netlify:development"
+  
+  [context.branch-deploy.environment]
+    NODE_ENV = "development"
+    EXPO_PUBLIC_ENVIRONMENT = "development"
+
+# Functions for serverless API (if needed)
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Plugin configurations
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
+  
+  [plugins.inputs]
+    buildDir = "dist"
+    exclude = [
+      '/admin/**',
+      '/api/**'
+    ]
+
+# Forms handling (if you have contact forms)
+[forms]
+  # Enable Netlify Forms
+  settings = { enabled = true }
+
+# Large Media (for asset optimization)
+[media]
+  # Enable Large Media for better asset handling
+  enabled = true
+  
+# Split testing (optional)
+# [[split_tests]]
+#   path = "/*"
+#   branches = [
+#     { branch = "main", percentage = 100 },
+#   ]

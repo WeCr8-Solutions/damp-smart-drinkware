@@ -1,16 +1,154 @@
 {
-  "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    // Base TypeScript configuration for React Native + Expo
+    "target": "esnext",
+    "lib": ["dom", "esnext", "es2017"],
+    "allowJs": true,
+    "skipLibCheck": true,
     "strict": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "exactOptionalPropertyTypes": false,
+    
+    // Module resolution
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    
+    // React Native + Expo specific
+    "jsx": "react-jsx",
+    "incremental": true,
+    "baseUrl": ".",
+    
+    // Comprehensive path mappings for circular loop system
     "paths": {
-      "@/*": ["./*"]
-    }
+      // Root alias
+      "@/*": ["./*"],
+      
+      // App structure
+      "@/app/*": ["./app/*"],
+      "@/components/*": ["./components/*"],
+      "@/contexts/*": ["./contexts/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/utils/*": ["./utils/*"],
+      "@/styles/*": ["./styles/*"],
+      "@/assets/*": ["./assets/*"],
+      "@/types/*": ["./types/*"],
+      
+      // Services and integrations
+      "@/firebase/*": ["./firebase/*"],
+      "@/supabase/*": ["./supabase/*"],
+      "@/src/*": ["./src/*"],
+      
+      // Testing infrastructure
+      "@/tests/*": ["./tests/*"],
+      "@/mocks/*": ["./tests/setup/mocks/*"],
+      "@/test-utils/*": ["./tests/setup/*"],
+      
+      // Common aliases for better imports
+      "@components/*": ["./components/*"],
+      "@contexts/*": ["./contexts/*"],
+      "@hooks/*": ["./hooks/*"],
+      "@lib/*": ["./lib/*"],
+      "@utils/*": ["./utils/*"],
+      "@types/*": ["./types/*"],
+      "@assets/*": ["./assets/*"],
+      "@styles/*": ["./styles/*"],
+      "@firebase/*": ["./firebase/*"],
+      "@supabase/*": ["./supabase/*"],
+      "@tests/*": ["./tests/*"],
+      
+      // Cross-directory references for circular system
+      "@/config": ["./firebase/config.ts", "./lib/supabase.ts"],
+      "@/auth": ["./firebase/auth.ts", "./contexts/AuthContext.tsx"],
+      "@/database": ["./lib/supabase.ts", "./types/supabase.ts"]
+    },
+    
+    // Type checking configuration
+    "typeRoots": [
+      "node_modules/@types",
+      "types",
+      "./types"
+    ]
   },
+  
+  // Comprehensive include patterns for complete coverage
   "include": [
+    // Core app files
     "**/*.ts",
     "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    
+    // App structure
+    "app/**/*",
+    "components/**/*",
+    "contexts/**/*",
+    "hooks/**/*",
+    "lib/**/*",
+    "utils/**/*",
+    "styles/**/*",
+    "src/**/*",
+    
+    // Types and configurations
+    "types/**/*",
+    "firebase/**/*",
+    "supabase/**/*",
+    
+    // Testing files
+    "tests/**/*",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    
+    // Expo and React Native types
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
-    "nativewind-env.d.ts"
-  ]
+    "nativewind-env.d.ts",
+    "metro.config.js",
+    
+    // Configuration files
+    "*.config.js",
+    "*.config.ts",
+    "jest.config.js",
+    "eslint.config.js"
+  ],
+  
+  // Exclude unnecessary files for performance
+  "exclude": [
+    "node_modules",
+    ".expo",
+    "build",
+    "dist",
+    "lib",
+    "android",
+    "ios",
+    ".vscode",
+    ".bolt",
+    "coverage",
+    "*.tsbuildinfo",
+    "**/*.generated.ts",
+    "**/*.backup",
+    "**/*.bak",
+    ".env*"
+  ],
+  
+  // TypeScript project settings
+  "ts-node": {
+    "esm": true,
+    "transpileOnly": true,
+    "files": true,
+    "compilerOptions": {
+      "module": "ESNext",
+      "moduleResolution": "node"
+    }
+  }
 }

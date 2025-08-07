@@ -8,8 +8,16 @@
     "scheme": "dampapp",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "privacy": "public",
+    "platforms": ["ios", "android", "web"],
+    "githubUrl": "https://github.com/your-username/damp-smart-drinkware",
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.damp.smartdrinkware",
+      "buildNumber": "1",
+      "config": {
+        "usesNonExemptEncryption": false
+      },
       "infoPlist": {
         "NSBluetoothAlwaysUsageDescription": "This app uses Bluetooth to connect to your DAMP smart drinkware devices.",
         "NSBluetoothPeripheralUsageDescription": "This app uses Bluetooth to connect to your DAMP smart drinkware devices.",
@@ -17,10 +25,18 @@
         "UIBackgroundModes": [
           "bluetooth-central",
           "location"
-        ]
+        ],
+        "CFBundleDisplayName": "DAMP Smart Drinkware"
+      },
+      "splash": {
+        "image": "./assets/images/app-icon.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
       }
     },
     "android": {
+      "package": "com.damp.smartdrinkware",
+      "versionCode": 1,
       "permissions": [
         "android.permission.BLUETOOTH",
         "android.permission.BLUETOOTH_ADMIN",
@@ -33,12 +49,22 @@
         "foregroundImage": "./assets/images/app-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.damp.smartdrinkware"
+      "splash": {
+        "image": "./assets/images/app-icon.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+      },
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.damp.smartdrinkware"
     },
     "web": {
       "bundler": "metro",
       "output": "single",
       "favicon": "./assets/images/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
     },
     "plugins": [
       "expo-router",

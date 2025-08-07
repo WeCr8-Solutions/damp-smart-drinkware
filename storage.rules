@@ -1,63 +1,102 @@
 rules_version = '2';
 
-// Firebase Storage Security Rules for DAMP Smart Drinkware
+// Cloud Storage Security Rules for DAMP Smart Drinkware
 service firebase.storage {
   match /b/{bucket}/o {
     
-    // User profile images - users can upload their own profile pictures
-    match /users/{userId}/profile/{allPaths=**} {
-      allow read: if true; // Profile images are publicly readable
-      allow write: if request.auth != null 
-                   && request.auth.uid == userId
-                   && request.resource.size < 5 * 1024 * 1024 // 5MB limit
-                   && request.resource.contentType.matches('image/.*');
+    // =============================================================================
+    // USER AVATARS
+    // =============================================================================
+    
+    // Avatar uploads - users can only upload their own avatars
+    match /avatars/{userId}_{fileName} {
+      // Allow read for all authenticated users (public avatars)
+      allow read: if request.auth != null;
+      
+      // Allow write only for the specific user
+      allow write: if request.auth != null && request.auth.uid == userId
+                   && isValidAvatarUpload();
+      
+      // Allow delete only by the user or admin
+      allow delete: if request.auth != null && 
+                    (request.auth.uid == userId || isAdmin());
     }
     
-    // Device images - users can upload images of their devices
-    match /devices/{userId}/images/{allPaths=**} {
-      allow read: if request.auth != null 
-                  && (request.auth.uid == userId || isAdmin());
-      allow write: if request.auth != null 
-                   && request.auth.uid == userId
-                   && request.resource.size < 10 * 1024 * 1024 // 10MB limit
-                   && request.resource.contentType.matches('image/.*');
+    // =============================================================================
+    // DEVICE ATTACHMENTS (Future use)
+    // =============================================================================
+    
+    // Device images and attachments
+    match /devices/{deviceId}/{fileName} {
+      // Users can read device attachments they own
+      allow read: if request.auth != null && userOwnsDevice(deviceId);
+      
+      // Users can upload device attachments for their own devices
+      allow write: if request.auth != null && userOwnsDevice(deviceId)
+                   && isValidDeviceFile();
+      
+      // Users can delete their own device attachments
+      allow delete: if request.auth != null && userOwnsDevice(deviceId);
     }
     
-    // Product images - admin only for uploads, public for reads
-    match /products/{productId}/images/{allPaths=**} {
+    // =============================================================================
+    // ADMIN UPLOADS
+    // =============================================================================
+    
+    // Admin-only uploads (app assets, etc.)
+    match /admin/{fileName} {
+      allow read: if true; // Public read
+      allow write, delete: if isAdmin();
+    }
+    
+    // =============================================================================
+    // PUBLIC ASSETS
+    // =============================================================================
+    
+    // Public assets (product images, marketing materials)
+    match /public/{allPaths=**} {
       allow read: if true; // Public read access
-      allow write: if isAdmin();
+      allow write: if isAdmin(); // Only admins can modify
     }
     
-    // App assets - public read, admin write
-    match /app-assets/{allPaths=**} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
+    // =============================================================================
+    // HELPER FUNCTIONS
+    // =============================================================================
     
-    // User data exports - users can access their own data exports
-    match /exports/{userId}/{allPaths=**} {
-      allow read: if request.auth != null 
-                  && (request.auth.uid == userId || isAdmin());
-      allow write: if isAdmin(); // Only admin can create exports
-    }
-    
-    // Firmware updates - public read for users to download updates
-    match /firmware/{allPaths=**} {
-      allow read: if request.auth != null; // Authenticated users only
-      allow write: if isAdmin();
-    }
-    
-    // Marketing materials - public read, admin write
-    match /marketing/{allPaths=**} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    // Admin helper function
+    // Check if user is admin
     function isAdmin() {
-      return request.auth != null 
-             && request.auth.token.role == 'admin';
+      return request.auth != null && 
+             request.auth.token.role == 'admin';
+    }
+    
+    // Check if user owns a specific device
+    function userOwnsDevice(deviceId) {
+      // This would require a Firestore lookup, which isn't directly possible in Storage rules
+      // In practice, you'd implement this check in your Cloud Function before upload
+      return request.auth != null;
+    }
+    
+    // Validate avatar upload constraints
+    function isValidAvatarUpload() {
+      // File size limit: 5MB
+      return request.resource.size <= 5 * 1024 * 1024
+             // Only allow image files
+             && request.resource.contentType.matches('image/.*')
+             // Allowed image types
+             && (request.resource.contentType == 'image/jpeg' ||
+                 request.resource.contentType == 'image/png' ||
+                 request.resource.contentType == 'image/webp' ||
+                 request.resource.contentType == 'image/gif');
+    }
+    
+    // Validate device file uploads
+    function isValidDeviceFile() {
+      // File size limit: 10MB for device files
+      return request.resource.size <= 10 * 1024 * 1024
+             // Allow images and documents
+             && (request.resource.contentType.matches('image/.*') ||
+                 request.resource.contentType == 'application/pdf' ||
+                 request.resource.contentType.matches('text/.*'));
     }
   }
-} 
+}

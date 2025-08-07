@@ -754,3 +754,45 @@ app.get('/user/:userId/devices', async (req, res) => {
 
 // Export the Express app as a Firebase Function
 export const api = functions.https.onRequest(app);
+
+// =============================================================================
+// SUBSCRIPTION MANAGEMENT FUNCTIONS
+// =============================================================================
+export {
+  createSubscriptionCheckout,
+  handleSubscriptionSuccess,
+  manageSubscription,
+  getSubscriptionStatus,
+} from './subscriptions';
+
+// =============================================================================
+// USER PROFILE MANAGEMENT FUNCTIONS
+// =============================================================================
+export {
+  updateUserProfile,
+  uploadUserAvatar,
+  getUserProfile,
+  updateNotificationPreferences,
+  completeDeviceSetup,
+  getPersonalizedGreeting,
+  deleteUserAccount,
+} from './user-profile';
+
+// =============================================================================
+// OFFLINE SYNC FUNCTIONS
+// =============================================================================
+export {
+  queueOfflineAction,
+  processSyncQueue,
+  getSyncStatus,
+  cleanupSyncQueue,
+  bulkSyncData,
+  getLastSyncTimestamp,
+} from './offline-sync';
+
+// =============================================================================
+// ENHANCED STRIPE WEBHOOK FUNCTIONS
+// =============================================================================
+export {
+  handleStripeWebhook,
+} from './stripe-webhooks';

@@ -1,0 +1,36 @@
+{
+  "name": "damp-smart-drinkware",
+  "version": "1.0.0",
+  "main": "expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=tests/unit --verbose",
+    "test:watch": "jest --watch",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-native": "0.76.5",
+    "expo": "^53.0.0",
+    "crypto-js": "^4.2.0",
+    "ajv": "^8.17.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.14",
+    "@babel/core": "^7.25.9",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-typescript": "^7.26.0",
+    "babel-jest": "^29.7.0",
+    "@types/crypto-js": "^4.2.2",
+    "@testing-library/react-native": "^12.8.0",
+    "@testing-library/jest-native": "^5.4.3",
+    "react-test-renderer": "18.3.1",
+    "typescript": "~5.6.3",
+    "eslint": "^8.57.1"
+  }
+}
