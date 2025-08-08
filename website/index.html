@@ -8,7 +8,7 @@
     <!-- Security Headers -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.gstatic.com https://js.stripe.com https://firebasestorage.googleapis.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://www.googletagmanager.com https://firebasestorage.googleapis.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; connect-src 'self' https://www.google-analytics.com https://api.stripe.com https://firestore.googleapis.com https://firebasestorage.googleapis.com https://fcm.googleapis.com https://firebaseremoteconfig.googleapis.com https://pagead2.googlesyndication.com; frame-src https://googleads.g.doubleclick.net;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
+    <!-- X-Frame-Options moved to HTTP headers via netlify.toml -->
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     
@@ -818,7 +818,7 @@
                     <h1 class="hero-title">Never Leave Your Drink Behind</h1>
                     
                     <p class="hero-subtitle">
-                        Transform any cup into a smart device with DAMP. Get instant alerts when you're about to abandon your favorite beverage. Works with Stanley, Yeti, Hydro Flask, and more.
+                        Transform any cup into a smart device with DAMP. Get instant alerts when you're about to abandon your favorite beverage. Works with major brands and most drinkware.
                     </p>
                     
                     <div class="hero-cta">
@@ -914,7 +914,7 @@
                     <div class="feature-card">
                         <span class="feature-icon">🌍</span>
                         <h3 class="feature-title">Universal Compatibility</h3>
-                        <p>Works with any cup, mug, or bottle. Stanley, Yeti, Hydro Flask - attach to anything.</p>
+                        <p>Works with any cup, mug, or bottle. Universal design that attaches to most drinkware.</p>
                     </div>
                     
                     <div class="feature-card">
@@ -950,7 +950,7 @@
                         </div>
                         <h3 class="product-name">DAMP Handle</h3>
                         <div class="product-price">$49.99</div>
-                        <p>Universal handle attachment. Perfect for Stanley, Yeti, and most travel mugs.</p>
+                        <p>Universal handle attachment. Perfect for most travel mugs and drinkware.</p>
                         <a href="pages/damp-handle-v1.0.html" class="btn btn-primary btn-small">Learn More</a>
                     </div>
                     
@@ -974,6 +974,7 @@
                         <a href="pages/cup-sleeve-v1.0.html" class="btn btn-primary btn-small">Learn More</a>
                     </div>
                     
+                    <!-- TEMPORARILY DISABLED: FDA Regulation Compliance Review
                     <div class="product-card">
                         <div class="product-image">
                             <img src="assets/images/products/baby-bottle/baby-bottle.png" alt="Baby Bottle" loading="lazy">
@@ -983,6 +984,7 @@
                         <p>Smart baby bottle with feeding tracking and temperature monitoring for parents.</p>
                         <a href="pages/baby-bottle-v1.0.html" class="btn btn-primary btn-small">Learn More</a>
                     </div>
+                    -->
                 </div>
                 
                 <div style="text-align: center; margin-top: 40px;">
@@ -1019,7 +1021,7 @@
                     
                     <div class="testimonial-card">
                         <p class="testimonial-text">
-                            "The Stanley model fits perfectly on my Quencher. Battery life is amazing - I charge it maybe once every few months. Highly recommend!"
+                            "The universal design fits perfectly on my travel mug. Battery life is amazing - I charge it maybe once every few months. Highly recommend!"
                         </p>
                         <div class="testimonial-author">- Mike R., College Student</div>
                     </div>
@@ -1292,8 +1294,7 @@
         }
     </script>
 
-    <!-- Authentication Module -->
-    <script type="module" src="assets/js/auth-modal.js"></script>
+    <!-- Authentication Module (loaded above as regular script) -->
     
     <!-- AdSense Manager -->
     <script src="assets/js/adsense-manager.js"></script>

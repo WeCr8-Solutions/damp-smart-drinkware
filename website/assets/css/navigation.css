@@ -97,6 +97,8 @@
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
+    min-height: 50px;
+    flex-wrap: nowrap;
 }
 
 /* ==========================================================================
@@ -1045,26 +1047,31 @@
 
 /* Desktop Authentication Buttons */
 .auth-buttons {
-    display: flex;
+    display: none; /* Hidden by default, shown on desktop breakpoints */
     align-items: center;
-    gap: 12px;
-    margin-left: 20px;
+    gap: 8px;
+    margin-left: 15px;
+    flex-shrink: 0;
+    min-width: fit-content;
 }
 
 .auth-btn {
-    padding: 8px 16px;
+    padding: 6px 12px;
     border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
     transition: all var(--transition-standard);
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     position: relative;
     overflow: hidden;
+    white-space: nowrap;
+    min-width: fit-content;
+    flex-shrink: 0;
 }
 
 .auth-btn::before {
@@ -1341,7 +1348,8 @@
     }
     
     .auth-buttons {
-        margin-left: 30px;
+        display: flex; /* Show auth buttons on desktop */
+        margin-left: 20px;
     }
     
     .auth-btn {
@@ -1369,6 +1377,10 @@
 
 /* Mobile specific adjustments */
 @media (max-width: 768px) {
+    .auth-buttons {
+        display: none; /* Hide desktop auth buttons on mobile */
+    }
+    
     .mobile-nav-section.auth-section {
         margin: 0 15px 20px 15px;
         padding: 15px;

@@ -530,5 +530,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.dampAuth = new DAMPAuthModal();
 });
 
-// Export for module usage
-export default DAMPAuthModal; 
+// Export for module usage (when used as module)
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = DAMPAuthModal;
+} 

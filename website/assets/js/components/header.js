@@ -226,6 +226,7 @@ class DAMPHeader extends HTMLElement {
                                     <span class="mobile-nav-subtitle">Adjustable fit • $39.99</span>
                                 </div>
                             </a>
+                            <!-- TEMPORARILY DISABLED: FDA Regulation Compliance Review
                             <a href="${this.basePath}pages/baby-bottle-v1.0.html" data-analytics="mobile-nav-baby">
                                 <span class="mobile-nav-icon">🍼</span>
                                 <div class="mobile-nav-content">
@@ -233,9 +234,10 @@ class DAMPHeader extends HTMLElement {
                                     <span class="mobile-nav-subtitle">Smart feeding tracker • $79.99</span>
                                 </div>
                             </a>
+                            -->
                         </div>
                         
-                        <!-- Stanley Collection -->
+                        <!-- TEMPORARILY DISABLED: Legal Review - Stanley Trademark Concerns
                         <div class="mobile-nav-section">
                             <h3 class="mobile-nav-section-title">⭐ Stanley Collection</h3>
                             <a href="${this.basePath}pages/damp-handle-v1.0-stanley.html" data-analytics="mobile-nav-stanley-general">
@@ -260,6 +262,7 @@ class DAMPHeader extends HTMLElement {
                                 </div>
                             </a>
                         </div>
+                        -->
                         
                         <!-- Shopping & Account -->
                         <div class="mobile-nav-section">
