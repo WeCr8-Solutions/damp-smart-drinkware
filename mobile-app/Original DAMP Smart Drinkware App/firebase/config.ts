@@ -11,7 +11,12 @@ const mockAuth = {
   signInWithEmailAndPassword: () => Promise.reject(new Error('Firebase disabled')),
   createUserWithEmailAndPassword: () => Promise.reject(new Error('Firebase disabled')),
   signOut: () => Promise.resolve(),
-  onAuthStateChanged: () => () => {},
+  onAuthStateChanged: (callback: (user: any) => void) => {
+    // Call callback with null user immediately for mocks
+    setTimeout(() => callback(null), 0);
+    // Return unsubscribe function
+    return () => {};
+  },
   sendPasswordResetEmail: () => Promise.reject(new Error('Firebase disabled')),
 };
 
@@ -43,6 +48,13 @@ let db: Firestore | any = null;
 let functions: Functions | any = null;
 let storage: FirebaseStorage | any = null;
 
+console.log('Firebase Feature Flag Debug:', {
+  FIREBASE: FeatureFlags.FIREBASE,
+  EXPO_PUBLIC_FIREBASE_ENABLED: process.env.EXPO_PUBLIC_FIREBASE_ENABLED,
+  EXPO_PUBLIC_PLATFORM: process.env.EXPO_PUBLIC_PLATFORM,
+  EXPO_PUBLIC_ENVIRONMENT: process.env.EXPO_PUBLIC_ENVIRONMENT
+});
+
 if (FeatureFlags.FIREBASE) {
   try {
     // Firebase configuration
@@ -58,7 +70,14 @@ if (FeatureFlags.FIREBASE) {
 
     // Validate required config
     if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-      throw new Error('Missing required Firebase configuration');
+      console.error('Firebase Config Debug:', {
+        hasApiKey: !!firebaseConfig.apiKey,
+        hasProjectId: !!firebaseConfig.projectId,
+        firebaseEnabled: process.env.EXPO_PUBLIC_FIREBASE_ENABLED,
+        platform: process.env.EXPO_PUBLIC_PLATFORM,
+        environment: process.env.EXPO_PUBLIC_ENVIRONMENT
+      });
+      throw new Error(`Missing required Firebase configuration. API Key: ${!!firebaseConfig.apiKey}, Project ID: ${!!firebaseConfig.projectId}`);
     }
 
     // Prevent multiple initializations
