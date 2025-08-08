@@ -106,4 +106,10 @@
   # Functions directory (if you add Netlify functions later)
   directory = "functions"
 
+# Explicitly disable conflicting plugins
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+  [plugins.inputs]
+    disabled = true
+
 # Build plugins disabled for now - using basic deployment
