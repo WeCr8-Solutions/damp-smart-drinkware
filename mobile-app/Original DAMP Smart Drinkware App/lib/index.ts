@@ -9,6 +9,14 @@ export { app, auth, db, functions, storage } from '@/firebase/config';
 // Import Firebase services for registry
 import { auth, db, functions, storage } from '@/firebase/config';
 
+// Import unified services
+import VotingService from '@/services/voting-service';
+import PurchasingService from '@/services/purchasing-service';
+import FirebaseStripeService from '@/services/firebase-stripe';
+
+// Export unified services
+export { VotingService, PurchasingService, FirebaseStripeService };
+
 // Notification system (will be created)
 // export * from './notifications';
 
@@ -26,7 +34,9 @@ export const libraryConnections = {
       '@/hooks/useBLE',
       '@/utils/deviceManager',
       '@/components/BLEManager',
-      '@/services/firebase-stripe'
+      '@/services/firebase-stripe',
+      '@/services/voting-service',
+      '@/services/purchasing-service'
     ],
   },
   
@@ -39,6 +49,11 @@ export const libraryConnections = {
 // Library registry for dynamic access
 export const libraryRegistry = {
   firebase: { auth, db, functions, storage },
+  services: { 
+    voting: VotingService, 
+    purchasing: PurchasingService, 
+    stripe: FirebaseStripeService 
+  },
 };
 
 // Library configuration interfaces

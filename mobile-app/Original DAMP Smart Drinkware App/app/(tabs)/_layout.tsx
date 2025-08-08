@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Chrome as Home, MapPin, Settings } from 'lucide-react-native';
+import { Chrome as Home, MapPin, Settings, Vote } from 'lucide-react-native';
 import { Platform } from 'react-native';
 
 export default function TabLayout() {
@@ -35,6 +35,13 @@ export default function TabLayout() {
         options={{
           title: 'Zones',
           tabBarIcon: ({ size, color }) => <MapPin size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="voting"
+        options={{
+          title: 'Vote',
+          tabBarIcon: ({ size, color }) => <Vote size={size} color={color} />,
         }}
       />
       <Tabs.Screen
