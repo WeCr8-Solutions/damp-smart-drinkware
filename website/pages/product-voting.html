@@ -14,6 +14,9 @@
     <!-- Environment Configuration (Load First) -->
     <script src="../assets/js/env-config.js"></script>
     
+    <!-- Simple Voting System (Immediate Fallback) -->
+    <script src="../js/simple-voting-system.js"></script>
+    
     <!-- SEO Meta Tags -->
     <title>DAMP Product Voting - Help Us Prioritize Development | Community Choice</title>
     <meta name="description" content="Vote for your favorite DAMP Smart Drinkware product! Help us prioritize development by voting for Handle, Silicone Bottom, Cup Sleeve, or Baby Bottle.">
@@ -2251,6 +2254,38 @@
         });
     </script>
 
+    <!-- Authentication Modal -->
+    <script src="../assets/js/auth-modal.js"></script>
+    
+    <!-- Authentication Helper Functions -->
+    <script>
+        // Global functions to handle authentication buttons
+        function showSignIn() {
+            if (window.dampAuth) {
+                window.dampAuth.showSignIn();
+            } else {
+                console.error('Auth modal not loaded');
+            }
+        }
+        
+        function showSignUp() {
+            if (window.dampAuth) {
+                window.dampAuth.showSignUp();
+            } else {
+                console.error('Auth modal not loaded');
+            }
+        }
+        
+        // Handle voting button clicks that require authentication
+        function handleAuthVote(productId) {
+            if (window.dampAuth) {
+                window.dampAuth.showSignIn();
+            } else {
+                console.error('Authentication required but auth modal not loaded');
+            }
+        }
+    </script>
+    
     <!-- Service Worker Registration - Temporarily Disabled -->
     <script>
         // Service workers disabled temporarily to fix registration errors
