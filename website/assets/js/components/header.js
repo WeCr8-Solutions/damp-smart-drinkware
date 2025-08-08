@@ -925,6 +925,29 @@ class DAMPHeader extends HTMLElement {
     
     // Setup authentication event handlers
     setupAuthEventHandlers() {
+        // Set up auth button event delegation
+        this.addEventListener('click', (e) => {
+            const authAction = e.target.closest('[data-auth]')?.getAttribute('data-auth');
+            
+            if (authAction && window.dampAuth) {
+                e.preventDefault();
+                
+                switch (authAction) {
+                    case 'signin':
+                        window.dampAuth.showSignIn();
+                        this.trackAnalytics('nav_signin_clicked');
+                        break;
+                    case 'signup':
+                        window.dampAuth.showSignUp();
+                        this.trackAnalytics('nav_signup_clicked');
+                        break;
+                    case 'signout':
+                        this.handleSignOut();
+                        break;
+                }
+            }
+        });
+        
         // User profile dropdown toggle
         const userProfile = this.querySelector('#userProfile');
         const userDropdown = this.querySelector('#userDropdown');
@@ -941,6 +964,24 @@ class DAMPHeader extends HTMLElement {
                     userDropdown.style.display = 'none';
                 }
             });
+        }
+    }
+    
+    // Handle sign out
+    async handleSignOut() {
+        try {
+            if (window.firebaseServices?.authService) {
+                await window.firebaseServices.authService.signOut();
+                this.trackAnalytics('nav_signout_success');
+                
+                // Optionally redirect to home page
+                if (window.location.pathname.includes('/profile') || window.location.pathname.includes('/orders')) {
+                    window.location.href = this.basePath + 'index.html';
+                }
+            }
+        } catch (error) {
+            console.error('Sign out error:', error);
+            this.trackAnalytics('nav_signout_error');
         }
     }
     
