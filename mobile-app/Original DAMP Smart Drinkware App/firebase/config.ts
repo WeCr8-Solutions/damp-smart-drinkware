@@ -1,43 +1,50 @@
-/**
- * 🔥 DAMP Smart Drinkware - Firebase Configuration
- * Firebase initialization with feature flag support
- */
+import { FeatureFlags } from '@/config/feature-flags';
+import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
+import { getAuth, Auth } from 'firebase/auth';
+import { getFirestore, Firestore } from 'firebase/firestore';
+import { getFunctions, Functions } from 'firebase/functions';
+import { getStorage, FirebaseStorage } from 'firebase/storage';
 
-import { FeatureFlags } from '../config/feature-flags';
-
-// Type definitions for when Firebase is disabled
-type MockFirebaseApp = null;
-type MockAuth = {
-  currentUser: null;
-  signInWithEmailAndPassword: () => Promise<never>;
-  createUserWithEmailAndPassword: () => Promise<never>;
-  signOut: () => Promise<never>;
-};
-type MockDb = {
-  collection: () => any;
-};
-type MockFunctions = {
-  httpsCallable: () => () => Promise<never>;
-};
-type MockStorage = {
-  ref: () => any;
+// Mock implementations for when Firebase is disabled
+const mockAuth = {
+  currentUser: null,
+  signInWithEmailAndPassword: () => Promise.reject(new Error('Firebase disabled')),
+  createUserWithEmailAndPassword: () => Promise.reject(new Error('Firebase disabled')),
+  signOut: () => Promise.resolve(),
+  onAuthStateChanged: () => () => {},
+  sendPasswordResetEmail: () => Promise.reject(new Error('Firebase disabled')),
 };
 
-// Initialize Firebase only if enabled
-let app: any = null;
-let auth: any = null;
-let db: any = null;
-let functions: any = null;
-let storage: any = null;
+const mockDb = {
+  collection: () => ({
+    doc: () => ({
+      get: () => Promise.resolve({ exists: false }),
+      set: () => Promise.resolve(),
+      update: () => Promise.resolve(),
+    }),
+  }),
+};
+
+const mockFunctions = {
+  httpsCallable: () => () => Promise.reject(new Error('Firebase disabled')),
+};
+
+const mockStorage = {
+  ref: () => ({
+    put: () => Promise.reject(new Error('Firebase disabled')),
+    getDownloadURL: () => Promise.reject(new Error('Firebase disabled')),
+  }),
+};
+
+// Initialize Firebase services
+let app: FirebaseApp | null = null;
+let auth: Auth | any = null;
+let db: Firestore | any = null;
+let functions: Functions | any = null;
+let storage: FirebaseStorage | any = null;
 
 if (FeatureFlags.FIREBASE) {
   try {
-    const { initializeApp, getApps } = require('firebase/app');
-    const { getAuth } = require('firebase/auth');
-    const { getFirestore } = require('firebase/firestore');
-    const { getFunctions } = require('firebase/functions');
-    const { getStorage } = require('firebase/storage');
-    
     // Firebase configuration
     const firebaseConfig = {
       apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -48,6 +55,11 @@ if (FeatureFlags.FIREBASE) {
       appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
       measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
     };
+
+    // Validate required config
+    if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+      throw new Error('Missing required Firebase configuration');
+    }
 
     // Prevent multiple initializations
     if (getApps().length === 0) {
@@ -68,50 +80,21 @@ if (FeatureFlags.FIREBASE) {
   } catch (error) {
     console.warn('Firebase initialization failed - using mocks:', error);
     app = null;
-    auth = null;
-    db = null;
-    functions = null;
-    storage = null;
+    auth = mockAuth;
+    db = mockDb;
+    functions = mockFunctions;
+    storage = mockStorage;
   }
 } else {
-  console.info('Firebase disabled via feature flags - using mocks');
+  console.info('Firebase disabled by feature flags - using mocks');
+  app = null;
+  auth = mockAuth;
+  db = mockDb;
+  functions = mockFunctions;
+  storage = mockStorage;
 }
 
-// Mock implementations for when Firebase is disabled
-const mockAuth: MockAuth = {
-  currentUser: null,
-  signInWithEmailAndPassword: () => Promise.reject(new Error('Firebase disabled')),
-  createUserWithEmailAndPassword: () => Promise.reject(new Error('Firebase disabled')),
-  signOut: () => Promise.reject(new Error('Firebase disabled')),
-};
-
-const mockDb: MockDb = {
-  collection: () => ({
-    doc: () => ({
-      get: () => Promise.reject(new Error('Firebase disabled')),
-      set: () => Promise.reject(new Error('Firebase disabled')),
-      update: () => Promise.reject(new Error('Firebase disabled')),
-      delete: () => Promise.reject(new Error('Firebase disabled')),
-    }),
-    add: () => Promise.reject(new Error('Firebase disabled')),
-    where: () => ({
-      get: () => Promise.reject(new Error('Firebase disabled')),
-    }),
-  }),
-};
-
-const mockFunctions: MockFunctions = {
-  httpsCallable: () => () => Promise.reject(new Error('Firebase disabled')),
-};
-
-const mockStorage: MockStorage = {
-  ref: () => ({
-    put: () => Promise.reject(new Error('Firebase disabled')),
-    getDownloadURL: () => Promise.reject(new Error('Firebase disabled')),
-  }),
-};
-
-// Export services with fallbacks
+// Export individual services with proper typing
 export const firebaseApp = app || null;
 export const firebaseAuth = auth || mockAuth;
 export const firebaseDb = db || mockDb;
@@ -119,6 +102,22 @@ export const firebaseFunctions = functions || mockFunctions;
 export const firebaseStorage = storage || mockStorage;
 
 // Also export with original names for compatibility
-export { firebaseApp as app, firebaseAuth as auth, firebaseDb as db, firebaseFunctions as functions, firebaseStorage as storage };
+export { 
+  firebaseApp as app, 
+  firebaseAuth as auth, 
+  firebaseDb as db, 
+  firebaseFunctions as functions, 
+  firebaseStorage as storage 
+};
 
-export default app;
+// Export types for better TypeScript support
+export type { FirebaseApp, Auth, Firestore, Functions, FirebaseStorage };
+
+// Default export for convenience
+export default {
+  app: firebaseApp,
+  auth: firebaseAuth,
+  db: firebaseDb,
+  functions: firebaseFunctions,
+  storage: firebaseStorage,
+};
