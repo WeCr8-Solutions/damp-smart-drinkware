@@ -1,11 +1,12 @@
 # Netlify configuration for DAMP Smart Drinkware - Professional Security
 
 [build]
-  command = ""
-  publish = "website"
+  command = "cd 'mobile-app/Original DAMP Smart Drinkware App' && npm run build:netlify:production"
+  publish = "mobile-app/Original DAMP Smart Drinkware App/dist"
   
 [build.environment]
   NODE_VERSION = "18"
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
 # Enhanced security headers for professional deployment
 [[headers]]
