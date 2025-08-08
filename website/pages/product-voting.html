@@ -6,9 +6,9 @@
     <meta name="theme-color" content="#0f0f23">
     
     <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.firebase.com https://*.googleapis.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.firebase.com https://*.googleapis.com wss://*.firebase.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://*.firebase.com https://*.googleapis.com https://www.googletagmanager.com https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.firebase.com https://*.googleapis.com https://www.gstatic.com wss://*.firebase.com;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
+    <!-- X-Frame-Options moved to HTTP headers via netlify.toml -->
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     
@@ -1147,24 +1147,28 @@
     <!-- Firebase Configuration -->
     <script type="module">
         try {
-            // Import Firebase services
+            // Import Firebase services (CDN version for browser compatibility)
             const { 
-                authService, 
-                statsService, 
-                votingService, 
-                adminService, 
                 initializeFirebaseServices,
-                analyticsService
-            } = await import('../js/firebase-services.js');
+                VotingService,
+                AuthService,
+                AnalyticsService,
+                EmailService
+            } = await import('../js/firebase-services-cdn.js');
+            
+            // Initialize service instances
+            const votingService = new VotingService();
+            const authService = new AuthService();
+            const analyticsService = new AnalyticsService();
+            const emailService = new EmailService();
             
             // Make services globally available
             window.firebaseServices = {
                 authService,
-                statsService,
                 votingService,
-                adminService,
-                initializeFirebaseServices,
-                analyticsService
+                analyticsService,
+                emailService,
+                initializeFirebaseServices
             };
             
             console.log('✅ Firebase services loaded successfully');
