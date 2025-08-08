@@ -79,7 +79,8 @@
     "build:netlify": "npx expo export --platform web && npm run postbuild:netlify",
     "build:netlify:development": "cross-env NODE_ENV=development EXPO_PUBLIC_ENVIRONMENT=development npx expo export --platform web && npm run postbuild:netlify",
     "build:netlify:staging": "cross-env NODE_ENV=staging EXPO_PUBLIC_ENVIRONMENT=staging npx expo export --platform web && npm run postbuild:netlify",
-    "build:netlify:production": "cross-env NODE_ENV=production EXPO_PUBLIC_ENVIRONMENT=production npx expo export --platform web && npm run postbuild:netlify",
+    "build:netlify:production": "NODE_ENV=production EXPO_PUBLIC_ENVIRONMENT=production npx expo export --platform web && npm run postbuild:netlify",
+    "build:netlify:production:win": "cross-env NODE_ENV=production EXPO_PUBLIC_ENVIRONMENT=production npx expo export --platform web && npm run postbuild:netlify",
     "postbuild:netlify": "echo 'Build completed for Netlify deployment'",
     
     "netlify:setup": "node scripts/setup-firebase-netlify.js",

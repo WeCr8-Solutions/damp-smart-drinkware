@@ -1,7 +1,7 @@
 # Netlify configuration for DAMP Smart Drinkware - Professional Security
 
 [build]
-  command = "cd 'mobile-app/Original DAMP Smart Drinkware App' && npm run build:netlify:production"
+  command = "cd 'mobile-app/Original DAMP Smart Drinkware App' && npm install && npm run build:netlify:production"
   publish = "mobile-app/Original DAMP Smart Drinkware App/dist"
   
 [build.environment]
