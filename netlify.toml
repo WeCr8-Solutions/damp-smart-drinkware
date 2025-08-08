@@ -1,8 +1,8 @@
 # Netlify configuration for DAMP Smart Drinkware - Professional Security
 
 [build]
-  command = "cd 'mobile-app/Original DAMP Smart Drinkware App' && npm install && npm run build:netlify:production"
-  publish = "mobile-app/Original DAMP Smart Drinkware App/dist"
+  command = "echo 'Building website directory - no build needed for static site'"
+  publish = "website"
   
 [build.environment]
   NODE_VERSION = "18"
