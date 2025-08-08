@@ -34,16 +34,43 @@ export default function RootLayout() {
 
   useEffect(() => {
     // Listen for auth changes with Firebase
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (mounted.current) {
-        setUser(user);
-        setIsLoading(false);
+    let unsubscribe: (() => void) | null = null;
+    
+    const setupAuthListener = () => {
+      try {
+        if (auth && typeof auth.onAuthStateChanged === 'function') {
+          unsubscribe = auth.onAuthStateChanged((user) => {
+            if (mounted.current) {
+              setUser(user);
+              setIsLoading(false);
+            }
+          });
+        } else {
+          // Fallback if auth is not ready yet
+          setTimeout(() => {
+            if (mounted.current) {
+              setUser(null);
+              setIsLoading(false);
+            }
+          }, 1000);
+        }
+      } catch (error) {
+        console.warn('Auth listener setup failed:', error);
+        if (mounted.current) {
+          setUser(null);
+          setIsLoading(false);
+        }
       }
-    });
+    };
+
+    // Set up auth listener
+    setupAuthListener();
 
     return () => {
       mounted.current = false;
-      unsubscribe();
+      if (unsubscribe) {
+        unsubscribe();
+      }
     };
   }, []);
 

@@ -1,11 +1,7 @@
 import { FeatureFlags } from '@/config/feature-flags';
-import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth } from 'firebase/auth';
-import { getFirestore, Firestore } from 'firebase/firestore';
-import { getFunctions, Functions } from 'firebase/functions';
-import { getStorage, FirebaseStorage } from 'firebase/storage';
 
-// Mock implementations for when Firebase is disabled
+// Simple Firebase configuration without complex imports
+// Mock implementations for when Firebase is disabled or fails
 const mockAuth = {
   currentUser: null,
   signInWithEmailAndPassword: () => Promise.reject(new Error('Firebase disabled')),
@@ -27,6 +23,10 @@ const mockDb = {
       set: () => Promise.resolve(),
       update: () => Promise.resolve(),
     }),
+    add: () => Promise.resolve({ id: 'mock_id' }),
+    where: () => ({
+      get: () => Promise.resolve({ docs: [] })
+    })
   }),
 };
 
@@ -42,21 +42,34 @@ const mockStorage = {
 };
 
 // Initialize Firebase services
-let app: FirebaseApp | null = null;
-let auth: Auth | any = null;
-let db: Firestore | any = null;
-let functions: Functions | any = null;
-let storage: FirebaseStorage | any = null;
+let app: any = null;
+let auth: any = mockAuth;
+let db: any = mockDb;
+let functions: any = mockFunctions;
+let storage: any = mockStorage;
 
-console.log('Firebase Feature Flag Debug:', {
-  FIREBASE: FeatureFlags.FIREBASE,
-  EXPO_PUBLIC_FIREBASE_ENABLED: process.env.EXPO_PUBLIC_FIREBASE_ENABLED,
-  EXPO_PUBLIC_PLATFORM: process.env.EXPO_PUBLIC_PLATFORM,
-  EXPO_PUBLIC_ENVIRONMENT: process.env.EXPO_PUBLIC_ENVIRONMENT
-});
+// Simple Firebase initialization for web
+const initializeFirebaseForWeb = async () => {
+  console.log('Firebase Feature Flag Debug:', {
+    FIREBASE: FeatureFlags.FIREBASE,
+    EXPO_PUBLIC_FIREBASE_ENABLED: process.env.EXPO_PUBLIC_FIREBASE_ENABLED,
+    EXPO_PUBLIC_PLATFORM: process.env.EXPO_PUBLIC_PLATFORM,
+    EXPO_PUBLIC_ENVIRONMENT: process.env.EXPO_PUBLIC_ENVIRONMENT
+  });
 
-if (FeatureFlags.FIREBASE) {
+  if (!FeatureFlags.FIREBASE) {
+    console.info('Firebase disabled by feature flags - using mocks');
+    return;
+  }
+
   try {
+    // Try to import Firebase modules
+    const { initializeApp, getApps } = await import('firebase/app');
+    const { getAuth } = await import('firebase/auth');
+    const { getFirestore } = await import('firebase/firestore');
+    const { getFunctions } = await import('firebase/functions');
+    const { getStorage } = await import('firebase/storage');
+
     // Firebase configuration
     const firebaseConfig = {
       apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -83,17 +96,15 @@ if (FeatureFlags.FIREBASE) {
     // Prevent multiple initializations
     if (getApps().length === 0) {
       app = initializeApp(firebaseConfig);
-      auth = getAuth(app);
-      db = getFirestore(app);
-      functions = getFunctions(app);
-      storage = getStorage(app);
     } else {
       app = getApps()[0];
-      auth = getAuth(app);
-      db = getFirestore(app);
-      functions = getFunctions(app);
-      storage = getStorage(app);
     }
+
+    // Initialize services
+    auth = getAuth(app);
+    db = getFirestore(app);
+    functions = getFunctions(app);
+    storage = getStorage(app);
     
     console.info('Firebase initialized successfully');
   } catch (error) {
@@ -104,21 +115,23 @@ if (FeatureFlags.FIREBASE) {
     functions = mockFunctions;
     storage = mockStorage;
   }
+};
+
+// Initialize Firebase when module loads
+if (typeof window !== 'undefined') {
+  // Web environment
+  initializeFirebaseForWeb();
 } else {
-  console.info('Firebase disabled by feature flags - using mocks');
-  app = null;
-  auth = mockAuth;
-  db = mockDb;
-  functions = mockFunctions;
-  storage = mockStorage;
+  // Server-side or other environment - use mocks
+  console.info('Non-web environment detected - using mocks');
 }
 
-// Export individual services with proper typing
-export const firebaseApp = app || null;
-export const firebaseAuth = auth || mockAuth;
-export const firebaseDb = db || mockDb;
-export const firebaseFunctions = functions || mockFunctions;
-export const firebaseStorage = storage || mockStorage;
+// Export services with fallbacks
+export const firebaseApp = app;
+export const firebaseAuth = auth;
+export const firebaseDb = db;
+export const firebaseFunctions = functions;
+export const firebaseStorage = storage;
 
 // Also export with original names for compatibility
 export { 
@@ -128,9 +141,6 @@ export {
   firebaseFunctions as functions, 
   firebaseStorage as storage 
 };
-
-// Export types for better TypeScript support
-export type { FirebaseApp, Auth, Firestore, Functions, FirebaseStorage };
 
 // Default export for convenience
 export default {
