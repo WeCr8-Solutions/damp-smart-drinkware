@@ -1,11 +1,13 @@
 /**
  * 📚 DAMP Smart Drinkware - Library Index
- * Central export hub for all libraries and services ensuring circular connectivity
+ * Central export hub for Firebase services (Owner: zach@wecr8.info)
  */
 
-// Core library exports
-export { supabase } from './supabase';
-export * from './supabase';
+// Core Firebase exports
+export { app, auth, db, functions, storage } from '@/firebase/config';
+
+// Import Firebase services for registry
+import { auth, db, functions, storage } from '@/firebase/config';
 
 // Notification system (will be created)
 // export * from './notifications';
@@ -14,37 +16,41 @@ export * from './supabase';
 export const libraryConnections = {
   // Libraries and their dependencies
   dependencies: {
-    'supabase': ['@/types/supabase', '@/types/global'],
+    'firebase': ['@/types/global', '@/config/feature-flags'],
   },
   
   // Components and hooks that use these libraries
   consumers: {
-    'supabase': [
+    'firebase': [
       '@/contexts/AuthContext',
       '@/hooks/useBLE',
       '@/utils/deviceManager',
-      '@/components/BLEManager'
+      '@/components/BLEManager',
+      '@/services/firebase-stripe'
     ],
   },
   
   // Cross-library dependencies
   crossReferences: {
-    'supabase': [], // Could reference notifications, analytics, etc.
+    'firebase': [], // Could reference notifications, analytics, etc.
   }
 };
 
 // Library registry for dynamic access
 export const libraryRegistry = {
-  supabase,
+  firebase: { auth, db, functions, storage },
 };
 
 // Library configuration interfaces
 export interface LibraryConfig {
-  supabase: {
-    url: string;
-    anonKey: string;
-    enableRealtime: boolean;
-    enableAuth: boolean;
+  firebase: {
+    apiKey: string;
+    authDomain: string;
+    projectId: string;
+    storageBucket: string;
+    messagingSenderId: string;
+    appId: string;
+    measurementId?: string;
   };
   notifications?: {
     enablePush: boolean;
@@ -58,24 +64,24 @@ export interface LibraryConfig {
 
 // Service initialization utilities
 export async function initializeServices(config: LibraryConfig): Promise<{
-  supabase: boolean;
+  firebase: boolean;
   notifications: boolean;
   analytics: boolean;
   errors: string[];
 }> {
   const results = {
-    supabase: false,
+    firebase: false,
     notifications: false,
     analytics: false,
     errors: [] as string[],
   };
 
-  // Initialize Supabase
+  // Initialize Firebase
   try {
-    // Supabase is already initialized in ./supabase.ts
-    results.supabase = true;
+    // Firebase is already initialized in @/firebase/config
+    results.firebase = true;
   } catch (error) {
-    results.errors.push(`Supabase initialization failed: ${error}`);
+    results.errors.push(`Firebase initialization failed: ${error}`);
   }
 
   // Initialize notifications (when implemented)
@@ -143,19 +149,21 @@ export interface ServiceHealthCheck {
 export async function performHealthCheck(): Promise<ServiceHealthCheck[]> {
   const checks: ServiceHealthCheck[] = [];
   
-  // Supabase health check
+  // Firebase health check
   try {
     const start = Date.now();
-    await supabase.from('user_profiles').select('id').limit(1);
+    const { auth } = await import('@/firebase/config');
+    // Simple auth check
+    auth.currentUser;
     checks.push({
-      serviceName: 'supabase',
+      serviceName: 'firebase',
       status: 'healthy',
       lastCheck: new Date(),
       responseTime: Date.now() - start,
     });
   } catch (error) {
     checks.push({
-      serviceName: 'supabase',
+      serviceName: 'firebase',
       status: 'offline',
       lastCheck: new Date(),
       errorCount: 1,
@@ -168,9 +176,7 @@ export async function performHealthCheck(): Promise<ServiceHealthCheck[]> {
 // Export types for circular connectivity
 export type { 
   AppDatabase, 
-  AppUser, 
-  SupabaseConfig,
-  Database 
+  AppUser
 } from '@/types/global';
 
 // Library metadata for development

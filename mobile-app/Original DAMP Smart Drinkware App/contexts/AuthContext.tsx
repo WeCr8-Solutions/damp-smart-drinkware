@@ -1,392 +1,186 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
-import { supabase } from '@/lib/supabase';
-import { Session, User, AuthError } from '@supabase/supabase-js';
-import { createOrUpdateCleanUserProfile, getCleanUserProfile } from '@/utils/userDataManager';
+import { auth } from '@/firebase/config';
+import { User, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, onAuthStateChanged } from 'firebase/auth';
+import { FeatureFlags } from '@/config/feature-flags';
 
 // Types
 export interface AuthUser extends User {
   full_name?: string;
   avatar_url?: string;
-  phone?: string;
-  preferences?: {
-    notifications: boolean;
-    theme: 'light' | 'dark' | 'system';
-    language: string;
-  };
+  subscription_status?: string;
 }
 
-export interface AuthState {
+export interface UserProfile {
+  id: string;
+  email: string;
+  full_name?: string;
+  avatar_url?: string;
+  subscription_status?: string;
+  created_at: string;
+  last_sign_in_at: string;
+  updated_at: string;
+}
+
+interface AuthContextType {
   user: AuthUser | null;
-  session: Session | null;
   loading: boolean;
-  error: string | null;
+  signIn: (email: string, password: string) => Promise<{ error: any | null }>;
+  signUp: (email: string, password: string, userData?: Partial<UserProfile>) => Promise<{ error: any | null }>;
+  signOut: () => Promise<{ error: any | null }>;
+  updateProfile: (updates: Partial<UserProfile>) => Promise<{ error: any | null }>;
+  resetPassword: (email: string) => Promise<{ error: any | null }>;
+  refreshSession: () => Promise<{ error: any | null }>;
 }
 
-export interface AuthContextValue extends AuthState {
-  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
-  signUp: (email: string, password: string, metadata?: Record<string, any>) => Promise<{ error: AuthError | null }>;
-  signOut: () => Promise<{ error: AuthError | null }>;
-  updateProfile: (updates: Partial<AuthUser>) => Promise<{ error: Error | null }>;
-  resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
-  refreshSession: () => Promise<void>;
-  clearError: () => void;
-}
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Create context
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
-
-// Provider component
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<AuthState>({
-    user: null,
-    session: null,
-    loading: true,
-    error: null,
-  });
-  
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
   const mounted = useRef(true);
 
-  // Helper function to safely update state
-  const updateState = (updates: Partial<AuthState>) => {
-    if (mounted.current) {
-      setState(prev => ({ ...prev, ...updates }));
-    }
-  };
-
-  // Helper function to create enhanced user object with clean profile data
-  const createEnhancedUser = async (authUser: User): Promise<AuthUser> => {
-    try {
-      // Get clean profile data from Supabase
-      const profileResult = await getCleanUserProfile(authUser.id);
-      
-      if (profileResult.success && profileResult.data) {
-        return {
-          ...authUser,
-          full_name: profileResult.data.full_name,
-          avatar_url: profileResult.data.avatar_url,
-          phone: profileResult.data.phone,
-          preferences: profileResult.data.preferences || {
-            notifications: true,
-            theme: 'system' as const,
-            language: 'en',
-          },
-        };
-      } else {
-        // If no clean profile exists, create one with minimal data
-        const cleanProfileResult = await createOrUpdateCleanUserProfile(authUser.id, {
-          preferences: {
-            notifications: true,
-            theme: 'system' as const,
-            language: 'en',
-          },
-        });
-        
-        if (cleanProfileResult.success && cleanProfileResult.data) {
-          return {
-            ...authUser,
-            full_name: cleanProfileResult.data.full_name,
-            avatar_url: cleanProfileResult.data.avatar_url,
-            phone: cleanProfileResult.data.phone,
-            preferences: cleanProfileResult.data.preferences || {
-              notifications: true,
-              theme: 'system' as const,
-              language: 'en',
-            },
-          };
-        }
-      }
-    } catch (error) {
-      console.error('Error creating enhanced user:', error);
-    }
-    
-    // Fallback to basic user with default preferences
-    return {
-      ...authUser,
-      preferences: {
-        notifications: true,
-        theme: 'system' as const,
-        language: 'en',
-      },
-    };
-  };
-
-  // Initialize auth state
   useEffect(() => {
-    let authSubscription: { data: { subscription: any } } | null = null;
+    if (!FeatureFlags.FIREBASE) {
+      setLoading(false);
+      return;
+    }
 
-    const initializeAuth = async () => {
-      try {
-        // Get initial session
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Error getting session:', error);
-          updateState({ error: error.message, loading: false });
-          return;
-        }
+    // Listen for auth state changes
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!mounted.current) return;
 
-        if (session?.user) {
-          // Create enhanced user with clean profile data
-          const enhancedUser = await createEnhancedUser(session.user);
-
-          updateState({
-            user: enhancedUser,
-            session,
-            loading: false,
-            error: null,
-          });
-        } else {
-          updateState({
-            user: null,
-            session: null,
-            loading: false,
-            error: null,
-          });
-        }
-
-        // Set up auth state listener
-        authSubscription = supabase.auth.onAuthStateChange(
-          async (event, session) => {
-            if (!mounted.current) return;
-
-            console.log('Auth state changed:', event);
-
-            if (event === 'SIGNED_IN' && session?.user) {
-              // Create enhanced user with clean profile data
-              const enhancedUser = await createEnhancedUser(session.user);
-
-              updateState({
-                user: enhancedUser,
-                session,
-                loading: false,
-                error: null,
-              });
-            } else if (event === 'SIGNED_OUT') {
-              updateState({
-                user: null,
-                session: null,
-                loading: false,
-                error: null,
-              });
-            } else if (event === 'TOKEN_REFRESHED' && session) {
-              updateState({
-                session,
-                loading: false,
-              });
-            }
-          }
-        );
-
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-        updateState({
-          error: error instanceof Error ? error.message : 'Authentication initialization failed',
-          loading: false,
-        });
+      if (firebaseUser) {
+        // Convert Firebase user to AuthUser
+        const authUser: AuthUser = {
+          ...firebaseUser,
+          full_name: firebaseUser.displayName || undefined,
+          avatar_url: firebaseUser.photoURL || undefined,
+        };
+        setUser(authUser);
+      } else {
+        setUser(null);
       }
-    };
-
-    initializeAuth();
+      
+      setLoading(false);
+    });
 
     return () => {
       mounted.current = false;
-      authSubscription?.data?.subscription?.unsubscribe();
+      unsubscribe();
     };
   }, []);
 
-  // Sign in function
-  const signIn = async (email: string, password: string) => {
-    updateState({ loading: true, error: null });
+  const handleSignIn = async (email: string, password: string) => {
+    if (!FeatureFlags.FIREBASE) {
+      return { error: new Error('Firebase disabled') };
+    }
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      });
-
-      if (error) {
-        updateState({ error: error.message, loading: false });
-        return { error };
-      }
-
-      // State will be updated by the auth listener
+      await signInWithEmailAndPassword(auth, email, password);
       return { error: null };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Sign in failed';
-      updateState({ error: errorMessage, loading: false });
-      return { error: new Error(errorMessage) as AuthError };
+      return { error };
     }
   };
 
-  // Sign up function
-  const signUp = async (email: string, password: string, metadata?: Record<string, any>) => {
-    updateState({ loading: true, error: null });
+  const handleSignUp = async (email: string, password: string, userData?: Partial<UserProfile>) => {
+    if (!FeatureFlags.FIREBASE) {
+      return { error: new Error('Firebase disabled') };
+    }
 
     try {
-      const { error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: {
-          data: metadata,
-        },
-      });
-
-      if (error) {
-        updateState({ error: error.message, loading: false });
-        return { error };
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      
+      // TODO: Create user profile in Firestore if needed
+      if (userData?.full_name && result.user) {
+        // Update display name
+        await result.user.updateProfile({
+          displayName: userData.full_name
+        });
       }
-
-      updateState({ loading: false });
+      
       return { error: null };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Sign up failed';
-      updateState({ error: errorMessage, loading: false });
-      return { error: new Error(errorMessage) as AuthError };
+      return { error };
     }
   };
 
-  // Sign out function
-  const signOut = async () => {
-    updateState({ loading: true, error: null });
+  const handleSignOut = async () => {
+    if (!FeatureFlags.FIREBASE) {
+      return { error: new Error('Firebase disabled') };
+    }
 
     try {
-      const { error } = await supabase.auth.signOut();
-
-      if (error) {
-        updateState({ error: error.message, loading: false });
-        return { error };
-      }
-
-      // State will be updated by the auth listener
+      await signOut(auth);
       return { error: null };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Sign out failed';
-      updateState({ error: errorMessage, loading: false });
-      return { error: new Error(errorMessage) as AuthError };
+      return { error };
     }
   };
 
-  // Update profile function with data cleaning
-  const updateProfile = async (updates: Partial<AuthUser>) => {
-    if (!state.user) {
-      return { error: new Error('No user logged in') };
+  const handleUpdateProfile = async (updates: Partial<UserProfile>) => {
+    if (!FeatureFlags.FIREBASE || !auth.currentUser) {
+      return { error: new Error('Firebase disabled or no user') };
     }
 
-    updateState({ loading: true, error: null });
-
     try {
-      // Update auth metadata if needed
-      const authUpdates: any = {};
-      if (updates.email && updates.email !== state.user.email) {
-        authUpdates.email = updates.email;
+      // Update Firebase Auth profile
+      if (updates.full_name !== undefined) {
+        await auth.currentUser.updateProfile({
+          displayName: updates.full_name || null
+        });
       }
 
-      if (Object.keys(authUpdates).length > 0) {
-        const { error: authError } = await supabase.auth.updateUser(authUpdates);
-        if (authError) {
-          updateState({ error: authError.message, loading: false });
-          return { error: authError };
-        }
-      }
-
-      // Create or update clean profile in Supabase
-      const cleanProfileResult = await createOrUpdateCleanUserProfile(state.user.id, updates);
-
-      if (!cleanProfileResult.success) {
-        updateState({ error: cleanProfileResult.error || 'Profile update failed', loading: false });
-        return { error: new Error(cleanProfileResult.error || 'Profile update failed') };
-      }
-
-      // Log any warnings about removed template data
-      if (cleanProfileResult.warnings && cleanProfileResult.warnings.length > 0) {
-        console.log('Profile update warnings:', cleanProfileResult.warnings);
-      }
-
-      // Create updated user object with clean data
-      const updatedUser: AuthUser = {
-        ...state.user,
-        full_name: cleanProfileResult.data?.full_name,
-        avatar_url: cleanProfileResult.data?.avatar_url,
-        phone: cleanProfileResult.data?.phone,
-        preferences: cleanProfileResult.data?.preferences || state.user.preferences,
-      };
-
-      updateState({
-        user: updatedUser,
-        loading: false,
-        error: null,
-      });
-
+      // TODO: Update Firestore user profile document
+      
       return { error: null };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Profile update failed';
-      updateState({ error: errorMessage, loading: false });
-      return { error: new Error(errorMessage) };
+      return { error };
     }
   };
 
-  // Reset password function
-  const resetPassword = async (email: string) => {
-    updateState({ loading: true, error: null });
+  const handleResetPassword = async (email: string) => {
+    if (!FeatureFlags.FIREBASE) {
+      return { error: new Error('Firebase disabled') };
+    }
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email.trim());
-
-      if (error) {
-        updateState({ error: error.message, loading: false });
-        return { error };
-      }
-
-      updateState({ loading: false });
+      await sendPasswordResetEmail(auth, email);
       return { error: null };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Password reset failed';
-      updateState({ error: errorMessage, loading: false });
-      return { error: new Error(errorMessage) as AuthError };
+      return { error };
     }
   };
 
-  // Refresh session function
-  const refreshSession = async () => {
+  const handleRefreshSession = async () => {
+    if (!FeatureFlags.FIREBASE || !auth.currentUser) {
+      return { error: new Error('Firebase disabled or no user') };
+    }
+
     try {
-      const { error } = await supabase.auth.refreshSession();
-      if (error) {
-        console.error('Session refresh error:', error);
-        updateState({ error: error.message });
-      }
+      // Firebase automatically handles token refresh
+      await auth.currentUser.getIdToken(true);
+      return { error: null };
     } catch (error) {
-      console.error('Session refresh error:', error);
-      updateState({ 
-        error: error instanceof Error ? error.message : 'Session refresh failed' 
-      });
+      return { error };
     }
   };
 
-  // Clear error function
-  const clearError = () => {
-    updateState({ error: null });
+  const value: AuthContextType = {
+    user,
+    loading,
+    signIn: handleSignIn,
+    signUp: handleSignUp,
+    signOut: handleSignOut,
+    updateProfile: handleUpdateProfile,
+    resetPassword: handleResetPassword,
+    refreshSession: handleRefreshSession,
   };
 
-  const contextValue: AuthContextValue = {
-    ...state,
-    signIn,
-    signUp,
-    signOut,
-    updateProfile,
-    resetPassword,
-    refreshSession,
-    clearError,
-  };
-
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// Custom hook to use auth context
-export function useAuth(): AuthContextValue {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
@@ -394,18 +188,4 @@ export function useAuth(): AuthContextValue {
   return context;
 }
 
-// Helper hooks for common use cases
-export function useAuthUser() {
-  const { user } = useAuth();
-  return user;
-}
-
-export function useAuthSession() {
-  const { session } = useAuth();
-  return session;
-}
-
-export function useAuthLoading() {
-  const { loading } = useAuth();
-  return loading;
-}
+export default AuthContext;

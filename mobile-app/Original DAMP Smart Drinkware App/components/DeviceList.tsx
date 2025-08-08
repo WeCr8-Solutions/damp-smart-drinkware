@@ -13,7 +13,7 @@ import {
   getDevicesByStatus, 
   getDevicesByType,
   Device 
-} from '@/utils/supabaseDeviceManager';
+} from '@/utils/deviceManager';
 import DeviceCard from './DeviceCard';
 import DeviceInfoModal from './modals/DeviceInfoModal';
 

@@ -4,14 +4,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Droplets, Bluetooth, MapPin, Battery, TriangleAlert as AlertTriangle, CircleCheck as CheckCircle, Plus } from 'lucide-react-native';
 import { getUserProfile, getUserGreeting, registerCurrentDevice } from '@/utils/userProfileManager';
-import { supabase } from '@/lib/supabase';
+import { auth } from '@/firebase/config';
 import DeviceInfoModal from '@/components/modals/DeviceInfoModal';
 import DeviceList from '@/components/DeviceList';
 import { 
   getAllDevices, 
   getDeviceStats,
   Device 
-} from '@/utils/supabaseDeviceManager';
+} from '@/utils/deviceManager';
 import { router } from 'expo-router';
 
 export default function HomeScreen() {
@@ -72,14 +72,14 @@ export default function HomeScreen() {
     loadUserData();
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
         loadUserData();
       }
     });
 
     return () => {
-      subscription.unsubscribe();
+      unsubscribe();
     };
   }, []);
 

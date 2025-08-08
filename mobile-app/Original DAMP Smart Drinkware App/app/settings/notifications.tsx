@@ -32,7 +32,7 @@ import {
 } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
+import { auth } from '@/firebase/config';
 import * as Notifications from 'expo-notifications';
 import { SettingsCard } from '@/components/SettingsCard';
 
@@ -100,20 +100,8 @@ export default function NotificationSettingsScreen() {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
-        .from('user_preferences')
-        .select('notification_settings')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error loading notification settings:', error);
-        return;
-      }
-
-      if (data?.notification_settings) {
-        setSettings({ ...settings, ...data.notification_settings });
-      }
+      // TODO: Implement Firebase notification settings fetch
+      // For now, using default settings
     } catch (error) {
       console.error('Error loading notification settings:', error);
     }

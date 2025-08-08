@@ -1,9 +1,12 @@
-import { supabase } from '@/lib/supabase';
+import { auth, db } from '@/firebase/config';
+import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
+import { FeatureFlags } from '@/config/feature-flags';
 
 /**
- * User profile manager for handling user data, devices, and greetings
+ * 🔥 DAMP Smart Drinkware - User Profile Manager (Firebase Only)
+ * Owner: zach@wecr8.info
  */
 
 // Types
@@ -48,54 +51,75 @@ export interface UserGreeting {
 export type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night';
 
 /**
- * Get the current user's profile
+ * Get the current user's profile from Firebase Firestore
  */
-export async function getUserProfile(): Promise<UserProfile | null> {
+export async function getUserProfile(userId?: string): Promise<UserProfile | null> {
+  if (!FeatureFlags.FIREBASE) {
+    console.warn('Firebase disabled - returning mock profile');
+    return getMockProfile();
+  }
+
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const currentUser = auth.currentUser;
+    const targetUserId = userId || currentUser?.uid;
     
-    if (!user) return null;
+    if (!targetUserId) return null;
     
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
+    const userDocRef = doc(db, 'profiles', targetUserId);
+    const userDoc = await getDoc(userDocRef);
     
-    if (error) {
-      console.error('Error fetching user profile:', error);
-      return null;
+    if (!userDoc.exists()) {
+      // Create a default profile if it doesn't exist
+      const defaultProfile: UserProfile = {
+        id: targetUserId,
+        full_name: currentUser?.displayName || null,
+        email: currentUser?.email || null,
+        phone: null,
+        preferences: {
+          theme: 'system',
+          language: 'en',
+          notifications: true,
+        },
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        last_login: new Date().toISOString(),
+      };
+      
+      await setDoc(userDocRef, defaultProfile);
+      return defaultProfile;
     }
     
-    return data;
+    return userDoc.data() as UserProfile;
   } catch (error) {
     console.error('Error in getUserProfile:', error);
-    return null;
+    return getMockProfile();
   }
 }
 
 /**
- * Update the current user's profile
+ * Update the current user's profile in Firebase Firestore
  */
 export async function updateUserProfile(updates: Partial<UserProfile>): Promise<UserProfile | null> {
+  if (!FeatureFlags.FIREBASE) {
+    console.warn('Firebase disabled - returning mock profile');
+    return getMockProfile();
+  }
+
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const currentUser = auth.currentUser;
     
-    if (!user) return null;
+    if (!currentUser) return null;
     
-    const { data, error } = await supabase
-      .from('profiles')
-      .update(updates)
-      .eq('id', user.id)
-      .select()
-      .single();
+    const userDocRef = doc(db, 'profiles', currentUser.uid);
+    const updateData = {
+      ...updates,
+      updated_at: new Date().toISOString(),
+    };
     
-    if (error) {
-      console.error('Error updating user profile:', error);
-      return null;
-    }
+    await updateDoc(userDocRef, updateData);
     
-    return data;
+    // Return the updated profile
+    return await getUserProfile(currentUser.uid);
   } catch (error) {
     console.error('Error in updateUserProfile:', error);
     return null;
@@ -103,18 +127,23 @@ export async function updateUserProfile(updates: Partial<UserProfile>): Promise<
 }
 
 /**
- * Register the current device for the user
+ * Register the current device for the user in Firebase Firestore
  */
 export async function registerCurrentDevice(): Promise<DeviceRegistration | null> {
+  if (!FeatureFlags.FIREBASE) {
+    console.warn('Firebase disabled - returning mock device');
+    return getMockDevice();
+  }
+
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const currentUser = auth.currentUser;
     
-    if (!user) return null;
+    if (!currentUser) return null;
     
-    // For now, just return a mock device registration since the table doesn't exist
-    return {
-      id: 'mock-device-id',
-      user_id: user.id,
+    const deviceId = `${currentUser.uid}_${getDeviceType()}_${Date.now()}`;
+    const deviceRegistration: DeviceRegistration = {
+      id: deviceId,
+      user_id: currentUser.uid,
       device_type: getDeviceType(),
       device_name: Device.deviceName || 'Unknown Device',
       operating_system: getOperatingSystem(),
@@ -125,33 +154,78 @@ export async function registerCurrentDevice(): Promise<DeviceRegistration | null
         brand: Device.brand,
         modelName: Device.modelName,
         osVersion: Device.osVersion,
+        platform: Platform.OS,
       }
     };
+    
+    const deviceDocRef = doc(db, 'user_devices', deviceId);
+    await setDoc(deviceDocRef, deviceRegistration);
+    
+    return deviceRegistration;
   } catch (error) {
     console.error('Error in registerCurrentDevice:', error);
-    return null;
+    return getMockDevice();
   }
 }
 
 /**
- * Get all devices registered to the current user
+ * Get all devices registered to the current user from Firebase Firestore
  */
-export async function getUserDevices(): Promise<DeviceRegistration[]> {
-  // For now, return an empty array since the table doesn't exist
-  return [];
+export async function getUserDevices(userId?: string): Promise<DeviceRegistration[]> {
+  if (!FeatureFlags.FIREBASE) {
+    console.warn('Firebase disabled - returning mock devices');
+    return [getMockDevice()];
+  }
+
+  try {
+    const currentUser = auth.currentUser;
+    const targetUserId = userId || currentUser?.uid;
+    
+    if (!targetUserId) return [];
+    
+    const devicesQuery = query(
+      collection(db, 'user_devices'),
+      where('user_id', '==', targetUserId)
+    );
+    
+    const querySnapshot = await getDocs(devicesQuery);
+    const devices: DeviceRegistration[] = [];
+    
+    querySnapshot.forEach((doc) => {
+      devices.push(doc.data() as DeviceRegistration);
+    });
+    
+    return devices;
+  } catch (error) {
+    console.error('Error in getUserDevices:', error);
+    return [];
+  }
 }
 
 /**
  * Get appropriate greeting for the current user based on time of day
  */
-export async function getUserGreeting(): Promise<string> {
-  try {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) return getDefaultGreeting();
-    
-    // Since the user_greetings table doesn't exist, return a default greeting
+export async function getUserGreeting(name?: string): Promise<string> {
+  if (!FeatureFlags.FIREBASE) {
     return getDefaultGreeting();
+  }
+
+  try {
+    const currentUser = auth.currentUser;
+    
+    if (!currentUser) return getDefaultGreeting();
+    
+    // Try to get user profile for personalized greeting
+    const profile = await getUserProfile(currentUser.uid);
+    const userName = name || profile?.full_name || currentUser.displayName;
+    
+    const timeGreeting = getDefaultGreeting();
+    
+    if (userName) {
+      return `${timeGreeting}, ${userName.split(' ')[0]}!`;
+    }
+    
+    return timeGreeting;
   } catch (error) {
     console.error('Error in getUserGreeting:', error);
     return getDefaultGreeting();
@@ -159,14 +233,42 @@ export async function getUserGreeting(): Promise<string> {
 }
 
 /**
- * Create or update a custom greeting for the user
+ * Create or update a custom greeting for the user in Firebase Firestore
  */
 export async function setCustomGreeting(
   message: string, 
   timeContext: TimeOfDay = 'any'
 ): Promise<UserGreeting | null> {
-  // Since the user_greetings table doesn't exist, return null
-  return null;
+  if (!FeatureFlags.FIREBASE) {
+    console.warn('Firebase disabled - cannot set custom greeting');
+    return null;
+  }
+
+  try {
+    const currentUser = auth.currentUser;
+    
+    if (!currentUser) return null;
+    
+    const greetingId = `${currentUser.uid}_${timeContext}`;
+    const customGreeting: UserGreeting = {
+      id: greetingId,
+      user_id: currentUser.uid,
+      greeting_message: message,
+      language: 'en', // Default to English
+      time_context: timeContext,
+      is_custom: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    
+    const greetingDocRef = doc(db, 'user_greetings', greetingId);
+    await setDoc(greetingDocRef, customGreeting);
+    
+    return customGreeting;
+  } catch (error) {
+    console.error('Error in setCustomGreeting:', error);
+    return null;
+  }
 }
 
 /**
@@ -236,4 +338,46 @@ function getDefaultGreeting(timeContext?: TimeOfDay): string {
     default:
       return 'Hello';
   }
+}
+
+/**
+ * Mock profile for when Firebase is disabled
+ */
+function getMockProfile(): UserProfile {
+  return {
+    id: 'mock-user-id',
+    full_name: 'Demo User',
+    email: 'demo@damp.com',
+    phone: null,
+    preferences: {
+      theme: 'system',
+      language: 'en',
+      notifications: true,
+    },
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    last_login: new Date().toISOString(),
+  };
+}
+
+/**
+ * Mock device for when Firebase is disabled
+ */
+function getMockDevice(): DeviceRegistration {
+  return {
+    id: 'mock-device-id',
+    user_id: 'mock-user-id',
+    device_type: getDeviceType(),
+    device_name: Device.deviceName || 'Demo Device',
+    operating_system: getOperatingSystem(),
+    registered_at: new Date().toISOString(),
+    last_active: new Date().toISOString(),
+    status: 'active',
+    device_metadata: {
+      brand: Device.brand,
+      modelName: Device.modelName,
+      osVersion: Device.osVersion,
+      platform: Platform.OS,
+    }
+  };
 }

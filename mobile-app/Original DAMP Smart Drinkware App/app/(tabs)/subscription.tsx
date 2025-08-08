@@ -12,7 +12,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CircleCheck as CheckCircle, Star, CreditCard, CircleAlert as AlertCircle } from 'lucide-react-native';
 import { STRIPE_PRODUCTS, formatPrice, getIntervalText, type StripeProduct } from '@/src/stripe-config';
-import { supabase } from '@/lib/supabase';
+import { auth } from '@/firebase/config';
 import { router } from 'expo-router';
 
 interface UserSubscription {

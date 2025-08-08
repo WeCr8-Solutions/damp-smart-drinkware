@@ -22,7 +22,9 @@
 
 import { bleManager } from '@/components/BLEManager';
 import { notificationManager } from '@/lib/notifications';
-import { supabase } from '@/lib/supabase';
+import { auth, db } from '@/firebase/config';
+import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { FeatureFlags } from '@/config/feature-flags';
 
 // ============================================================================
 // TYPES AND INTERFACES
@@ -379,7 +381,7 @@ export async function addDevice(
     // Main operation promise
     const operationPromise = (async (): Promise<DeviceOperationResult<Device>> => {
       // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = auth.currentUser;
       
       if (!user) {
         const error = 'User not authenticated';
@@ -532,7 +534,7 @@ export async function updateDevice(
     
     const operationPromise = (async (): Promise<DeviceOperationResult<Device>> => {
       // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = auth.currentUser;
       
       if (!user) {
         const error = 'User not authenticated';
@@ -697,7 +699,7 @@ export async function removeDevice(
     
     const operationPromise = (async (): Promise<DeviceOperationResult<Device>> => {
       // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = auth.currentUser;
       
       if (!user) {
         const error = 'User not authenticated';
@@ -977,7 +979,7 @@ export function getDevicesByStatus(status: DeviceStatus): Device[] {
  */
 export async function getCurrentUserDevices(): Promise<Device[]> {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = auth.currentUser;
     
     if (!user) {
       return [];
@@ -1182,7 +1184,7 @@ export async function initializeDeviceManager(includeSampleData: boolean = false
   if (includeSampleData) {
     try {
       // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = auth.currentUser;
       
       if (!user) {
         log('warn', 'initializeDeviceManager', 'No authenticated user for sample data');

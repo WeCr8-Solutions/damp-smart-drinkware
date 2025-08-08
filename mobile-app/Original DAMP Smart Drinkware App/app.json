@@ -9,7 +9,11 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "privacy": "public",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "web",
+      "ios",
+      "android"
+    ],
     "githubUrl": "https://github.com/your-username/damp-smart-drinkware",
     "ios": {
       "supportsTablet": true,
@@ -59,12 +63,14 @@
     "web": {
       "bundler": "metro",
       "output": "single",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "pwa": false
     },
     "extra": {
       "eas": {
-        "projectId": "your-eas-project-id"
-      }
+        "projectId": "96c7835d-aa09-48b6-8719-d1a5f8b24095"
+      },
+      "router": {}
     },
     "plugins": [
       "expo-router",
@@ -74,6 +80,7 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "owner": "wecr8"
   }
 }

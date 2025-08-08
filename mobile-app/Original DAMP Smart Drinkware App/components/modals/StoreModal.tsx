@@ -30,7 +30,7 @@ import {
 import BaseModal from './BaseModal';
 import CategorySlider from '@/components/CategorySlider';
 import { BaseModalProps } from '@/types/settings';
-import { supabase } from '@/lib/supabase';
+import { auth } from '@/firebase/config';
 
 interface StoreModalProps extends BaseModalProps {}
 

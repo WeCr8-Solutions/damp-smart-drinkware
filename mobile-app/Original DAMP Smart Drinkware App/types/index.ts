@@ -7,10 +7,9 @@
 export * from './global';
 export * from './user';
 export * from './settings';
-export * from './supabase';
+// Supabase types removed - using Firebase only
 
-// Re-export for circular connectivity
-export type { Database } from './supabase';
+// Re-export for circular connectivity (Firebase types)
 export type { UserProfile, User } from './user';
 export type { SettingsState, SettingsConfig } from './settings';
 
@@ -22,7 +21,7 @@ export type {
   BLEDevice,
   DeviceReading,
   FirebaseConfig,
-  SupabaseConfig,
+  // SupabaseConfig removed
   AnalyticsEvent,
   AppError,
   AppTheme,
@@ -36,7 +35,7 @@ export type {
 // Environment and configuration types
 export interface AppConfig {
   firebase: FirebaseConfig;
-  supabase: SupabaseConfig;
+  // supabase removed - Firebase only
   features: FeatureFlags;
   theme: AppTheme;
 }
@@ -61,7 +60,7 @@ export interface TypeConnections {
   // Hooks -> Services
   hookServices: {
     firebase: typeof import('@/firebase/auth');
-    supabase: typeof import('@/lib/supabase');
+    // supabase removed - Firebase only
     ble: any; // Will be connected to BLE services
   };
   
@@ -99,10 +98,7 @@ export interface ModuleRegistry {
     types: FirebaseConfig;
     exports: Record<string, any>;
   };
-  '@/supabase': {
-    types: SupabaseConfig;
-    exports: Record<string, any>;
-  };
+  // '@/supabase' removed - Firebase only
 }
 
 // Testing type exports to ensure testing connectivity
@@ -170,7 +166,7 @@ export const defaultMockConfig: MockConfig = {
   enableMocks: process.env.NODE_ENV === 'test',
   mockDevices: true,
   mockFirebase: true,
-  mockSupabase: true,
+      // mockSupabase removed - Firebase only
   mockBLE: true,
 };
 

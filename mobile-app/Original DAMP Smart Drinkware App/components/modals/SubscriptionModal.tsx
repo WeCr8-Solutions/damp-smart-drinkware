@@ -13,7 +13,7 @@ import BaseModal from './BaseModal';
 import { settingsStyles } from '@/styles/settings';
 import { BaseModalProps } from '@/types/settings';
 import { STRIPE_PRODUCTS, formatPrice, getIntervalText, type StripeProduct } from '@/src/stripe-config';
-import { supabase } from '@/lib/supabase';
+import { auth } from '@/firebase/config';
 
 interface SubscriptionModalProps extends BaseModalProps {}
 

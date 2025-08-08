@@ -11,7 +11,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, Link } from 'expo-router';
 import { Droplets, Mail, Lock, Eye, EyeOff, CircleAlert as AlertCircle, CircleCheck as CheckCircle } from 'lucide-react-native';
-import { supabase } from '@/lib/supabase';
+import { auth } from '@/firebase/config';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 export default function SignupScreen() {
   const [email, setEmail] = useState('');
@@ -52,22 +53,11 @@ export default function SignupScreen() {
     setSuccess('');
 
     try {
-      const { error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: {
-          emailRedirectTo: undefined, // Disable email confirmation
-        },
-      });
-
-      if (error) {
-        setError(error.message);
-      } else {
-        setSuccess('Account created successfully! Redirecting...');
-        setTimeout(() => {
-          router.replace('/(tabs)');
-        }, 1500);
-      }
+      await createUserWithEmailAndPassword(auth, email.trim(), password);
+      setSuccess('Account created successfully! Redirecting...');
+      setTimeout(() => {
+        router.replace('/(tabs)');
+      }, 1500);
     } catch (err) {
       setError('An unexpected error occurred');
     } finally {

@@ -10,7 +10,7 @@
         "resourceClass": "m-medium"
       },
       "android": {
-        "buildType": "developmentClient",
+        "buildType": "apk",
         "gradleCommand": ":app:assembleDebug"
       }
     },

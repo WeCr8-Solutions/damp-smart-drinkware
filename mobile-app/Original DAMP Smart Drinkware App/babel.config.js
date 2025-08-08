@@ -1,14 +1,13 @@
 /**
  * DAMP Smart Drinkware - Babel Configuration
- * Minimal Babel setup for Jest testing
+ * Simplified Expo configuration for web builds
  */
 
-module.exports = {
-  presets: [
-    ['@babel/preset-env', { targets: { node: 'current' } }],
-    '@babel/preset-typescript'
-  ],
-  plugins: [
-    '@babel/plugin-transform-runtime'
-  ]
+module.exports = function (api) {
+  api.cache(true);
+  
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: []
+  };
 };

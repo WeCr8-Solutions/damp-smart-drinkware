@@ -32,7 +32,7 @@ import {
 } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
+import { auth } from '@/firebase/config';
 import FirebaseStripeService, { SUBSCRIPTION_PLANS } from '@/services/firebase-stripe';
 
 interface SubscriptionPlan {

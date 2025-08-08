@@ -1,10 +1,23 @@
 [build]
-  # Expo web build configuration
+  # Expo web build configuration (WEB BUILD PRIMARY FOCUS)
   publish = "dist"
-  command = "npm run build:netlify"
+  command = "npm run build:netlify:production"
   
   # Environment setup
   environment = { NODE_VERSION = "20", NPM_VERSION = "10" }
+
+# Context-specific builds for different environments
+[context.production]
+  command = "npm run build:netlify:production"
+  publish = "dist"
+
+[context.deploy-preview]
+  command = "npm run build:netlify:development"
+  publish = "dist"
+
+[context.branch-deploy]
+  command = "npm run build:netlify:development"
+  publish = "dist"
 
 [build.processing]
   # Enable asset optimization
@@ -28,16 +41,16 @@
   status = 200
 
 [[headers]]
-  # Security headers for web app (PWA disabled temporarily - focusing on native apps)
+  # Security headers for web app (WEB BUILD PRIMARY FOCUS - PWA DISABLED)
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    # PWA features temporarily disabled
-    X-Robots-Tag = "noindex, nofollow"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googleapis.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebase.googleapis.com https://*.firebaseio.com https://api.stripe.com https://*.supabase.co wss://*.supabase.co; frame-src https://js.stripe.com;"
+    # PWA disabled - no service worker or app install prompts
+    # Web build optimized for production
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.googleapis.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.firebase.googleapis.com https://*.firebaseio.com https://api.stripe.com; frame-src https://js.stripe.com;"
 
 [[headers]]
   # Cache static assets
@@ -51,46 +64,32 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000"
 
-# Environment-specific settings
-[context.production]
-  # Production build with optimizations
-  command = "npm run build:netlify:production"
-  
-  [context.production.environment]
-    NODE_ENV = "production"
-    EXPO_PUBLIC_ENVIRONMENT = "production"
-
-[context.deploy-preview]
-  # Deploy preview (staging) settings
-  command = "npm run build:netlify:staging"
-  
-  [context.deploy-preview.environment]
-    NODE_ENV = "staging"  
-    EXPO_PUBLIC_ENVIRONMENT = "staging"
-
-[context.branch-deploy]
-  # Branch preview settings
-  command = "npm run build:netlify:development"
-  
-  [context.branch-deploy.environment]
-    NODE_ENV = "development"
-    EXPO_PUBLIC_ENVIRONMENT = "development"
-
-# Functions for serverless API (if needed)
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
-
-# Plugin configurations
-[[plugins]]
-  package = "@netlify/plugin-sitemap"
-  
-  [plugins.inputs]
-    buildDir = "dist"
-    exclude = [
-      '/admin/**',
-      '/api/**'
-    ]
+# 🔐 ENVIRONMENT VARIABLES SECURITY CONFIGURATION
+# ============================================================================
+# IMPORTANT: Set these in Netlify Dashboard > Site Settings > Environment Variables
+# DO NOT commit sensitive keys to git - use Netlify's secure environment variables
+#
+# Required Firebase Variables (set in Netlify Dashboard):
+# - EXPO_PUBLIC_FIREBASE_API_KEY=AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w
+# - EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=damp-smart-drinkware.firebaseapp.com
+# - EXPO_PUBLIC_FIREBASE_PROJECT_ID=damp-smart-drinkware
+# - EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=damp-smart-drinkware.firebasestorage.app
+# - EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=309818614427
+# - EXPO_PUBLIC_FIREBASE_APP_ID=1:309818614427:web:db15a4851c05e58aa25c3e
+# - EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID=G-YW2BN4SVPQ
+#
+# Optional Variables:
+# - EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY (when Stripe is enabled)
+# - EXPO_PUBLIC_ADMIN_EMAIL=zach@wecr8.info (super admin)
+#
+# Feature Flags (set in Netlify Dashboard):
+# - EXPO_PUBLIC_FIREBASE_ENABLED=true (PRIMARY DATABASE)
+# - EXPO_PUBLIC_STRIPE_ENABLED=false (until keys added)
+# - EXPO_PUBLIC_BLE_ENABLED=false (web doesn't need BLE)
+# - EXPO_PUBLIC_ANALYTICS_ENABLED=true (when Firebase configured)
+# - EXPO_PUBLIC_PLATFORM=web
+# - EXPO_PUBLIC_ENVIRONMENT=production
+# ============================================================================
 
 # Forms handling (if you have contact forms)
 [forms]
@@ -100,11 +99,11 @@
 # Large Media (for asset optimization)
 [media]
   # Enable Large Media for better asset handling
-  enabled = true
-  
-# Split testing (optional)
-# [[split_tests]]
-#   path = "/*"
-#   branches = [
-#     { branch = "main", percentage = 100 },
-#   ]
+  large_media = true
+
+# Functions (for serverless functions if needed)
+[functions]
+  # Functions directory (if you add Netlify functions later)
+  directory = "functions"
+
+# Build plugins disabled for now - using basic deployment

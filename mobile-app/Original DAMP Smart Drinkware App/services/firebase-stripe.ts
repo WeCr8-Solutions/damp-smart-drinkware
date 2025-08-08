@@ -3,17 +3,40 @@
  * Complete Stripe payment processing through Firebase Functions
  */
 
-import { httpsCallable, getFunctions } from 'firebase/functions';
-import { getAuth } from 'firebase/auth';
+import { FeatureFlags } from '@/config/feature-flags';
 
-// Initialize Firebase Functions
-const functions = getFunctions();
+// Mock implementations for when Stripe/Firebase is disabled
+let createSubscriptionCheckoutFn: any;
+let handleSubscriptionSuccessFn: any;
+let manageSubscriptionFn: any;
+let getSubscriptionStatusFn: any;
 
-// Stripe Firebase Functions
-const createSubscriptionCheckoutFn = httpsCallable(functions, 'createSubscriptionCheckout');
-const handleSubscriptionSuccessFn = httpsCallable(functions, 'handleSubscriptionSuccess');
-const manageSubscriptionFn = httpsCallable(functions, 'manageSubscription');
-const getSubscriptionStatusFn = httpsCallable(functions, 'getSubscriptionStatus');
+if (FeatureFlags.STRIPE && FeatureFlags.FIREBASE) {
+  try {
+    const { httpsCallable, getFunctions } = require('firebase/functions');
+    
+    // Initialize Firebase Functions
+    const functions = getFunctions();
+
+    // Stripe Firebase Functions
+    createSubscriptionCheckoutFn = httpsCallable(functions, 'createSubscriptionCheckout');
+    handleSubscriptionSuccessFn = httpsCallable(functions, 'handleSubscriptionSuccess');
+    manageSubscriptionFn = httpsCallable(functions, 'manageSubscription');
+    getSubscriptionStatusFn = httpsCallable(functions, 'getSubscriptionStatus');
+  } catch (error) {
+    console.warn('Stripe/Firebase functions initialization failed - using mocks:', error);
+    createSubscriptionCheckoutFn = () => Promise.reject(new Error('Stripe disabled'));
+    handleSubscriptionSuccessFn = () => Promise.reject(new Error('Stripe disabled'));
+    manageSubscriptionFn = () => Promise.reject(new Error('Stripe disabled'));
+    getSubscriptionStatusFn = () => Promise.reject(new Error('Stripe disabled'));
+  }
+} else {
+  console.info('Stripe/Firebase disabled via feature flags - using mocks');
+  createSubscriptionCheckoutFn = () => Promise.reject(new Error('Stripe disabled'));
+  handleSubscriptionSuccessFn = () => Promise.reject(new Error('Stripe disabled'));
+  manageSubscriptionFn = () => Promise.reject(new Error('Stripe disabled'));
+  getSubscriptionStatusFn = () => Promise.reject(new Error('Stripe disabled'));
+}
 
 export interface SubscriptionPlan {
   id: string;

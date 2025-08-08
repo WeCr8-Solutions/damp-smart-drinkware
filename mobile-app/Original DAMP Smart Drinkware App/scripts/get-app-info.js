@@ -217,7 +217,7 @@ function mainAppInfo() {
   
   log('bright', '\n🎯 NEXT STEPS');
   log('blue', '==============');
-  log('white', '1. Install EAS CLI: npm install -g @expo/eas-cli');
+  log('white', '1. Install EAS CLI: npm install -g eas-cli');
   log('white', '2. Login to Expo: eas login');
   log('white', '3. Configure builds: eas build:configure');
   log('white', '4. Build for stores: npm run ios:build:production');

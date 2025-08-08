@@ -5,7 +5,9 @@
  * template/placeholder values and maintaining only genuine user information.
  */
 
-import { supabase } from '@/lib/supabase';
+import { auth, db } from '@/firebase/config';
+import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { FeatureFlags } from '@/config/feature-flags';
 import { AuthUser } from '@/contexts/AuthContext';
 
 // ============================================================================

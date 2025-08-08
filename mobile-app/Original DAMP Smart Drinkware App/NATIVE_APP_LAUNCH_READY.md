@@ -77,7 +77,7 @@ npm run preview            # Deploy preview to Netlify
 
 ### **Step 1: Install EAS CLI** (One time)
 ```bash
-npm install -g @expo/eas-cli
+npm install -g eas-cli
 eas login
 ```
 

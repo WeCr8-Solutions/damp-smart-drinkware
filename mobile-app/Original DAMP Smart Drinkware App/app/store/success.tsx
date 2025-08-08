@@ -11,7 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CircleCheck as CheckCircle, ArrowRight, Package, Truck, Calendar } from 'lucide-react-native';
 import { router } from 'expo-router';
-import { supabase } from '@/lib/supabase';
+import { auth } from '@/firebase/config';
 
 export default function StoreSuccessScreen() {
   const [loading, setLoading] = useState(true);

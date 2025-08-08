@@ -3,7 +3,7 @@
  * Comprehensive global types ensuring circular loop system connectivity
  */
 
-import { Database } from './supabase';
+// Supabase types removed - Firebase only
 import { UserProfile } from './user';
 import { SettingsState } from './settings';
 
@@ -20,9 +20,7 @@ declare global {
       FIREBASE_APP_ID: string;
       FIREBASE_MEASUREMENT_ID: string;
       
-      // Supabase Configuration
-      EXPO_PUBLIC_SUPABASE_URL: string;
-      EXPO_PUBLIC_SUPABASE_ANON_KEY: string;
+          // Supabase Configuration removed - Firebase only
       
       // App Configuration
       NODE_ENV: 'development' | 'staging' | 'production' | 'test';
@@ -119,11 +117,7 @@ export interface FirebaseConfig {
   measurementId: string;
 }
 
-// Supabase integration types
-export interface SupabaseConfig {
-  url: string;
-  anonKey: string;
-}
+// Supabase integration types removed - Firebase only
 
 // Analytics and tracking types
 export interface AnalyticsEvent {
@@ -148,7 +142,7 @@ export interface MockConfig {
   enableMocks: boolean;
   mockDevices: boolean;
   mockFirebase: boolean;
-  mockSupabase: boolean;
+  // mockSupabase removed - Firebase only
   mockBLE: boolean;
 }
 
@@ -160,7 +154,7 @@ export interface ModuleExports {
   '@/lib': typeof import('../lib');
   '@/utils': typeof import('../utils');
   '@/firebase': typeof import('../firebase');
-  '@/supabase': typeof import('../supabase');
+  // '@/supabase' removed - Firebase only
   '@/types': typeof import('../types');
 }
 

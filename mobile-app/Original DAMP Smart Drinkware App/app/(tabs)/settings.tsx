@@ -24,7 +24,7 @@ import {
 } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
+import { auth } from '@/firebase/config';
 import {
   AccountInfoModal,
   EditProfileModal,
@@ -64,14 +64,9 @@ export default function Settings() {
   const fetchSubscriptionStatus = async () => {
     try {
       setSubscriptionLoading(true);
-      const { data, error } = await supabase
-        .from('stripe_user_subscriptions')
-        .select('subscription_status')
-        .maybeSingle();
-
-      if (!error && data) {
-        setSubscriptionStatus(data.subscription_status);
-      }
+      // TODO: Implement Firebase subscription status fetch
+      // Using Firebase Functions to get subscription data
+      setSubscriptionStatus('active'); // Placeholder
     } catch (error) {
       console.error('Error fetching subscription status:', error);
     } finally {

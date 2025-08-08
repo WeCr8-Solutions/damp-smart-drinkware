@@ -13,15 +13,15 @@ import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
-import { Session } from '@supabase/supabase-js';
+import { auth } from '@/firebase/config';
+import { User } from 'firebase/auth';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   useFrameworkReady();
   
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const mounted = useRef(true);
 
@@ -33,25 +33,17 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Listen for auth changes with Firebase
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       if (mounted.current) {
-        setSession(session);
-        setIsLoading(false);
-      }
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (mounted.current) {
-        setSession(session);
+        setUser(user);
         setIsLoading(false);
       }
     });
 
     return () => {
       mounted.current = false;
-      subscription.unsubscribe();
+      unsubscribe();
     };
   }, []);
 

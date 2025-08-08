@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Bluetooth, Plus, Users } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import DeviceList from '@/components/DeviceList';
-import { initializeWithSampleData } from '@/utils/supabaseDeviceManager';
+// Sample data initialization removed - using Firebase instead
 
 export default function DevicesScreen() {
   const { user } = useAuth();
