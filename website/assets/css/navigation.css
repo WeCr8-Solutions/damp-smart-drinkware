@@ -1344,12 +1344,16 @@
 /* Desktop breakpoints */
 @media (min-width: 1024px) {
     .nav-links {
-        display: flex; /* Show desktop nav on larger screens */
+        display: none; /* Keep navigation in hamburger menu for clean layout */
+    }
+    
+    .hamburger {
+        display: flex; /* Always show hamburger menu on all screen sizes */
     }
     
     .auth-buttons {
         display: flex; /* Show auth buttons on desktop */
-        margin-left: 20px;
+        margin-left: auto; /* Push auth buttons to the right */
     }
     
     .auth-btn {
@@ -1364,8 +1368,16 @@
 
 /* Large desktop */
 @media (min-width: 1440px) {
+    .nav-links {
+        display: none; /* Keep navigation in hamburger menu for clean layout */
+    }
+    
+    .hamburger {
+        display: flex; /* Always show hamburger menu */
+    }
+    
     .auth-buttons {
-        margin-left: 40px;
+        margin-left: auto;
         gap: 16px;
     }
     
