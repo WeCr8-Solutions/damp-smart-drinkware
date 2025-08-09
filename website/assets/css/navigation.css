@@ -1047,7 +1047,7 @@
 
 /* Desktop Authentication Buttons */
 .auth-buttons {
-    display: none; /* Hidden by default, shown on desktop breakpoints */
+    display: none; /* Always hidden - auth is handled in hamburger menu */
     align-items: center;
     gap: 8px;
     margin-left: 15px;
@@ -1352,17 +1352,7 @@
     }
     
     .auth-buttons {
-        display: flex; /* Show auth buttons on desktop */
-        margin-left: auto; /* Push auth buttons to the right */
-    }
-    
-    .auth-btn {
-        padding: 10px 20px;
-        font-size: 1rem;
-    }
-    
-    .user-dropdown {
-        min-width: 220px;
+        display: none; /* Auth buttons only in hamburger menu */
     }
 }
 
@@ -1377,13 +1367,7 @@
     }
     
     .auth-buttons {
-        margin-left: auto;
-        gap: 16px;
-    }
-    
-    .auth-btn {
-        padding: 12px 24px;
-        font-size: 1.1rem;
+        display: none; /* Auth buttons only in hamburger menu */
     }
 }
 
