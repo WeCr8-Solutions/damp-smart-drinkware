@@ -22,19 +22,33 @@ const firebaseConfig = {
 // Initialize Firebase
 let app, auth, db, analytics;
 
+console.log('🔄 Initializing Firebase...');
+console.log('🔍 Firebase available?', typeof firebase !== 'undefined');
+
 try {
+  if (typeof firebase === 'undefined') {
+    throw new Error('Firebase SDK not loaded. Make sure Firebase scripts are loaded before this file.');
+  }
+  
   app = firebase.initializeApp(firebaseConfig);
+  console.log('✅ Firebase app initialized');
+  
   auth = firebase.auth();
+  console.log('✅ Firebase Auth initialized');
+  
   db = firebase.firestore();
+  console.log('✅ Firebase Firestore initialized');
   
   // Initialize Analytics if available
   if (typeof gtag !== 'undefined') {
     analytics = firebase.analytics();
+    console.log('✅ Firebase Analytics initialized');
   }
   
-  console.log('✅ Firebase initialized successfully');
+  console.log('✅ Firebase initialization complete');
 } catch (error) {
   console.error('❌ Firebase initialization failed:', error);
+  console.error('❌ Make sure Firebase CDN scripts are loaded first');
 }
 
 // Simple Auth Service for website
@@ -55,14 +69,22 @@ class WebAuthService {
   // Sign up with email and password
   async signUpWithEmail(email, password, userData = {}) {
     try {
+      console.log('🔄 Starting sign up process...', { email, userData });
+      
+      if (!auth) {
+        throw new Error('Firebase Auth not initialized');
+      }
+      
       const result = await auth.createUserWithEmailAndPassword(email, password);
       const user = result.user;
+      console.log('✅ User created successfully:', user.uid);
       
       // Update user profile
       if (userData.displayName) {
         await user.updateProfile({
           displayName: userData.displayName
         });
+        console.log('✅ User profile updated');
       }
       
       // Save additional user data to Firestore
@@ -77,10 +99,12 @@ class WebAuthService {
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           lastLoginAt: firebase.firestore.FieldValue.serverTimestamp()
         });
+        console.log('✅ User data saved to Firestore');
       }
       
       // Send verification email
       await user.sendEmailVerification();
+      console.log('✅ Verification email sent');
       
       return {
         success: true,
@@ -88,7 +112,9 @@ class WebAuthService {
         message: 'Account created successfully! Please check your email to verify your account.'
       };
     } catch (error) {
-      console.error('Sign up error:', error);
+      console.error('❌ Sign up error:', error);
+      console.error('❌ Error code:', error.code);
+      console.error('❌ Error message:', error.message);
       return {
         success: false,
         message: this.getErrorMessage(error.code)

@@ -347,6 +347,8 @@ class DAMPAuthModal {
   async handleSignUp(e) {
     e.preventDefault();
     
+    console.log('🔄 Sign up form submitted');
+    
     const firstName = document.getElementById('signupFirstName').value;
     const lastName = document.getElementById('signupLastName').value;
     const email = document.getElementById('signupEmail').value;
@@ -354,11 +356,26 @@ class DAMPAuthModal {
     const newsletter = document.getElementById('signupNewsletter').checked;
     const terms = document.getElementById('signupTerms').checked;
     
-    if (!this.validateSignUp(firstName, lastName, email, password, terms)) return;
+    console.log('📝 Form data:', { firstName, lastName, email, newsletter, terms });
     
+    if (!this.validateSignUp(firstName, lastName, email, password, terms)) {
+      console.log('❌ Form validation failed');
+      return;
+    }
+    
+    console.log('✅ Form validation passed');
+    
+    if (!this.authService) {
+      console.error('❌ Auth service not available');
+      this.showMessage('error', 'Service Error', 'Authentication service is not available. Please refresh the page.');
+      return;
+    }
+    
+    console.log('✅ Auth service available');
     this.setLoading('signup', true);
     
     try {
+      console.log('🔄 Calling authService.signUpWithEmail...');
       const result = await this.authService.signUpWithEmail(email, password, {
         firstName,
         lastName,
@@ -367,6 +384,8 @@ class DAMPAuthModal {
         source: 'website'
       });
       
+      console.log('📋 Sign up result:', result);
+      
       if (result.success) {
         this.showMessage('success', 'Account Created!', result.message);
         setTimeout(() => this.close(), 3000);
@@ -374,7 +393,8 @@ class DAMPAuthModal {
         this.showMessage('error', 'Sign Up Failed', result.message);
       }
     } catch (error) {
-      this.showMessage('error', 'Sign Up Failed', 'Please try again');
+      console.error('❌ Sign up error:', error);
+      this.showMessage('error', 'Sign Up Failed', `Error: ${error.message || 'An unexpected error occurred. Please try again.'}`);
     } finally {
       this.setLoading('signup', false);
     }
