@@ -8,16 +8,9 @@
   NODE_VERSION = "18"
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
-# Explicitly disable plugins that shouldn't run
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-    disabled = true
-
+# Only include plugins we actually need
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
-  [plugins.inputs]
-    disabled = false
 
 # Enhanced security headers with comprehensive Firebase and Google services support
 [[headers]]
