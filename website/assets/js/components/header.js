@@ -63,26 +63,8 @@ class DAMPHeader extends HTMLElement {
                         <li><a href="${this.basePath}pages/pre-order.html" class="nav-cta" data-analytics="nav-preorder">Pre-Order</a></li>
                     </ul>
                     
-                    <!-- Authentication Buttons -->
-                    <div class="auth-buttons" id="authButtons">
-                        <button class="auth-btn sign-in" data-auth="signin" data-analytics="nav-signin">
-                            🔑 Sign In
-                        </button>
-                        <button class="auth-btn sign-up" data-auth="signup" data-analytics="nav-signup">
-                            📝 Sign Up
-                        </button>
-                        <div class="auth-user-menu" id="authUserMenu" style="display: none;">
-                            <button class="auth-btn user-profile" id="userProfile" data-analytics="nav-profile">
-                                <span class="user-avatar">👤</span>
-                                <span class="user-name">User</span>
-                            </button>
-                            <div class="user-dropdown" id="userDropdown" style="display: none;">
-                                <a href="${this.basePath}pages/profile.html" data-analytics="nav-profile-page">👤 Profile</a>
-                                <a href="${this.basePath}pages/orders.html" data-analytics="nav-orders">📦 Orders</a>
-                                <button data-auth="signout" data-analytics="nav-signout">🚪 Sign Out</button>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Authentication handled in hamburger menu only -->
+                    <!-- REMOVED: Desktop auth buttons moved to hamburger menu for cleaner layout -->
                     
                     <button class="hamburger" 
                             aria-label="Toggle mobile menu" 
@@ -951,23 +933,7 @@ class DAMPHeader extends HTMLElement {
             }
         });
         
-        // User profile dropdown toggle
-        const userProfile = this.querySelector('#userProfile');
-        const userDropdown = this.querySelector('#userDropdown');
-        
-        if (userProfile && userDropdown) {
-            userProfile.addEventListener('click', () => {
-                const isVisible = userDropdown.style.display === 'block';
-                userDropdown.style.display = isVisible ? 'none' : 'block';
-            });
-            
-            // Close dropdown when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!userProfile.contains(e.target) && !userDropdown.contains(e.target)) {
-                    userDropdown.style.display = 'none';
-                }
-            });
-        }
+        // Desktop user profile dropdown removed - auth handled in mobile menu only
     }
     
     // Handle sign out
@@ -990,12 +956,11 @@ class DAMPHeader extends HTMLElement {
     
     // Update authentication UI based on user state
     updateAuthUI(user) {
-        const authButtons = this.querySelector('#authButtons');
-        const authUserMenu = this.querySelector('#authUserMenu');
+        // Desktop auth buttons removed - only update mobile auth UI
         const mobileAuthButtons = this.querySelector('#mobileAuthButtons');
         const mobileUserInfo = this.querySelector('#mobileUserInfo');
         
-        if (!authButtons || !authUserMenu || !mobileAuthButtons || !mobileUserInfo) {
+        if (!mobileAuthButtons || !mobileUserInfo) {
             return; // Elements not found
         }
         
@@ -1004,17 +969,7 @@ class DAMPHeader extends HTMLElement {
             const displayName = user.displayName || user.email?.split('@')[0] || 'User';
             const email = user.email || '';
             
-            // Update desktop UI
-            authButtons.querySelector('.sign-in').style.display = 'none';
-            authButtons.querySelector('.sign-up').style.display = 'none';
-            authUserMenu.style.display = 'block';
-            
-            const userName = authButtons.querySelector('.user-name');
-            if (userName) {
-                userName.textContent = displayName;
-            }
-            
-            // Update mobile UI
+            // Update mobile UI only
             mobileAuthButtons.style.display = 'none';
             mobileUserInfo.style.display = 'block';
             
@@ -1030,12 +985,7 @@ class DAMPHeader extends HTMLElement {
             
         } else {
             // User is signed out
-            // Update desktop UI
-            authButtons.querySelector('.sign-in').style.display = 'inline-block';
-            authButtons.querySelector('.sign-up').style.display = 'inline-block';
-            authUserMenu.style.display = 'none';
-            
-            // Update mobile UI
+            // Update mobile UI only
             mobileAuthButtons.style.display = 'block';
             mobileUserInfo.style.display = 'none';
         }
