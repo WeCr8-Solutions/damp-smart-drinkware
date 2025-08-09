@@ -1,0 +1,18 @@
+{
+  "context_paths": [
+    "website/",
+    "website/assets/js/",
+    "website/pages/",
+    "mobile-app/Original DAMP Smart Drinkware App/"
+  ],
+  "ignore_patterns": [
+    "node_modules/",
+    "dist/",
+    ".git/",
+    "*.log",
+    "*.tmp"
+  ],
+  "default_model": "claude-3-5-sonnet-20241022",
+  "max_tokens": 4000,
+  "system_prompt": "You are helping with the DAMP Smart Drinkware project. Focus on Firebase authentication, React Native/Expo development, and web development best practices."
+}
