@@ -5,7 +5,7 @@
  * Compatible with mobile app via shared Firebase project
  */
 
-// Import Firebase v10 modules from CDN
+// Import Firebase v10 modules from CDN with proper module syntax
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { 
   getAuth, 
@@ -28,8 +28,15 @@ import {
   collection,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-import { getMessaging, onMessage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
+import { 
+  getAnalytics, 
+  isSupported as analyticsSupported, 
+  logEvent 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+import { 
+  getMessaging, 
+  onMessage 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -57,10 +64,19 @@ try {
   db = getFirestore(app);
   console.log('✅ Firebase Firestore initialized');
   
-  // Initialize Analytics (only in production)
+  // Initialize Analytics (only if supported and not localhost)
   if (window.location.hostname !== 'localhost') {
-    analytics = getAnalytics(app);
-    console.log('✅ Firebase Analytics initialized');
+    try {
+      const isAnalyticsSupported = await analyticsSupported();
+      if (isAnalyticsSupported) {
+        analytics = getAnalytics(app);
+        console.log('✅ Firebase Analytics initialized');
+      } else {
+        console.log('ℹ️ Firebase Analytics not supported in this environment');
+      }
+    } catch (error) {
+      console.log('ℹ️ Firebase Analytics support check failed:', error.message);
+    }
   }
   
   // Initialize Messaging (if supported)
