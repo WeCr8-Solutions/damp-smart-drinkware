@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAMP Website Comprehensive Test Suite</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .test-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+        }
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f7fafc;
+            border-radius: 6px;
+            border-left: 4px solid #cbd5e0;
+        }
+        .test-item.success {
+            background: #f0fff4;
+            border-left-color: #48bb78;
+        }
+        .test-item.error {
+            background: #fed7d7;
+            border-left-color: #f56565;
+        }
+        .test-item.warning {
+            background: #fefcbf;
+            border-left-color: #ed8936;
+        }
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status.success { background: #48bb78; color: white; }
+        .status.error { background: #f56565; color: white; }
+        .status.warning { background: #ed8936; color: white; }
+        .status.pending { background: #cbd5e0; color: #4a5568; }
+        .test-results {
+            margin-top: 20px;
+            padding: 20px;
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .run-tests-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        .run-tests-btn:hover {
+            transform: translateY(-2px);
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-header">
+        <h1>🧪 DAMP Website Comprehensive Test Suite</h1>
+        <p>Automated testing of all website functions, authentication, and core features</p>
+    </div>
+
+    <div class="test-container">
+        <h2>Test Controls</h2>
+        <button class="run-tests-btn" onclick="runAllTests()">🚀 Run All Tests</button>
+        <button class="run-tests-btn" onclick="runAuthTests()">🔐 Test Authentication</button>
+        <button class="run-tests-btn" onclick="runPageTests()">📄 Test Pages</button>
+        <button class="run-tests-btn" onclick="runFeatureTests()">⚡ Test Features</button>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div id="progressText">Ready to run tests...</div>
+    </div>
+
+    <div class="test-container">
+        <h2>🔥 Firebase & Authentication Tests</h2>
+        <div class="test-section" id="firebaseTests">
+            <div class="test-item" id="firebase-init">
+                <span>Firebase Initialization</span>
+                <span class="status pending">PENDING</span>
+            </div>
+            <div class="test-item" id="auth-service">
+                <span>Auth Service Available</span>
+                <span class="status pending">PENDING</span>
+            </div>
+            <div class="test-item" id="firestore-connection">
+                <span>Firestore Connection</span>
+                <span class="status pending">PENDING</span>
+            </div>
+            <div class="test-item" id="auth-modal">
+                <span>Authentication Modal</span>
+                <span class="status pending">PENDING</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>📱 Navigation & UI Tests</h2>
+        <div class="test-section" id="navigationTests">
+            <div class="test-item" id="header-component">
+                <span>Header Component</span>
+                <span class="status pending">PENDING</span>
+            </div>
+            <div class="test-item" id="hamburger-menu">
+                <span>Hamburger Menu</span>
+                <span class="status pending">PENDING</span>
+            </div>
+            <div class="test-item" id="mobile-navigation">
+                <span>Mobile Navigation</span>
+                <span class="status pending">PENDING</span>
+            </div>
+            <div class="test-item" id="auth-buttons">
+                <span>Auth Buttons (Hamburger Only)</span>
+                <span class="status pending">PENDING</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>🌐 Page Loading Tests</h2>
+        <div class="test-section" id="pageTests">
+            <div class="test-item" id="homepage">
+                <span>Homepage (index.html)</span>
+                <span class="status pending">PENDING</span>
+            </div>
+            <div class="test-item" id="products-page">
+                <span>Products Page</span>
+                <span class="status pending">PENDING</span>
+            </div>
+            <div class="test-item" id="about-page">
+                <span>About Page</span>
+                <span class="status pending">PENDING</span>
+            </div>
+            <div class="test-item" id="voting-page">
+                <span>Product Voting Page</span>
+                <span class="status pending">PENDING</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>⚡ Core Feature Tests</h2>
+        <div class="test-section" id="featureTests">
+            <div class="test-item" id="hero-animation">
+                <span>Hero Animation</span>
+                <span class="status pending">PENDING</span>
+            </div>
+            <div class="test-item" id="newsletter-signup">
+                <span>Newsletter Signup</span>
+                <span class="status pending">PENDING</span>
+            </div>
+            <div class="test-item" id="performance-monitor">
+                <span>Performance Monitoring</span>
+                <span class="status pending">PENDING</span>
+            </div>
+            <div class="test-item" id="lazy-loading">
+                <span>Image Lazy Loading</span>
+                <span class="status pending">PENDING</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>🔍 Console Output & Debug Info</h2>
+        <div class="test-results" id="testResults">
+            <div>🔄 Test console output will appear here...</div>
+        </div>
+    </div>
+
+    <script>
+        let testProgress = 0;
+        let totalTests = 16;
+        
+        function updateProgress(increment = 1) {
+            testProgress += increment;
+            const percentage = (testProgress / totalTests) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `Progress: ${testProgress}/${totalTests} tests completed (${Math.round(percentage)}%)`;
+        }
+        
+        function updateTestStatus(testId, status, message = '') {
+            const testItem = document.getElementById(testId);
+            const statusEl = testItem.querySelector('.status');
+            
+            testItem.className = `test-item ${status}`;
+            statusEl.className = `status ${status}`;
+            statusEl.textContent = status.toUpperCase();
+            
+            if (message) {
+                logResult(`${testId}: ${message}`);
+            }
+            
+            updateProgress();
+        }
+        
+        function logResult(message) {
+            const results = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            results.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            results.scrollTop = results.scrollHeight;
+        }
+        
+        function clearResults() {
+            document.getElementById('testResults').innerHTML = '<div>🔄 Running tests...</div>';
+            testProgress = 0;
+            updateProgress(0);
+            
+            // Reset all test statuses
+            document.querySelectorAll('.test-item').forEach(item => {
+                item.className = 'test-item';
+                item.querySelector('.status').className = 'status pending';
+                item.querySelector('.status').textContent = 'PENDING';
+            });
+        }
+        
+        async function testFirebaseInit() {
+            try {
+                if (typeof window.firebaseServices !== 'undefined' && window.firebaseServices.app) {
+                    updateTestStatus('firebase-init', 'success', 'Firebase initialized successfully');
+                } else {
+                    updateTestStatus('firebase-init', 'error', 'Firebase not initialized');
+                }
+            } catch (error) {
+                updateTestStatus('firebase-init', 'error', `Firebase init error: ${error.message}`);
+            }
+        }
+        
+        async function testAuthService() {
+            try {
+                if (window.firebaseServices?.authService) {
+                    updateTestStatus('auth-service', 'success', 'Auth service available');
+                } else {
+                    updateTestStatus('auth-service', 'error', 'Auth service not available');
+                }
+            } catch (error) {
+                updateTestStatus('auth-service', 'error', `Auth service error: ${error.message}`);
+            }
+        }
+        
+        async function testFirestoreConnection() {
+            try {
+                if (window.firebaseServices?.db) {
+                    updateTestStatus('firestore-connection', 'success', 'Firestore connected');
+                } else {
+                    updateTestStatus('firestore-connection', 'error', 'Firestore not connected');
+                }
+            } catch (error) {
+                updateTestStatus('firestore-connection', 'error', `Firestore error: ${error.message}`);
+            }
+        }
+        
+        async function testAuthModal() {
+            try {
+                if (window.dampAuth || document.querySelector('.auth-modal')) {
+                    updateTestStatus('auth-modal', 'success', 'Auth modal available');
+                } else {
+                    updateTestStatus('auth-modal', 'error', 'Auth modal not found');
+                }
+            } catch (error) {
+                updateTestStatus('auth-modal', 'error', `Auth modal error: ${error.message}`);
+            }
+        }
+        
+        async function testHeaderComponent() {
+            try {
+                const header = document.querySelector('damp-header') || document.querySelector('header');
+                if (header) {
+                    updateTestStatus('header-component', 'success', 'Header component found');
+                } else {
+                    updateTestStatus('header-component', 'error', 'Header component not found');
+                }
+            } catch (error) {
+                updateTestStatus('header-component', 'error', `Header error: ${error.message}`);
+            }
+        }
+        
+        async function testHamburgerMenu() {
+            try {
+                const hamburger = document.querySelector('.hamburger') || document.querySelector('.mobile-menu-trigger');
+                if (hamburger) {
+                    updateTestStatus('hamburger-menu', 'success', 'Hamburger menu found');
+                } else {
+                    updateTestStatus('hamburger-menu', 'warning', 'Hamburger menu not found (may be on main site)');
+                }
+            } catch (error) {
+                updateTestStatus('hamburger-menu', 'error', `Hamburger menu error: ${error.message}`);
+            }
+        }
+        
+        async function testMobileNavigation() {
+            try {
+                const mobileNav = document.querySelector('.mobile-nav') || document.querySelector('.mobile-menu');
+                if (mobileNav) {
+                    updateTestStatus('mobile-navigation', 'success', 'Mobile navigation found');
+                } else {
+                    updateTestStatus('mobile-navigation', 'warning', 'Mobile navigation not found (may be on main site)');
+                }
+            } catch (error) {
+                updateTestStatus('mobile-navigation', 'error', `Mobile navigation error: ${error.message}`);
+            }
+        }
+        
+        async function testAuthButtons() {
+            try {
+                // Check that auth buttons are NOT in desktop nav (should be hamburger only)
+                const desktopAuthButtons = document.querySelector('.nav-container .auth-buttons');
+                const hamburgerAuthButtons = document.querySelector('.mobile-menu .auth-buttons');
+                
+                if (!desktopAuthButtons && hamburgerAuthButtons) {
+                    updateTestStatus('auth-buttons', 'success', 'Auth buttons correctly in hamburger only');
+                } else if (desktopAuthButtons) {
+                    updateTestStatus('auth-buttons', 'warning', 'Auth buttons found in desktop nav (should be hamburger only)');
+                } else {
+                    updateTestStatus('auth-buttons', 'warning', 'Auth buttons location not testable from this page');
+                }
+            } catch (error) {
+                updateTestStatus('auth-buttons', 'error', `Auth buttons test error: ${error.message}`);
+            }
+        }
+        
+        async function testPageLoad(pageId, url, pageName) {
+            try {
+                const response = await fetch(url);
+                if (response.ok) {
+                    updateTestStatus(pageId, 'success', `${pageName} loads successfully (${response.status})`);
+                } else {
+                    updateTestStatus(pageId, 'error', `${pageName} failed to load (${response.status})`);
+                }
+            } catch (error) {
+                updateTestStatus(pageId, 'error', `${pageName} load error: ${error.message}`);
+            }
+        }
+        
+        async function testHeroAnimation() {
+            try {
+                if (typeof window.DAMP !== 'undefined' || document.querySelector('.hero-animation')) {
+                    updateTestStatus('hero-animation', 'success', 'Hero animation system found');
+                } else {
+                    updateTestStatus('hero-animation', 'warning', 'Hero animation not found (may be on main site)');
+                }
+            } catch (error) {
+                updateTestStatus('hero-animation', 'error', `Hero animation error: ${error.message}`);
+            }
+        }
+        
+        async function testNewsletterSignup() {
+            try {
+                const newsletter = document.querySelector('.newsletter-form') || document.querySelector('#newsletter');
+                if (newsletter) {
+                    updateTestStatus('newsletter-signup', 'success', 'Newsletter signup found');
+                } else {
+                    updateTestStatus('newsletter-signup', 'warning', 'Newsletter signup not found (may be on main site)');
+                }
+            } catch (error) {
+                updateTestStatus('newsletter-signup', 'error', `Newsletter error: ${error.message}`);
+            }
+        }
+        
+        async function testPerformanceMonitor() {
+            try {
+                if (typeof window.dampPerformance !== 'undefined' || window.DAMPPerformanceMonitor) {
+                    updateTestStatus('performance-monitor', 'success', 'Performance monitoring active');
+                } else {
+                    updateTestStatus('performance-monitor', 'warning', 'Performance monitoring not found (may be on main site)');
+                }
+            } catch (error) {
+                updateTestStatus('performance-monitor', 'error', `Performance monitor error: ${error.message}`);
+            }
+        }
+        
+        async function testLazyLoading() {
+            try {
+                const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+                if (lazyImages.length > 0) {
+                    updateTestStatus('lazy-loading', 'success', `Found ${lazyImages.length} lazy-loaded images`);
+                } else {
+                    updateTestStatus('lazy-loading', 'warning', 'No lazy-loaded images found (may be on main site)');
+                }
+            } catch (error) {
+                updateTestStatus('lazy-loading', 'error', `Lazy loading error: ${error.message}`);
+            }
+        }
+        
+        async function runAuthTests() {
+            clearResults();
+            logResult('🔐 Starting Authentication Tests...');
+            
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for Firebase to load
+            
+            await testFirebaseInit();
+            await testAuthService();
+            await testFirestoreConnection();
+            await testAuthModal();
+            
+            logResult('✅ Authentication tests completed');
+        }
+        
+        async function runPageTests() {
+            clearResults();
+            logResult('📄 Starting Page Loading Tests...');
+            
+            await testPageLoad('homepage', '/', 'Homepage');
+            await testPageLoad('products-page', '/pages/products.html', 'Products Page');
+            await testPageLoad('about-page', '/pages/about.html', 'About Page');
+            await testPageLoad('voting-page', '/pages/product-voting.html', 'Voting Page');
+            
+            logResult('✅ Page loading tests completed');
+        }
+        
+        async function runNavigationTests() {
+            clearResults();
+            logResult('📱 Starting Navigation Tests...');
+            
+            await testHeaderComponent();
+            await testHamburgerMenu();
+            await testMobileNavigation();
+            await testAuthButtons();
+            
+            logResult('✅ Navigation tests completed');
+        }
+        
+        async function runFeatureTests() {
+            clearResults();
+            logResult('⚡ Starting Feature Tests...');
+            
+            await testHeroAnimation();
+            await testNewsletterSignup();
+            await testPerformanceMonitor();
+            await testLazyLoading();
+            
+            logResult('✅ Feature tests completed');
+        }
+        
+        async function runAllTests() {
+            clearResults();
+            logResult('🚀 Starting Comprehensive Test Suite...');
+            
+            // Reset progress
+            totalTests = 16;
+            testProgress = 0;
+            
+            // Run all test categories
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for Firebase
+            
+            // Firebase & Auth Tests
+            await testFirebaseInit();
+            await testAuthService();
+            await testFirestoreConnection();
+            await testAuthModal();
+            
+            // Navigation Tests
+            await testHeaderComponent();
+            await testHamburgerMenu();
+            await testMobileNavigation();
+            await testAuthButtons();
+            
+            // Page Loading Tests
+            await testPageLoad('homepage', '/', 'Homepage');
+            await testPageLoad('products-page', '/pages/products.html', 'Products Page');
+            await testPageLoad('about-page', '/pages/about.html', 'About Page');
+            await testPageLoad('voting-page', '/pages/product-voting.html', 'Voting Page');
+            
+            // Feature Tests
+            await testHeroAnimation();
+            await testNewsletterSignup();
+            await testPerformanceMonitor();
+            await testLazyLoading();
+            
+            logResult('🎉 All tests completed!');
+            logResult(`📊 Results: ${document.querySelectorAll('.test-item.success').length} passed, ${document.querySelectorAll('.test-item.error').length} failed, ${document.querySelectorAll('.test-item.warning').length} warnings`);
+        }
+        
+        // Auto-run basic checks when page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                logResult('🔄 Page loaded, Firebase services should be initializing...');
+                logResult('💡 Click "Run All Tests" to perform comprehensive testing');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
