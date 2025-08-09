@@ -44,11 +44,17 @@
       img-src 'self' data: blob: 
         https://www.googletagmanager.com
         https://www.google-analytics.com
+        https://pagead2.googlesyndication.com
         https://images.unsplash.com
         https://dampdrink.com; 
       font-src 'self' 
         https://fonts.gstatic.com
-        https://fonts.googleapis.com; 
+        https://fonts.googleapis.com;
+      frame-src 'self' 
+        https://js.stripe.com 
+        https://hooks.stripe.com 
+        https://googleads.g.doubleclick.net
+        https://pagead2.googlesyndication.com; 
       connect-src 'self' 
         https://www.google-analytics.com
         https://api.stripe.com
@@ -57,6 +63,9 @@
         https://www.gstatic.com
         https://*.firebase.com
         https://*.googleapis.com
+        https://identitytoolkit.googleapis.com
+        https://securetoken.googleapis.com
+        https://ep1.adtrafficquality.google
         wss://*.firebase.com
         https://*.dampdrink.com; 
       object-src 'none'; 
@@ -104,7 +113,9 @@
       font-src 'self' https://fonts.gstatic.com; 
       connect-src 'self' 
         https://www.google-analytics.com
-        https://api.stripe.com; 
+        https://api.stripe.com
+        https://identitytoolkit.googleapis.com
+        https://securetoken.googleapis.com; 
       upgrade-insecure-requests;
     """
 
