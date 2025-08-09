@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAMP Firebase Configuration Checker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ccc;
+        }
+        .check-item.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        .check-item.error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .check-item.warning {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+        .check-item.info {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .status-icon.success {
+            background: #28a745;
+        }
+        .status-icon.error {
+            background: #dc3545;
+        }
+        .status-icon.warning {
+            background: #ffc107;
+        }
+        .status-icon.info {
+            background: #17a2b8;
+        }
+        .details {
+            flex-grow: 1;
+        }
+        .check-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .check-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .config-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .test-results {
+            margin-top: 20px;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 DAMP Firebase Configuration Checker</h1>
+        
+        <div id="configChecks">
+            <div class="check-item info">
+                <div class="status-icon info"><div class="loading"></div></div>
+                <div class="details">
+                    <div class="check-title">Initializing Firebase Configuration Checker...</div>
+                    <div class="check-description">Please wait while we analyze your Firebase setup</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🧪 Authentication Tests</h2>
+        <div>
+            <button class="test-button" onclick="testEmailPasswordAuth()" id="testAuthBtn">
+                Test Email/Password Authentication
+            </button>
+            <button class="test-button" onclick="testFirebaseConnection()" id="testConnBtn">
+                Test Firebase Connection
+            </button>
+            <button class="test-button" onclick="checkDomainAuth()" id="testDomainBtn">
+                Check Domain Authorization
+            </button>
+        </div>
+        <div class="test-results" id="testResults"></div>
+    </div>
+
+    <div class="container">
+        <h2>📋 Configuration Details</h2>
+        <div id="configDetails" class="config-display">
+            Loading configuration details...
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script type="module" src="assets/js/firebase-modern-setup.js"></script>
+    <script src="assets/js/firebase-fallback-loader.js"></script>
+
+    <script>
+        class FirebaseConfigChecker {
+            constructor() {
+                this.checks = [];
+                this.config = null;
+                this.init();
+            }
+
+            async init() {
+                console.log('🔧 Starting Firebase Configuration Checker...');
+                
+                // Wait for Firebase to load
+                await this.waitForFirebase();
+                
+                // Run all configuration checks
+                await this.runAllChecks();
+                
+                // Display results
+                this.displayResults();
+                this.displayConfigDetails();
+            }
+
+            async waitForFirebase() {
+                return new Promise((resolve) => {
+                    let attempts = 0;
+                    const maxAttempts = 100; // 10 seconds
+                    
+                    const checkFirebase = () => {
+                        if (window.firebaseServices?.authService || attempts >= maxAttempts) {
+                            resolve();
+                        } else {
+                            attempts++;
+                            setTimeout(checkFirebase, 100);
+                        }
+                    };
+                    
+                    checkFirebase();
+                });
+            }
+
+            async runAllChecks() {
+                console.log('🔍 Running Firebase configuration checks...');
+                
+                // Check 1: Firebase Services Available
+                this.checkFirebaseServices();
+                
+                // Check 2: Configuration Values
+                this.checkConfiguration();
+                
+                // Check 3: Authentication Service
+                this.checkAuthService();
+                
+                // Check 4: Network Connectivity
+                await this.checkNetworkConnectivity();
+                
+                // Check 5: Browser Compatibility
+                this.checkBrowserCompatibility();
+                
+                // Check 6: Domain Configuration
+                this.checkDomainConfiguration();
+            }
+
+            checkFirebaseServices() {
+                const hasServices = !!window.firebaseServices;
+                const hasAuthService = !!window.firebaseServices?.authService;
+                
+                this.addCheck(
+                    hasServices,
+                    'Firebase Services Loaded',
+                    hasServices ? 'Firebase services are properly loaded' : 'Firebase services failed to load'
+                );
+                
+                this.addCheck(
+                    hasAuthService,
+                    'Authentication Service Available',
+                    hasAuthService ? 'Firebase Auth service is ready' : 'Firebase Auth service is not available'
+                );
+            }
+
+            checkConfiguration() {
+                // Get Firebase config from the modern setup
+                this.config = {
+                    apiKey: "AIzaSyCGXLp2Xm1UtPZmjFBKjQDLNGz8J3tZQxs",
+                    authDomain: "damp-smart-drinkware.firebaseapp.com",
+                    projectId: "damp-smart-drinkware",
+                    storageBucket: "damp-smart-drinkware.firebasestorage.app",
+                    messagingSenderId: "309818614427",
+                    appId: "1:309818614427:web:db15a4851c05e58aa25c3e",
+                    measurementId: "G-YW2BN4SVPQ"
+                };
+
+                this.addCheck(
+                    !!this.config.apiKey,
+                    'API Key Present',
+                    this.config.apiKey ? 'Firebase API key is configured' : 'Firebase API key is missing'
+                );
+
+                this.addCheck(
+                    !!this.config.authDomain,
+                    'Auth Domain Configured',
+                    this.config.authDomain ? `Auth domain: ${this.config.authDomain}` : 'Auth domain is missing'
+                );
+
+                this.addCheck(
+                    !!this.config.projectId,
+                    'Project ID Configured',
+                    this.config.projectId ? `Project ID: ${this.config.projectId}` : 'Project ID is missing'
+                );
+            }
+
+            checkAuthService() {
+                if (!window.firebaseServices?.authService) {
+                    this.addCheck(false, 'Auth Service Methods', 'Auth service not available for testing');
+                    return;
+                }
+
+                const authService = window.firebaseServices.authService;
+                const hasSignUp = typeof authService.signUpWithEmail === 'function';
+                const hasSignIn = typeof authService.signInWithEmail === 'function';
+                const hasSignOut = typeof authService.signOut === 'function';
+
+                this.addCheck(
+                    hasSignUp,
+                    'Sign Up Method Available',
+                    hasSignUp ? 'signUpWithEmail method is available' : 'signUpWithEmail method is missing'
+                );
+
+                this.addCheck(
+                    hasSignIn,
+                    'Sign In Method Available',
+                    hasSignIn ? 'signInWithEmail method is available' : 'signInWithEmail method is missing'
+                );
+
+                this.addCheck(
+                    hasSignOut,
+                    'Sign Out Method Available',
+                    hasSignOut ? 'signOut method is available' : 'signOut method is missing'
+                );
+            }
+
+            async checkNetworkConnectivity() {
+                const endpoints = [
+                    'https://identitytoolkit.googleapis.com',
+                    'https://firestore.googleapis.com',
+                    'https://www.googleapis.com'
+                ];
+
+                for (const endpoint of endpoints) {
+                    try {
+                        const response = await fetch(endpoint, { 
+                            method: 'HEAD',
+                            mode: 'no-cors' // Avoid CORS issues for connectivity test
+                        });
+                        
+                        this.addCheck(
+                            true,
+                            `Network Access: ${endpoint.split('//')[1].split('.')[0]}`,
+                            `Can reach ${endpoint}`
+                        );
+                    } catch (error) {
+                        this.addCheck(
+                            false,
+                            `Network Access: ${endpoint.split('//')[1].split('.')[0]}`,
+                            `Cannot reach ${endpoint}: ${error.message}`
+                        );
+                    }
+                }
+            }
+
+            checkBrowserCompatibility() {
+                const hasLocalStorage = typeof Storage !== 'undefined';
+                const hasIndexedDB = typeof indexedDB !== 'undefined';
+                const hasWebCrypto = typeof crypto !== 'undefined' && typeof crypto.subtle !== 'undefined';
+                const hasPromise = typeof Promise !== 'undefined';
+
+                this.addCheck(
+                    hasLocalStorage,
+                    'Local Storage Support',
+                    hasLocalStorage ? 'Local storage is supported' : 'Local storage is not supported'
+                );
+
+                this.addCheck(
+                    hasIndexedDB,
+                    'IndexedDB Support',
+                    hasIndexedDB ? 'IndexedDB is supported' : 'IndexedDB is not supported'
+                );
+
+                this.addCheck(
+                    hasWebCrypto,
+                    'Web Crypto API Support',
+                    hasWebCrypto ? 'Web Crypto API is supported' : 'Web Crypto API is not supported'
+                );
+
+                this.addCheck(
+                    hasPromise,
+                    'Promise Support',
+                    hasPromise ? 'Promises are supported' : 'Promises are not supported'
+                );
+            }
+
+            checkDomainConfiguration() {
+                const currentDomain = window.location.hostname;
+                const expectedDomains = ['dampdrink.com', 'www.dampdrink.com', 'localhost'];
+                const isDomainExpected = expectedDomains.includes(currentDomain);
+
+                this.addCheck(
+                    isDomainExpected,
+                    'Domain Authorization',
+                    isDomainExpected ? 
+                        `Current domain (${currentDomain}) should be authorized` : 
+                        `Current domain (${currentDomain}) may not be authorized in Firebase Console`
+                );
+            }
+
+            addCheck(success, title, description) {
+                this.checks.push({
+                    success,
+                    title,
+                    description,
+                    type: success ? 'success' : 'error'
+                });
+            }
+
+            displayResults() {
+                const container = document.getElementById('configChecks');
+                const successCount = this.checks.filter(check => check.success).length;
+                const totalCount = this.checks.length;
+
+                let html = `
+                    <div class="check-item ${successCount === totalCount ? 'success' : 'warning'}">
+                        <div class="status-icon ${successCount === totalCount ? 'success' : 'warning'}">
+                            ${successCount === totalCount ? '✓' : '⚠'}
+                        </div>
+                        <div class="details">
+                            <div class="check-title">Configuration Check Summary</div>
+                            <div class="check-description">${successCount}/${totalCount} checks passed</div>
+                        </div>
+                    </div>
+                `;
+
+                this.checks.forEach(check => {
+                    html += `
+                        <div class="check-item ${check.type}">
+                            <div class="status-icon ${check.type}">
+                                ${check.success ? '✓' : '✗'}
+                            </div>
+                            <div class="details">
+                                <div class="check-title">${check.title}</div>
+                                <div class="check-description">${check.description}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+            }
+
+            displayConfigDetails() {
+                const container = document.getElementById('configDetails');
+                
+                const details = {
+                    'Current URL': window.location.href,
+                    'Domain': window.location.hostname,
+                    'Protocol': window.location.protocol,
+                    'User Agent': navigator.userAgent.split(' ').slice(0, 3).join(' ') + '...',
+                    'Firebase Config': this.config,
+                    'Firebase Services': window.firebaseServices ? Object.keys(window.firebaseServices) : 'Not loaded',
+                    'Local Storage': typeof Storage !== 'undefined' ? 'Supported' : 'Not supported',
+                    'Cookies Enabled': navigator.cookieEnabled,
+                    'Online': navigator.onLine
+                };
+
+                container.textContent = JSON.stringify(details, null, 2);
+            }
+        }
+
+        // Test functions
+        async function testEmailPasswordAuth() {
+            const btn = document.getElementById('testAuthBtn');
+            const results = document.getElementById('testResults');
+            
+            btn.disabled = true;
+            btn.textContent = 'Testing...';
+            
+            try {
+                if (!window.firebaseServices?.authService) {
+                    throw new Error('Firebase Auth service not available');
+                }
+
+                const testEmail = `test-${Date.now()}@damptest.com`;
+                const testPassword = 'test123456';
+
+                console.log('🧪 Testing authentication with:', testEmail);
+
+                const result = await window.firebaseServices.authService.signUpWithEmail(testEmail, testPassword, {
+                    firstName: 'Test',
+                    lastName: 'User',
+                    displayName: 'Test User',
+                    newsletter: false,
+                    source: 'config-checker'
+                });
+
+                results.innerHTML = `
+                    <div class="check-item ${result.success ? 'success' : 'error'}">
+                        <div class="status-icon ${result.success ? 'success' : 'error'}">
+                            ${result.success ? '✓' : '✗'}
+                        </div>
+                        <div class="details">
+                            <div class="check-title">Authentication Test ${result.success ? 'Passed' : 'Failed'}</div>
+                            <div class="check-description">${result.message}</div>
+                        </div>
+                    </div>
+                `;
+
+                if (result.success) {
+                    // Clean up - sign out the test user
+                    await window.firebaseServices.authService.signOut();
+                }
+
+            } catch (error) {
+                console.error('Authentication test failed:', error);
+                results.innerHTML = `
+                    <div class="check-item error">
+                        <div class="status-icon error">✗</div>
+                        <div class="details">
+                            <div class="check-title">Authentication Test Failed</div>
+                            <div class="check-description">${error.message}</div>
+                        </div>
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Test Email/Password Authentication';
+            }
+        }
+
+        async function testFirebaseConnection() {
+            const btn = document.getElementById('testConnBtn');
+            const results = document.getElementById('testResults');
+            
+            btn.disabled = true;
+            btn.textContent = 'Testing...';
+
+            try {
+                // Test Firebase REST API directly
+                const apiKey = "AIzaSyCGXLp2Xm1UtPZmjFBKjQDLNGz8J3tZQxs";
+                const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`;
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: `test-${Date.now()}@damptest.com`,
+                        password: 'test123456',
+                        returnSecureToken: true
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    results.innerHTML = `
+                        <div class="check-item success">
+                            <div class="status-icon success">✓</div>
+                            <div class="details">
+                                <div class="check-title">Firebase Connection Test Passed</div>
+                                <div class="check-description">Successfully connected to Firebase Auth API</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    results.innerHTML = `
+                        <div class="check-item error">
+                            <div class="status-icon error">✗</div>
+                            <div class="details">
+                                <div class="check-title">Firebase Connection Test Failed</div>
+                                <div class="check-description">Error: ${data.error?.message || 'Unknown error'}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="check-item error">
+                        <div class="status-icon error">✗</div>
+                        <div class="details">
+                            <div class="check-title">Firebase Connection Test Failed</div>
+                            <div class="check-description">Network error: ${error.message}</div>
+                        </div>
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Test Firebase Connection';
+            }
+        }
+
+        function checkDomainAuth() {
+            const btn = document.getElementById('testDomainBtn');
+            const results = document.getElementById('testResults');
+            
+            const currentDomain = window.location.hostname;
+            const authorizedDomains = [
+                'dampdrink.com',
+                'www.dampdrink.com', 
+                'localhost',
+                'damp-smart-drinkware.netlify.app',
+                'damp-smart-drinkware.firebaseapp.com'
+            ];
+
+            const isAuthorized = authorizedDomains.some(domain => 
+                currentDomain === domain || currentDomain.endsWith(domain)
+            );
+
+            results.innerHTML = `
+                <div class="check-item ${isAuthorized ? 'success' : 'warning'}">
+                    <div class="status-icon ${isAuthorized ? 'success' : 'warning'}">
+                        ${isAuthorized ? '✓' : '⚠'}
+                    </div>
+                    <div class="details">
+                        <div class="check-title">Domain Authorization Check</div>
+                        <div class="check-description">
+                            Current domain: ${currentDomain}<br>
+                            ${isAuthorized ? 
+                                'This domain should be authorized in Firebase Console' : 
+                                'This domain may need to be added to authorized domains in Firebase Console'
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize checker when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.configChecker = new FirebaseConfigChecker();
+        });
+    </script>
+</body>
+</html>
