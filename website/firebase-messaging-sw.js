@@ -9,7 +9,7 @@ importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-comp
 
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "your_firebase_api_key_here", // This will be replaced during build
+    apiKey: "AIzaSyCGXLp2Xm1UtPZmjFBKjQDLNGz8J3tZQxs",
   authDomain: "damp-smart-drinkware.firebaseapp.com",
   projectId: "damp-smart-drinkware",
   storageBucket: "damp-smart-drinkware.firebasestorage.app",
