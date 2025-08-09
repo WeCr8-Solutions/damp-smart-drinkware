@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAMP Firebase Auth Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 400px;
+        }
+        .test-form input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .test-form button {
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .test-form button:hover {
+            background: #0056b3;
+        }
+        .test-form button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-indicator.success {
+            background: #28a745;
+        }
+        .status-indicator.error {
+            background: #dc3545;
+        }
+        .status-indicator.pending {
+            background: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔥 DAMP Firebase Authentication Test</h1>
+    
+    <div class="test-container">
+        <h2>🔧 Firebase Services Status</h2>
+        <div id="firebaseStatus">
+            <div><span class="status-indicator pending"></span>Checking Firebase initialization...</div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>📝 Test Sign Up</h2>
+        <form id="testSignUpForm" class="test-form">
+            <input type="text" id="testFirstName" placeholder="First Name" value="Test" required>
+            <input type="text" id="testLastName" placeholder="Last Name" value="User" required>
+            <input type="email" id="testEmail" placeholder="Email" value="test@example.com" required>
+            <input type="password" id="testPassword" placeholder="Password (min 6 chars)" value="test123" required>
+            <label>
+                <input type="checkbox" id="testNewsletter"> Subscribe to newsletter
+            </label>
+            <label>
+                <input type="checkbox" id="testTerms" required> I agree to terms and conditions
+            </label>
+            <button type="submit" id="signUpBtn">🚀 Test Sign Up</button>
+        </form>
+        <div id="signUpResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>🔑 Test Sign In</h2>
+        <form id="testSignInForm" class="test-form">
+            <input type="email" id="signInEmail" placeholder="Email" value="test@example.com" required>
+            <input type="password" id="signInPassword" placeholder="Password" value="test123" required>
+            <button type="submit" id="signInBtn">🔓 Test Sign In</button>
+        </form>
+        <div id="signInResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>👤 Current User Status</h2>
+        <div id="userStatus">
+            <div><span class="status-indicator pending"></span>Checking authentication state...</div>
+        </div>
+        <button id="signOutBtn" style="display: none; margin-top: 10px; padding: 8px 16px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">🚪 Sign Out</button>
+    </div>
+
+    <div class="test-container">
+        <h2>🧪 Debug Information</h2>
+        <div id="debugInfo" class="result info">
+            Loading debug information...
+        </div>
+    </div>
+
+    <!-- Load Firebase and Auth Scripts -->
+    <script type="module" src="assets/js/firebase-modern-setup.js"></script>
+    <script src="assets/js/firebase-fallback-loader.js"></script>
+    <script src="assets/js/auth-modal.js"></script>
+
+    <script>
+        class FirebaseAuthTester {
+            constructor() {
+                this.authService = null;
+                this.currentUser = null;
+                this.init();
+            }
+
+            async init() {
+                console.log('🔧 Initializing Firebase Auth Tester...');
+                
+                // Wait for Firebase services
+                await this.waitForServices();
+                
+                // Set up event listeners
+                this.setupEventListeners();
+                
+                // Update status displays
+                this.updateFirebaseStatus();
+                this.updateUserStatus();
+                this.updateDebugInfo();
+                
+                // Set up auth state listener
+                if (this.authService) {
+                    this.authService.onAuthStateChange((user) => {
+                        this.currentUser = user;
+                        this.updateUserStatus();
+                    });
+                }
+            }
+
+            async waitForServices() {
+                return new Promise((resolve) => {
+                    const checkServices = () => {
+                        if (window.firebaseServices?.authService) {
+                            this.authService = window.firebaseServices.authService;
+                            console.log('✅ Auth service available');
+                            resolve();
+                        } else {
+                            console.log('⏳ Waiting for Firebase services...');
+                            setTimeout(checkServices, 100);
+                        }
+                    };
+                    checkServices();
+                });
+            }
+
+            setupEventListeners() {
+                // Sign up form
+                document.getElementById('testSignUpForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.testSignUp();
+                });
+
+                // Sign in form
+                document.getElementById('testSignInForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.testSignIn();
+                });
+
+                // Sign out button
+                document.getElementById('signOutBtn').addEventListener('click', async () => {
+                    await this.testSignOut();
+                });
+            }
+
+            async testSignUp() {
+                const resultDiv = document.getElementById('signUpResult');
+                const button = document.getElementById('signUpBtn');
+                
+                button.disabled = true;
+                button.textContent = '⏳ Testing Sign Up...';
+                
+                try {
+                    const firstName = document.getElementById('testFirstName').value;
+                    const lastName = document.getElementById('testLastName').value;
+                    const email = document.getElementById('testEmail').value;
+                    const password = document.getElementById('testPassword').value;
+                    const newsletter = document.getElementById('testNewsletter').checked;
+                    const terms = document.getElementById('testTerms').checked;
+
+                    if (!terms) {
+                        throw new Error('Please accept terms and conditions');
+                    }
+
+                    console.log('🔄 Testing sign up with:', { email, firstName, lastName, newsletter });
+
+                    const result = await this.authService.signUpWithEmail(email, password, {
+                        firstName,
+                        lastName,
+                        displayName: `${firstName} ${lastName}`,
+                        newsletter,
+                        source: 'test'
+                    });
+
+                    console.log('📋 Sign up result:', result);
+
+                    resultDiv.className = result.success ? 'result success' : 'result error';
+                    resultDiv.textContent = JSON.stringify(result, null, 2);
+                    resultDiv.style.display = 'block';
+
+                } catch (error) {
+                    console.error('❌ Sign up test error:', error);
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `Error: ${error.message}`;
+                    resultDiv.style.display = 'block';
+                } finally {
+                    button.disabled = false;
+                    button.textContent = '🚀 Test Sign Up';
+                }
+            }
+
+            async testSignIn() {
+                const resultDiv = document.getElementById('signInResult');
+                const button = document.getElementById('signInBtn');
+                
+                button.disabled = true;
+                button.textContent = '⏳ Testing Sign In...';
+                
+                try {
+                    const email = document.getElementById('signInEmail').value;
+                    const password = document.getElementById('signInPassword').value;
+
+                    console.log('🔄 Testing sign in with:', { email });
+
+                    const result = await this.authService.signInWithEmail(email, password);
+
+                    console.log('📋 Sign in result:', result);
+
+                    resultDiv.className = result.success ? 'result success' : 'result error';
+                    resultDiv.textContent = JSON.stringify(result, null, 2);
+                    resultDiv.style.display = 'block';
+
+                } catch (error) {
+                    console.error('❌ Sign in test error:', error);
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `Error: ${error.message}`;
+                    resultDiv.style.display = 'block';
+                } finally {
+                    button.disabled = false;
+                    button.textContent = '🔓 Test Sign In';
+                }
+            }
+
+            async testSignOut() {
+                try {
+                    const result = await this.authService.signOut();
+                    console.log('📋 Sign out result:', result);
+                } catch (error) {
+                    console.error('❌ Sign out test error:', error);
+                }
+            }
+
+            updateFirebaseStatus() {
+                const statusDiv = document.getElementById('firebaseStatus');
+                
+                const services = window.firebaseServices || {};
+                const status = [];
+                
+                status.push(`<div><span class="status-indicator ${services.authService ? 'success' : 'error'}"></span>Auth Service: ${services.authService ? 'Available' : 'Not Available'}</div>`);
+                status.push(`<div><span class="status-indicator ${services.db ? 'success' : 'error'}"></span>Firestore: ${services.db ? 'Available' : 'Not Available'}</div>`);
+                status.push(`<div><span class="status-indicator ${services.analytics ? 'success' : 'error'}"></span>Analytics: ${services.analytics ? 'Available' : 'Not Available'}</div>`);
+                
+                statusDiv.innerHTML = status.join('');
+            }
+
+            updateUserStatus() {
+                const statusDiv = document.getElementById('userStatus');
+                const signOutBtn = document.getElementById('signOutBtn');
+                
+                if (this.currentUser) {
+                    statusDiv.innerHTML = `
+                        <div><span class="status-indicator success"></span>Signed In</div>
+                        <div><strong>Email:</strong> ${this.currentUser.email}</div>
+                        <div><strong>Display Name:</strong> ${this.currentUser.displayName || 'Not set'}</div>
+                        <div><strong>Email Verified:</strong> ${this.currentUser.emailVerified ? 'Yes' : 'No'}</div>
+                        <div><strong>UID:</strong> ${this.currentUser.uid}</div>
+                    `;
+                    signOutBtn.style.display = 'block';
+                } else {
+                    statusDiv.innerHTML = `<div><span class="status-indicator error"></span>Not signed in</div>`;
+                    signOutBtn.style.display = 'none';
+                }
+            }
+
+            updateDebugInfo() {
+                const debugDiv = document.getElementById('debugInfo');
+                
+                const info = {
+                    'Window Location': window.location.href,
+                    'Firebase Services': Object.keys(window.firebaseServices || {}),
+                    'Auth Service Type': typeof this.authService,
+                    'Current User': this.currentUser ? 'Signed In' : 'Not Signed In',
+                    'Browser': navigator.userAgent.split(') ')[0] + ')',
+                    'Timestamp': new Date().toISOString()
+                };
+                
+                debugDiv.textContent = JSON.stringify(info, null, 2);
+            }
+        }
+
+        // Initialize tester when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.firebaseAuthTester = new FirebaseAuthTester();
+        });
+
+        // Global debug functions
+        window.debugFirebase = () => {
+            console.log('🔧 Firebase Debug Info:');
+            console.log('Services:', window.firebaseServices);
+            console.log('Auth Service:', window.firebaseServices?.authService);
+            console.log('Current User:', window.firebaseServices?.authService?.currentUser);
+            
+            if (window.firebaseFallbackLoader) {
+                console.log('Fallback Loader Status:', window.firebaseFallbackLoader.getStatus());
+            }
+        };
+    </script>
+</body>
+</html>
