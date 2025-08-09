@@ -114,9 +114,27 @@ class ModernFirebaseAuthService {
     try {
       console.log('🔄 Starting modern sign up process...', { email, userData });
       
+      // Enhanced initialization checks
       if (!auth) {
+        console.error('❌ Firebase Auth not initialized');
         throw new Error('Firebase Auth not initialized');
       }
+      
+      if (!app) {
+        console.error('❌ Firebase App not initialized');
+        throw new Error('Firebase App not initialized');
+      }
+      
+      // Validate input parameters
+      if (!email || !password) {
+        throw new Error('Email and password are required');
+      }
+      
+      if (password.length < 6) {
+        throw new Error('Password must be at least 6 characters');
+      }
+      
+      console.log('✅ Pre-checks passed, creating user...');
       
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -167,9 +185,26 @@ class ModernFirebaseAuthService {
       console.error('❌ Sign up error:', error);
       console.error('❌ Error code:', error.code);
       console.error('❌ Error message:', error.message);
+      console.error('❌ Error stack:', error.stack);
+      console.error('❌ Full error object:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
+      
+      // Enhanced error handling
+      let errorMessage = this.getErrorMessage(error.code);
+      
+      // If it's the generic message, provide more details
+      if (errorMessage === 'An error occurred. Please try again.') {
+        if (error.message) {
+          errorMessage = `Error: ${error.message}`;
+        }
+        if (error.code) {
+          errorMessage += ` (Code: ${error.code})`;
+        }
+        console.error('❌ Unhandled error code:', error.code);
+      }
+      
       return {
         success: false,
-        message: this.getErrorMessage(error.code)
+        message: errorMessage
       };
     }
   }
@@ -363,8 +398,27 @@ class ModernFirebaseAuthService {
         return 'Sign-in popup was blocked by your browser.';
       case 'auth/network-request-failed':
         return 'Network error. Please check your connection and try again.';
+      case 'auth/internal-error':
+        return 'An internal error occurred. Please try again.';
+      case 'auth/invalid-api-key':
+        return 'Invalid API key configuration.';
+      case 'auth/app-deleted':
+        return 'Firebase app has been deleted.';
+      case 'auth/app-not-authorized':
+        return 'This app is not authorized to use Firebase Authentication.';
+      case 'auth/argument-error':
+        return 'Invalid argument provided.';
+      case 'auth/invalid-user-token':
+        return 'User token is invalid.';
+      case 'auth/user-token-expired':
+        return 'User token has expired.';
+      case 'auth/web-storage-unsupported':
+        return 'Web storage is not supported in this browser.';
+      case 'auth/already-initialized':
+        return 'Firebase has already been initialized.';
       default:
-        return 'An error occurred. Please try again.';
+        console.warn('❌ Unknown Firebase error code:', errorCode);
+        return `An error occurred. Please try again. ${errorCode ? `(Code: ${errorCode})` : ''}`;
     }
   }
 }
