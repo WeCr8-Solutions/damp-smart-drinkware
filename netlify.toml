@@ -8,6 +8,17 @@
   NODE_VERSION = "18"
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
+# Explicitly disable plugins that shouldn't run
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+  [plugins.inputs]
+    disabled = true
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+  [plugins.inputs]
+    disabled = false
+
 # Enhanced security headers with comprehensive Firebase and Google services support
 [[headers]]
   for = "/*"
@@ -148,14 +159,7 @@
   [context.branch-deploy.environment]
     ENVIRONMENT = "development"
 
-# Redirects for SPA routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  conditions = {Role = ["admin"], Country = ["US"]}
-
-# Force HTTPS
+# Force HTTPS and www redirect
 [[redirects]]
   from = "http://dampdrink.com/*"
   to = "https://dampdrink.com/:splat"
@@ -167,6 +171,18 @@
   to = "https://dampdrink.com/:splat"
   status = 301
   force = true
+
+[[redirects]]
+  from = "https://www.dampdrink.com/*"
+  to = "https://dampdrink.com/:splat"
+  status = 301
+  force = true
+
+# SPA routing fallback (should be last)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 # API redirects for serverless functions
 [[redirects]]
