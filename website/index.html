@@ -1168,49 +1168,14 @@
     <!-- Authentication Styles -->
     <link rel="stylesheet" href="assets/css/auth-styles.css">
     
-    <!-- Firebase Services -->
-    <script type="module">
-        // Import Firebase services for full functionality
-        import { 
-            auth,
-            db,
-            emailService, 
-            analyticsService, 
-            initializeFirebaseServices
-        } from './assets/js/firebase-services.js';
-        
-        // Import authentication service
-        import { DAMPAuthService } from './assets/js/auth-service.js';
-        
-        // Initialize Firebase services and authentication
-        try {
-            await initializeFirebaseServices();
-            
-            // Initialize authentication service
-            const authService = new DAMPAuthService(auth, db, analyticsService);
-            
-            // Make services globally available
-            window.firebaseServices = {
-                auth,
-                db,
-                authService,
-                emailService,
-                analyticsService,
-                initializeFirebaseServices
-            };
-            
-            console.log('✅ Firebase services and authentication loaded');
-        } catch (error) {
-            console.warn('⚠️ Firebase services failed to load:', error);
-            
-            // Fallback for offline mode
-            window.firebaseServices = {
-                authService: null,
-                emailService: null,
-                analyticsService: null
-            };
-        }
-    </script>
+    <!-- Firebase CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics-compat.js"></script>
+    
+    <!-- Firebase Auth Setup -->
+    <script src="assets/js/firebase-auth-setup.js"></script>
     
     <!-- Authentication Modal -->
     <script src="assets/js/auth-modal.js"></script>
