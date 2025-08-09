@@ -510,6 +510,14 @@ class DAMPPerformanceMonitor {
 
     // Send Metrics to Server
     sendMetrics(isBeforeUnload = false) {
+        // Skip sending metrics if no backend endpoint is configured
+        if (!this.options.endpoint || this.options.endpoint === '/api/analytics/performance') {
+            if (this.options.debug) {
+                console.log('📊 Performance metrics collected (backend endpoint not configured):', this.metrics);
+            }
+            return;
+        }
+        
         const metricsData = {
             ...this.metrics,
             sessionInfo: this.getSessionInfo(),

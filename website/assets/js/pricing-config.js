@@ -642,6 +642,10 @@ class DAMPPricingSystem {
     // Reload pricing from server (for admin updates)
     async reloadPricing() {
         try {
+            // Skip API call if no backend pricing endpoint is configured
+            console.log('ℹ️ Pricing reload skipped (static configuration in use)');
+            return;
+            
             const response = await fetch('/api/pricing/config');
             const newConfig = await response.json();
             this.config = newConfig;
