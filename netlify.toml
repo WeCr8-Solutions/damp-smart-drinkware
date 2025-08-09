@@ -8,140 +8,151 @@
   NODE_VERSION = "18"
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
-# Enhanced security headers for professional deployment
+# Enhanced security headers with comprehensive Firebase and Google services support
 [[headers]]
   for = "/*"
   [headers.values]
-    # Content Security Policy - Comprehensive protection with Firebase support
     Content-Security-Policy = """
-      default-src 'self'; 
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' 
-        https://www.googletagmanager.com 
-        https://www.google-analytics.com
-        https://pagead2.googlesyndication.com
-        https://googleads.g.doubleclick.net
-        https://js.stripe.com 
-        https://checkout.stripe.com
-        https://fonts.googleapis.com
+      default-src 'self';
+      base-uri 'self';
+      object-src 'none';
+      frame-ancestors 'self';
+      upgrade-insecure-requests;
+
+      script-src 'self' 'unsafe-inline'
         https://www.gstatic.com
+        https://apis.google.com
         https://*.firebase.com
-        https://*.googleapis.com
-        https://*.firebaseapp.com;
-      script-src-elem 'self' 'unsafe-inline'
-        https://www.gstatic.com
-        https://*.firebase.com
-        https://*.googleapis.com
         https://*.firebaseapp.com
-        https://www.googletagmanager.com 
-        https://www.google-analytics.com
-        https://pagead2.googlesyndication.com
-        https://googleads.g.doubleclick.net
-        https://js.stripe.com 
-        https://checkout.stripe.com; 
-      style-src 'self' 'unsafe-inline' 
-        https://fonts.googleapis.com
-        https://fonts.gstatic.com; 
-      img-src 'self' data: blob: 
+        https://*.googleapis.com
         https://www.googletagmanager.com
         https://www.google-analytics.com
         https://pagead2.googlesyndication.com
-        https://images.unsplash.com
-        https://dampdrink.com; 
-      font-src 'self' 
-        https://fonts.gstatic.com
-        https://fonts.googleapis.com;
-      frame-src 'self' 
-        https://js.stripe.com 
-        https://hooks.stripe.com 
         https://googleads.g.doubleclick.net
-        https://pagead2.googlesyndication.com; 
-      connect-src 'self' 
-        https://www.google-analytics.com
-        https://api.stripe.com
-        https://checkout.stripe.com
-        https://dampdrink.com
+        https://js.stripe.com
+        https://checkout.stripe.com;
+
+      script-src-elem 'self' 'unsafe-inline'
         https://www.gstatic.com
+        https://apis.google.com
         https://*.firebase.com
+        https://*.firebaseapp.com
         https://*.googleapis.com
-        https://identitytoolkit.googleapis.com
+        https://www.googletagmanager.com
+        https://www.google-analytics.com
+        https://pagead2.googlesyndication.com
+        https://googleads.g.doubleclick.net
+        https://js.stripe.com
+        https://checkout.stripe.com;
+
+      connect-src 'self'
+        https://www.google-analytics.com
+        https://www.googletagmanager.com
+        https://firestore.googleapis.com
+        https://firebasestorage.googleapis.com
+        https://fcm.googleapis.com
+        https://firebaseremoteconfig.googleapis.com
         https://securetoken.googleapis.com
+        https://identitytoolkit.googleapis.com
+        https://oauth2.googleapis.com
+        https://www.googleapis.com
         https://ep1.adtrafficquality.google
-        wss://*.firebase.com
-        https://*.dampdrink.com; 
-      object-src 'none'; 
-      base-uri 'self'; 
-      form-action 'self' 
+        https://pagead2.googlesyndication.com
+        https://googleads.g.doubleclick.net
+        https://api.stripe.com
+        wss://*.firebase.com;
+
+      frame-src 'self'
+        https://accounts.google.com
+        https://js.stripe.com
         https://checkout.stripe.com
-        https://formspree.io; 
-      frame-ancestors 'none'; 
-      upgrade-insecure-requests;
+        https://pagead2.googlesyndication.com
+        https://googleads.g.doubleclick.net
+        https://tpc.googlesyndication.com;
+
+      img-src 'self' data: blob:
+        https://www.google-analytics.com
+        https://www.googletagmanager.com
+        https://pagead2.googlesyndication.com
+        https://googleads.g.doubleclick.net
+        https://tpc.googlesyndication.com
+        https://*.gstatic.com
+        https://*.googleusercontent.com
+        https://firebasestorage.googleapis.com
+        https://images.unsplash.com
+        https://dampdrink.com;
+
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+
+      font-src 'self' https://fonts.gstatic.com data:;
+
+      worker-src 'self';
+      manifest-src 'self';
+      media-src 'self' blob:;
+      child-src 'self';
+      form-action 'self' https://checkout.stripe.com https://formspree.io;
     """
-    
-    # Security headers - Professional grade
-    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "accelerometer=(), camera=(), geolocation=(self), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
-    
-    # Performance & caching
-    Cache-Control = "public, max-age=31536000"
-    Vary = "Accept-Encoding"
-    
-    # Additional security
-    Cross-Origin-Embedder-Policy = "require-corp"
-    Cross-Origin-Opener-Policy = "same-origin"
-    Cross-Origin-Resource-Policy = "same-origin"
-
-# HTML files - Shorter cache with security
-[[headers]]
-  for = "/*.html"
-  [headers.values]
-    Cache-Control = "public, max-age=3600, must-revalidate"
-    Content-Security-Policy = """
-      default-src 'self'; 
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' 
-        https://www.googletagmanager.com 
-        https://www.google-analytics.com
-        https://js.stripe.com; 
-      style-src 'self' 'unsafe-inline' 
-        https://fonts.googleapis.com; 
-      img-src 'self' data: blob: 
-        https://www.googletagmanager.com
-        https://dampdrink.com; 
-      font-src 'self' https://fonts.gstatic.com; 
-      connect-src 'self' 
-        https://www.google-analytics.com
-        https://api.stripe.com
-        https://identitytoolkit.googleapis.com
-        https://securetoken.googleapis.com; 
-      upgrade-insecure-requests;
-    """
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
 
 # Static assets - Long cache with immutable
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-    Cross-Origin-Resource-Policy = "cross-origin"
 
-# API routes - No cache with security
+# Images - Long cache
 [[headers]]
-  for = "/api/*"
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+# HTML files - Short cache
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# Service Workers - No cache
+[[headers]]
+  for = "/sw.js"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
-    Pragma = "no-cache"
-    Expires = "0"
-    
-# Font files - CORS enabled
-[[headers]]
-  for = "/assets/fonts/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "application/javascript"
 
-# HTTPS redirects
+[[headers]]
+  for = "/firebase-messaging-sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Content-Type = "application/javascript"
+
+# Staging environment
+[context.deploy-preview]
+  [context.deploy-preview.environment]
+    ENVIRONMENT = "staging"
+
+# Production environment
+[context.production]
+  [context.production.environment]
+    ENVIRONMENT = "production"
+
+# Branch deploys
+[context.branch-deploy]
+  [context.branch-deploy.environment]
+    ENVIRONMENT = "development"
+
+# Redirects for SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"], Country = ["US"]}
+
+# Force HTTPS
 [[redirects]]
   from = "http://dampdrink.com/*"
   to = "https://dampdrink.com/:splat"
@@ -154,33 +165,14 @@
   status = 301
   force = true
 
-# Redirect rules for SEO
+# API redirects for serverless functions
 [[redirects]]
-  from = "/home"
-  to = "/"
-  status = 301
-
-[[redirects]]
-  from = "/index.html"
-  to = "/"
-  status = 301
-
-# 404 page redirect
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
   status = 200
 
-# Form handling for contact forms (if you add them later)
-[build.processing]
-  skip_processing = false
-[build.processing.css]
-  bundle = true
-  minify = true
-[build.processing.js]
-  bundle = true
-  minify = true
-[build.processing.html]
-  pretty_urls = true
-[build.processing.images]
-  compress = true
+# Legacy redirects
+[[redirects]]
+  from = "/old-page"
+  to = "/new-page"
+  status = 301
