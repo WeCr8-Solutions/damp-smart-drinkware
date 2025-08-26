@@ -79,21 +79,31 @@ function setupReactNativeMocks() {
       })),
     })),
     timing: jest.fn(() => ({
-      start: jest.fn((callback) => callback && callback({ finished: true })),
+      start: jest.fn((callback?: ((result: { finished: boolean }) => void) | undefined) => {
+        if (typeof callback === 'function') callback({ finished: true });
+      }),
       stop: jest.fn(),
     })),
     spring: jest.fn(() => ({
-      start: jest.fn((callback) => callback && callback({ finished: true })),
+      start: jest.fn((callback?: ((result: { finished: boolean }) => void) | undefined) => {
+        if (typeof callback === 'function') callback({ finished: true });
+      }),
       stop: jest.fn(),
     })),
     sequence: jest.fn(() => ({
-      start: jest.fn((callback) => callback && callback({ finished: true })),
+      start: jest.fn((callback?: ((result: { finished: boolean }) => void) | undefined) => {
+        if (typeof callback === 'function') callback({ finished: true });
+      }),
     })),
     parallel: jest.fn(() => ({
-      start: jest.fn((callback) => callback && callback({ finished: true })),
+      start: jest.fn((callback?: ((result: { finished: boolean }) => void) | undefined) => {
+        if (typeof callback === 'function') callback({ finished: true });
+      }),
     })),
     decay: jest.fn(() => ({
-      start: jest.fn((callback) => callback && callback({ finished: true })),
+      start: jest.fn((callback?: ((result: { finished: boolean }) => void) | undefined) => {
+        if (typeof callback === 'function') callback({ finished: true });
+      }),
     })),
     loop: jest.fn(() => ({
       start: jest.fn(),
@@ -278,11 +288,11 @@ function setupPlatformMocks() {
       redirected: false,
       bodyUsed: false,
       clone: jest.fn(),
-    } as Response)
+    } as unknown as Response)
   );
 
   // Mock global Headers
-  global.Headers = Headers || class MockHeaders {
+  global.Headers = (Headers as any) || class MockHeaders {
     constructor() {}
     append() {}
     delete() {}
@@ -293,25 +303,40 @@ function setupPlatformMocks() {
   } as any;
 
   // Mock global Request
-  global.Request = Request || class MockRequest {
+  global.Request = (Request as any) || class MockRequest {
     constructor(public url: string) {}
   } as any;
 
   // Mock global Response
-  global.Response = Response || class MockResponse {
+  global.Response = (Response as any) || class MockResponse {
     constructor() {}
   } as any;
 
   // Mock setTimeout/clearTimeout for consistency
-  global.setTimeout = jest.fn((callback, delay) => {
-    return setImmediate(callback);
+  // Use a numeric id return so TypeScript agrees with DOM/Node timer typings
+  global.setTimeout = jest.fn((callback: (...args: any[]) => void, delay?: number) => {
+    const id = (globalThis as any).__test_timer_id = ((globalThis as any).__test_timer_id || 0) + 1;
+    // Invoke callback asynchronously using setImmediate if available, else use Promise
+    if (typeof setImmediate === 'function') {
+      setImmediate(callback as any);
+    } else {
+      Promise.resolve().then(() => callback());
+    }
+    return id as unknown as number;
   }) as any;
-  
-  global.clearTimeout = jest.fn();
 
-  // Mock setInterval/clearInterval
-  global.setInterval = jest.fn();
-  global.clearInterval = jest.fn();
+  global.clearTimeout = jest.fn((id?: number) => {
+    // noop for tests
+  }) as any;
+
+  // Mock setInterval/clearInterval with proper function signatures
+  global.setInterval = jest.fn((handler: TimerHandler, timeout?: number, ...args: any[]) => {
+    // Return a numeric id placeholder
+    return 1 as unknown as number;
+  }) as any;
+  global.clearInterval = jest.fn((id?: number) => {
+    // noop
+  }) as any;
 
   // Mock localStorage for web compatibility
   Object.defineProperty(global, 'localStorage', {
@@ -346,12 +371,16 @@ function setupPerformanceMocks() {
   });
 
   // Mock requestAnimationFrame
-  global.requestAnimationFrame = jest.fn((callback) => {
-    return setTimeout(callback, 16);
+  global.requestAnimationFrame = jest.fn((callback: FrameRequestCallback) => {
+    // Return a numeric id similar to browsers
+    return setTimeout(callback as any, 16) as unknown as number;
   });
 
-  global.cancelAnimationFrame = jest.fn((id) => {
-    clearTimeout(id);
+  global.cancelAnimationFrame = jest.fn((id: number | undefined | null) => {
+    // Ensure we only call clearTimeout for numeric ids
+    if (typeof id === 'number') {
+      clearTimeout(id);
+    }
   });
 
   // Mock IntersectionObserver

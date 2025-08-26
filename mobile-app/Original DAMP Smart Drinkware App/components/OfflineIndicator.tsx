@@ -23,7 +23,6 @@ import {
   CheckCircle,
 } from 'lucide-react-native';
 import NetInfo from '@react-native-community/netinfo';
-import { supabase } from '@/lib/supabase';
 
 interface NetworkStatus {
   isConnected: boolean;
@@ -49,7 +48,7 @@ export default function OfflineIndicator({
     type: 'wifi',
     strength: 100,
   });
-  const [supabaseStatus, setSupabaseStatus] = useState<'connected' | 'disconnected' | 'checking'>('connected');
+  const [serverStatus, setServerStatus] = useState<'connected' | 'disconnected' | 'checking'>('connected');
   const [queuedActions, setQueuedActions] = useState<number>(0);
   const [lastSyncTime, setLastSyncTime] = useState<Date>(new Date());
   
@@ -111,22 +110,23 @@ export default function OfflineIndicator({
   }, [networkStatus.isConnected, networkStatus.isInternetReachable]);
 
   useEffect(() => {
-    // Check Supabase connectivity
-    const checkSupabaseConnection = async () => {
-      setSupabaseStatus('checking');
+    // Check Firestore connectivity via a lightweight heartbeat doc
+    const checkServerConnection = async () => {
+      setServerStatus('checking');
       try {
-        const { error } = await supabase.from('user_profiles').select('id').limit(1);
-        setSupabaseStatus(error ? 'disconnected' : 'connected');
-        if (!error) {
-          setLastSyncTime(new Date());
-        }
+        const { getFirestore, doc, getDoc } = await import('firebase/firestore');
+        const db = getFirestore();
+        const hb = doc(db, 'metadata', 'heartbeat');
+        const snap = await getDoc(hb as any);
+        setServerStatus(snap.exists() ? 'connected' : 'disconnected');
+        if (snap.exists()) setLastSyncTime(new Date());
       } catch {
-        setSupabaseStatus('disconnected');
+        setServerStatus('disconnected');
       }
     };
 
-    const interval = setInterval(checkSupabaseConnection, 30000); // Check every 30 seconds
-    checkSupabaseConnection(); // Initial check
+    const interval = setInterval(checkServerConnection, 30000);
+    checkServerConnection();
 
     return () => clearInterval(interval);
   }, []);
@@ -163,8 +163,8 @@ export default function OfflineIndicator({
     return <Wifi size={20} color="#4CAF50" />;
   };
 
-  const getSupabaseIcon = () => {
-    switch (supabaseStatus) {
+  const getServerIcon = () => {
+    switch (serverStatus) {
       case 'connected':
         return <Cloud size={16} color="#4CAF50" />;
       case 'disconnected':
@@ -225,15 +225,15 @@ export default function OfflineIndicator({
             </View>
 
             <View style={styles.statusItem}>
-              {getSupabaseIcon()}
+              {getServerIcon()}
               <Text style={styles.statusLabel}>Server</Text>
               <Text style={[
                 styles.statusValue,
-                supabaseStatus === 'connected' ? styles.connectedText : 
-                supabaseStatus === 'checking' ? styles.checkingText : styles.disconnectedText
+                serverStatus === 'connected' ? styles.connectedText : 
+                serverStatus === 'checking' ? styles.checkingText : styles.disconnectedText
               ]}>
-                {supabaseStatus === 'connected' ? 'Online' : 
-                 supabaseStatus === 'checking' ? 'Checking' : 'Offline'}
+                {serverStatus === 'connected' ? 'Online' : 
+                 serverStatus === 'checking' ? 'Checking' : 'Offline'}
               </Text>
             </View>
           </View>

@@ -8,10 +8,10 @@ import 'react-native-gesture-handler/jestSetup';
 import '@testing-library/jest-native/extend-expect';
 import 'react-native-url-polyfill/auto';
 import { initializeApp } from 'firebase/app';
-import { connectAuthEmulator, getAuth } from 'firebase/auth';
-import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
-import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
-import { connectStorageEmulator, getStorage } from 'firebase/storage';
+import * as firebaseAuth from 'firebase/auth';
+import * as firebaseFirestore from 'firebase/firestore';
+import * as firebaseFunctions from 'firebase/functions';
+import * as firebaseStorage from 'firebase/storage';
 
 // Firebase Test Configuration
 const firebaseTestConfig = {
@@ -27,18 +27,26 @@ const firebaseTestConfig = {
 const testApp = initializeApp(firebaseTestConfig, 'test-app');
 
 // Connect to Firebase emulators
-const auth = getAuth(testApp);
-const firestore = getFirestore(testApp);
-const functions = getFunctions(testApp);
-const storage = getStorage(testApp);
+const auth = (firebaseAuth as any).getAuth ? (firebaseAuth as any).getAuth(testApp) : (firebaseAuth as any).default?.getAuth?.(testApp);
+const firestore = (firebaseFirestore as any).getFirestore ? (firebaseFirestore as any).getFirestore(testApp) : (firebaseFirestore as any).default?.getFirestore?.(testApp);
+const functions = (firebaseFunctions as any).getFunctions ? (firebaseFunctions as any).getFunctions(testApp) : (firebaseFunctions as any).default?.getFunctions?.(testApp);
+const storage = (firebaseStorage as any).getStorage ? (firebaseStorage as any).getStorage(testApp) : (firebaseStorage as any).default?.getStorage?.(testApp);
 
 // Connect to emulators if running locally
 if (process.env.NODE_ENV === 'test') {
   try {
-    connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
-    connectFirestoreEmulator(firestore, 'localhost', 8080);
-    connectFunctionsEmulator(functions, 'localhost', 5001);
-    connectStorageEmulator(storage, 'localhost', 9199);
+    if ((firebaseAuth as any).connectAuthEmulator) {
+      (firebaseAuth as any).connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+    }
+    if ((firebaseFirestore as any).connectFirestoreEmulator) {
+      (firebaseFirestore as any).connectFirestoreEmulator(firestore, 'localhost', 8080);
+    }
+    if ((firebaseFunctions as any).connectFunctionsEmulator) {
+      (firebaseFunctions as any).connectFunctionsEmulator(functions, 'localhost', 5001);
+    }
+    if ((firebaseStorage as any).connectStorageEmulator) {
+      (firebaseStorage as any).connectStorageEmulator(storage, 'localhost', 9199);
+    }
   } catch (error) {
     // Emulators already connected or not available
     console.log('Firebase emulators connection status:', error);
@@ -50,7 +58,7 @@ jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter');
 jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
 
 // BLE Mock for integration tests
-const mockBleManager = {
+export const mockBleManager: jest.Mocked<Record<string, any>> = {
   state: 'PoweredOn',
   startDeviceScan: jest.fn(),
   stopDeviceScan: jest.fn(),
@@ -61,10 +69,13 @@ const mockBleManager = {
   monitorCharacteristicForDevice: jest.fn(),
   cancelDeviceConnection: jest.fn(),
   destroy: jest.fn()
-};
+} as any;
+
+// Export a typed BleManager mock for tests
+export const BleManagerMock: jest.Mock = jest.fn().mockImplementation(() => mockBleManager as any);
 
 jest.mock('react-native-ble-plx', () => ({
-  BleManager: jest.fn().mockImplementation(() => mockBleManager),
+  BleManager: BleManagerMock,
   Device: jest.fn(),
   Characteristic: jest.fn(),
   Service: jest.fn(),
@@ -149,7 +160,19 @@ jest.mock('expo-notifications', () => ({
 }));
 
 // Enhanced AsyncStorage mock for integration
-const mockAsyncStorage = {
+type MockAsyncStorage = {
+  getItem: (key: string) => Promise<string | null>;
+  setItem: (key: string, value: string) => Promise<void>;
+  removeItem: (key: string) => Promise<void>;
+  clear: () => Promise<void>;
+  getAllKeys: () => Promise<string[]>;
+  multiGet: (keys: string[]) => Promise<Array<[string, string | null]>>;
+  multiSet: (pairs: [string, string][]) => Promise<void>;
+  multiRemove: (keys: string[]) => Promise<void>;
+  _storage: Record<string, string>;
+};
+
+const mockAsyncStorage: MockAsyncStorage = {
   getItem: jest.fn((key: string) => {
     return Promise.resolve(mockAsyncStorage._storage[key] || null);
   }),
@@ -281,7 +304,7 @@ afterAll(async () => {
 expect.extend({
   toHaveBeenCalledWithBleDevice(received: jest.Mock, deviceId: string) {
     const pass = received.mock.calls.some(call => 
-      call.some(arg => typeof arg === 'object' && arg?.id === deviceId)
+      call.some((arg: any) => typeof arg === 'object' && arg?.id === deviceId)
     );
     
     return {

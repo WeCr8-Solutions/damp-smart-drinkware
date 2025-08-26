@@ -28,6 +28,8 @@
     
     // Comprehensive path mappings for circular loop system
     "paths": {
+  "react-native-ble-plx": ["types/react-native-ble-plx-override.d.ts"],
+  "react-native-ble-plx/*": ["types/react-native-ble-plx-override.d.ts"],
       // Root alias
       "@/*": ["./*"],
       
@@ -43,8 +45,8 @@
       "@/types/*": ["./types/*"],
       
       // Services and integrations
-      "@/firebase/*": ["./firebase/*"],
-      "@/supabase/*": ["./supabase/*"],
+  "@/firebase/*": ["./firebase/*"],
+  "@/supabase/*": ["./supabase/*"],
       "@/src/*": ["./src/*"],
       
       // Testing infrastructure
@@ -66,9 +68,10 @@
       "@tests/*": ["./tests/*"],
       
       // Cross-directory references for circular system
-      "@/config": ["./firebase/config.ts", "./lib/supabase.ts"],
-      "@/auth": ["./firebase/auth.ts", "./contexts/AuthContext.tsx"],
-      "@/database": ["./lib/supabase.ts", "./types/supabase.ts"]
+  "@/config": ["./firebase/config.ts"],
+  "@/auth": ["./firebase/auth.ts", "./contexts/AuthContext.tsx"],
+  "@/database": ["./firebase/database.ts", "./types/supabase.ts", "./lib/supabase.ts"],
+  "@/lib/supabase": ["./lib/supabase.ts"]
     },
     
     // Type checking configuration
@@ -98,9 +101,8 @@
     "src/**/*",
     
     // Types and configurations
-    "types/**/*",
-    "firebase/**/*",
-    "supabase/**/*",
+  "types/**/*",
+  "firebase/**/*",
     
     // Testing files
     "tests/**/*",

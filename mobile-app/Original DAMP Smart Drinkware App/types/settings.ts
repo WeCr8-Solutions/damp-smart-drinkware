@@ -1,3 +1,17 @@
+// Minimal settings types
+export interface SettingsState {
+  locale?: string;
+  units?: 'metric' | 'imperial';
+  notificationsEnabled?: boolean;
+  analyticsEnabled?: boolean;
+}
+
+export interface SettingsConfig {
+  defaultLocale: string;
+  defaultUnits: 'metric' | 'imperial';
+}
+
+export default SettingsState;
 /**
  * Settings Types
  * 

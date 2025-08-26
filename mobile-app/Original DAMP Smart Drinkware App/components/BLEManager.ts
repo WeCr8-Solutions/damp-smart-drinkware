@@ -171,5 +171,7 @@ class BLEManager implements BLEManagerInterface {
     }, 30000); // Check every 30 seconds
   }
 }
-
-export const bleManager = new BLEManager();
+  
+// Only export the instance as default to avoid duplicate identifier issues
+const bleManager = new BLEManager();
+export default bleManager;

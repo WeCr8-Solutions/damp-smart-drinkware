@@ -14,6 +14,7 @@ import { settingsStyles } from '@/styles/settings';
 import { BaseModalProps } from '@/types/settings';
 import { STRIPE_PRODUCTS, formatPrice, getIntervalText, type StripeProduct } from '@/src/stripe-config';
 import { auth } from '@/firebase/config';
+import supabase from '@/lib/supabase';
 
 interface SubscriptionModalProps extends BaseModalProps {}
 
@@ -96,30 +97,42 @@ export default function SubscriptionModal({
         return;
       }
 
-      const response = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/stripe-checkout`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Prefer using the Firebase-backed shim's functions.invoke if available
+      if (supabase?.functions?.invoke) {
+        const payload = {
           price_id: product.priceId,
           success_url: `${window.location.origin}/subscription/success`,
           cancel_url: `${window.location.origin}/subscription`,
           mode: product.mode,
-        }),
-      });
+        };
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create checkout session');
-      }
-
-      if (data.url) {
-        window.location.href = data.url;
+        const { data, error } = await supabase.functions.invoke('stripe-checkout', payload);
+        if (error) throw error;
+        if (data?.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error('No checkout URL received');
+        }
       } else {
-        throw new Error('No checkout URL received');
+        // Fallback to legacy Supabase REST function URL if shim not available
+        const response = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/stripe-checkout`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            price_id: product.priceId,
+            success_url: `${window.location.origin}/subscription/success`,
+            cancel_url: `${window.location.origin}/subscription`,
+            mode: product.mode,
+          }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Failed to create checkout session');
+        if (data.url) window.location.href = data.url;
+        else throw new Error('No checkout URL received');
       }
     } catch (err: any) {
       console.error('Checkout error:', err);

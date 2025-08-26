@@ -4,7 +4,8 @@
  * Copyright 2025 WeCr8 Solutions LLC
  */
 
-import { createClient } from '@supabase/supabase-js';
+// Use the local Firebase-backed supabase shim for integration tests
+import supabaseShim from '@/lib/supabase';
 import { integrationTestUtils } from '../../setup/integration-setup';
 
 describe('Firebase Edge Functions Integration', () => {
@@ -661,7 +662,7 @@ describe('Firebase Edge Functions Integration', () => {
         headers: {
           Authorization: `Bearer ${testUser.access_token}`
         }
-      }).catch(err => ({ data: null, error: err }));
+  }).catch((err: any) => ({ data: null, error: err }));
 
       expect(error).toBeTruthy();
       expect(error.code).toBe('TIMEOUT');

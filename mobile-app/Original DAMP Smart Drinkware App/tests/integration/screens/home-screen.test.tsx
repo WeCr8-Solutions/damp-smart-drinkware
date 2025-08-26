@@ -8,16 +8,17 @@ import { render, waitFor, fireEvent, act } from '@testing-library/react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from '@/app/(tabs)/index';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
+import supabase from '@/lib/supabase';
 
 // Mock dependencies
 jest.mock('@/lib/supabase', () => ({
-  supabase: {
+  __esModule: true,
+  default: {
     from: jest.fn(),
     auth: {
       getUser: jest.fn(),
-    },
-  },
+    }
+  }
 }));
 
 jest.mock('@/utils/userProfileManager', () => ({

@@ -16,10 +16,17 @@ if (Platform.OS !== 'web') {
 type BLEContextType = {
   devices: any[];
   connectedDevice: any | null;
+  discoveredDevices: any[];
   startScan: () => void;
   stopScan: () => void;
-  connectToDevice: (deviceId: string) => Promise<void>;
+  connectToDevice: (deviceId: string, timeout?: number) => Promise<void>;
   disconnectFromDevice: () => Promise<void>;
+  // alias expected by tests
+  disconnectDevice: () => Promise<void>;
+  isConnected: boolean;
+  bluetoothState: string;
+  error: string | null;
+  clearError: () => void;
   isScanning: boolean;
   bleManager?: any;
   setConnectedDevice: (device: any | null) => void;
@@ -33,19 +40,37 @@ export const BLEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const managerRef = useRef<any>(null);
   const [devices, setDevices] = useState<any[]>([]);
   const [connectedDevice, setConnectedDevice] = useState<any | null>(null);
+  const [bluetoothState, setBluetoothState] = useState<string>('Unknown');
+  const [error, setError] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const scanSubscription = useRef<any | null>(null);
+  const stateSubscription = useRef<any | null>(null);
 
   useEffect(() => {
     // Only initialize BLE manager on native platforms
     if (Platform.OS !== 'web' && BleManager) {
       managerRef.current = new BleManager();
+      // initial state
+      try {
+        managerRef.current.state?.().then((s: string) => setBluetoothState(s));
+      } catch (e) {
+        // ignore
+      }
+      // subscribe to state changes
+      try {
+        stateSubscription.current = managerRef.current.onStateChange((s: string) => {
+          setBluetoothState(s);
+        });
+      } catch (e) {
+        // ignore
+      }
     }
 
     return () => {
       if (managerRef.current && Platform.OS !== 'web') {
         managerRef.current.destroy();
       }
+  stateSubscription.current?.remove?.();
     };
   }, []);
 
@@ -65,7 +90,7 @@ export const BLEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return true;
   };
 
-  const startScan = async () => {
+  const startScan = async (timeout?: number) => {
     if (Platform.OS === 'web' || !managerRef.current) {
       console.warn('BLE scanning not supported on web platform');
       return;
@@ -77,21 +102,30 @@ export const BLEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setIsScanning(true);
     setDevices([]);
 
-    scanSubscription.current = managerRef.current.startDeviceScan(null, null, (error: any, device: any) => {
-      if (error) {
-        console.warn('Scan error:', error);
-        setIsScanning(false);
-        return;
-      }
+    try {
+      scanSubscription.current = managerRef.current.startDeviceScan(null, null, (error: any, device: any) => {
+        if (error) {
+          console.warn('Scan error:', error);
+          setError((error as any)?.message || String(error));
+          setIsScanning(false);
+          return;
+        }
 
-      if (device && device.name && !devices.find(d => d.id === device.id)) {
-        setDevices(prev => [...prev, device]);
-      }
-    });
+        if (device && device.name && !devices.find(d => d.id === device.id)) {
+          setDevices(prev => [...prev, device]);
+        }
+      });
+    } catch (e) {
+      console.warn('startDeviceScan failed', e);
+      setError((e as any)?.message || String(e));
+      setIsScanning(false);
+      return;
+    }
 
+    const stopAfter = typeof timeout === 'number' ? timeout : 10000;
     setTimeout(() => {
       stopScan();
-    }, 10000); // Stop after 10 seconds
+    }, stopAfter); // Stop after timeout
   };
 
   const stopScan = () => {
@@ -99,24 +133,40 @@ export const BLEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return;
     }
 
-    scanSubscription.current?.remove();
+    scanSubscription.current?.remove?.();
     scanSubscription.current = null;
-    managerRef.current.stopDeviceScan();
+    try {
+      managerRef.current.stopDeviceScan();
+    } catch (e) {
+      // ignore
+    }
     setIsScanning(false);
   };
 
-  const connectToDevice = async (deviceId: string) => {
+  const connectToDevice = async (deviceId: string, timeout?: number) => {
     if (Platform.OS === 'web' || !managerRef.current) {
       console.warn('BLE connection not supported on web platform');
       return;
     }
 
     try {
-      const device = await managerRef.current.connectToDevice(deviceId);
+      const connectPromise = managerRef.current.connectToDevice(deviceId);
+
+      let device;
+      if (typeof timeout === 'number') {
+        device = await Promise.race([
+          connectPromise,
+          new Promise((_, reject) => setTimeout(() => reject(new Error('connection timeout')), timeout)),
+        ]);
+      } else {
+        device = await connectPromise;
+      }
+
       await device.discoverAllServicesAndCharacteristics();
       setConnectedDevice(device);
     } catch (error) {
       console.warn('Connection error:', error);
+      setError(error?.message || String(error));
     }
   };
 
@@ -130,8 +180,14 @@ export const BLEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setConnectedDevice(null);
     } catch (error) {
       console.warn('Disconnection error:', error);
+      setError(error?.message || String(error));
     }
   };
+
+  // Alias expected by tests
+  const disconnectDevice = disconnectFromDevice;
+
+  const clearError = () => setError(null);
 
   const updateDeviceBattery = (deviceId: string, batteryLevel: number) => {
     if (Platform.OS === 'web') return;
@@ -149,24 +205,30 @@ export const BLEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     ));
     
     if (connectedDevice && connectedDevice.id === deviceId) {
-      setConnectedDevice(prev => prev ? { ...prev, rssi } : null);
+      setConnectedDevice((prev: any) => prev ? { ...prev, rssi } : null);
     }
   };
 
   return (
     <BLEContext.Provider
       value={{
-        devices,
-        connectedDevice,
-        startScan,
-        stopScan,
-        connectToDevice,
-        disconnectFromDevice,
-        isScanning,
-        bleManager: managerRef.current,
-        setConnectedDevice,
-        updateDeviceBattery,
-        updateDeviceRSSI,
+  devices,
+  discoveredDevices: devices,
+  connectedDevice,
+  isConnected: !!connectedDevice,
+  startScan,
+  stopScan,
+  connectToDevice,
+  disconnectFromDevice,
+  disconnectDevice,
+  isScanning,
+  bluetoothState,
+  error,
+  clearError,
+  bleManager: managerRef.current,
+  setConnectedDevice,
+  updateDeviceBattery,
+  updateDeviceRSSI,
       }}
     >
       {children}

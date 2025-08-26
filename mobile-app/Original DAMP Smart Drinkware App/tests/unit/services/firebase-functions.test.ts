@@ -5,7 +5,7 @@
  */
 
 import { httpsCallable, getFunctions } from 'firebase/functions';
-import { createClient } from '@supabase/supabase-js';
+import supabase from '@/lib/supabase';
 
 // Mock Firebase Functions
 jest.mock('firebase/functions', () => ({
@@ -13,9 +13,15 @@ jest.mock('firebase/functions', () => ({
   httpsCallable: jest.fn(),
 }));
 
-// Mock Supabase
-jest.mock('@supabase/supabase-js', () => ({
-  createClient: jest.fn(),
+// Mock local supabase shim
+jest.mock('@/lib/supabase', () => ({
+  __esModule: true,
+  default: {
+    functions: { invoke: jest.fn() },
+    auth: { getSession: jest.fn(), getUser: jest.fn(), signOut: jest.fn() },
+    from: jest.fn()
+  },
+  createClient: jest.fn()
 }));
 
 describe('Firebase Functions Integration', () => {
@@ -38,9 +44,11 @@ describe('Firebase Functions Integration', () => {
       },
     };
 
-    (getFunctions as jest.Mock).mockReturnValue(mockFunctions);
-    (httpsCallable as jest.Mock).mockReturnValue(mockHttpsCallable);
-    (createClient as jest.Mock).mockReturnValue(mockSupabase);
+  (getFunctions as jest.Mock).mockReturnValue(mockFunctions);
+  (httpsCallable as jest.Mock).mockReturnValue(mockHttpsCallable);
+  // ensure mocked default shape is returned
+  (require('@/lib/supabase').default as any).functions = mockSupabase.functions;
+  (require('@/lib/supabase').default as any).auth = mockSupabase.auth;
   });
 
   describe('Stripe Checkout Function', () => {
@@ -65,7 +73,7 @@ describe('Firebase Functions Integration', () => {
       });
 
       // Simulate calling the stripe-checkout function
-      const checkoutFunction = httpsCallable(mockFunctions, 'stripe-checkout');
+  const checkoutFunction = httpsCallable(mockFunctions, 'stripe-checkout') as unknown as jest.MockedFunction<any>;
       mockHttpsCallable.mockResolvedValue({ data: mockSession });
 
       const result = await checkoutFunction({
@@ -92,7 +100,7 @@ describe('Firebase Functions Integration', () => {
 
       mockHttpsCallable.mockRejectedValue(mockError);
 
-      const checkoutFunction = httpsCallable(mockFunctions, 'stripe-checkout');
+  const checkoutFunction = httpsCallable(mockFunctions, 'stripe-checkout') as unknown as jest.MockedFunction<any>;
 
       await expect(checkoutFunction({
         success_url: 'https://app.dampdrinkware.com/success',
@@ -110,7 +118,7 @@ describe('Firebase Functions Integration', () => {
 
       mockHttpsCallable.mockRejectedValue(mockError);
 
-      const checkoutFunction = httpsCallable(mockFunctions, 'stripe-checkout');
+  const checkoutFunction = httpsCallable(mockFunctions, 'stripe-checkout') as unknown as jest.MockedFunction<any>;
 
       await expect(checkoutFunction({
         price_id: 'price_test_123',
@@ -128,7 +136,7 @@ describe('Firebase Functions Integration', () => {
 
       mockHttpsCallable.mockResolvedValue({ data: mockSession });
 
-      const checkoutFunction = httpsCallable(mockFunctions, 'stripe-checkout');
+  const checkoutFunction = httpsCallable(mockFunctions, 'stripe-checkout') as unknown as jest.MockedFunction<any>;
 
       const result = await checkoutFunction({
         price_id: 'price_sub_123',
@@ -155,7 +163,7 @@ describe('Firebase Functions Integration', () => {
 
       mockHttpsCallable.mockResolvedValue({ data: mockSession });
 
-      const storeCheckoutFunction = httpsCallable(mockFunctions, 'stripe-store-checkout');
+  const storeCheckoutFunction = httpsCallable(mockFunctions, 'stripe-store-checkout') as unknown as jest.MockedFunction<any>;
 
       const cartItems = [
         {
@@ -195,7 +203,7 @@ describe('Firebase Functions Integration', () => {
 
       mockHttpsCallable.mockRejectedValue(mockError);
 
-      const storeCheckoutFunction = httpsCallable(mockFunctions, 'stripe-store-checkout');
+  const storeCheckoutFunction = httpsCallable(mockFunctions, 'stripe-store-checkout') as unknown as jest.MockedFunction<any>;
 
       await expect(storeCheckoutFunction({
         cart_items: [],
@@ -213,7 +221,7 @@ describe('Firebase Functions Integration', () => {
 
       mockHttpsCallable.mockResolvedValue({ data: mockSession });
 
-      const storeCheckoutFunction = httpsCallable(mockFunctions, 'stripe-store-checkout');
+  const storeCheckoutFunction = httpsCallable(mockFunctions, 'stripe-store-checkout') as unknown as jest.MockedFunction<any>;
 
       const result = await storeCheckoutFunction({
         cart_items: [{ price_id: 'price_test', quantity: 1 }],
@@ -251,7 +259,7 @@ describe('Firebase Functions Integration', () => {
         data: { success: true, processed: true } 
       });
 
-      const webhookFunction = httpsCallable(mockFunctions, 'stripe-webhook');
+  const webhookFunction = httpsCallable(mockFunctions, 'stripe-webhook') as unknown as jest.MockedFunction<any>;
 
       const result = await webhookFunction({
         webhook_payload: mockWebhookPayload,
@@ -284,7 +292,7 @@ describe('Firebase Functions Integration', () => {
         data: { success: true, subscription_created: true } 
       });
 
-      const webhookFunction = httpsCallable(mockFunctions, 'stripe-webhook');
+  const webhookFunction = httpsCallable(mockFunctions, 'stripe-webhook') as unknown as jest.MockedFunction<any>;
 
       const result = await webhookFunction({
         webhook_payload: mockWebhookPayload,
@@ -302,7 +310,7 @@ describe('Firebase Functions Integration', () => {
 
       mockHttpsCallable.mockRejectedValue(mockError);
 
-      const webhookFunction = httpsCallable(mockFunctions, 'stripe-webhook');
+  const webhookFunction = httpsCallable(mockFunctions, 'stripe-webhook') as unknown as jest.MockedFunction<any>;
 
       await expect(webhookFunction({
         webhook_payload: { type: 'test' },
@@ -326,7 +334,7 @@ describe('Firebase Functions Integration', () => {
         data: { success: true, data_id: 'data_123' } 
       });
 
-      const saveDataFunction = httpsCallable(mockFunctions, 'save-sensor-data');
+  const saveDataFunction = httpsCallable(mockFunctions, 'save-sensor-data') as unknown as jest.MockedFunction<any>;
 
       const result = await saveDataFunction(mockSensorData);
 
@@ -350,7 +358,7 @@ describe('Firebase Functions Integration', () => {
 
       mockHttpsCallable.mockRejectedValue(mockError);
 
-      const saveDataFunction = httpsCallable(mockFunctions, 'save-sensor-data');
+  const saveDataFunction = httpsCallable(mockFunctions, 'save-sensor-data') as unknown as jest.MockedFunction<any>;
 
       await expect(saveDataFunction(invalidSensorData)).rejects.toEqual(mockError);
     });
@@ -375,7 +383,7 @@ describe('Firebase Functions Integration', () => {
         data: { success: true, history: mockHistoryData } 
       });
 
-      const getHistoryFunction = httpsCallable(mockFunctions, 'get-device-history');
+  const getHistoryFunction = httpsCallable(mockFunctions, 'get-device-history') as unknown as jest.MockedFunction<any>;
 
       const result = await getHistoryFunction({
         device_id: 'device_123',
@@ -413,7 +421,7 @@ describe('Firebase Functions Integration', () => {
         data: { success: true, analytics: mockAnalytics } 
       });
 
-      const analyticsFunction = httpsCallable(mockFunctions, 'get-analytics');
+  const analyticsFunction = httpsCallable(mockFunctions, 'get-analytics') as unknown as jest.MockedFunction<any>;
 
       const result = await analyticsFunction({
         report_type: 'device_overview',
@@ -441,7 +449,7 @@ describe('Firebase Functions Integration', () => {
         data: { success: true, analytics: mockUserAnalytics } 
       });
 
-      const analyticsFunction = httpsCallable(mockFunctions, 'get-analytics');
+  const analyticsFunction = httpsCallable(mockFunctions, 'get-analytics') as unknown as jest.MockedFunction<any>;
 
       const result = await analyticsFunction({
         report_type: 'user_overview',
@@ -469,7 +477,7 @@ describe('Firebase Functions Integration', () => {
         data: { success: true, profile: mockUserProfile } 
       });
 
-      const createProfileFunction = httpsCallable(mockFunctions, 'create-user-profile');
+  const createProfileFunction = httpsCallable(mockFunctions, 'create-user-profile') as unknown as jest.MockedFunction<any>;
 
       const result = await createProfileFunction({
         email: 'test@dampdrinkware.com',
@@ -491,7 +499,7 @@ describe('Firebase Functions Integration', () => {
         data: { success: true, preferences: updatedPreferences } 
       });
 
-      const updatePrefsFunction = httpsCallable(mockFunctions, 'update-user-preferences');
+  const updatePrefsFunction = httpsCallable(mockFunctions, 'update-user-preferences') as unknown as jest.MockedFunction<any>;
 
       const result = await updatePrefsFunction({
         user_id: 'user_123',
@@ -510,7 +518,7 @@ describe('Firebase Functions Integration', () => {
         } 
       });
 
-      const deleteUserFunction = httpsCallable(mockFunctions, 'delete-user-account');
+  const deleteUserFunction = httpsCallable(mockFunctions, 'delete-user-account') as unknown as jest.MockedFunction<any>;
 
       const result = await deleteUserFunction({
         user_id: 'user_123',
@@ -542,7 +550,7 @@ describe('Firebase Functions Integration', () => {
         } 
       });
 
-      const sendNotificationFunction = httpsCallable(mockFunctions, 'send-notification');
+  const sendNotificationFunction = httpsCallable(mockFunctions, 'send-notification') as unknown as jest.MockedFunction<any>;
 
       const result = await sendNotificationFunction(mockNotification);
 
@@ -567,7 +575,7 @@ describe('Firebase Functions Integration', () => {
         } 
       });
 
-      const scheduleNotificationFunction = httpsCallable(mockFunctions, 'schedule-notification');
+  const scheduleNotificationFunction = httpsCallable(mockFunctions, 'schedule-notification') as unknown as jest.MockedFunction<any>;
 
       const result = await scheduleNotificationFunction(mockSchedule);
 
@@ -585,7 +593,7 @@ describe('Firebase Functions Integration', () => {
 
       mockHttpsCallable.mockRejectedValue(timeoutError);
 
-      const slowFunction = httpsCallable(mockFunctions, 'slow-function');
+  const slowFunction = httpsCallable(mockFunctions, 'slow-function') as unknown as jest.MockedFunction<any>;
 
       await expect(slowFunction({})).rejects.toEqual(timeoutError);
     });
@@ -598,7 +606,7 @@ describe('Firebase Functions Integration', () => {
 
       mockHttpsCallable.mockRejectedValue(networkError);
 
-      const testFunction = httpsCallable(mockFunctions, 'test-function');
+  const testFunction = httpsCallable(mockFunctions, 'test-function') as unknown as jest.MockedFunction<any>;
 
       await expect(testFunction({})).rejects.toEqual(networkError);
     });
@@ -616,7 +624,7 @@ describe('Firebase Functions Integration', () => {
         return Promise.resolve({ data: { success: true } });
       });
 
-      const retryableFunction = httpsCallable(mockFunctions, 'retryable-function');
+  const retryableFunction = httpsCallable(mockFunctions, 'retryable-function') as unknown as jest.MockedFunction<any>;
 
       // Mock retry logic
       let result;
@@ -660,7 +668,7 @@ describe('Firebase Functions Integration', () => {
         } 
       });
 
-      const batchProcessFunction = httpsCallable(mockFunctions, 'batch-process-data');
+  const batchProcessFunction = httpsCallable(mockFunctions, 'batch-process-data') as unknown as jest.MockedFunction<any>;
 
       const startTime = performance.now();
       const result = await batchProcessFunction(largePayload);
@@ -675,7 +683,7 @@ describe('Firebase Functions Integration', () => {
         data: { success: true, timestamp: Date.now() } 
       });
 
-      const testFunction = httpsCallable(mockFunctions, 'concurrent-test');
+  const testFunction = httpsCallable(mockFunctions, 'concurrent-test') as unknown as jest.MockedFunction<any>;
 
       const concurrentCalls = Array.from({ length: 10 }, (_, i) => 
         testFunction({ call_id: i })

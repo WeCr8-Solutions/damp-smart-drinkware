@@ -4,8 +4,8 @@
  */
 
 // Global polyfills for React Native environment
-global.TextEncoder = global.TextEncoder || require('util').TextEncoder;
-global.TextDecoder = global.TextDecoder || require('util').TextDecoder;
+(global as any).TextEncoder = (global as any).TextEncoder || require('util').TextEncoder;
+(global as any).TextDecoder = (global as any).TextDecoder || require('util').TextDecoder;
 
 // Mock performance API for testing
 global.performance = global.performance || {
@@ -18,8 +18,8 @@ global.performance = global.performance || {
 };
 
 // Mock crypto for security tests
-global.crypto = global.crypto || {
-  getRandomValues: (arr) => {
+(global as any).crypto = (global as any).crypto || {
+  getRandomValues: (arr: Uint8Array) => {
     for (let i = 0; i < arr.length; i++) {
       arr[i] = Math.floor(Math.random() * 256);
     }
@@ -28,7 +28,7 @@ global.crypto = global.crypto || {
 };
 
 // Mock requestAnimationFrame
-global.requestAnimationFrame = global.requestAnimationFrame || ((cb) => setTimeout(cb, 16));
+global.requestAnimationFrame = global.requestAnimationFrame || ((cb: FrameRequestCallback) => setTimeout(cb, 16)) as any;
 
 // Mock __DEV__ for development checks
 (global as any).__DEV__ = process.env.NODE_ENV !== 'production';
@@ -41,25 +41,45 @@ if (!process.env.DEBUG) {
 }
 
 // Simple test utilities
-global.testUtils = {
-  wait: (ms) => new Promise(resolve => setTimeout(resolve, ms)),
+(global as any).testUtils = {
+  wait: (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms)),
   
-  waitFor: async (condition, timeout = 5000, interval = 100) => {
+  waitFor: async (condition: () => boolean, timeout = 5000, interval = 100) => {
     const start = Date.now();
     while (!condition() && Date.now() - start < timeout) {
-      await global.testUtils.wait(interval);
+      await (global as any).testUtils.wait(interval);
     }
     if (!condition()) {
       throw new Error(`Condition not met within ${timeout}ms`);
     }
   },
 
-  createMockUser: (overrides = {}) => ({
+  createMockUser: (overrides: any = {}) => ({
     id: 'test-user-123',
     email: 'test@dampdrinkware.com',
     displayName: 'Test User',
     emailVerified: true,
     createdAt: new Date().toISOString(),
+    ...overrides
+  }),
+
+  createMockDevice: (overrides: any = {}) => ({
+    id: 'device-123',
+    name: 'DAMP Test Device',
+    type: 'silicone-bottom',
+    batteryLevel: 85,
+    isConnected: false,
+    lastSeen: new Date().toISOString(),
+    firmwareVersion: '1.0.0',
+    ...overrides
+  }),
+
+  createMockSensorData: (overrides: any = {}) => ({
+    temperature: 72.5,
+    humidity: 45,
+    batteryLevel: 85,
+    timestamp: Date.now(),
+    deviceId: 'device-123',
     ...overrides
   }),
 };

@@ -1,10 +1,14 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { auth } from '@/firebase/config';
-import { User, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, onAuthStateChanged } from 'firebase/auth';
+import authService from '@/firebase/auth';
 import { FeatureFlags } from '@/config/feature-flags';
 
 // Types
-export interface AuthUser extends User {
+export interface AuthUser {
+  uid?: string;
+  email?: string | null;
+  displayName?: string | null;
+  photoURL?: string | null;
   full_name?: string;
   avatar_url?: string;
   subscription_status?: string;
@@ -45,11 +49,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // Listen for auth state changes
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+  // Listen for auth state changes via authService wrapper
+  const unsubscribe = authService.onAuthStateChanged(async (firebaseUser: any) => {
       if (!mounted.current) return;
 
-      if (firebaseUser) {
+  if (firebaseUser) {
         // Convert Firebase user to AuthUser
         const authUser: AuthUser = {
           ...firebaseUser,
@@ -66,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return () => {
       mounted.current = false;
-      unsubscribe();
+      try { unsubscribe(); } catch (e) { /* noop */ }
     };
   }, []);
 
@@ -76,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await authService.signInWithEmail(email, password);
       return { error: null };
     } catch (error) {
       return { error };
@@ -89,16 +93,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
-      
-      // TODO: Create user profile in Firestore if needed
-      if (userData?.full_name && result.user) {
-        // Update display name
-        await result.user.updateProfile({
-          displayName: userData.full_name
-        });
+      await authService.signUpWithEmail(email, password);
+      // Optionally update profile using wrapper
+      if (userData?.full_name) {
+        try {
+          await authService.updateProfile({ displayName: userData.full_name });
+        } catch (e) {
+          // ignore profile update failure
+        }
       }
-      
       return { error: null };
     } catch (error) {
       return { error };
@@ -111,7 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      await signOut(auth);
+      await authService.signOut();
       return { error: null };
     } catch (error) {
       return { error };
@@ -119,16 +122,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const handleUpdateProfile = async (updates: Partial<UserProfile>) => {
-    if (!FeatureFlags.FIREBASE || !auth.currentUser) {
+    if (!FeatureFlags.FIREBASE || !authService.getCurrentUser()) {
       return { error: new Error('Firebase disabled or no user') };
     }
 
     try {
       // Update Firebase Auth profile
       if (updates.full_name !== undefined) {
-        await auth.currentUser.updateProfile({
-          displayName: updates.full_name || null
-        });
+        await authService.updateProfile({ displayName: updates.full_name || undefined });
       }
 
       // TODO: Update Firestore user profile document
@@ -145,7 +146,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      await sendPasswordResetEmail(auth, email);
+      await authService.sendPasswordReset(email);
       return { error: null };
     } catch (error) {
       return { error };
@@ -153,7 +154,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const handleRefreshSession = async () => {
-    if (!FeatureFlags.FIREBASE || !auth.currentUser) {
+  if (!FeatureFlags.FIREBASE || !authService.getCurrentUser()) {
       return { error: new Error('Firebase disabled or no user') };
     }
 

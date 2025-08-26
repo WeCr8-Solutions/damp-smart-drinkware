@@ -6,6 +6,8 @@
  */
 
 import { auth, db } from '@/firebase/config';
+// Use the Firebase-backed supabase shim for compatibility with legacy code/tests
+import supabase from '@/lib/supabase';
 import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { FeatureFlags } from '@/config/feature-flags';
 import { AuthUser } from '@/contexts/AuthContext';
@@ -187,7 +189,8 @@ function cleanUserPreferences(preferences: any): { notifications: boolean; theme
 /**
  * Validates and cleans user data, removing template/placeholder values
  */
-export function validateAndCleanUserData(userData: Partial<AuthUser>): UserDataValidation {
+// TODO: tighten this type to the app's AuthUser shape after migrating off Supabase
+export function validateAndCleanUserData(userData: Partial<any>): UserDataValidation {
   const cleanedData: Partial<CleanUserProfile> = {};
   const removedFields: string[] = [];
   const warnings: string[] = [];
@@ -256,7 +259,7 @@ export function validateAndCleanUserData(userData: Partial<AuthUser>): UserDataV
  */
 export async function createOrUpdateCleanUserProfile(
   userId: string,
-  userData: Partial<AuthUser>
+  userData: Partial<any>
 ): Promise<{ success: boolean; data?: CleanUserProfile; error?: string; warnings?: string[] }> {
   try {
     // Validate and clean the user data

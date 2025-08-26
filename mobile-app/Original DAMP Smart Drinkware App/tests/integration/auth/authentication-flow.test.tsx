@@ -9,7 +9,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import LoginScreen from '@/app/auth/login';
 import SignupScreen from '@/app/auth/signup';
-import { supabase } from '@/lib/supabase';
+import supabase from '@/lib/supabase';
 
 // Mock Supabase
 const mockSupabase = {
@@ -26,7 +26,8 @@ const mockSupabase = {
 };
 
 jest.mock('@/lib/supabase', () => ({
-  supabase: mockSupabase,
+  __esModule: true,
+  default: mockSupabase,
 }));
 
 // Mock expo-router

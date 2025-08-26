@@ -141,9 +141,29 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   multiRemove: jest.fn(() => Promise.resolve())
 }));
 
-// Mock Supabase
-jest.mock('@supabase/supabase-js', () => ({
-  createClient: jest.fn(() => ({
+// Mock the local Supabase shim so tests use the Firebase-backed implementation
+jest.mock('@/lib/supabase', () => {
+  const tableMock = {
+    select: jest.fn().mockReturnThis(),
+    insert: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+    delete: jest.fn().mockReturnThis(),
+    eq: jest.fn().mockReturnThis(),
+    filter: jest.fn().mockReturnThis(),
+    order: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+    single: jest.fn(),
+    maybeSingle: jest.fn()
+  };
+
+  const storageFromMock = {
+    upload: jest.fn(),
+    download: jest.fn(),
+    remove: jest.fn(),
+    getPublicUrl: jest.fn()
+  };
+
+  const supabaseLike = {
     auth: {
       signUp: jest.fn(),
       signInWithPassword: jest.fn(),
@@ -152,28 +172,18 @@ jest.mock('@supabase/supabase-js', () => ({
       getUser: jest.fn(),
       onAuthStateChange: jest.fn()
     },
-    from: jest.fn(() => ({
-      select: jest.fn().mockReturnThis(),
-      insert: jest.fn().mockReturnThis(),
-      update: jest.fn().mockReturnThis(),
-      delete: jest.fn().mockReturnThis(),
-      eq: jest.fn().mockReturnThis(),
-      filter: jest.fn().mockReturnThis(),
-      order: jest.fn().mockReturnThis(),
-      limit: jest.fn().mockReturnThis(),
-      single: jest.fn(),
-      maybeSingle: jest.fn()
-    })),
+    from: jest.fn(() => tableMock),
     storage: {
-      from: jest.fn(() => ({
-        upload: jest.fn(),
-        download: jest.fn(),
-        remove: jest.fn(),
-        getPublicUrl: jest.fn()
-      }))
+      from: jest.fn(() => storageFromMock)
     }
-  }))
-}));
+  };
+
+  return {
+    // support both `import supabase from '@/lib/supabase'` and `import { createClient } from '@supabase/supabase-js'` patterns
+    default: supabaseLike,
+    createClient: jest.fn(() => supabaseLike)
+  };
+});
 
 // Global test configuration
 global.console = {

@@ -21,19 +21,24 @@ export function useBLE() {
     stopScan,
     connectToDevice,
     disconnectFromDevice,
+    disconnectDevice,
     bleManager,
     setConnectedDevice,
     updateDeviceBattery,
-    updateDeviceRSSI
+    updateDeviceRSSI,
+    bluetoothState,
+    error,
+    clearError,
+    isConnected,
   } = useBLEContext();
 
   // 🔁 Poll RSSI every 3 seconds (only on native platforms)
   useEffect(() => {
     if (Platform.OS === 'web') return;
 
-    let rssiInterval: NodeJS.Timeout | null = null;
+  let rssiInterval: ReturnType<typeof setInterval> | null = null;
 
-    if (connectedDevice && bleManager) {
+  if (connectedDevice && bleManager) {
       rssiInterval = setInterval(async () => {
         try {
           const updatedDevice = await bleManager.readRSSIForDevice(connectedDevice.id);
@@ -66,8 +71,11 @@ export function useBLE() {
             for (const char of characteristics) {
               if (char.uuid.toLowerCase().includes('2a19')) {
                 const batteryData = await char.read();
+                const g: any = (globalThis as any) || {};
                 const batteryLevel = batteryData.value
-                  ? Buffer.from(batteryData.value, 'base64')[0]
+                  ? (typeof g.Buffer !== 'undefined'
+                      ? g.Buffer.from(batteryData.value, 'base64')[0]
+                      : 0)
                   : 0;
                 updateDeviceBattery(connectedDevice.id, batteryLevel);
               }
@@ -90,7 +98,7 @@ export function useBLE() {
       connectedDevice.id,
       (error: any, device: any) => {
         if (error) {
-          console.warn('Disconnection error:', error.message);
+          console.warn('Disconnection error:', (error && (error as any).message) || error);
         }
         setConnectedDevice(null);
       }
@@ -100,12 +108,34 @@ export function useBLE() {
   }, [connectedDevice, bleManager, setConnectedDevice]);
 
   return {
+    // Expose properties/tests expect
+    discoveredDevices: devices,
     devices,
     connectedDevice,
     isScanning,
+    isConnected,
+    bluetoothState,
+    error,
+    clearError,
     startScan,
     stopScan,
+    // connectToDevice supports optional timeout param in provider
     connectToDevice,
+    // Provide both names for disconnect
     disconnectFromDevice,
+    disconnectDevice,
+    // Characteristic wrappers used by BLEManager component
+    async readCharacteristic(serviceUUID: string, characteristicUUID: string) {
+      if (!connectedDevice || !bleManager) throw new Error('not connected');
+      return bleManager.readCharacteristicForDevice(connectedDevice.id, serviceUUID, characteristicUUID);
+    },
+    async writeCharacteristic(serviceUUID: string, characteristicUUID: string, base64Value: string) {
+      if (!connectedDevice || !bleManager) throw new Error('not connected');
+      return bleManager.writeCharacteristicWithResponseForDevice(connectedDevice.id, serviceUUID, characteristicUUID, base64Value);
+    },
+    monitorCharacteristic(serviceUUID: string, characteristicUUID: string, listener: (error: any, characteristic: any) => void) {
+      if (!connectedDevice || !bleManager) throw new Error('not connected');
+      return bleManager.monitorCharacteristicForDevice(connectedDevice.id, serviceUUID, characteristicUUID, listener);
+    }
   };
 }

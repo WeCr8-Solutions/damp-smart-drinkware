@@ -31,6 +31,7 @@ import BaseModal from './BaseModal';
 import CategorySlider from '@/components/CategorySlider';
 import { BaseModalProps } from '@/types/settings';
 import { auth } from '@/firebase/config';
+import supabase from '@/lib/supabase';
 
 interface StoreModalProps extends BaseModalProps {}
 
@@ -260,13 +261,9 @@ export default function StoreModal({ visible, onClose }: StoreModalProps) {
         quantity: item.quantity,
       }));
 
-      const response = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/stripe-store-checkout`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Prefer Firebase-backed shim's functions.invoke
+      if (supabase?.functions?.invoke) {
+        const payload = {
           line_items: lineItems,
           success_url: `${window.location.origin}/store/success`,
           cancel_url: `${window.location.origin}/store`,
@@ -279,19 +276,40 @@ export default function StoreModal({ visible, onClose }: StoreModalProps) {
               price: item.price
             }))),
           },
-        }),
-      });
+        };
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create checkout session');
-      }
-
-      if (data.url) {
-        window.location.href = data.url;
+        const { data, error } = await supabase.functions.invoke('stripe-store-checkout', payload);
+        if (error) throw error;
+        if (data?.url) window.location.href = data.url;
+        else throw new Error('No checkout URL received');
       } else {
-        throw new Error('No checkout URL received');
+        const response = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/stripe-store-checkout`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            line_items: lineItems,
+            success_url: `${window.location.origin}/store/success`,
+            cancel_url: `${window.location.origin}/store`,
+            mode: 'payment',
+            metadata: {
+              cart_items: JSON.stringify(cart.map(item => ({
+                id: item.id,
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price
+              }))),
+            },
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.error || 'Failed to create checkout session');
+        if (data.url) window.location.href = data.url;
+        else throw new Error('No checkout URL received');
       }
     } catch (err: any) {
       console.error('Checkout error:', err);

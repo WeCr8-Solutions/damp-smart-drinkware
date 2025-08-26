@@ -10,8 +10,8 @@ import 'react-native-url-polyfill/auto';
 
 // Global polyfills
 import { TextEncoder, TextDecoder } from 'util';
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
+(global as any).TextEncoder = TextEncoder as any;
+(global as any).TextDecoder = TextDecoder as any;
 
 // Mock console methods to reduce test noise unless DEBUG is set
 if (!process.env.DEBUG) {
@@ -112,8 +112,8 @@ global.performance = global.performance || {
 };
 
 // Mock crypto for security tests
-global.crypto = global.crypto || {
-  getRandomValues: jest.fn((arr) => {
+(global as any).crypto = (global as any).crypto || {
+  getRandomValues: jest.fn((arr: Uint8Array) => {
     for (let i = 0; i < arr.length; i++) {
       arr[i] = Math.floor(Math.random() * 256);
     }
@@ -290,7 +290,7 @@ expect.extend({
 });
 
 // TypeScript integration test utilities
-global.typeValidationUtils = {
+(global as any).typeValidationUtils = {
   validateCircularReferences: () => {
     // Test that all major types can be imported without circular dependency issues
     try {
@@ -329,10 +329,10 @@ global.typeValidationUtils = {
   },
 
   testTypeConnectivity: () => {
-    return global.typeValidationUtils.validateCircularReferences() && 
-           global.typeValidationUtils.validatePathMappings();
+    return (global as any).typeValidationUtils.validateCircularReferences() && 
+           (global as any).typeValidationUtils.validatePathMappings();
   }
-};
+} as any;
 
 // Clean up after all tests
 afterAll(() => {
