@@ -2,7 +2,7 @@
 // This example shows how to handle pre-orders with proper authorization
 
 const express = require('express');
-const stripe = require('stripe')('sk_test_your_stripe_secret_key_here'); // Replace with your secret key
+const stripe = require('stripe')('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'); // Live Stripe secret key
 const cors = require('cors');
 const app = express();
 

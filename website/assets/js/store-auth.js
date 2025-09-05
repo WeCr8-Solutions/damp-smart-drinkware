@@ -760,7 +760,7 @@ class DAMPStoreAuth {
 
   getStripePublicKey() {
     // Return your Stripe publishable key
-    return 'pk_test_your_stripe_publishable_key'; // Replace with actual key
+    return 'pk_live_51ReW7yCcrIDahSGRjE5nEx9ENwPj8uzAfCJQtmVBkuEyeS7JNq0xscaAqdUFoKos7JO1cKbJXrIscBfUU4yNRQSy00lWo3F7p2'; // Live Stripe key
   }
 
   formatOrderStatus(status) {

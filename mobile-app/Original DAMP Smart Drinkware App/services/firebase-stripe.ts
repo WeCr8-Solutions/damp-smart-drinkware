@@ -70,7 +70,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     name: 'Basic',
     price: 4.99,
     interval: 'month',
-    stripePriceId: 'price_basic_monthly',
+    stripePriceId: 'price_1S48fwCcrIDahSGR9F8vyYIi', // Real Stripe Price ID
     features: [
       'Up to 3 devices',
       'Basic analytics',
@@ -83,7 +83,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     name: 'Premium',
     price: 9.99,
     interval: 'month',
-    stripePriceId: 'price_premium_monthly',
+    stripePriceId: 'price_1S48fwCcrIDahSGRE9ekpMMN', // Real Stripe Price ID
     features: [
       'Unlimited devices',
       'Advanced analytics',
@@ -98,7 +98,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     name: 'Premium (Yearly)',
     price: 99.99,
     interval: 'year',
-    stripePriceId: 'price_premium_yearly',
+    stripePriceId: 'price_1S48fwCcrIDahSGRlsoMMVhI', // Real Stripe Price ID
     features: [
       'All Premium features',
       '2 months free',

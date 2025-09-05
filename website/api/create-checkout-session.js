@@ -8,25 +8,25 @@ const products = {
     'damp-handle': {
         name: 'DAMP Handle v1.0',
         price: 4999, // $49.99 in cents
-        priceId: 'price_1234567890abcdef', // Replace with actual Stripe Price ID
+        priceId: 'price_1S48XMCZeyNgKG0bWTObUO1r', // DAMP Handle Price ID
         description: 'Universal BLE attachment for existing mugs'
     },
     'silicone-bottom': {
         name: 'DAMP Silicone Bottom',
         price: 2999, // $29.99 in cents
-        priceId: 'price_abcdef1234567890', // Replace with actual Stripe Price ID
+        priceId: 'price_1S48XUCZeyNgKG0bDRInyh6V', // DAMP Silicone Bottom Price ID
         description: 'Smart silicone base with BLE technology'
     },
     'cup-sleeve': {
         name: 'DAMP Cup Sleeve',
         price: 3499, // $34.99 in cents
-        priceId: 'price_fedcba0987654321', // Replace with actual Stripe Price ID
+        priceId: 'price_1S48XbCZeyNgKG0bB423IVQt', // DAMP Cup Sleeve Price ID
         description: 'Flexible silicone sleeve with sensors'
     },
     'baby-bottle': {
         name: 'DAMP Baby Bottle',
         price: 7999, // $79.99 in cents
-        priceId: 'price_123456789abcdef0', // Replace with actual Stripe Price ID
+        priceId: 'price_1S48XcCZeyNgKG0bAtYWvcsR', // DAMP Baby Bottle Price ID
         description: 'BPA-free smart baby bottle'
     }
 };

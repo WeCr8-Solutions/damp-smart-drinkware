@@ -7,9 +7,9 @@ import {
   Image,
   ActivityIndicator,
   Alert,
-  Dimensions,
   StyleSheet,
 } from 'react-native';
+import Dimensions from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
@@ -501,84 +501,90 @@ export default function StoreModal({ visible, onClose }: StoreModalProps) {
       presentationStyle="fullScreen"
     >
       <LinearGradient colors={['#E0F7FF', '#F8FCFF']} style={styles.container} testID="store-modal">
-        <SafeAreaView style={styles.safeArea} edges={['bottom']}>
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <Text style={styles.storeTitle}>DAMP Store</Text>
-              <Text style={styles.storeSubtitle}>Premium smart drinkware</Text>
-            </View>
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-              <X size={24} color="#0277BD" />
-            </TouchableOpacity>
-          </View>
-
-          {/* Categories - Using the reusable CategorySlider component */}
-          <View testID="categories-container">
-            <CategorySlider
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
-            />
-          </View>
-
-          {/* Products */}
-          <ScrollView
-            style={styles.productsContainer}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.productsContent}
-          >
-            <View style={styles.productsGrid}>
-              {filteredProducts.map(renderProductCard)}
-            </View>
-          </ScrollView>
-
-          {/* Cart Summary */}
-          {cart.length > 0 && (
-            <View style={styles.cartSummary} testID="cart-summary">
-              <LinearGradient
-                colors={['#0277BD', '#0288D1']}
-                style={styles.cartSummaryGradient}
-              >
-                <View style={styles.cartInfo}>
-                  <View style={styles.cartDetails}>
-                    <Text style={styles.cartItemCount} testID="cart-item-count">
-                      {getCartItemCount()} item{getCartItemCount() > 1 ? 's' : ''}
-                    </Text>
-                    <Text style={styles.cartTotal} testID="cart-total">
-                      ${getCartTotal().toFixed(2)}
-                    </Text>
-                  </View>
-                  <View style={styles.cartBenefits}>
-                    <View style={styles.benefit}>
-                      <Shield size={12} color="#FFFFFF" />
-                      <Text style={styles.benefitText}>Secure</Text>
-                    </View>
-                    <View style={styles.benefit}>
-                      <Truck size={12} color="#FFFFFF" />
-                      <Text style={styles.benefitText}>Free Ship $50+</Text>
-                    </View>
-                  </View>
+        <View style={{ flex: 1 }}>
+          {/* Move SafeAreaView style to a wrapping View */}
+          <View style={styles.safeArea}>
+            <SafeAreaView edges={['bottom']}>
+              {/* Header */}
+              <View style={styles.header}>
+                <View style={styles.headerLeft}>
+                  <Text style={styles.storeTitle}>DAMP Store</Text>
+                  <Text style={styles.storeSubtitle}>Premium smart drinkware</Text>
                 </View>
-                <TouchableOpacity
-                  style={styles.checkoutButton}
-                  onPress={handleCheckout}
-                  disabled={checkoutLoading}
-                  testID="checkout-button"
-                >
-                  {checkoutLoading ? (
-                    <ActivityIndicator size="small" color="#0277BD" />
-                  ) : (
-                    <>
-                      <CreditCard size={20} color="#0277BD" />
-                      <Text style={styles.checkoutButtonText}>Checkout</Text>
-                    </>
-                  )}
+                <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                  <X size={24} color="#0277BD" />
                 </TouchableOpacity>
-              </LinearGradient>
-            </View>
-          )}
-        </SafeAreaView>
+              </View>
+
+              {/* Categories - Using the reusable CategorySlider component */}
+              <View testID="categories-container">
+                <CategorySlider
+                  categories={categories}
+                  selectedCategory={selectedCategory}
+                  onSelectCategory={setSelectedCategory}
+                />
+              </View>
+
+              {/* Products */}
+              <ScrollView
+                style={styles.productsContainer}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.productsContent}
+              >
+                <View style={styles.productsGrid}>
+                  {filteredProducts.map(renderProductCard)}
+                </View>
+              </ScrollView>
+
+              {/* Cart Summary */}
+              {cart.length > 0 && (
+                <View style={styles.cartSummary} testID="cart-summary">
+                  <LinearGradient
+                    colors={['#0277BD', '#0288D1']}
+                    style={styles.cartSummaryGradient}
+                  >
+                    {/* Children go inside LinearGradient */}
+                    <View style={styles.cartInfo}>
+                      <View style={styles.cartDetails}>
+                        <Text style={styles.cartItemCount} testID="cart-item-count">
+                          {getCartItemCount()} item{getCartItemCount() > 1 ? 's' : ''}
+                        </Text>
+                        <Text style={styles.cartTotal} testID="cart-total">
+                          ${getCartTotal().toFixed(2)}
+                        </Text>
+                      </View>
+                      <View style={styles.cartBenefits}>
+                        <View style={styles.benefit}>
+                          <Shield size={12} color="#FFFFFF" />
+                          <Text style={styles.benefitText}>Secure</Text>
+                        </View>
+                        <View style={styles.benefit}>
+                          <Truck size={12} color="#FFFFFF" />
+                          <Text style={styles.benefitText}>Free Ship $50+</Text>
+                        </View>
+                      </View>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.checkoutButton}
+                      onPress={handleCheckout}
+                      disabled={checkoutLoading}
+                      testID="checkout-button"
+                    >
+                      {checkoutLoading ? (
+                        <ActivityIndicator size="small" color="#0277BD" />
+                      ) : (
+                        <>
+                          <CreditCard size={20} color="#0277BD" />
+                          <Text style={styles.checkoutButtonText}>Checkout</Text>
+                        </>
+                      )}
+                    </TouchableOpacity>
+                  </LinearGradient>
+                </View>
+              )}
+            </SafeAreaView>
+          </View>
+        </View>
       </LinearGradient>
     </BaseModal>
   );
