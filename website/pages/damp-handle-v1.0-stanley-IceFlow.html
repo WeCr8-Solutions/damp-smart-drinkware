@@ -722,7 +722,9 @@
                 DAMP compatibility with IceFlow™ series available in Q2 2025.
             </p>
             <div class="cta-buttons">
-                <a href="pre-sale-funnel.html" class="cta-primary">Pre-Order DAMP ($29.99)</a>
+                <button onclick="preOrderProduct('damp-handle-stanley-iceflow')" class="cta-primary" id="preorder-btn">
+                    Pre-Order DAMP Stanley IceFlow ($29.99)
+                </button>
                 <a href="damp-handle-v1.0-stanley.html" class="cta-secondary">View All Stanley Products</a>
             </div>
         </div>
@@ -882,5 +884,96 @@
         const pwaStyles = document.createElement('style');
         pwaStyles.textContent = '@keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } } @media (display-mode: standalone) { body { padding-top: env(safe-area-inset-top); } }';
         document.head.appendChild(pwaStyles);
-    </script></body>
+    </script>
+
+    <!-- Stripe Integration -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Initialize Stripe
+        const stripe = Stripe('pk_test_51QgOvnCYcNLHJqhHbI7Vl2QzjZUyJHZhDqvOxYFnEGzRlN8yYKhUkYTtJvWxNxZoUiHgFdScEqRpMnLkJiHgFdScEqRpMnLkJiHgFdScE'); // Replace with your publishable key
+        
+        // Product configuration for Stanley IceFlow DAMP Handle
+        const productConfig = {
+            'damp-handle-stanley-iceflow': {
+                name: 'DAMP Handle - Stanley IceFlow Compatible',
+                price: 2999, // $29.99 in cents
+                description: 'Smart handle attachment for Stanley IceFlow tumblers. Never lose your drink again!',
+                images: ['https://dampdrink.com/assets/images/products/damp-handle-stanley-iceflow.png']
+            }
+        };
+
+        // Pre-order function with direct Stripe integration
+        async function preOrderProduct(productId) {
+            const product = productConfig[productId];
+            if (!product) {
+                alert('Product not found. Please try again.');
+                return;
+            }
+
+            const button = document.getElementById('preorder-btn');
+            const originalText = button.textContent;
+            
+            try {
+                // Disable button and show loading
+                button.disabled = true;
+                button.textContent = 'Processing...';
+                
+                // Create checkout session
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                        quantity: 1,
+                        productName: product.name,
+                        unitAmount: product.price,
+                        images: product.images
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create checkout session');
+                }
+
+                const { sessionId } = await response.json();
+
+                // Redirect to Stripe Checkout
+                const { error } = await stripe.redirectToCheckout({ sessionId });
+                
+                if (error) {
+                    throw new Error(error.message);
+                }
+
+            } catch (error) {
+                console.error('Checkout error:', error);
+                alert('Unable to process checkout. Please try again or contact support.');
+                
+                // Re-enable button
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        }
+
+        // Track analytics
+        function trackPreOrder(productId) {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'pre_order_attempt', {
+                    product_id: productId,
+                    product_name: productConfig[productId]?.name || productId,
+                    value: productConfig[productId]?.price / 100 || 0,
+                    currency: 'USD'
+                });
+            }
+        }
+
+        // Enhanced pre-order with analytics
+        const originalPreOrder = preOrderProduct;
+        preOrderProduct = function(productId) {
+            trackPreOrder(productId);
+            return originalPreOrder(productId);
+        };
+    </script>
+</body>
 </html>

@@ -608,5 +608,140 @@
             });
         }
     </script>
+
+    <!-- Stripe Integration -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Initialize Stripe
+        const stripe = Stripe('pk_test_51QgOvnCYcNLHJqhHbI7Vl2QzjZUyJHZhDqvOxYFnEGzRlN8yYKhUkYTtJvWxNxZoUiHgFdScEqRpMnLkJiHgFdScEqRpMnLkJiHgFdScE'); // Replace with your publishable key
+
+        // Product configurations for Stripe
+        const storeProducts = {
+            'handle': {
+                name: 'DAMP Handle',
+                price: 4999, // $49.99 in cents
+                description: 'Smart handle attachment for bottles and tumblers',
+                images: ['https://dampdrink.com/assets/images/products/handle/handle.png']
+            },
+            'siliconeBottom': {
+                name: 'DAMP Silicone Bottom',
+                price: 2999, // $29.99 in cents
+                description: 'Smart silicone base for any flat-bottomed container',
+                images: ['https://dampdrink.com/assets/images/products/silicone-bottom/silicone-bottom.png']
+            },
+            'cupSleeve': {
+                name: 'DAMP Cup Sleeve',
+                price: 3999, // $39.99 in cents
+                description: 'Smart sleeve for cups, mugs, and glasses',
+                images: ['https://dampdrink.com/assets/images/products/cup-sleeve/cup-sleeve.png']
+            },
+            'babyBottle': {
+                name: 'DAMP Baby Bottle',
+                price: 7999, // $79.99 in cents
+                description: 'Smart baby bottle with advanced tracking',
+                images: ['https://dampdrink.com/assets/images/products/baby-bottle/baby-bottle.png']
+            }
+        };
+
+        // Enhanced pre-order function with Stripe integration
+        async function handlePreOrder(productId) {
+            const product = storeProducts[productId];
+            if (!product) {
+                alert('Product not found. Please try again.');
+                return;
+            }
+
+            // Find the button that was clicked
+            const button = document.querySelector(`[data-product-id="${productId}"]`);
+            const originalHTML = button.innerHTML;
+            
+            try {
+                // Disable button and show loading
+                button.disabled = true;
+                button.innerHTML = `
+                    <span class="btn-icon">⏳</span>
+                    <div>
+                        <div class="btn-text">Processing...</div>
+                        <div class="btn-subtext">Please wait</div>
+                    </div>
+                `;
+                
+                // Create checkout session
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                        quantity: 1,
+                        productName: product.name,
+                        unitAmount: product.price,
+                        images: product.images,
+                        successUrl: `${window.location.origin}/pages/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
+                        cancelUrl: `${window.location.origin}/pages/store.html`
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create checkout session');
+                }
+
+                const { sessionId } = await response.json();
+
+                // Track pre-order attempt
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'begin_checkout', {
+                        currency: 'USD',
+                        value: product.price / 100,
+                        items: [{
+                            item_id: productId,
+                            item_name: product.name,
+                            category: 'Smart Drinkware',
+                            quantity: 1,
+                            price: product.price / 100
+                        }]
+                    });
+                }
+
+                // Redirect to Stripe Checkout
+                const { error } = await stripe.redirectToCheckout({ sessionId });
+                
+                if (error) {
+                    throw new Error(error.message);
+                }
+
+            } catch (error) {
+                console.error('Checkout error:', error);
+                alert('Unable to process checkout. Please try again or contact support.');
+                
+                // Re-enable button
+                button.disabled = false;
+                button.innerHTML = originalHTML;
+            }
+        }
+
+        // Add click handlers to all pre-order buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const preorderButtons = document.querySelectorAll('.preorder-btn[data-product-id]');
+            
+            preorderButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const productId = this.dataset.productId;
+                    handlePreOrder(productId);
+                });
+            });
+
+            // Initialize cart display
+            updateCartDisplay();
+        });
+
+        // Override the existing addToCart function to use Stripe
+        function addToCart(productId) {
+            // Instead of adding to cart, go directly to checkout
+            handlePreOrder(productId);
+        }
+    </script>
 </body>
 </html> 
