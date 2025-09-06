@@ -1,0 +1,132 @@
+{
+  "timestamp": "2025-09-06T13:43:16.060Z",
+  "testConfiguration": {
+    "baseUrl": "https://dampdrink.com",
+    "testProducts": {
+      "silicone-bottom": {
+        "id": "silicone-bottom",
+        "name": "DAMP Silicone Bottom",
+        "price": 2999,
+        "testQuantity": 1
+      },
+      "damp-handle": {
+        "id": "damp-handle",
+        "name": "DAMP Handle v1.0",
+        "price": 4999,
+        "testQuantity": 1
+      },
+      "cup-sleeve": {
+        "id": "cup-sleeve",
+        "name": "DAMP Cup Sleeve",
+        "price": 3499,
+        "testQuantity": 2
+      }
+    },
+    "testCards": {
+      "visa": "4242424242424242",
+      "visaDebit": "4000056655665556",
+      "mastercard": "5555555555554444",
+      "amex": "378282246310005",
+      "declined": "4000000000000002"
+    }
+  },
+  "testResults": {
+    "environment": {
+      "stripeKeysConfigured": true,
+      "productionMode": true,
+      "httpsEnabled": true,
+      "webhooksConfigured": true
+    },
+    "cartFunctionality": {
+      "addToCart": {
+        "status": "pass",
+        "details": [
+          "Found in website/js/unified-firebase-services.js",
+          "Found in website/assets/js/store-auth.js"
+        ]
+      },
+      "removeFromCart": {
+        "status": "pass",
+        "details": [
+          "Found in website/js/unified-firebase-services.js"
+        ]
+      },
+      "updateQuantity": {
+        "status": "pending",
+        "details": []
+      },
+      "cartPersistence": {
+        "status": "pass",
+        "details": [
+          "Found in website/js/unified-firebase-services.js",
+          "Found in website/assets/js/store-auth.js"
+        ]
+      },
+      "cartCalculations": {
+        "status": "pass",
+        "details": [
+          "Found in website/js/unified-firebase-services.js"
+        ]
+      }
+    },
+    "checkoutFlow": {
+      "sessionCreation": {
+        "status": "ready",
+        "details": [
+          "Ready to test DAMP Silicone Bottom"
+        ]
+      },
+      "paymentProcessing": {
+        "status": "pending",
+        "details": []
+      },
+      "orderConfirmation": {
+        "status": "pending",
+        "details": []
+      },
+      "emailNotifications": {
+        "status": "pending",
+        "details": []
+      }
+    },
+    "realTransactions": {
+      "successfulPayments": 0,
+      "failedPayments": 0,
+      "totalAmount": 14996,
+      "transactions": [
+        {
+          "productId": "silicone-bottom",
+          "productName": "DAMP Silicone Bottom",
+          "quantity": 1,
+          "unitPrice": 2999,
+          "totalAmount": 2999,
+          "status": "ready_for_manual_test"
+        },
+        {
+          "productId": "damp-handle",
+          "productName": "DAMP Handle v1.0",
+          "quantity": 1,
+          "unitPrice": 4999,
+          "totalAmount": 4999,
+          "status": "ready_for_manual_test"
+        },
+        {
+          "productId": "cup-sleeve",
+          "productName": "DAMP Cup Sleeve",
+          "quantity": 2,
+          "unitPrice": 3499,
+          "totalAmount": 6998,
+          "status": "ready_for_manual_test"
+        }
+      ]
+    },
+    "issues": [],
+    "recommendations": []
+  },
+  "summary": {
+    "environmentReady": true,
+    "cartReady": false,
+    "totalTestAmount": 14996,
+    "testTransactionCount": 3
+  }
+}
