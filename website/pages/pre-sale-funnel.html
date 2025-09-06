@@ -454,6 +454,44 @@
             51%, 100% { opacity: 0.3; }
         }
         
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        /* Product card hover effects */
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Button hover effects */
+        .qty-btn:hover, .add-to-cart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+        
         /* Responsive Design */
         @media (max-width: 768px) {
             .presale-hero {
@@ -729,15 +767,128 @@
         </div>
     </section>
 
-    <!-- Final CTA Section -->
+    <!-- Product Selection & Cart Section -->
     <section class="final-cta" id="checkout">
         <div class="cta-container">
-            <h2 class="section-title">Reserve Yours Now</h2>
+            <h2 class="section-title">Choose Your DAMP Products</h2>
             
             <p style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); margin-bottom: 30px;">
-                Join <span id="final-count" style="color: var(--presale-success); font-weight: bold;">326</span> 
-                others who have reserved their spot. Be part of the first 500 before early-bird pricing closes.
+                Select your products and quantities. Join <span id="final-count" style="color: var(--presale-success); font-weight: bold;">326</span> 
+                others who have reserved their spot.
             </p>
+            
+            <!-- Product Selection Grid -->
+            <div class="product-selection-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 40px 0;">
+                
+                <!-- DAMP Silicone Bottom -->
+                <div class="product-card" data-product-id="silicone-bottom">
+                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #00d4ff, #0099cc); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                        <span style="font-size: 3rem; color: white;">🥤</span>
+                    </div>
+                    <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Silicone Bottom</h3>
+                    <div class="product-pricing" style="margin-bottom: 15px;">
+                        <span class="current-price" style="color: var(--presale-success); font-size: 1.4rem; font-weight: bold;">$29.99</span>
+                        <span class="original-price" style="color: rgba(255,255,255,0.6); text-decoration: line-through; margin-left: 10px;">$39.99</span>
+                    </div>
+                    <p class="product-description" style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 20px;">Smart temperature monitoring silicone bottom for any cup or bottle.</p>
+                    
+                    <div class="quantity-controls" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+                        <button class="qty-btn minus" data-product="silicone-bottom" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
+                        <span class="quantity" data-product="silicone-bottom" style="color: white; font-size: 1.2rem; font-weight: bold; min-width: 30px; text-align: center;">0</span>
+                        <button class="qty-btn plus" data-product="silicone-bottom" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
+                    </div>
+                    
+                    <button class="add-to-cart-btn" data-product-id="silicone-bottom" data-product-name="DAMP Silicone Bottom" data-product-price="29.99" style="width: 100%; background: linear-gradient(45deg, var(--presale-success), #00d4ff); color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
+                        Add to Cart
+                    </button>
+                </div>
+
+                <!-- DAMP Handle v1.0 -->
+                <div class="product-card" data-product-id="damp-handle">
+                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #ff4757, #ff6b6b); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                        <span style="font-size: 3rem; color: white;">🔧</span>
+                    </div>
+                    <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Handle v1.0</h3>
+                    <div class="product-pricing" style="margin-bottom: 15px;">
+                        <span class="current-price" style="color: var(--presale-success); font-size: 1.4rem; font-weight: bold;">$49.99</span>
+                        <span class="original-price" style="color: rgba(255,255,255,0.6); text-decoration: line-through; margin-left: 10px;">$69.99</span>
+                    </div>
+                    <p class="product-description" style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 20px;">Smart handle attachment for Stanley IceFlow and similar bottles.</p>
+                    
+                    <div class="quantity-controls" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+                        <button class="qty-btn minus" data-product="damp-handle" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
+                        <span class="quantity" data-product="damp-handle" style="color: white; font-size: 1.2rem; font-weight: bold; min-width: 30px; text-align: center;">0</span>
+                        <button class="qty-btn plus" data-product="damp-handle" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
+                    </div>
+                    
+                    <button class="add-to-cart-btn" data-product-id="damp-handle" data-product-name="DAMP Handle v1.0" data-product-price="49.99" style="width: 100%; background: linear-gradient(45deg, var(--presale-success), #00d4ff); color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
+                        Add to Cart
+                    </button>
+                </div>
+
+                <!-- DAMP Cup Sleeve -->
+                <div class="product-card" data-product-id="cup-sleeve">
+                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #ffa502, #ff6348); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                        <span style="font-size: 3rem; color: white;">☕</span>
+                    </div>
+                    <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Cup Sleeve</h3>
+                    <div class="product-pricing" style="margin-bottom: 15px;">
+                        <span class="current-price" style="color: var(--presale-success); font-size: 1.4rem; font-weight: bold;">$34.99</span>
+                        <span class="original-price" style="color: rgba(255,255,255,0.6); text-decoration: line-through; margin-left: 10px;">$44.99</span>
+                    </div>
+                    <p class="product-description" style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 20px;">Smart sleeve for coffee cups and smaller drinkware.</p>
+                    
+                    <div class="quantity-controls" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+                        <button class="qty-btn minus" data-product="cup-sleeve" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
+                        <span class="quantity" data-product="cup-sleeve" style="color: white; font-size: 1.2rem; font-weight: bold; min-width: 30px; text-align: center;">0</span>
+                        <button class="qty-btn plus" data-product="cup-sleeve" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
+                    </div>
+                    
+                    <button class="add-to-cart-btn" data-product-id="cup-sleeve" data-product-name="DAMP Cup Sleeve" data-product-price="34.99" style="width: 100%; background: linear-gradient(45deg, var(--presale-success), #00d4ff); color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
+                        Add to Cart
+                    </button>
+                </div>
+
+                <!-- DAMP Baby Bottle -->
+                <div class="product-card" data-product-id="baby-bottle">
+                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #a55eea, #fd79a8); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                        <span style="font-size: 3rem; color: white;">🍼</span>
+                    </div>
+                    <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Baby Bottle</h3>
+                    <div class="product-pricing" style="margin-bottom: 15px;">
+                        <span class="current-price" style="color: var(--presale-success); font-size: 1.4rem; font-weight: bold;">$79.99</span>
+                        <span class="original-price" style="color: rgba(255,255,255,0.6); text-decoration: line-through; margin-left: 10px;">$99.99</span>
+                    </div>
+                    <p class="product-description" style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 20px;">Smart baby bottle with temperature monitoring and alerts.</p>
+                    
+                    <div class="quantity-controls" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+                        <button class="qty-btn minus" data-product="baby-bottle" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
+                        <span class="quantity" data-product="baby-bottle" style="color: white; font-size: 1.2rem; font-weight: bold; min-width: 30px; text-align: center;">0</span>
+                        <button class="qty-btn plus" data-product="baby-bottle" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
+                    </div>
+                    
+                    <button class="add-to-cart-btn" data-product-id="baby-bottle" data-product-name="DAMP Baby Bottle" data-product-price="79.99" style="width: 100%; background: linear-gradient(45deg, var(--presale-success), #00d4ff); color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cart Summary -->
+            <div class="cart-summary" id="cart-summary" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 20px; padding: 30px; margin: 40px 0; border: 1px solid rgba(255,255,255,0.2); display: none;">
+                <h3 style="color: white; font-size: 1.4rem; font-weight: bold; margin-bottom: 20px; text-align: center;">🛒 Your Cart</h3>
+                <div id="cart-items" style="margin-bottom: 20px;"></div>
+                <div class="cart-total" style="border-top: 1px solid rgba(255,255,255,0.3); padding-top: 15px; text-align: center;">
+                    <div style="color: rgba(255,255,255,0.8); margin-bottom: 5px;">
+                        Items: <span id="cart-item-count">0</span>
+                    </div>
+                    <div style="color: var(--presale-success); font-size: 1.6rem; font-weight: bold;">
+                        Total: $<span id="cart-total">0.00</span>
+                    </div>
+                    <div style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 5px;">
+                        You save: $<span id="cart-savings">0.00</span>
+                    </div>
+                </div>
+            </div>
             
             <!-- Repeated Goal Counter for Double Push -->
             <div class="goal-counter">
@@ -753,9 +904,9 @@
                 </div>
             </div>
             
-            <a href="#stripe-checkout" class="cta-primary" data-analytics="final-cta" id="checkout-button">
-                Reserve Now - Early Bird $29.99
-            </a>
+            <button class="cta-primary" data-analytics="final-cta" id="checkout-button" style="opacity: 0.5; cursor: not-allowed;" disabled>
+                Add Items to Cart First
+            </button>
             
             <p style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.7); margin-top: 20px;">
                 🔒 Secure payment via Stripe • 30-day money-back guarantee<br>
@@ -807,6 +958,15 @@
                 this.countdownEndTime = new Date();
                 this.countdownEndTime.setDate(this.countdownEndTime.getDate() + 7); // 7 days from now
                 
+                // Cart functionality
+                this.cart = {};
+                this.products = {
+                    'silicone-bottom': { name: 'DAMP Silicone Bottom', price: 29.99, originalPrice: 39.99 },
+                    'damp-handle': { name: 'DAMP Handle v1.0', price: 49.99, originalPrice: 69.99 },
+                    'cup-sleeve': { name: 'DAMP Cup Sleeve', price: 34.99, originalPrice: 44.99 },
+                    'baby-bottle': { name: 'DAMP Baby Bottle', price: 79.99, originalPrice: 99.99 }
+                };
+                
                 this.init();
             }
             
@@ -816,12 +976,192 @@
                 this.startRealtimeUpdates();
                 this.setupAnalytics();
                 this.simulateActivity();
+                this.setupCartFunctionality();
                 
                 // Setup checkout button
                 document.getElementById('checkout-button').addEventListener('click', (e) => {
                     e.preventDefault();
                     this.initiateCheckout();
                 });
+            }
+            
+            setupCartFunctionality() {
+                // Quantity controls
+                document.querySelectorAll('.qty-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const productId = btn.dataset.product;
+                        const isPlus = btn.classList.contains('plus');
+                        this.updateQuantity(productId, isPlus ? 1 : -1);
+                    });
+                });
+                
+                // Add to cart buttons
+                document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const productId = btn.dataset.productId;
+                        const quantity = parseInt(document.querySelector(`[data-product="${productId}"].quantity`).textContent);
+                        if (quantity > 0) {
+                            this.addToCart(productId, quantity);
+                        }
+                    });
+                });
+            }
+            
+            updateQuantity(productId, change) {
+                const quantityEl = document.querySelector(`[data-product="${productId}"].quantity`);
+                const currentQty = parseInt(quantityEl.textContent);
+                const newQty = Math.max(0, Math.min(10, currentQty + change)); // Limit 0-10
+                
+                quantityEl.textContent = newQty;
+                
+                // Update add to cart button state
+                const addBtn = document.querySelector(`[data-product-id="${productId}"]`);
+                if (newQty > 0) {
+                    addBtn.style.opacity = '1';
+                    addBtn.style.cursor = 'pointer';
+                    addBtn.textContent = `Add ${newQty} to Cart`;
+                } else {
+                    addBtn.style.opacity = '0.7';
+                    addBtn.style.cursor = 'not-allowed';
+                    addBtn.textContent = 'Add to Cart';
+                }
+            }
+            
+            addToCart(productId, quantity) {
+                if (quantity <= 0) return;
+                
+                // Add to cart object
+                if (this.cart[productId]) {
+                    this.cart[productId] += quantity;
+                } else {
+                    this.cart[productId] = quantity;
+                }
+                
+                // Reset quantity display
+                document.querySelector(`[data-product="${productId}"].quantity`).textContent = '0';
+                const addBtn = document.querySelector(`[data-product-id="${productId}"]`);
+                addBtn.style.opacity = '0.7';
+                addBtn.textContent = 'Add to Cart';
+                
+                // Update cart display
+                this.updateCartDisplay();
+                
+                // Show success message
+                const productName = this.products[productId].name;
+                this.showCartMessage(`✅ Added ${quantity}x ${productName} to cart!`);
+                
+                // Track analytics
+                this.trackAnalytics('add_to_cart', { 
+                    product_id: productId, 
+                    quantity: quantity,
+                    product_name: productName
+                });
+            }
+            
+            removeFromCart(productId, quantityToRemove = null) {
+                if (!this.cart[productId]) return;
+                
+                if (quantityToRemove === null || quantityToRemove >= this.cart[productId]) {
+                    delete this.cart[productId];
+                } else {
+                    this.cart[productId] -= quantityToRemove;
+                }
+                
+                this.updateCartDisplay();
+            }
+            
+            updateCartDisplay() {
+                const cartSummary = document.getElementById('cart-summary');
+                const cartItems = document.getElementById('cart-items');
+                const cartItemCount = document.getElementById('cart-item-count');
+                const cartTotal = document.getElementById('cart-total');
+                const cartSavings = document.getElementById('cart-savings');
+                const checkoutBtn = document.getElementById('checkout-button');
+                
+                // Check if cart is empty
+                const totalItems = Object.values(this.cart).reduce((sum, qty) => sum + qty, 0);
+                
+                if (totalItems === 0) {
+                    cartSummary.style.display = 'none';
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.style.opacity = '0.5';
+                    checkoutBtn.style.cursor = 'not-allowed';
+                    checkoutBtn.textContent = 'Add Items to Cart First';
+                    return;
+                }
+                
+                // Show cart summary
+                cartSummary.style.display = 'block';
+                
+                // Build cart items HTML
+                let itemsHTML = '';
+                let total = 0;
+                let totalSavings = 0;
+                
+                Object.entries(this.cart).forEach(([productId, quantity]) => {
+                    const product = this.products[productId];
+                    const itemTotal = product.price * quantity;
+                    const itemSavings = (product.originalPrice - product.price) * quantity;
+                    
+                    total += itemTotal;
+                    totalSavings += itemSavings;
+                    
+                    itemsHTML += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <div style="flex: 1;">
+                                <div style="color: white; font-weight: bold;">${product.name}</div>
+                                <div style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">$${product.price.toFixed(2)} each</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <button class="cart-qty-btn" onclick="preSaleFunnel.removeFromCart('${productId}', 1)" style="width: 30px; height: 30px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer;">-</button>
+                                <span style="color: white; font-weight: bold; min-width: 20px; text-align: center;">${quantity}</span>
+                                <button class="cart-qty-btn" onclick="preSaleFunnel.addToCart('${productId}', 1)" style="width: 30px; height: 30px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer;">+</button>
+                                <button onclick="preSaleFunnel.removeFromCart('${productId}')" style="background: rgba(255,71,87,0.3); color: #ff4757; border: none; padding: 5px 10px; border-radius: 15px; cursor: pointer; font-size: 0.8rem; margin-left: 10px;">Remove</button>
+                            </div>
+                            <div style="color: var(--presale-success); font-weight: bold; min-width: 80px; text-align: right;">
+                                $${itemTotal.toFixed(2)}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                cartItems.innerHTML = itemsHTML;
+                cartItemCount.textContent = totalItems;
+                cartTotal.textContent = total.toFixed(2);
+                cartSavings.textContent = totalSavings.toFixed(2);
+                
+                // Enable checkout button
+                checkoutBtn.disabled = false;
+                checkoutBtn.style.opacity = '1';
+                checkoutBtn.style.cursor = 'pointer';
+                checkoutBtn.textContent = `Checkout - $${total.toFixed(2)} (Save $${totalSavings.toFixed(2)})`;
+            }
+            
+            showCartMessage(message) {
+                // Create and show a temporary success message
+                const messageEl = document.createElement('div');
+                messageEl.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(45deg, var(--presale-success), #00d4ff);
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    z-index: 10000;
+                    animation: slideInRight 0.3s ease;
+                `;
+                messageEl.textContent = message;
+                document.body.appendChild(messageEl);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    messageEl.style.animation = 'slideOutRight 0.3s ease';
+                    setTimeout(() => messageEl.remove(), 300);
+                }, 3000);
             }
             
             updateCounters() {
@@ -948,34 +1288,74 @@
             }
             
             async initiateCheckout() {
+                // Check if cart is empty
+                const totalItems = Object.values(this.cart).reduce((sum, qty) => sum + qty, 0);
+                if (totalItems === 0) {
+                    alert('Please add items to your cart before checkout.');
+                    return;
+                }
+                
                 // Track conversion attempt
                 this.trackAnalytics('checkout_initiated', { 
                     count_at_checkout: this.currentCount,
-                    time_remaining: this.countdownEndTime.getTime() - new Date().getTime()
+                    time_remaining: this.countdownEndTime.getTime() - new Date().getTime(),
+                    cart_items: Object.keys(this.cart).length,
+                    cart_total_items: totalItems
                 });
                 
                 // Disable checkout button and show loading
                 const checkoutButton = document.getElementById('checkout-button');
                 const originalText = checkoutButton.textContent;
                 checkoutButton.disabled = true;
-                checkoutButton.textContent = 'Processing...';
+                checkoutButton.textContent = '🔄 Creating Checkout Session...';
                 checkoutButton.style.opacity = '0.7';
                 
                 try {
-                    // Use the backend Stripe pre-order server for proper integration
-                    const response = await fetch('/create-checkout-session', {
+                    // Prepare line items for Stripe
+                    const lineItems = [];
+                    let totalAmount = 0;
+                    
+                    Object.entries(this.cart).forEach(([productId, quantity]) => {
+                        const product = this.products[productId];
+                        const itemTotal = product.price * quantity;
+                        totalAmount += itemTotal;
+                        
+                        lineItems.push({
+                            price_data: {
+                                currency: 'usd',
+                                product_data: {
+                                    name: product.name,
+                                    description: `Pre-order - Early bird pricing`,
+                                    images: [`https://dampdrink.com/assets/images/products/${productId}/${productId}.png`]
+                                },
+                                unit_amount: Math.round(product.price * 100) // Convert to cents
+                            },
+                            quantity: quantity
+                        });
+                    });
+                    
+                    // Create checkout session with multiple items
+                    const response = await fetch('https://dampdrink.com/api/create-checkout-session', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            productId: 'silicone-bottom', // Use existing product from backend
-                            quantity: 1,
+                            line_items: lineItems,
+                            mode: 'payment',
+                            success_url: `${window.location.origin}/pages/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
+                            cancel_url: `${window.location.origin}/pages/pre-sale-funnel.html`,
                             metadata: {
                                 campaign: 'presale_funnel',
                                 backer_number: this.currentCount + 1,
                                 early_bird: 'true',
-                                source: 'reserve_now_button'
+                                source: 'cart_checkout',
+                                cart_items: JSON.stringify(this.cart),
+                                total_amount: totalAmount.toFixed(2)
+                            },
+                            customer_email: null, // Will be collected by Stripe
+                            shipping_address_collection: {
+                                allowed_countries: ['US', 'CA', 'GB', 'AU', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'AT', 'CH']
                             }
                         })
                     });
@@ -992,11 +1372,14 @@
                     }
 
                     // Initialize Stripe with proper public key
-                    const stripe = Stripe('pk_live_51ReW7yCcrIDahSGRuLulkFaeYK8sL0qgUeSBaqGmJVcQVBrteCTdlkstimCvDLRSFh5a1zQ0ko5RglAtWbpvFOlg00exaQMigY'); // Your actual live key
+                    const stripe = Stripe('pk_live_51ReW7yCcrIDahSGRjE5nEx9ENwPj8uzAfCJQtmVBkuEyeS7JNq0xscaAqdUFoKos7JO1cKbJXrIscBfUU4yNRQSy00lWo3F7p2'); // Your actual live key
+                    
+                    // Save cart to localStorage before redirect (in case user comes back)
+                    localStorage.setItem('dampPreOrderCart', JSON.stringify(this.cart));
                     
                     // Redirect to Stripe Checkout
                     const { error } = await stripe.redirectToCheckout({ 
-                        sessionId: session.id 
+                        sessionId: session.sessionId || session.id 
                     });
                     
                     if (error) {
@@ -1007,17 +1390,23 @@
                     console.error('Checkout error:', error);
                     
                     // Show more helpful error message
-                    let errorMessage = 'We\'re experiencing technical difficulties with our payment system. ';
+                    let errorMessage = 'We\'re experiencing technical difficulties with our payment system.\n\n';
                     
                     if (error.message.includes('404') || error.message.includes('Failed to fetch')) {
-                        errorMessage += 'Our checkout service is temporarily unavailable. ';
+                        errorMessage += '❌ Our checkout service is temporarily unavailable.\n';
+                        errorMessage += '🔄 Please try again in a few moments.\n';
                     } else if (error.message.includes('Invalid product')) {
-                        errorMessage += 'The selected product is currently unavailable. ';
+                        errorMessage += '❌ One or more selected products are currently unavailable.\n';
+                        errorMessage += '🛒 Please review your cart and try again.\n';
+                    } else if (error.message.includes('network')) {
+                        errorMessage += '📡 Network connection issue detected.\n';
+                        errorMessage += '🔄 Please check your internet connection and try again.\n';
                     } else {
-                        errorMessage += `Error: ${error.message}. `;
+                        errorMessage += `❌ Error: ${error.message}\n`;
                     }
                     
-                    errorMessage += '\n\nPlease try again in a few moments, or contact our support team at support@dampdrink.com for immediate assistance.';
+                    errorMessage += '\n📧 For immediate assistance, contact our support team at support@dampdrink.com';
+                    errorMessage += '\n💬 Or use the live chat in the bottom-right corner of this page.';
                     
                     alert(errorMessage);
                     
@@ -1077,8 +1466,10 @@
         }
         
         // Initialize funnel when DOM is ready
+        let preSaleFunnel;
         document.addEventListener('DOMContentLoaded', () => {
-            new PreSaleFunnel();
+            preSaleFunnel = new PreSaleFunnel();
+            window.preSaleFunnel = preSaleFunnel; // Make globally available
         });
         
         // Smooth scrolling for anchor links
