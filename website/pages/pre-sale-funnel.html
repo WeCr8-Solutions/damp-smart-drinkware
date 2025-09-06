@@ -944,19 +944,66 @@
                 });
             }
             
-            initiateCheckout() {
+            async initiateCheckout() {
                 // Track conversion attempt
                 this.trackAnalytics('checkout_initiated', { 
                     count_at_checkout: this.currentCount,
                     time_remaining: this.countdownEndTime.getTime() - new Date().getTime()
                 });
                 
-                // Here you would integrate with Stripe
-                // For now, simulate the process
-                alert('Redirecting to secure Stripe checkout...\n\nThis would integrate with your Stripe payment system.');
+                // Disable checkout button and show loading
+                const checkoutButton = document.getElementById('checkout-button');
+                const originalText = checkoutButton.textContent;
+                checkoutButton.disabled = true;
+                checkoutButton.textContent = 'Processing...';
+                checkoutButton.style.opacity = '0.7';
                 
-                // In production, this would be:
-                // window.location.href = 'https://checkout.stripe.com/your-payment-link';
+                try {
+                    // Create Stripe checkout session for DAMP pre-order
+                    const response = await fetch('/api/create-checkout-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            productId: 'damp-handle-presale',
+                            quantity: 1,
+                            productName: 'DAMP Smart Cup Accessory - Pre-Order',
+                            unitAmount: 3999, // $39.99 in cents
+                            images: ['https://dampdrink.com/assets/images/products/damp-handle-presale.png'],
+                            successUrl: `${window.location.origin}/pages/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
+                            cancelUrl: `${window.location.origin}/pages/pre-sale-funnel.html`,
+                            metadata: {
+                                campaign: 'presale_funnel',
+                                backer_number: this.currentCount + 1,
+                                early_bird: 'true'
+                            }
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to create checkout session');
+                    }
+
+                    const { sessionId } = await response.json();
+
+                    // Initialize Stripe and redirect to checkout
+                    const stripe = Stripe('pk_test_51QgOvnCYcNLHJqhHbI7Vl2QzjZUyJHZhDqvOxYFnEGzRlN8yYKhUkYTtJvWxNxZoUiHgFdScEqRpMnLkJiHgFdScEqRpMnLkJiHgFdScE'); // Replace with your publishable key
+                    const { error } = await stripe.redirectToCheckout({ sessionId });
+                    
+                    if (error) {
+                        throw new Error(error.message);
+                    }
+
+                } catch (error) {
+                    console.error('Checkout error:', error);
+                    alert('Unable to process checkout. Please try again or contact support at hello@dampdrink.com');
+                    
+                    // Re-enable button
+                    checkoutButton.disabled = false;
+                    checkoutButton.textContent = originalText;
+                    checkoutButton.style.opacity = '1';
+                }
             }
             
             setupAnalytics() {
