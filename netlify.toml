@@ -7,10 +7,19 @@
 [build.environment]
   NODE_VERSION = "18"
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
+  # Firebase configuration
+  FIREBASE_PROJECT_ID = "damp-smart-drinkware"
+  FIREBASE_API_KEY = "AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w"
+  FIREBASE_AUTH_DOMAIN = "damp-smart-drinkware.firebaseapp.com"
 
-# Only include plugins we actually need
+# Production-ready plugins with latest versions
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
+  
+# Updated Next.js plugin to latest version (5.13.0)
+# Note: Plugin is included but skipped via NETLIFY_NEXT_PLUGIN_SKIP for static site optimization
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 # Enhanced security headers with comprehensive Firebase and Google services support
 [[headers]]
