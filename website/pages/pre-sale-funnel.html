@@ -794,6 +794,9 @@
     <script src="../assets/js/components/header.js"></script>
     <script src="../assets/js/auth-modal.js"></script>
     
+    <!-- Stripe JavaScript SDK -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
     <!-- Pre-Sale Funnel JavaScript -->
     <script>
         // Pre-Sale Funnel Controller
@@ -959,37 +962,42 @@
                 checkoutButton.style.opacity = '0.7';
                 
                 try {
-                    // Create Stripe checkout session for DAMP pre-order
-                    const response = await fetch('/api/create-checkout-session', {
+                    // Use the backend Stripe pre-order server for proper integration
+                    const response = await fetch('/create-checkout-session', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            productId: 'damp-handle-presale',
+                            productId: 'silicone-bottom', // Use existing product from backend
                             quantity: 1,
-                            productName: 'DAMP Smart Cup Accessory - Pre-Order',
-                            unitAmount: 3999, // $39.99 in cents
-                            images: ['https://dampdrink.com/assets/images/products/damp-handle-presale.png'],
-                            successUrl: `${window.location.origin}/pages/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
-                            cancelUrl: `${window.location.origin}/pages/pre-sale-funnel.html`,
                             metadata: {
                                 campaign: 'presale_funnel',
                                 backer_number: this.currentCount + 1,
-                                early_bird: 'true'
+                                early_bird: 'true',
+                                source: 'reserve_now_button'
                             }
                         })
                     });
 
                     if (!response.ok) {
-                        throw new Error('Failed to create checkout session');
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error || `HTTP ${response.status}: Failed to create checkout session`);
                     }
 
-                    const { sessionId } = await response.json();
+                    const session = await response.json();
+                    
+                    if (session.error) {
+                        throw new Error(session.error);
+                    }
 
-                    // Initialize Stripe and redirect to checkout
-                    const stripe = Stripe('pk_test_51QgOvnCYcNLHJqhHbI7Vl2QzjZUyJHZhDqvOxYFnEGzRlN8yYKhUkYTtJvWxNxZoUiHgFdScEqRpMnLkJiHgFdScEqRpMnLkJiHgFdScE'); // Replace with your publishable key
-                    const { error } = await stripe.redirectToCheckout({ sessionId });
+                    // Initialize Stripe with proper public key
+                    const stripe = Stripe('pk_live_51ReW7yCcrIDahSGRuLulkFaeYK8sL0qgUeSBaqGmJVcQVBrteCTdlkstimCvDLRSFh5a1zQ0ko5RglAtWbpvFOlg00exaQMigY'); // Your actual live key
+                    
+                    // Redirect to Stripe Checkout
+                    const { error } = await stripe.redirectToCheckout({ 
+                        sessionId: session.id 
+                    });
                     
                     if (error) {
                         throw new Error(error.message);
@@ -997,7 +1005,21 @@
 
                 } catch (error) {
                     console.error('Checkout error:', error);
-                    alert('Unable to process checkout. Please try again or contact support at hello@dampdrink.com');
+                    
+                    // Show more helpful error message
+                    let errorMessage = 'We\'re experiencing technical difficulties with our payment system. ';
+                    
+                    if (error.message.includes('404') || error.message.includes('Failed to fetch')) {
+                        errorMessage += 'Our checkout service is temporarily unavailable. ';
+                    } else if (error.message.includes('Invalid product')) {
+                        errorMessage += 'The selected product is currently unavailable. ';
+                    } else {
+                        errorMessage += `Error: ${error.message}. `;
+                    }
+                    
+                    errorMessage += '\n\nPlease try again in a few moments, or contact our support team at support@dampdrink.com for immediate assistance.';
+                    
+                    alert(errorMessage);
                     
                     // Re-enable button
                     checkoutButton.disabled = false;
