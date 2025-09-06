@@ -9,7 +9,6 @@
     "setup-pre-commit": "npx husky add .husky/pre-commit 'npx lint-staged'",
     "scan-secrets": "gitleaks detect --verbose",
     "scan-secrets-staged": "gitleaks protect --staged --verbose",
-    
     "env:secure": "node scripts/secure-environment.js",
     "env:secure:preview": "node scripts/secure-environment.js --dry-run",
     "env:generate-keys": "node scripts/generate-secure-keys.js",
@@ -22,7 +21,6 @@
     "env:validate:prod": "node scripts/validate-environment.js production --strict",
     "env:setup": "npm run env:secure && npm run env:generate-keys:dev",
     "env:help": "echo '🔐 Environment Management Commands:' && echo '  env:secure - Secure existing .env files' && echo '  env:generate-keys - Generate secure random keys' && echo '  env:validate - Validate environment setup' && echo '  env:setup - Complete environment setup (secure + generate)'",
-    
     "validate-env": "node scripts/validate-environment.js",
     "security-check": "npm run scan-secrets && npm run validate-env",
     "security:full": "npm run env:secure:preview && npm run scan-secrets && npm run env:validate"
@@ -47,5 +45,8 @@
       "pre-commit": "lint-staged",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "dependencies": {
+    "firebase-admin": "^13.5.0"
   }
 }
