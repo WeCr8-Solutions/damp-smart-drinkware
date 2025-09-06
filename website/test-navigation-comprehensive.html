@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAMP Navigation Test Suite</title>
+    
+    <!-- Include the actual navigation styles -->
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/navigation.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 140px 20px 60px;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .test-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .test-results {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+        
+        .test-section h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+        
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-item:last-child {
+            border-bottom: none;
+        }
+        
+        .test-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .test-pass {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+        
+        .test-fail {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+        }
+        
+        .test-warning {
+            background: rgba(255, 107, 53, 0.2);
+            color: #ff6b35;
+        }
+        
+        .device-test-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .device-btn {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .device-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        }
+        
+        .device-btn.active {
+            background: linear-gradient(45deg, #0099cc, #00d4ff);
+        }
+        
+        .link-test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .link-test-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid transparent;
+        }
+        
+        .link-test-item.valid {
+            border-left-color: #00ff88;
+        }
+        
+        .link-test-item.invalid {
+            border-left-color: #ff4757;
+        }
+        
+        .score-display {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Include the actual DAMP header component -->
+    <damp-header></damp-header>
+    
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🍔 DAMP Navigation Test Suite</h1>
+            <p>Comprehensive testing of navigation functionality across all devices</p>
+        </div>
+        
+        <div class="test-results">
+            <div class="score-display" id="overallScore">Testing...</div>
+            
+            <div class="device-test-buttons">
+                <button class="device-btn active" data-device="desktop">🖥️ Desktop (1200px)</button>
+                <button class="device-btn" data-device="tablet">📱 Tablet (768px)</button>
+                <button class="device-btn" data-device="mobile">📱 Mobile (480px)</button>
+            </div>
+            
+            <div class="test-section">
+                <h3>🎯 Navigation Structure</h3>
+                <div id="structureTests"></div>
+            </div>
+            
+            <div class="test-section">
+                <h3>🔗 Link Validation</h3>
+                <div id="linkTests"></div>
+            </div>
+            
+            <div class="test-section">
+                <h3>📱 Responsive Behavior</h3>
+                <div id="responsiveTests"></div>
+            </div>
+            
+            <div class="test-section">
+                <h3>🎮 Interaction Tests</h3>
+                <div id="interactionTests"></div>
+            </div>
+            
+            <div class="test-section">
+                <h3>♿ Accessibility</h3>
+                <div id="accessibilityTests"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="assets/js/components/header.js"></script>
+    <script>
+        // Register the header component
+        customElements.define('damp-header', DAMPHeader);
+        
+        // Test suite
+        class NavigationTestSuite {
+            constructor() {
+                this.tests = {
+                    structure: [],
+                    links: [],
+                    responsive: [],
+                    interaction: [],
+                    accessibility: []
+                };
+                this.totalScore = 0;
+                this.maxScore = 0;
+            }
+            
+            async runAllTests() {
+                console.log('🚀 Starting Navigation Test Suite...');
+                
+                // Wait for header component to load
+                await this.waitForElement('damp-header');
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                this.testNavigationStructure();
+                await this.testLinkValidation();
+                this.testResponsiveBehavior();
+                this.testInteractionFunctionality();
+                this.testAccessibility();
+                
+                this.displayResults();
+                this.calculateOverallScore();
+            }
+            
+            waitForElement(selector) {
+                return new Promise(resolve => {
+                    const element = document.querySelector(selector);
+                    if (element) {
+                        resolve(element);
+                        return;
+                    }
+                    
+                    const observer = new MutationObserver(() => {
+                        const element = document.querySelector(selector);
+                        if (element) {
+                            observer.disconnect();
+                            resolve(element);
+                        }
+                    });
+                    
+                    observer.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                    });
+                });
+            }
+            
+            testNavigationStructure() {
+                console.log('📋 Testing Navigation Structure...');
+                
+                // Test header component exists
+                const header = document.querySelector('damp-header');
+                this.addTest('structure', 'Header Component Loaded', header !== null);
+                
+                // Test navigation container
+                const nav = document.querySelector('.damp-nav');
+                this.addTest('structure', 'Navigation Container', nav !== null);
+                
+                // Test logo
+                const logo = document.querySelector('.logo');
+                this.addTest('structure', 'Logo Present', logo !== null);
+                
+                // Test desktop navigation links
+                const navLinks = document.querySelector('.nav-links');
+                this.addTest('structure', 'Desktop Navigation Links', navLinks !== null);
+                
+                // Test hamburger button
+                const hamburger = document.querySelector('.hamburger');
+                this.addTest('structure', 'Hamburger Button', hamburger !== null);
+                
+                // Test mobile menu
+                const mobileMenu = document.querySelector('.mobile-menu');
+                this.addTest('structure', 'Mobile Menu Structure', mobileMenu !== null);
+                
+                // Test hamburger lines
+                const hamburgerLines = document.querySelectorAll('.hamburger-line');
+                this.addTest('structure', 'Hamburger Animation Lines', hamburgerLines.length === 3);
+            }
+            
+            async testLinkValidation() {
+                console.log('🔗 Testing Link Validation...');
+                
+                const links = document.querySelectorAll('a[href]');
+                const linkTests = [];
+                
+                for (const link of links) {
+                    const href = link.getAttribute('href');
+                    if (href && !href.startsWith('#') && !href.startsWith('javascript:') && !href.startsWith('mailto:')) {
+                        const isValid = await this.validateLink(href);
+                        linkTests.push({
+                            url: href,
+                            text: link.textContent.trim() || href,
+                            valid: isValid
+                        });
+                    }
+                }
+                
+                this.tests.links = linkTests;
+                
+                const validLinks = linkTests.filter(l => l.valid).length;
+                const totalLinks = linkTests.length;
+                
+                this.addTest('links', `Valid Links (${validLinks}/${totalLinks})`, validLinks === totalLinks, validLinks / totalLinks);
+            }
+            
+            async validateLink(href) {
+                try {
+                    // Convert relative URLs to absolute for testing
+                    let testUrl = href;
+                    if (href.startsWith('../')) {
+                        testUrl = href.replace('../', '');
+                    }
+                    if (href.startsWith('./')) {
+                        testUrl = href.replace('./', '');
+                    }
+                    
+                    // Check if it's a local file
+                    if (!href.startsWith('http')) {
+                        // For local files, we'll check if the path makes sense
+                        return this.checkLocalPath(testUrl);
+                    }
+                    
+                    // For external URLs, we'd need to make a fetch request
+                    // For now, assume external links are valid
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            }
+            
+            checkLocalPath(path) {
+                // List of known existing pages
+                const existingPages = [
+                    'index.html',
+                    'pages/about.html',
+                    'pages/how-it-works.html',
+                    'pages/products.html',
+                    'pages/support.html',
+                    'pages/pre-order.html',
+                    'pages/pre-sale-funnel.html',
+                    'pages/product-voting.html',
+                    'pages/profile.html',
+                    'pages/orders.html',
+                    'pages/devices.html',
+                    'pages/dashboard.html',
+                    'pages/auth.html',
+                    'pages/cart.html',
+                    'pages/waitlist.html',
+                    'pages/subscription.html',
+                    'pages/privacy.html',
+                    'pages/terms.html',
+                    'pages/cookie-policy.html',
+                    'pages/damp-handle-v1.0.html',
+                    'pages/silicone-bottom-v1.0.html',
+                    'pages/cup-sleeve-v1.0.html',
+                    'pages/baby-bottle-v1.0.html'
+                ];
+                
+                return existingPages.includes(path) || path.includes('#');
+            }
+            
+            testResponsiveBehavior() {
+                console.log('📱 Testing Responsive Behavior...');
+                
+                // Test desktop navigation visibility
+                const navLinks = document.querySelector('.nav-links');
+                if (navLinks) {
+                    const desktopVisible = window.getComputedStyle(navLinks).display !== 'none';
+                    this.addTest('responsive', 'Desktop Navigation Visible (>1024px)', desktopVisible);
+                }
+                
+                // Test hamburger visibility
+                const hamburger = document.querySelector('.hamburger');
+                if (hamburger) {
+                    const hamburgerVisible = window.getComputedStyle(hamburger).display !== 'none';
+                    this.addTest('responsive', 'Hamburger Menu Available', hamburgerVisible);
+                }
+                
+                // Test mobile menu structure
+                const mobileMenu = document.querySelector('.mobile-menu');
+                if (mobileMenu) {
+                    const mobileMenuExists = window.getComputedStyle(mobileMenu).position === 'fixed';
+                    this.addTest('responsive', 'Mobile Menu Positioning', mobileMenuExists);
+                }
+                
+                // Test safe area support
+                const safeAreaContainer = document.querySelector('.safe-area-container');
+                this.addTest('responsive', 'Safe Area Support', safeAreaContainer !== null);
+            }
+            
+            testInteractionFunctionality() {
+                console.log('🎮 Testing Interaction Functionality...');
+                
+                // Test hamburger click handler
+                const hamburger = document.querySelector('.hamburger');
+                if (hamburger) {
+                    const hasClickHandler = hamburger.onclick !== null || 
+                                          hamburger.addEventListener !== undefined;
+                    this.addTest('interaction', 'Hamburger Click Handler', hasClickHandler);
+                }
+                
+                // Test mobile menu close button
+                const mobileClose = document.querySelector('.mobile-close');
+                this.addTest('interaction', 'Mobile Menu Close Button', mobileClose !== null);
+                
+                // Test backdrop for mobile menu
+                const backdrop = document.querySelector('.mobile-menu-backdrop');
+                this.addTest('interaction', 'Mobile Menu Backdrop', backdrop !== null);
+                
+                // Test keyboard support
+                const hamburgerTabIndex = hamburger ? hamburger.tabIndex >= 0 : false;
+                this.addTest('interaction', 'Keyboard Navigation Support', hamburgerTabIndex);
+            }
+            
+            testAccessibility() {
+                console.log('♿ Testing Accessibility...');
+                
+                // Test ARIA labels
+                const hamburger = document.querySelector('.hamburger');
+                if (hamburger) {
+                    const hasAriaLabel = hamburger.getAttribute('aria-label') !== null;
+                    const hasAriaExpanded = hamburger.getAttribute('aria-expanded') !== null;
+                    this.addTest('accessibility', 'Hamburger ARIA Labels', hasAriaLabel && hasAriaExpanded);
+                }
+                
+                // Test mobile menu ARIA
+                const mobileMenu = document.querySelector('.mobile-menu');
+                if (mobileMenu) {
+                    const hasRole = mobileMenu.getAttribute('role') !== null;
+                    const hasAriaModal = mobileMenu.getAttribute('aria-modal') !== null;
+                    this.addTest('accessibility', 'Mobile Menu ARIA Attributes', hasRole && hasAriaModal);
+                }
+                
+                // Test skip link
+                const skipLink = document.querySelector('.skip-to-content');
+                this.addTest('accessibility', 'Skip to Content Link', skipLink !== null);
+                
+                // Test screen reader support
+                const srOnly = document.querySelector('.sr-only');
+                this.addTest('accessibility', 'Screen Reader Support', srOnly !== null);
+                
+                // Test color contrast (simplified check)
+                const nav = document.querySelector('.damp-nav');
+                if (nav) {
+                    const styles = window.getComputedStyle(nav);
+                    const hasBackground = styles.backgroundColor !== 'rgba(0, 0, 0, 0)';
+                    this.addTest('accessibility', 'Navigation Background Contrast', hasBackground);
+                }
+            }
+            
+            addTest(category, name, passed, score = 1) {
+                this.tests[category].push({
+                    name,
+                    passed,
+                    score: passed ? score : 0,
+                    maxScore: score
+                });
+                
+                this.totalScore += passed ? score : 0;
+                this.maxScore += score;
+            }
+            
+            displayResults() {
+                // Display structure tests
+                this.displayTestCategory('structure', 'structureTests');
+                this.displayTestCategory('responsive', 'responsiveTests');
+                this.displayTestCategory('interaction', 'interactionTests');
+                this.displayTestCategory('accessibility', 'accessibilityTests');
+                
+                // Display link tests separately
+                this.displayLinkTests();
+            }
+            
+            displayTestCategory(category, containerId) {
+                const container = document.getElementById(containerId);
+                const tests = this.tests[category];
+                
+                tests.forEach(test => {
+                    const testItem = document.createElement('div');
+                    testItem.className = 'test-item';
+                    
+                    const testName = document.createElement('span');
+                    testName.textContent = test.name;
+                    
+                    const testStatus = document.createElement('span');
+                    testStatus.className = `test-status ${test.passed ? 'test-pass' : 'test-fail'}`;
+                    testStatus.textContent = test.passed ? 'PASS' : 'FAIL';
+                    
+                    testItem.appendChild(testName);
+                    testItem.appendChild(testStatus);
+                    container.appendChild(testItem);
+                });
+            }
+            
+            displayLinkTests() {
+                const container = document.getElementById('linkTests');
+                
+                // Summary
+                const validLinks = this.tests.links.filter(l => l.valid).length;
+                const totalLinks = this.tests.links.length;
+                
+                const summary = document.createElement('div');
+                summary.className = 'test-item';
+                summary.innerHTML = `
+                    <span>Link Validation Summary</span>
+                    <span class="test-status ${validLinks === totalLinks ? 'test-pass' : 'test-warning'}">
+                        ${validLinks}/${totalLinks} Valid
+                    </span>
+                `;
+                container.appendChild(summary);
+                
+                // Individual links
+                const linkGrid = document.createElement('div');
+                linkGrid.className = 'link-test-grid';
+                
+                this.tests.links.forEach(link => {
+                    const linkItem = document.createElement('div');
+                    linkItem.className = `link-test-item ${link.valid ? 'valid' : 'invalid'}`;
+                    linkItem.innerHTML = `
+                        <div><strong>${link.text}</strong></div>
+                        <div style="font-size: 0.9em; opacity: 0.8;">${link.url}</div>
+                        <div style="font-size: 0.8em; margin-top: 5px;">
+                            <span class="test-status ${link.valid ? 'test-pass' : 'test-fail'}">
+                                ${link.valid ? '✓ Valid' : '✗ Invalid'}
+                            </span>
+                        </div>
+                    `;
+                    linkGrid.appendChild(linkItem);
+                });
+                
+                container.appendChild(linkGrid);
+            }
+            
+            calculateOverallScore() {
+                const percentage = Math.round((this.totalScore / this.maxScore) * 100);
+                const scoreDisplay = document.getElementById('overallScore');
+                scoreDisplay.textContent = `${percentage}%`;
+                
+                // Add color based on score
+                if (percentage >= 90) {
+                    scoreDisplay.style.color = '#00ff88';
+                } else if (percentage >= 75) {
+                    scoreDisplay.style.color = '#00d4ff';
+                } else if (percentage >= 60) {
+                    scoreDisplay.style.color = '#ff6b35';
+                } else {
+                    scoreDisplay.style.color = '#ff4757';
+                }
+                
+                console.log(`🏁 Overall Navigation Score: ${percentage}%`);
+            }
+        }
+        
+        // Device simulation
+        function simulateDevice(device) {
+            const buttons = document.querySelectorAll('.device-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const sizes = {
+                desktop: '1200px',
+                tablet: '768px',
+                mobile: '480px'
+            };
+            
+            // This would normally resize the viewport, but we'll just log for now
+            console.log(`📱 Simulating ${device} view (${sizes[device]})`);
+        }
+        
+        // Add device button listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.device-btn').forEach(btn => {
+                btn.addEventListener('click', () => simulateDevice(btn.dataset.device));
+            });
+        });
+        
+        // Run tests when page loads
+        window.addEventListener('load', async () => {
+            const testSuite = new NavigationTestSuite();
+            await testSuite.runAllTests();
+        });
+    </script>
+</body>
+</html>

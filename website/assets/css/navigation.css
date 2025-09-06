@@ -155,16 +155,36 @@
 }
 
 /* ==========================================================================
-   DESKTOP NAVIGATION (Hidden by default - Universal hamburger approach)
+   DESKTOP NAVIGATION (Responsive - Shows on desktop alongside hamburger)
    ========================================================================== */
 
 .nav-links {
-    display: none; /* Universal hamburger approach */
+    display: none; /* Hidden on mobile, shown on desktop */
     list-style: none;
     gap: 30px;
     margin: 0;
     padding: 0;
     align-items: center;
+}
+
+/* Show desktop navigation on larger screens */
+@media (min-width: 1024px) {
+    .nav-links {
+        display: flex;
+        animation: slideInFromTop 0.3s ease-out;
+    }
+}
+
+/* Smooth animation for desktop nav appearance */
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .nav-links li {
@@ -189,6 +209,23 @@
     background: rgba(0, 212, 255, 0.1);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+}
+
+/* Enhanced hover animation */
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    transition: all var(--transition-standard);
+    transform: translateX(-50%);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
 }
 
 .nav-links a:focus {
@@ -295,6 +332,19 @@
 .safe-area-mobile-menu.active {
     transform: translateX(0);
     visibility: visible;
+    animation: slideInMobileMenu 0.3s ease-out;
+}
+
+/* Smooth mobile menu slide animation */
+@keyframes slideInMobileMenu {
+    from {
+        transform: translateX(-100%);
+        opacity: 0.8;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 /* Mobile Menu Backdrop */

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - DAMP Smart Drinkware</title>
+    <meta name="description" content="View and manage your DAMP Smart Drinkware orders">
+    
+    <!-- Safe Area Support -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/navigation.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    
+    <style>
+        .orders-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 20px 60px;
+        }
+        
+        .orders-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .orders-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .auth-required {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .auth-required h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .auth-required p {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+        
+        .auth-btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        }
+    </style>
+</head>
+
+<body class="page-loading">
+    <!-- Skip to Content -->
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    
+    <!-- Navigation Header -->
+    <damp-header></damp-header>
+    
+    <!-- Main Content -->
+    <main id="main-content" class="orders-container">
+        <div class="orders-header">
+            <h1>My Orders</h1>
+            <p>Track and manage your DAMP Smart Drinkware orders</p>
+        </div>
+        
+        <div class="auth-required" id="authRequired">
+            <h2>🔐 Sign In Required</h2>
+            <p>Please sign in to view your order history and tracking information.</p>
+            <button class="auth-btn" data-auth="signin">Sign In</button>
+        </div>
+        
+        <div class="orders-content" id="ordersContent" style="display: none;">
+            <!-- Orders will be loaded here when user is authenticated -->
+            <div class="no-orders">
+                <h3>No Orders Yet</h3>
+                <p>You haven't placed any orders yet. Start shopping to see your orders here!</p>
+                <a href="products.html" class="auth-btn">Browse Products</a>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="../assets/js/components/header.js"></script>
+    <script>
+        // Register the header component
+        customElements.define('damp-header', DAMPHeader);
+        
+        // Page loading animation
+        window.addEventListener('load', () => {
+            document.body.classList.remove('page-loading');
+        });
+        
+        // Check authentication status
+        document.addEventListener('DOMContentLoaded', () => {
+            // This would integrate with your auth system
+            // For now, show the auth required message
+            console.log('Orders page loaded - integrate with auth system');
+        });
+    </script>
+</body>
+</html>

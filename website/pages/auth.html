@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - DAMP Smart Drinkware</title>
+    <meta name="description" content="Sign in to your DAMP Smart Drinkware account">
+    
+    <!-- Safe Area Support -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <link rel="stylesheet" href="../assets/css/navigation.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    
+    <style>
+        .auth-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 120px 20px 60px;
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .auth-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .auth-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 20px 0;
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-group label {
+            color: var(--text-color);
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+        }
+        
+        .auth-btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        }
+        
+        .auth-divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .auth-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .auth-divider span {
+            background: var(--bg-color);
+            padding: 0 20px;
+            color: var(--text-secondary);
+        }
+        
+        .auth-toggle {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .auth-toggle a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .auth-toggle a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body class="page-loading">
+    <!-- Skip to Content -->
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    
+    <!-- Navigation Header -->
+    <damp-header></damp-header>
+    
+    <!-- Main Content -->
+    <main id="main-content" class="auth-container">
+        <div class="auth-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your DAMP account</p>
+        </div>
+        
+        <div class="auth-card">
+            <form class="auth-form" id="authForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="auth-btn">Sign In</button>
+            </form>
+            
+            <div class="auth-divider">
+                <span>or</span>
+            </div>
+            
+            <button class="auth-btn" id="googleSignIn" style="background: #4285f4;">
+                Continue with Google
+            </button>
+            
+            <div class="auth-toggle">
+                <p>Don't have an account? <a href="#" id="signUpToggle">Create account</a></p>
+            </div>
+        </div>
+        
+        <!-- Sign Up Form (Hidden by default) -->
+        <div class="auth-card" id="signUpCard" style="display: none;">
+            <form class="auth-form" id="signUpForm">
+                <div class="form-group">
+                    <label for="signUpName">Full Name</label>
+                    <input type="text" id="signUpName" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signUpEmail">Email Address</label>
+                    <input type="email" id="signUpEmail" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signUpPassword">Password</label>
+                    <input type="password" id="signUpPassword" name="password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                
+                <button type="submit" class="auth-btn">Create Account</button>
+            </form>
+            
+            <div class="auth-toggle">
+                <p>Already have an account? <a href="#" id="signInToggle">Sign in</a></p>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="../assets/js/components/header.js"></script>
+    <script>
+        // Register the header component
+        customElements.define('damp-header', DAMPHeader);
+        
+        // Page loading animation
+        window.addEventListener('load', () => {
+            document.body.classList.remove('page-loading');
+        });
+        
+        // Toggle between sign in and sign up
+        document.getElementById('signUpToggle').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('.auth-card').style.display = 'none';
+            document.getElementById('signUpCard').style.display = 'block';
+            document.querySelector('.auth-header h1').textContent = 'Create Account';
+            document.querySelector('.auth-header p').textContent = 'Join the DAMP community';
+        });
+        
+        document.getElementById('signInToggle').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('.auth-card').style.display = 'block';
+            document.getElementById('signUpCard').style.display = 'none';
+            document.querySelector('.auth-header h1').textContent = 'Welcome Back';
+            document.querySelector('.auth-header p').textContent = 'Sign in to your DAMP account';
+        });
+        
+        // Form submissions
+        document.getElementById('authForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            console.log('Sign in form submitted - integrate with auth system');
+            alert('Sign in functionality will be integrated with Firebase Auth');
+        });
+        
+        document.getElementById('signUpForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            console.log('Sign up form submitted - integrate with auth system');
+            alert('Sign up functionality will be integrated with Firebase Auth');
+        });
+        
+        document.getElementById('googleSignIn').addEventListener('click', () => {
+            console.log('Google sign in clicked - integrate with Firebase Auth');
+            alert('Google sign in will be integrated with Firebase Auth');
+        });
+    </script>
+</body>
+</html>
