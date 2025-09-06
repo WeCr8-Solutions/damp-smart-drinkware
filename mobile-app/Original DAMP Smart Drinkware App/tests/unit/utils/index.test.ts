@@ -9,12 +9,15 @@ jest.mock('react-native', () => ({
 }));
 
 // Mock React
-jest.mock('react', () => ({ 
+jest.mock('react', () => ({
   default: {
-    useState: jest.fn(),
+    useState: jest.fn(() => ['low', jest.fn()]),
     useEffect: jest.fn(),
     useCallback: jest.fn(),
-  }
+  },
+  useState: jest.fn(() => ['low', jest.fn()]),
+  useEffect: jest.fn(),
+  useCallback: jest.fn(),
 }));
 
 // Mock crypto-js

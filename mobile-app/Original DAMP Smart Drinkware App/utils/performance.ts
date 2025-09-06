@@ -6,6 +6,15 @@
 import React from 'react';
 import { Platform } from 'react-native';
 
+// Safe check for development mode
+const isDev = (): boolean => {
+  try {
+    return typeof __DEV__ !== 'undefined' ? __DEV__ : process.env.NODE_ENV !== 'production';
+  } catch {
+    return process.env.NODE_ENV !== 'production';
+  }
+};
+
 /**
  * Singleton performance monitor following Google engineering standards
  * Tracks app performance metrics and reports to analytics
@@ -27,7 +36,7 @@ export class PerformanceMonitor {
    * @param label - Unique identifier for the operation
    */
   startTiming(label: string): void {
-    if (__DEV__) {
+    if (isDev()) {
       console.log(`⏱️  Starting timer: ${label}`);
     }
     this.metrics.set(label, performance.now());
@@ -53,7 +62,7 @@ export class PerformanceMonitor {
       console.warn(`🐌 Slow operation detected: ${label} took ${duration.toFixed(2)}ms`);
       
       // Report to analytics in production
-      if (!__DEV__) {
+      if (!isDev()) {
         this.reportMetric('performance_slow_operation', {
           operation: label,
           duration_ms: Math.round(duration),
@@ -63,7 +72,7 @@ export class PerformanceMonitor {
       }
     }
     
-    if (__DEV__) {
+    if (isDev()) {
       console.log(`✅ ${label} completed in ${duration.toFixed(2)}ms`);
     }
     
@@ -105,7 +114,7 @@ export class PerformanceMonitor {
         }
       }
 
-      if (__DEV__) {
+      if (isDev()) {
         console.log(`💾 Memory: ${(snapshot.used / 1024 / 1024).toFixed(1)}MB used`);
       }
     }
@@ -127,7 +136,7 @@ export class PerformanceMonitor {
         // 60fps = 16.67ms per frame, jank threshold = 32ms (2 frames)
         if (frameDuration > 32) {
           jankyFrames++;
-          if (__DEV__) {
+          if (isDev()) {
             console.warn(`🎭 Jank detected: Frame took ${frameDuration.toFixed(2)}ms`);
           }
         }
@@ -162,7 +171,7 @@ export class PerformanceMonitor {
   public reportMetric(eventName: string, parameters: Record<string, any>): void {
     try {
       // In a real app, send to Firebase Analytics, Crashlytics, etc.
-      if (__DEV__) {
+      if (isDev()) {
         console.log(`📊 Analytics: ${eventName}`, parameters);
       }
       
@@ -240,8 +249,8 @@ export function useRenderPerformance(componentName: string): void {
  */
 export class BundleAnalyzer {
   static logBundleInfo(): void {
-    if (__DEV__ && typeof __BUNDLE_START_TIME__ !== 'undefined') {
-      const loadTime = Date.now() - __BUNDLE_START_TIME__;
+    if (isDev() && typeof (global as any).__BUNDLE_START_TIME__ !== 'undefined') {
+      const loadTime = Date.now() - (global as any).__BUNDLE_START_TIME__;
       console.log(`📦 Bundle loaded in ${loadTime}ms`);
       
       PerformanceMonitor.getInstance().reportMetric('bundle_load_time', {
@@ -255,9 +264,15 @@ export class BundleAnalyzer {
     const monitor = PerformanceMonitor.getInstance();
     monitor.startTiming(`chunk_load_${chunkName}`);
     
-    return import(`../chunks/${chunkName}`).then(module => {
+    // Use a mockable import function for testing
+    const importFn = (global as any).import || ((path: string) => import(path));
+    
+    return importFn(`../chunks/${chunkName}`).then((module: any) => {
       monitor.endTiming(`chunk_load_${chunkName}`);
       return module;
+    }).catch((error: any) => {
+      monitor.endTiming(`chunk_load_${chunkName}`);
+      throw error;
     });
   }
 }
@@ -276,7 +291,7 @@ export interface PerformanceSnapshot {
 }
 
 // Global performance monitoring setup
-if (!__DEV__) {
+if (!isDev() && typeof jest === 'undefined') {
   const monitor = PerformanceMonitor.getInstance();
   
   // Monitor memory every 30 seconds in production

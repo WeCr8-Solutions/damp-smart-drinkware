@@ -4,9 +4,10 @@
  * Copyright 2025 WeCr8 Solutions LLC
  */
 
+import React from 'react';
 import { render, act, waitFor } from '@testing-library/react-native';
 import { BleManager, Device, BleError } from 'react-native-ble-plx';
-import * as BLEManagerModule from '../../../components/BLEManager';
+import BLEManagerComponent from '../../../components/BLEManager';
 import { BLEProvider } from '../../../components/BLEProvider';
 
 // Mock the BLE library
@@ -14,12 +15,6 @@ jest.mock('react-native-ble-plx');
 
 let mockBleManager: jest.Mocked<BleManager>;
 let mockDevice: jest.Mocked<Device>;
-
-// Create a mock wrapper component for BLEManager if it's not a valid React component
-const BLEManagerComponent = (props: any) => {
-  const Comp = (BLEManagerModule as any).BLEManager;
-  return typeof Comp === 'function' ? <Comp {...props} /> : null;
-};
 
 describe('BLEManager', () => {
   beforeEach(() => {
@@ -55,7 +50,6 @@ describe('BLEManager', () => {
   });
 
   describe('Initialization', () => {
-    it('should initialize BLE manager correctly', async () => {
     it('should initialize BLE manager correctly', async () => {
       render(
         <BLEProvider>
@@ -274,7 +268,7 @@ describe('BLEManager', () => {
 
       const { getByText, queryByText } = render(
         <BLEProvider>
-          <BLEManager />
+          <BLEManagerComponent />
         </BLEProvider>
       );
 
@@ -304,7 +298,7 @@ describe('BLEManager', () => {
     it('should disconnect device correctly', async () => {
       const { getByText } = render(
         <BLEProvider>
-          <BLEManager />
+          <BLEManagerComponent />
         </BLEProvider>
       );
 
@@ -337,7 +331,7 @@ describe('BLEManager', () => {
 
       const { getByText } = render(
         <BLEProvider>
-          <BLEManager />
+          <BLEManagerComponent />
         </BLEProvider>
       );
 
@@ -361,7 +355,7 @@ describe('BLEManager', () => {
 
       const { getByText } = render(
         <BLEProvider>
-          <BLEManager />
+          <BLEManagerComponent />
         </BLEProvider>
       );
 
@@ -387,11 +381,7 @@ describe('BLEManager', () => {
         return { remove: jest.fn() };
       });
 
-      const { getByText } = render(
-      mockBleManager.monitorCharacteristicForDevice.mockImplementation((_deviceId, _serviceUUID, _characteristicUUID, callback) => {
-        monitorCallback = callback;
-        return { remove: jest.fn() };
-      });
+      const { getByText } = render(<BLEManagerComponent />);
 
       const monitorButton = getByText('Start Monitor');
       act(() => {
@@ -420,7 +410,7 @@ describe('BLEManager', () => {
 
       const { getByText, queryByText } = render(
         <BLEProvider>
-          <BLEManager />
+          <BLEManagerComponent />
         </BLEProvider>
       );
 
@@ -440,7 +430,7 @@ describe('BLEManager', () => {
 
       const { getByText, queryByText } = render(
         <BLEProvider>
-          <BLEManager />
+          <BLEManagerComponent />
         </BLEProvider>
       );
 
@@ -459,7 +449,7 @@ describe('BLEManager', () => {
     it('should cleanup on unmount', () => {
       const { unmount } = render(
         <BLEProvider>
-          <BLEManager />
+          <BLEManagerComponent />
         </BLEProvider>
       );
 
@@ -471,7 +461,7 @@ describe('BLEManager', () => {
     it('should stop scanning on unmount', () => {
       const { unmount, getByText } = render(
         <BLEProvider>
-          <BLEManager />
+          <BLEManagerComponent />
         </BLEProvider>
       );
 
@@ -490,23 +480,23 @@ describe('BLEManager', () => {
     it('should scan for devices within acceptable time', async () => {
       const startTime = performance.now();
       
-      const { getByText } = render(
-        <BLEProvider>
-          <BLEManager />
-        </BLEProvider>
-      );
-
       let scanCallback: Function;
       mockBleManager.startDeviceScan.mockImplementation((serviceUUIDs, options, callback) => {
         scanCallback = callback;
         setTimeout(() => callback(null, mockDevice), 50); // Simulate quick discovery
       });
 
+      const { getByText } = render(
+        <BLEProvider>
+          <BLEManagerComponent />
+        </BLEProvider>
+      );
+      
       act(() => {
-      mockBleManager.startDeviceScan.mockImplementation((_serviceUUIDs, _options, callback) => {
-        scanCallback = callback;
-        setTimeout(() => callback(null, mockDevice), 50); // Simulate quick discovery
+        getByText('Start Scan').props.onPress();
       });
+
+      await waitFor(() => {
         expect(scanCallback).toHaveBeenCalled();
       });
 
@@ -527,7 +517,7 @@ describe('BLEManager', () => {
 
       const { getByText } = render(
         <BLEProvider>
-          <BLEManager />
+          <BLEManagerComponent />
         </BLEProvider>
       );
 

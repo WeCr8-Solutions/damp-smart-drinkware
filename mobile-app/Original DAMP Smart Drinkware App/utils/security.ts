@@ -41,16 +41,84 @@ export class SecurityUtils {
    * Validate email format with strict RFC compliance
    */
   static validateEmail(email: string): boolean {
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    return emailRegex.test(email) && email.length <= 254;
+    if (!email || typeof email !== 'string' || email.length > 254) {
+      return false;
+    }
+    
+    // Check for spaces (not allowed)
+    if (email.includes(' ')) {
+      return false;
+    }
+    
+    // Must have exactly one @ symbol
+    const atCount = (email.match(/@/g) || []).length;
+    if (atCount !== 1) {
+      return false;
+    }
+    
+    const [localPart, domainPart] = email.split('@');
+    
+    // Local part cannot be empty
+    if (!localPart || localPart.length === 0) {
+      return false;
+    }
+    
+    // Domain part must exist and have at least one dot
+    if (!domainPart || !domainPart.includes('.')) {
+      return false;
+    }
+    
+    // Domain must have at least two parts (domain.tld)
+    const domainParts = domainPart.split('.');
+    if (domainParts.length < 2 || domainParts.some(part => part.length === 0)) {
+      return false;
+    }
+    
+    // Use stricter regex for overall format
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+    return emailRegex.test(email);
   }
 
   /**
    * Validate phone number format (international)
    */
   static validatePhoneNumber(phone: string): boolean {
-    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-    return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
+    if (!phone || typeof phone !== 'string') {
+      return false;
+    }
+    
+    // Clean the phone number by removing spaces, dashes, parentheses
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+    
+    // Check for invalid characters (should only contain digits and optional + at start)
+    if (!/^[\+]?[\d]+$/.test(cleanPhone)) {
+      return false;
+    }
+    
+    // Must be between 7 and 15 digits (after removing + if present)
+    // Most international phone numbers are at least 7 digits
+    const digitsOnly = cleanPhone.replace(/^\+/, '');
+    if (digitsOnly.length < 7 || digitsOnly.length > 15) {
+      return false;
+    }
+    
+    // Cannot start with 0 (international format)
+    if (digitsOnly.startsWith('0')) {
+      return false;
+    }
+    
+    // Cannot have multiple + signs
+    const plusCount = (cleanPhone.match(/\+/g) || []).length;
+    if (plusCount > 1) {
+      return false;
+    }
+    
+    // If it has +, it must be at the beginning
+    if (cleanPhone.includes('+') && !cleanPhone.startsWith('+')) {
+      return false;
+    }
+    
+    return true;
   }
 
   /**

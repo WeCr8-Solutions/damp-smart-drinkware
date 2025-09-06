@@ -57,8 +57,38 @@ if (process.env.NODE_ENV === 'test') {
 jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter');
 jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
 
-// BLE Mock for integration tests
-export const mockBleManager: jest.Mocked<Record<string, any>> = {
+jest.mock('react-native-ble-plx', () => {
+  const mockBleManager = {
+    state: 'PoweredOn',
+    startDeviceScan: jest.fn(),
+    stopDeviceScan: jest.fn(),
+    connectToDevice: jest.fn(),
+    discoverAllServicesAndCharacteristicsForDevice: jest.fn(),
+    readCharacteristicForDevice: jest.fn(),
+    writeCharacteristicWithResponseForDevice: jest.fn(),
+    monitorCharacteristicForDevice: jest.fn(),
+    cancelDeviceConnection: jest.fn(),
+    destroy: jest.fn()
+  };
+
+  const MockBleManager = jest.fn().mockImplementation(() => mockBleManager);
+
+  return {
+    BleManager: MockBleManager,
+    Device: jest.fn(),
+    Characteristic: jest.fn(),
+    Service: jest.fn(),
+    BleError: jest.fn(),
+    State: {
+      PoweredOn: 'PoweredOn',
+      PoweredOff: 'PoweredOff',
+      Unsupported: 'Unsupported'
+    }
+  };
+});
+
+// Export BLE mock utilities for tests
+export const mockBleManager = {
   state: 'PoweredOn',
   startDeviceScan: jest.fn(),
   stopDeviceScan: jest.fn(),
@@ -69,23 +99,7 @@ export const mockBleManager: jest.Mocked<Record<string, any>> = {
   monitorCharacteristicForDevice: jest.fn(),
   cancelDeviceConnection: jest.fn(),
   destroy: jest.fn()
-} as any;
-
-// Export a typed BleManager mock for tests
-export const BleManagerMock: jest.Mock = jest.fn().mockImplementation(() => mockBleManager as any);
-
-jest.mock('react-native-ble-plx', () => ({
-  BleManager: BleManagerMock,
-  Device: jest.fn(),
-  Characteristic: jest.fn(),
-  Service: jest.fn(),
-  BleError: jest.fn(),
-  State: {
-    PoweredOn: 'PoweredOn',
-    PoweredOff: 'PoweredOff',
-    Unsupported: 'Unsupported'
-  }
-}));
+};
 
 // Enhanced Location Mock for integration
 jest.mock('expo-location', () => ({
