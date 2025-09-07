@@ -89,8 +89,8 @@ GET /api/voting/results
   "results": [
     {
       "productId": "damp-handle-universal",
-      "votes": 1245,
-      "percentage": 43.7
+      "votes": 0,
+      "percentage": 0
     },
     {
       "productId": "silicone-bottom-v1.0",
@@ -98,7 +98,7 @@ GET /api/voting/results
       "percentage": 28.9
     }
   ],
-  "totalVotes": 2847,
+  "totalVotes": 0,
   "lastUpdated": "2024-12-19T10:30:00Z"
 }
 ```
@@ -470,7 +470,7 @@ GET /api/analytics/products
     }
   ],
   "totalViews": 42680,
-  "totalVotes": 2847,
+  "totalVotes": 0,
   "totalPreorders": 234
 }
 ```

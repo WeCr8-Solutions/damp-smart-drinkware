@@ -191,17 +191,31 @@ async function handleSuccessfulPayment(session) {
     try {
         console.log('💰 Payment successful:', session.id);
         
-        // Track successful conversion
+        // Extract location from shipping address or billing address
+        const location = extractLocationFromSession(session);
+        
+        // Track successful conversion with location
         await trackCheckoutEvent('conversion_completed', {
             session_id: session.id,
             customer_email: session.customer_details?.email,
             amount: session.amount_total,
             product_id: session.metadata?.product_id,
-            quantity: parseInt(session.metadata?.quantity) || 1
+            quantity: parseInt(session.metadata?.quantity) || 1,
+            location: location
         });
         
         // Update pre-sale counter
         await updatePresaleCount(parseInt(session.metadata?.quantity) || 1);
+        
+        // Track real purchase activity for funnel display
+        await trackRealPurchaseActivity({
+            product_id: session.metadata?.product_id,
+            product_name: getProductName(session.metadata?.product_id),
+            quantity: parseInt(session.metadata?.quantity) || 1,
+            location: location,
+            timestamp: new Date().toISOString(),
+            session_id: session.id
+        });
         
         // Send confirmation email (implement with your email service)
         await sendConfirmationEmail(session);
@@ -332,6 +346,57 @@ app.use((error, req, res, next) => {
 module.exports = app;
 
 // Start server if run directly
+// Helper function to extract location from session
+function extractLocationFromSession(session) {
+    // Try shipping address first, then billing address
+    const address = session.shipping_details?.address || session.customer_details?.address;
+    
+    if (address?.city && address?.state) {
+        return `${address.city}, ${address.state}`;
+    } else if (address?.city) {
+        return address.city;
+    } else if (address?.country) {
+        return address.country;
+    } else {
+        return 'Unknown';
+    }
+}
+
+// Helper function to get product name from ID
+function getProductName(productId) {
+    const productNames = {
+        'silicone-bottom': 'DAMP Silicone Bottom',
+        'damp-handle': 'DAMP Handle v1.0',
+        'cup-sleeve': 'DAMP Cup Sleeve',
+        'baby-bottle': 'DAMP Baby Bottle'
+    };
+    return productNames[productId] || 'DAMP Product';
+}
+
+// Track real purchase activity for presale funnel
+async function trackRealPurchaseActivity(purchaseData) {
+    try {
+        // Call the presale tracker API to record real purchase
+        const response = await fetch('http://localhost:3001/api/track-purchase', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(purchaseData)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Failed to track purchase: ${response.statusText}`);
+        }
+        
+        console.log('✅ Real purchase activity tracked:', purchaseData.session_id);
+        
+    } catch (error) {
+        console.error('Error tracking real purchase activity:', error);
+        // Don't throw - this shouldn't break the payment flow
+    }
+}
+
 if (require.main === module) {
     const PORT = process.env.CHECKOUT_PORT || 3002;
     app.listen(PORT, () => {

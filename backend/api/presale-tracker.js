@@ -187,6 +187,70 @@ app.post('/api/track-event', (req, res) => {
     }
 });
 
+// Track real purchase activity from Stripe webhooks
+app.post('/api/track-purchase', (req, res) => {
+    try {
+        const { product_id, product_name, quantity, location, timestamp, session_id } = req.body;
+        
+        if (!product_id || !quantity || !timestamp) {
+            return res.status(400).json({ error: 'Missing required purchase data' });
+        }
+        
+        // Add real purchase to recent orders
+        presaleData.recentOrders.unshift({
+            timestamp: timestamp,
+            location: location || 'Unknown',
+            count: quantity,
+            real: true,
+            product_name: product_name || 'DAMP Product',
+            product_id: product_id,
+            session_id: session_id
+        });
+        
+        // Keep only last 20 orders for performance
+        presaleData.recentOrders = presaleData.recentOrders.slice(0, 20);
+        
+        // Update current count
+        presaleData.currentCount += quantity;
+        
+        // Update analytics
+        presaleData.analytics.totalRevenue = (presaleData.analytics.totalRevenue || 0) + (quantity * 50); // Estimate
+        
+        saveData();
+        
+        console.log(`📦 Real purchase tracked: ${quantity}x ${product_name} from ${location}`);
+        
+        res.json({ 
+            success: true, 
+            message: 'Purchase tracked successfully',
+            currentCount: presaleData.currentCount,
+            recentActivity: generateRecentActivityMessage()
+        });
+    } catch (error) {
+        console.error('Error tracking purchase:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Get recent activity for live updates
+app.get('/api/recent-activity', (req, res) => {
+    try {
+        const recentActivity = generateRecentActivityMessage();
+        const realOrders = presaleData.recentOrders.filter(order => order.real);
+        
+        res.json({
+            success: true,
+            activity: recentActivity,
+            currentCount: presaleData.currentCount,
+            recentOrders: realOrders.slice(0, 5), // Last 5 real orders
+            lastUpdated: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Error getting recent activity:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Admin endpoint to update counts (protected)
 app.post('/api/admin/update-count', (req, res) => {
     try {

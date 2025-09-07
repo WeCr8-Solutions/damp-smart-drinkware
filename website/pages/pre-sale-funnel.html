@@ -975,7 +975,7 @@
                 this.startCountdown();
                 this.startRealtimeUpdates();
                 this.setupAnalytics();
-                this.simulateActivity();
+                this.startLiveActivityUpdates(); // Use live data instead of simulated
                 this.setupCartFunctionality();
                 
                 // Setup checkout button
@@ -1002,8 +1002,13 @@
                         e.preventDefault();
                         const productId = btn.dataset.productId;
                         const quantity = parseInt(document.querySelector(`[data-product="${productId}"].quantity`).textContent);
+                        
+                        // If quantity is 0 but item is already in cart, allow adding 1 more
                         if (quantity > 0) {
                             this.addToCart(productId, quantity);
+                        } else if (this.cart[productId]) {
+                            // Add 1 more of this item to cart
+                            this.addToCart(productId, 1);
                         }
                     });
                 });
@@ -1018,10 +1023,17 @@
                 
                 // Update add to cart button state
                 const addBtn = document.querySelector(`[data-product-id="${productId}"]`);
+                const isInCart = this.cart[productId] && this.cart[productId] > 0;
+                
                 if (newQty > 0) {
                     addBtn.style.opacity = '1';
                     addBtn.style.cursor = 'pointer';
                     addBtn.textContent = `Add ${newQty} to Cart`;
+                } else if (isInCart) {
+                    // Item is already in cart, allow adding more
+                    addBtn.style.opacity = '1';
+                    addBtn.style.cursor = 'pointer';
+                    addBtn.textContent = 'Add More to Cart';
                 } else {
                     addBtn.style.opacity = '0.7';
                     addBtn.style.cursor = 'not-allowed';
@@ -1039,11 +1051,14 @@
                     this.cart[productId] = quantity;
                 }
                 
-                // Reset quantity display
+                // Reset quantity display but keep button functional
                 document.querySelector(`[data-product="${productId}"].quantity`).textContent = '0';
                 const addBtn = document.querySelector(`[data-product-id="${productId}"]`);
-                addBtn.style.opacity = '0.7';
-                addBtn.textContent = 'Add to Cart';
+                
+                // Keep button enabled and functional (don't disable it)
+                addBtn.style.opacity = '1';
+                addBtn.style.cursor = 'pointer';
+                addBtn.textContent = 'Add More to Cart';
                 
                 // Update cart display
                 this.updateCartDisplay();
@@ -1227,24 +1242,45 @@
                 }, 30000); // Every 30 seconds
             }
             
-            simulateActivity() {
-                const activities = [
-                    "2 people pre-ordered in the last hour",
-                    "Someone from Seattle just pre-ordered",
-                    "3 orders in the last 45 minutes",
-                    "Last order: 12 minutes ago from Denver, CO",
-                    "Someone from Austin just reserved their spot",
-                    "2 pre-orders in the last 30 minutes"
-                ];
+            async loadLiveActivity() {
+                try {
+                    const response = await fetch('/api/recent-activity');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch recent activity');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Update activity text
+                    const activityText = data.activity;
+                    document.getElementById('recent-activity-text').textContent = activityText;
+                    document.getElementById('final-activity-text').textContent = activityText;
+                    
+                    // Update current count if different
+                    if (data.currentCount && data.currentCount !== this.currentCount) {
+                        this.currentCount = data.currentCount;
+                        this.updateCounters();
+                    }
+                    
+                    console.log('✅ Live activity updated:', activityText);
+                    
+                } catch (error) {
+                    console.error('Error loading live activity:', error);
+                    // Fallback to showing a generic message
+                    const fallbackMessage = "Join our growing community of early adopters!";
+                    document.getElementById('recent-activity-text').textContent = fallbackMessage;
+                    document.getElementById('final-activity-text').textContent = fallbackMessage;
+                }
+            }
+            
+            startLiveActivityUpdates() {
+                // Load initial activity
+                this.loadLiveActivity();
                 
-                const updateActivity = () => {
-                    const activity = activities[Math.floor(Math.random() * activities.length)];
-                    document.getElementById('recent-activity-text').textContent = activity;
-                    document.getElementById('final-activity-text').textContent = activity;
-                };
-                
-                updateActivity();
-                setInterval(updateActivity, Math.random() * 60000 + 30000); // Every 30-90 seconds
+                // Update every 30 seconds with real data
+                setInterval(() => {
+                    this.loadLiveActivity();
+                }, 30000);
             }
             
             addUrgencyMessage(message) {

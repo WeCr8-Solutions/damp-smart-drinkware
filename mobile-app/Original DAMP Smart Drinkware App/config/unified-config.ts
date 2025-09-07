@@ -126,10 +126,10 @@ export const PRODUCT_CONFIG = {
   
   // Voting initial data
   initialVotingData: {
-    handle: { votes: 1245, percentage: 43.7 },
-    siliconeBottom: { votes: 823, percentage: 28.9 },
-    cupSleeve: { votes: 512, percentage: 18.0 },
-    babyBottle: { votes: 267, percentage: 9.4 }
+    handle: { votes: 0, percentage: 0 },
+    siliconeBottom: { votes: 0, percentage: 0 },
+    cupSleeve: { votes: 0, percentage: 0 },
+    babyBottle: { votes: 0, percentage: 0 }
   },
   
   // E-commerce settings

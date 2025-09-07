@@ -238,10 +238,10 @@ class FixedVotingSystem {
             }
         }
         
-        // Set up mock data with some initial votes
+        // Keep all votes at zero for live data only
         this.products.forEach((product, index) => {
-            if (product.votes === 0) {
-                product.votes = Math.floor(Math.random() * 500) + 100; // 100-600 votes
+            if (!product.votes) {
+                product.votes = 0;
             }
         });
         

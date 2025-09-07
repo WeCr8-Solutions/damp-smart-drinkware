@@ -151,29 +151,29 @@ export const votingService = {
             handle: {
               name: 'DAMP Handle',
               description: 'Universal clip-on handle for any drinkware',
-              votes: 1245,
-              percentage: 43.7
+              votes: 0,
+              percentage: 0
             },
             siliconeBottom: {
               name: 'Silicone Bottom',
               description: 'Non-slip smart base for bottles and tumblers',
-              votes: 823,
-              percentage: 28.9
+              votes: 0,
+              percentage: 0
             },
             cupSleeve: {
               name: 'Cup Sleeve',
               description: 'Adjustable smart sleeve with thermal insulation',
-              votes: 512,
-              percentage: 18.0
+              votes: 0,
+              percentage: 0
             },
             babyBottle: {
               name: 'Baby Bottle',
               description: 'Smart baby bottle with feeding tracking',
-              votes: 267,
-              percentage: 9.4
+              votes: 0,
+              percentage: 0
             }
           },
-          totalVotes: 2847,
+          totalVotes: 0,
           lastUpdated: serverTimestamp(),
           isActive: true
         });
@@ -196,29 +196,29 @@ export const votingService = {
             handle: {
               name: 'DAMP Handle',
               description: 'Universal clip-on handle for any drinkware',
-              votes: 2891,
-              percentage: 41.2
+              votes: 0,
+              percentage: 0
             },
             siliconeBottom: {
               name: 'Silicone Bottom',
               description: 'Non-slip smart base for bottles and tumblers',
-              votes: 1654,
-              percentage: 23.6
+              votes: 0,
+              percentage: 0
             },
             cupSleeve: {
               name: 'Cup Sleeve',
               description: 'Adjustable smart sleeve with thermal insulation',
-              votes: 1432,
-              percentage: 20.4
+              votes: 0,
+              percentage: 0
             },
             babyBottle: {
               name: 'Baby Bottle',
               description: 'Smart baby bottle with feeding tracking',
-              votes: 1042,
-              percentage: 14.8
+              votes: 0,
+              percentage: 0
             }
           },
-          totalVotes: 7019,
+          totalVotes: 0,
           lastUpdated: serverTimestamp(),
           isActive: true
         });

@@ -25,12 +25,12 @@ class DAMPRealtimeStats {
         
         this.defaultVoting = {
             products: {
-                handle: { name: 'Handle', votes: 1245, percentage: 43.7 },
-                siliconeBottom: { name: 'Silicone Bottom', votes: 823, percentage: 28.9 },
-                cupSleeve: { name: 'Cup Sleeve', votes: 512, percentage: 18.0 },
-                babyBottle: { name: 'Baby Bottle', votes: 267, percentage: 9.4 }
+                handle: { name: 'Handle', votes: 0, percentage: 0 },
+                siliconeBottom: { name: 'Silicone Bottom', votes: 0, percentage: 0 },
+                cupSleeve: { name: 'Cup Sleeve', votes: 0, percentage: 0 },
+                babyBottle: { name: 'Baby Bottle', votes: 0, percentage: 0 }
             },
-            totalVotes: 2847,
+            totalVotes: 0,
             isActive: true
         };
         
