@@ -59,7 +59,7 @@ FIREBASE_PROJECT_ID=damp-smart-drinkware                   # ✅ CONFIGURED
 **Download Stripe CLI:**
 ```bash
 # Option 1: Direct download
-Invoke-WebRequest -Uri "https://github.com/stripe/stripe-cli/releases/latest/download/stripe_1.21.8_windows_x86_64.zip" -OutFile "stripe-cli.zip"
+Invoke-WebRequest -Uri "https://github.com/stripe/stripe-cli/releases/latest/download/stripe_1.30.0_windows_x86_64.zip" -OutFile "stripe-cli.zip"
 Expand-Archive stripe-cli.zip -DestinationPath stripe-cli
 ./stripe-cli/stripe.exe --version
 
