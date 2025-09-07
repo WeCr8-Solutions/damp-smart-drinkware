@@ -18,31 +18,31 @@ class DAMPPerformanceMonitor {
             LCP: null,
             FID: null,
             CLS: null,
-            
+
             // Other Performance Metrics
             FCP: null,
             TTFB: null,
             TTI: null,
-            
+
             // Custom Metrics
             navigationStart: null,
             loadComplete: null,
-            
+
             // Resource Timing
             resources: [],
-            
+
             // User Experience
             visibilityChanges: 0,
             scrollDepth: 0,
             timeOnPage: 0,
-            
+
             // Device Info
             deviceType: null,
             connectionType: null,
-            
+
             // Errors
             jsErrors: [],
-            
+
             timestamp: Date.now()
         };
 
@@ -50,7 +50,7 @@ class DAMPPerformanceMonitor {
         this.startTime = performance.now();
         this.isHidden = document.hidden;
         this.pageLoadTime = null;
-        
+
         this.init();
     }
 
@@ -64,7 +64,7 @@ class DAMPPerformanceMonitor {
         this.setupErrorTracking();
         this.setupVisibilityAPI();
         this.setupBeforeUnload();
-        
+
         if (this.options.debug) {
             this.setupDebugMode();
         }
@@ -82,17 +82,17 @@ class DAMPPerformanceMonitor {
             const lcpObserver = new PerformanceObserver((list) => {
                 const entries = list.getEntries();
                 const lastEntry = entries[entries.length - 1];
-                
+
                 this.metrics.LCP = {
                     value: lastEntry.startTime,
                     element: lastEntry.element,
                     url: lastEntry.url,
                     timestamp: Date.now()
                 };
-                
+
                 this.trackWebVital('LCP', lastEntry.startTime);
             });
-            
+
             lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
             this.observers.push(lcpObserver);
 
@@ -106,18 +106,18 @@ class DAMPPerformanceMonitor {
                         processingStart: entry.processingStart,
                         timestamp: Date.now()
                     };
-                    
+
                     this.trackWebVital('FID', entry.processingStart - entry.startTime);
                 });
             });
-            
+
             fidObserver.observe({ entryTypes: ['first-input'] });
             this.observers.push(fidObserver);
 
             // Cumulative Layout Shift (CLS)
             let clsValue = 0;
             let clsEntries = [];
-            
+
             const clsObserver = new PerformanceObserver((list) => {
                 const entries = list.getEntries();
                 entries.forEach(entry => {
@@ -126,16 +126,16 @@ class DAMPPerformanceMonitor {
                         clsEntries.push(entry);
                     }
                 });
-                
+
                 this.metrics.CLS = {
                     value: clsValue,
                     entries: clsEntries,
                     timestamp: Date.now()
                 };
-                
+
                 this.trackWebVital('CLS', clsValue);
             });
-            
+
             clsObserver.observe({ entryTypes: ['layout-shift'] });
             this.observers.push(clsObserver);
 
@@ -148,12 +148,12 @@ class DAMPPerformanceMonitor {
                             value: entry.startTime,
                             timestamp: Date.now()
                         };
-                        
+
                         this.trackWebVital('FCP', entry.startTime);
                     }
                 });
             });
-            
+
             fcpObserver.observe({ entryTypes: ['paint'] });
             this.observers.push(fcpObserver);
 
@@ -172,28 +172,28 @@ class DAMPPerformanceMonitor {
             setTimeout(() => {
                 const timing = performance.timing;
                 const navigation = performance.navigation;
-                
+
                 this.metrics.navigationStart = timing.navigationStart;
                 this.metrics.loadComplete = timing.loadEventEnd;
                 this.pageLoadTime = timing.loadEventEnd - timing.navigationStart;
-                
+
                 // Calculate TTFB
                 this.metrics.TTFB = {
                     value: timing.responseStart - timing.navigationStart,
                     timestamp: Date.now()
                 };
-                
+
                 // Track navigation type
                 this.metrics.navigationType = this.getNavigationType(navigation.type);
-                
+
                 // Calculate additional metrics
                 this.metrics.domContentLoaded = timing.domContentLoadedEventEnd - timing.navigationStart;
                 this.metrics.domInteractive = timing.domInteractive - timing.navigationStart;
                 this.metrics.domComplete = timing.domComplete - timing.navigationStart;
-                
+
                 this.trackMetric('PageLoad', this.pageLoadTime);
                 this.trackMetric('TTFB', this.metrics.TTFB.value);
-                
+
             }, 0);
         });
     }
@@ -206,7 +206,7 @@ class DAMPPerformanceMonitor {
 
         const resourceObserver = new PerformanceObserver((list) => {
             const entries = list.getEntries();
-            
+
             entries.forEach(entry => {
                 const resourceData = {
                     name: entry.name,
@@ -217,9 +217,9 @@ class DAMPPerformanceMonitor {
                     cached: entry.transferSize === 0 && entry.decodedBodySize > 0,
                     timestamp: Date.now()
                 };
-                
+
                 this.metrics.resources.push(resourceData);
-                
+
                 // Track slow resources
                 if (entry.duration > 1000) {
                     this.trackMetric('SlowResource', entry.duration, {
@@ -227,7 +227,7 @@ class DAMPPerformanceMonitor {
                         type: entry.initiatorType
                     });
                 }
-                
+
                 // Track large resources
                 if (entry.transferSize > 500000) { // 500KB
                     this.trackMetric('LargeResource', entry.transferSize, {
@@ -237,7 +237,7 @@ class DAMPPerformanceMonitor {
                 }
             });
         });
-        
+
         resourceObserver.observe({ entryTypes: ['resource'] });
         this.observers.push(resourceObserver);
     }
@@ -246,17 +246,17 @@ class DAMPPerformanceMonitor {
     setupUserExperience() {
         let scrollDepth = 0;
         let maxScrollDepth = 0;
-        
+
         // Scroll depth tracking
         const trackScrollDepth = () => {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
             scrollDepth = Math.round((scrollTop / documentHeight) * 100);
-            
+
             if (scrollDepth > maxScrollDepth) {
                 maxScrollDepth = scrollDepth;
                 this.metrics.scrollDepth = maxScrollDepth;
-                
+
                 // Track milestone scroll depths
                 if (maxScrollDepth >= 25 && maxScrollDepth < 50) {
                     this.trackMetric('ScrollDepth', 25);
@@ -269,7 +269,7 @@ class DAMPPerformanceMonitor {
                 }
             }
         };
-        
+
         // Throttled scroll event
         let scrollTimeout;
         window.addEventListener('scroll', () => {
@@ -278,12 +278,12 @@ class DAMPPerformanceMonitor {
             }
             scrollTimeout = setTimeout(trackScrollDepth, 100);
         });
-        
+
         // Click tracking
         document.addEventListener('click', (event) => {
             const target = event.target;
             const tagName = target.tagName.toLowerCase();
-            
+
             if (['a', 'button', 'input'].includes(tagName)) {
                 this.trackMetric('Click', 1, {
                     element: tagName,
@@ -294,7 +294,7 @@ class DAMPPerformanceMonitor {
                 });
             }
         });
-        
+
         // Form interactions
         document.addEventListener('submit', (event) => {
             this.trackMetric('FormSubmit', 1, {
@@ -302,7 +302,7 @@ class DAMPPerformanceMonitor {
                 action: event.target.action
             });
         });
-        
+
         // Time on page tracking
         setInterval(() => {
             if (!this.isHidden) {
@@ -323,11 +323,11 @@ class DAMPPerformanceMonitor {
                 stack: event.error?.stack,
                 timestamp: Date.now()
             };
-            
+
             this.metrics.jsErrors.push(error);
             this.trackMetric('JSError', 1, error);
         });
-        
+
         // Promise rejections
         window.addEventListener('unhandledrejection', (event) => {
             const error = {
@@ -335,7 +335,7 @@ class DAMPPerformanceMonitor {
                 promise: event.promise,
                 timestamp: Date.now()
             };
-            
+
             this.metrics.jsErrors.push(error);
             this.trackMetric('UnhandledRejection', 1, error);
         });
@@ -345,7 +345,7 @@ class DAMPPerformanceMonitor {
     setupVisibilityAPI() {
         document.addEventListener('visibilitychange', () => {
             this.isHidden = document.hidden;
-            
+
             if (document.hidden) {
                 this.metrics.visibilityChanges++;
                 this.trackMetric('PageHidden', 1);
@@ -360,7 +360,7 @@ class DAMPPerformanceMonitor {
         window.addEventListener('beforeunload', () => {
             this.sendMetrics(true);
         });
-        
+
         // Send metrics periodically
         setInterval(() => {
             this.sendMetrics();
@@ -371,13 +371,13 @@ class DAMPPerformanceMonitor {
     detectDevice() {
         const userAgent = navigator.userAgent;
         let deviceType = 'desktop';
-        
+
         if (/Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)) {
             deviceType = 'mobile';
         } else if (/iPad|Android(?!.*Mobile)/i.test(userAgent)) {
             deviceType = 'tablet';
         }
-        
+
         this.metrics.deviceType = deviceType;
         this.metrics.userAgent = userAgent;
         this.metrics.screen = {
@@ -391,7 +391,7 @@ class DAMPPerformanceMonitor {
     detectConnection() {
         if ('connection' in navigator) {
             const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-            
+
             this.metrics.connectionType = {
                 effectiveType: connection.effectiveType,
                 downlink: connection.downlink,
@@ -414,11 +414,11 @@ class DAMPPerformanceMonitor {
     // Track Web Vital
     trackWebVital(name, value) {
         const rating = this.getWebVitalRating(name, value);
-        
+
         if (this.options.enableConsoleLogging) {
             console.log(`${name}: ${Math.round(value)}ms (${rating})`);
         }
-        
+
         this.trackMetric(name, value, { rating });
     }
 
@@ -431,9 +431,9 @@ class DAMPPerformanceMonitor {
             FCP: [1800, 3000],
             TTFB: [800, 1800]
         };
-        
+
         const [good, needsImprovement] = thresholds[name] || [0, 0];
-        
+
         if (value <= good) return 'good';
         if (value <= needsImprovement) return 'needs-improvement';
         return 'poor';
@@ -449,12 +449,12 @@ class DAMPPerformanceMonitor {
             url: window.location.href,
             ...this.getSessionInfo()
         };
-        
+
         // Send to analytics
         if (this.options.enableAnalytics && Math.random() <= this.options.sampleRate) {
             this.sendToAnalytics(metric);
         }
-        
+
         // Console logging
         if (this.options.enableConsoleLogging) {
             console.log(`Metric: ${name}`, value, data);
@@ -517,13 +517,13 @@ class DAMPPerformanceMonitor {
             }
             return;
         }
-        
+
         const metricsData = {
             ...this.metrics,
             sessionInfo: this.getSessionInfo(),
             isBeforeUnload
         };
-        
+
         if (this.options.enableBeaconAPI && 'sendBeacon' in navigator) {
             navigator.sendBeacon(
                 this.options.endpoint,
@@ -565,9 +565,9 @@ class DAMPPerformanceMonitor {
             max-height: 400px;
             overflow-y: auto;
         `;
-        
+
         document.body.appendChild(debugPanel);
-        
+
         // Update debug panel
         const updateDebugPanel = () => {
             const html = `
@@ -591,12 +591,12 @@ class DAMPPerformanceMonitor {
                 Type: ${this.metrics.deviceType}<br>
                 Connection: ${this.metrics.connectionType?.effectiveType || 'N/A'}<br>
             `;
-            
+
             debugPanel.innerHTML = html;
         };
-        
+
         setInterval(updateDebugPanel, 1000);
-        
+
         // Add global debug functions
         window.dampPerformance = {
             getMetrics: () => this.metrics,
@@ -659,7 +659,7 @@ class DAMPPerformanceMonitor {
     destroy() {
         this.observers.forEach(observer => observer.disconnect());
         this.sendMetrics(true);
-        
+
         if (this.options.debug) {
             const debugPanel = document.getElementById('damp-debug-panel');
             if (debugPanel) {
@@ -689,4 +689,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = DAMPPerformanceMonitor;
 }
 
-console.log('DAMP Performance Monitor initialized'); 
+console.log('DAMP Performance Monitor initialized');

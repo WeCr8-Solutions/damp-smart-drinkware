@@ -16,12 +16,12 @@ class ProductPageAds {
     detectProductType() {
         const url = window.location.pathname.toLowerCase();
         const title = document.title.toLowerCase();
-        
+
         if (url.includes('damp-handle') || title.includes('handle')) return 'handle';
         if (url.includes('baby-bottle') || title.includes('baby')) return 'baby-bottle';
         if (url.includes('cup-sleeve') || title.includes('sleeve')) return 'cup-sleeve';
         if (url.includes('silicone-bottom') || title.includes('silicone')) return 'silicone-bottom';
-        
+
         return 'product';
     }
 
@@ -38,7 +38,7 @@ class ProductPageAds {
         await this.waitForAdSenseManager();
         this.placePrimaryAds();
         this.initialized = true;
-        
+
         console.log(`✅ Product page ads initialized for: ${this.pageType}`);
     }
 
@@ -64,10 +64,10 @@ class ProductPageAds {
     placePrimaryAds() {
         // Primary ad after specifications, before CTA
         this.placeSpecificationAd();
-        
+
         // Secondary ad in sidebar if available
         this.placeSidebarAd();
-        
+
         // Track ad placements for analytics
         this.trackAdPlacements();
     }
@@ -83,7 +83,7 @@ class ProductPageAds {
             '.bg-surface',
             'section:nth-of-type(3)', // Usually the specs section
         ];
-        
+
         let specSection = null;
         for (const selector of specSelectors) {
             try {
@@ -94,21 +94,21 @@ class ProductPageAds {
                 continue;
             }
         }
-        
+
         if (specSection) {
             const adContainer = document.createElement('div');
             adContainer.id = 'product-spec-ad';
             adContainer.className = 'product-ad-container';
-            
+
             const adUnit = window.dampAdsense.createAdUnit({
                 format: 'rectangle',
                 placement: 'product',
                 className: 'damp-ad-after-specifications'
             });
-            
+
             adContainer.appendChild(adUnit);
             specSection.parentNode.insertBefore(adContainer, specSection.nextSibling);
-            
+
             console.log('📢 Specifications ad placed');
         }
     }
@@ -123,7 +123,7 @@ class ProductPageAds {
             '.product-details-sidebar',
             '.container:has(.product-gallery)'
         ];
-        
+
         let sidebarContainer = null;
         for (const selector of sidebarSelectors) {
             try {
@@ -133,7 +133,7 @@ class ProductPageAds {
                 continue;
             }
         }
-        
+
         if (sidebarContainer && window.innerWidth > 1024) {
             const adContainer = document.createElement('div');
             adContainer.id = 'product-sidebar-ad';
@@ -144,16 +144,16 @@ class ProductPageAds {
                 margin: 40px 0;
                 text-align: center;
             `;
-            
+
             const adUnit = window.dampAdsense.createAdUnit({
                 format: 'rectangle',
                 placement: 'product',
                 className: 'damp-ad-sidebar'
             });
-            
+
             adContainer.appendChild(adUnit);
             sidebarContainer.appendChild(adContainer);
-            
+
             console.log('📢 Sidebar ad placed');
         }
     }
@@ -177,15 +177,15 @@ class ProductPageAds {
      */
     addResponsiveAd(container, placement = 'product') {
         if (!container || !window.dampAdsense) return null;
-        
+
         const format = window.innerWidth < 768 ? 'mobile' : 'rectangle';
-        
+
         const adUnit = window.dampAdsense.createAdUnit({
             format,
             placement,
             className: `damp-ad-responsive-${placement}`
         });
-        
+
         container.appendChild(adUnit);
         return adUnit;
     }
@@ -203,10 +203,10 @@ class ProductPageAds {
 // Auto-initialize for product pages
 document.addEventListener('DOMContentLoaded', () => {
     // Check if this is a product page
-    const isProductPage = window.location.pathname.includes('/pages/') && 
-                         (window.location.pathname.includes('-v1.0.html') || 
+    const isProductPage = window.location.pathname.includes('/pages/') &&
+                         (window.location.pathname.includes('-v1.0.html') ||
                           document.title.toLowerCase().includes('damp'));
-    
+
     if (isProductPage) {
         window.productPageAds = new ProductPageAds();
     }

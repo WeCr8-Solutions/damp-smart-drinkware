@@ -19,16 +19,16 @@ test.describe('Universal Navigation System', () => {
       test(`should maintain navigation consistency on ${name}`, async ({ page }) => {
         await page.goto(url);
         await expect(page).toHaveTitle(title);
-        
+
         // Test universal navigation elements
         await expect(page.locator('.damp-nav')).toBeVisible();
         await expect(page.locator('.logo')).toBeVisible();
         await expect(page.locator('.hamburger')).toBeVisible();
-        
+
         // Test logo functionality
         const logo = page.locator('.logo');
         await expect(logo).toHaveAttribute('href', /\//);
-        
+
         // Test navigation accessibility
         const hamburger = page.locator('.hamburger');
         await expect(hamburger).toHaveAttribute('aria-label');
@@ -40,15 +40,15 @@ test.describe('Universal Navigation System', () => {
   test.describe('Mobile Menu Functionality', () => {
     test('should open and close mobile menu correctly', async ({ page }) => {
       await page.goto('/');
-      
+
       const hamburger = page.locator('.hamburger');
       const mobileMenu = page.locator('.safe-area-mobile-menu, #mobileMenu');
-      
+
       // Test menu opening
       await hamburger.click();
       await expect(mobileMenu).toHaveClass(/active/);
       await expect(hamburger).toHaveAttribute('aria-expanded', 'true');
-      
+
       // Test menu closing with close button
       const closeButton = page.locator('.mobile-close, #mobileCloseBtn');
       await closeButton.click();
@@ -58,26 +58,26 @@ test.describe('Universal Navigation System', () => {
 
     test('should close menu on escape key', async ({ page }) => {
       await page.goto('/');
-      
+
       const hamburger = page.locator('.hamburger');
       const mobileMenu = page.locator('.safe-area-mobile-menu, #mobileMenu');
-      
+
       await hamburger.click();
       await expect(mobileMenu).toHaveClass(/active/);
-      
+
       await page.keyboard.press('Escape');
       await expect(mobileMenu).not.toHaveClass(/active/);
     });
 
     test('should close menu when clicking outside', async ({ page }) => {
       await page.goto('/');
-      
+
       const hamburger = page.locator('.hamburger');
       const mobileMenu = page.locator('.safe-area-mobile-menu, #mobileMenu');
-      
+
       await hamburger.click();
       await expect(mobileMenu).toHaveClass(/active/);
-      
+
       // Click outside menu
       await page.click('body', { position: { x: 10, y: 200 } });
       await expect(mobileMenu).not.toHaveClass(/active/);
@@ -85,10 +85,10 @@ test.describe('Universal Navigation System', () => {
 
     test('should navigate correctly from mobile menu', async ({ page }) => {
       await page.goto('/');
-      
+
       const hamburger = page.locator('.hamburger');
       await hamburger.click();
-      
+
       // Test navigation to products page
       const productsLink = page.locator('.mobile-nav-link[href*="products"], .mobile-nav a[href*="products"]').first();
       if (await productsLink.count() > 0) {
@@ -111,13 +111,13 @@ test.describe('Universal Navigation System', () => {
       test(`should display correctly on ${name} (${width}x${height})`, async ({ page }) => {
         await page.setViewportSize({ width, height });
         await page.goto('/');
-        
+
         const hamburger = page.locator('.hamburger');
         const logo = page.locator('.logo');
-        
+
         // Logo should always be visible
         await expect(logo).toBeVisible();
-        
+
         if (width < 769) {
           // Mobile: hamburger should be visible
           await expect(hamburger).toBeVisible();
@@ -125,7 +125,7 @@ test.describe('Universal Navigation System', () => {
           // Desktop: hamburger might be hidden or visible depending on design
           // Both patterns are acceptable in modern design
         }
-        
+
         // Test navigation functionality works at this viewport
         await hamburger.click();
         const mobileMenu = page.locator('.safe-area-mobile-menu, #mobileMenu');
@@ -137,28 +137,28 @@ test.describe('Universal Navigation System', () => {
   test.describe('Navigation Performance', () => {
     test('should have fast navigation interactions', async ({ page }) => {
       await page.goto('/');
-      
+
       // Measure hamburger click response time
       const startTime = Date.now();
       await page.locator('.hamburger').click();
-      
+
       const mobileMenu = page.locator('.safe-area-mobile-menu, #mobileMenu');
       await expect(mobileMenu).toBeVisible();
-      
+
       const responseTime = Date.now() - startTime;
       expect(responseTime).toBeLessThan(500); // Should respond within 500ms
     });
 
     test('should preserve scroll position during navigation', async ({ page }) => {
       await page.goto('/');
-      
+
       // Scroll down
       await page.locator('.products-section, .hero-section').scrollIntoViewIfNeeded();
       const scrollY = await page.evaluate(() => window.scrollY);
-      
+
       // Open mobile menu
       await page.locator('.hamburger').click();
-      
+
       // Scroll position should be preserved
       const newScrollY = await page.evaluate(() => window.scrollY);
       expect(Math.abs(newScrollY - scrollY)).toBeLessThan(50);
@@ -169,11 +169,11 @@ test.describe('Universal Navigation System', () => {
     test('should handle safe areas correctly on mobile', async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 844 }); // iPhone 12 with notch
       await page.goto('/');
-      
+
       // Test that navigation respects safe areas
       const nav = page.locator('.damp-nav');
       const computedStyle = await nav.evaluate(el => window.getComputedStyle(el));
-      
+
       // Should have proper padding for safe areas
       expect(parseInt(computedStyle.paddingTop)).toBeGreaterThan(15);
     });
@@ -183,15 +183,15 @@ test.describe('Universal Navigation System', () => {
       await context.addInitScript(() => {
         window.navigator.standalone = true;
       });
-      
+
       await page.goto('/');
-      
+
       // Navigation should work in PWA mode
       const hamburger = page.locator('.hamburger');
       await hamburger.click();
-      
+
       const mobileMenu = page.locator('.safe-area-mobile-menu, #mobileMenu');
       await expect(mobileMenu).toBeVisible();
     });
   });
-}); 
+});

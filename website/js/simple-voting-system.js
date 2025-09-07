@@ -77,43 +77,43 @@ class SimpleVotingSystem {
         this.saveUserVote(productId);
 
         console.log(`✅ Vote recorded for ${productId}! Total votes:`, this.votes);
-        
+
         // Update display
         this.updateDisplay();
-        
+
         // Show success message
         this.showSuccessMessage(productId);
-        
+
         return true;
     }
 
     // Update vote display on page
     updateDisplay() {
         const total = Object.values(this.votes).reduce((sum, count) => sum + count, 0);
-        
+
         Object.keys(this.votes).forEach(productId => {
             const count = this.votes[productId];
             const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
-            
+
             // Update vote count displays
             const voteElement = document.querySelector(`[data-product="${productId}"] .vote-count`);
             if (voteElement) {
                 voteElement.textContent = count;
             }
-            
+
             // Update percentage displays
             const percentageElement = document.querySelector(`[data-product="${productId}"] .vote-percentage`);
             if (percentageElement) {
                 percentageElement.textContent = `${percentage}%`;
             }
-            
+
             // Update progress bars
             const progressBar = document.querySelector(`[data-product="${productId}"] .progress-fill`);
             if (progressBar) {
                 progressBar.style.width = `${percentage}%`;
             }
         });
-        
+
         // Update total votes display
         const totalElement = document.querySelector('.total-votes');
         if (totalElement) {
@@ -129,9 +129,9 @@ class SimpleVotingSystem {
             'cupSleeve': 'Cup Sleeve',
             'babyBottle': 'Baby Bottle'
         };
-        
+
         const productName = productNames[productId] || productId;
-        
+
         // Create success notification
         const notification = document.createElement('div');
         notification.style.cssText = `
@@ -150,15 +150,15 @@ class SimpleVotingSystem {
             gap: 15px;
             animation: slideDown 0.3s ease-out;
         `;
-        
+
         notification.innerHTML = `
             <span>🗳️</span>
             <span>Vote recorded for ${productName}!</span>
             <button onclick="this.parentElement.remove()" style="background:rgba(26,26,46,0.2);color:#1a1a2e;border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;">×</button>
         `;
-        
+
         document.body.appendChild(notification);
-        
+
         // Auto-remove after 5 seconds
         setTimeout(() => {
             if (notification.parentElement) {

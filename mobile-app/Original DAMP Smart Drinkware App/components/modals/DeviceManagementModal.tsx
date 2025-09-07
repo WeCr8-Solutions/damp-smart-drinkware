@@ -49,7 +49,7 @@ export default function DeviceManagementModal({
       const result = await updateDevice(deviceId, {
         status: isActive ? 'connected' : 'disconnected',
       });
-      
+
       if (result.success) {
         loadDevices();
       } else {

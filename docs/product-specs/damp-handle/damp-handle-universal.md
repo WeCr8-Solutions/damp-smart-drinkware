@@ -32,7 +32,7 @@ specifications:
   installation: "Adjustable clamp system"
 images:
   primary: "assets/images/products/damp-handle/damp-handle.png"
-  gallery: 
+  gallery:
     - "assets/images/products/damp-handle/universal-fit.png"
     - "assets/images/products/damp-handle/installation-guide.png"
 ---
@@ -75,4 +75,4 @@ The versatile solution that works with most cup and tumbler handles. Features an
 - **First-time users** wanting maximum compatibility
 - **Multiple cup types** in household or office
 - **Gift giving** when unsure of recipient's drinkware
-- **Budget-conscious** users wanting versatility 
+- **Budget-conscious** users wanting versatility

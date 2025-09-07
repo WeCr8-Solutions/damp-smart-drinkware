@@ -2,9 +2,9 @@
 // Cross-platform authentication for Web, iOS, and Android
 // Copyright 2025 WeCr8 Solutions LLC
 
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
   signInWithRedirect,
@@ -21,14 +21,14 @@ import {
   reload
 } from 'firebase/auth';
 
-import { 
-  doc, 
-  setDoc, 
-  getDoc, 
-  updateDoc, 
-  collection, 
-  query, 
-  where, 
+import {
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  collection,
+  query,
+  where,
   getDocs,
   serverTimestamp,
   increment
@@ -48,13 +48,13 @@ export class DAMPAuthService {
     this.platform = getPlatform();
     this.currentUser = null;
     this.authStateListeners = [];
-    
+
     // Initialize authentication state monitoring
     this.initializeAuthState();
-    
+
     // Setup OAuth providers
     this.setupOAuthProviders();
-    
+
     // Setup biometric authentication (mobile only)
     if (this.platform !== 'web') {
       this.setupBiometricAuth();
@@ -69,11 +69,11 @@ export class DAMPAuthService {
     this.googleProvider = new GoogleAuthProvider();
     this.googleProvider.addScope('email');
     this.googleProvider.addScope('profile');
-    
-    // Facebook OAuth  
+
+    // Facebook OAuth
     this.facebookProvider = new FacebookAuthProvider();
     this.facebookProvider.addScope('email');
-    
+
     // Apple OAuth (iOS only)
     if (this.platform === 'ios') {
       this.appleProvider = new OAuthProvider('apple.com');
@@ -87,7 +87,7 @@ export class DAMPAuthService {
    */
   async setupBiometricAuth() {
     if (this.platform === 'web') return;
-    
+
     try {
       // React Native Biometrics setup will go here
       // Import and initialize react-native-biometrics
@@ -103,17 +103,17 @@ export class DAMPAuthService {
   initializeAuthState() {
     onAuthStateChanged(this.auth, async (user) => {
       this.currentUser = user;
-      
+
       if (user) {
         await this.handleUserSignIn(user);
-        this.trackAnalytics('user_sign_in', { 
+        this.trackAnalytics('user_sign_in', {
           method: 'state_change',
-          platform: this.platform 
+          platform: this.platform
         });
       } else {
         this.handleUserSignOut();
       }
-      
+
       // Notify all listeners
       this.authStateListeners.forEach(callback => callback(user));
     });
@@ -124,7 +124,7 @@ export class DAMPAuthService {
    */
   onAuthStateChange(callback) {
     this.authStateListeners.push(callback);
-    
+
     // Return unsubscribe function
     return () => {
       const index = this.authStateListeners.indexOf(callback);
@@ -141,25 +141,25 @@ export class DAMPAuthService {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
       const user = userCredential.user;
-      
+
       // Update display name if provided
       if (displayName) {
         await updateProfile(user, { displayName });
       }
-      
+
       // Send email verification
       await sendEmailVerification(user);
-      
+
       // Create user profile in Firestore
       await this.createUserProfile(user, { displayName });
-      
-      this.trackAnalytics('sign_up', { 
-        method: 'email', 
-        platform: this.platform 
+
+      this.trackAnalytics('sign_up', {
+        method: 'email',
+        platform: this.platform
       });
-      
+
       return { success: true, user };
-      
+
     } catch (error) {
       console.error('Account creation error:', error);
       return { success: false, error: this.formatError(error) };
@@ -172,14 +172,14 @@ export class DAMPAuthService {
   async signInWithEmail(email, password) {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-      
-      this.trackAnalytics('login', { 
-        method: 'email', 
-        platform: this.platform 
+
+      this.trackAnalytics('login', {
+        method: 'email',
+        platform: this.platform
       });
-      
+
       return { success: true, user: userCredential.user };
-      
+
     } catch (error) {
       console.error('Sign in error:', error);
       return { success: false, error: this.formatError(error) };
@@ -193,7 +193,7 @@ export class DAMPAuthService {
   async signInWithGoogle() {
     try {
       let userCredential;
-      
+
       if (this.platform === 'web') {
         // Web: Use popup or redirect
         userCredential = await signInWithPopup(this.auth, this.googleProvider);
@@ -202,14 +202,14 @@ export class DAMPAuthService {
         // Implementation will depend on @react-native-google-signin/google-signin
         throw new Error('Mobile Google Sign-In not yet implemented');
       }
-      
-      this.trackAnalytics('login', { 
-        method: 'google', 
-        platform: this.platform 
+
+      this.trackAnalytics('login', {
+        method: 'google',
+        platform: this.platform
       });
-      
+
       return { success: true, user: userCredential.user };
-      
+
     } catch (error) {
       console.error('Google sign in error:', error);
       return { success: false, error: this.formatError(error) };
@@ -223,11 +223,11 @@ export class DAMPAuthService {
     if (this.platform !== 'ios') {
       return { success: false, error: 'Apple Sign-In only available on iOS' };
     }
-    
+
     try {
       // Implementation will depend on @react-native-apple-authentication
       throw new Error('Apple Sign-In not yet implemented');
-      
+
     } catch (error) {
       console.error('Apple sign in error:', error);
       return { success: false, error: this.formatError(error) };
@@ -241,12 +241,12 @@ export class DAMPAuthService {
     if (this.platform === 'web') {
       return { success: false, error: 'Biometric authentication not available on web' };
     }
-    
+
     try {
       // Implementation will depend on react-native-biometrics
       // This would validate biometric and then use stored credentials
       throw new Error('Biometric authentication not yet implemented');
-      
+
     } catch (error) {
       console.error('Biometric sign in error:', error);
       return { success: false, error: this.formatError(error) };
@@ -259,13 +259,13 @@ export class DAMPAuthService {
   async signOut() {
     try {
       await signOut(this.auth);
-      
-      this.trackAnalytics('logout', { 
-        platform: this.platform 
+
+      this.trackAnalytics('logout', {
+        platform: this.platform
       });
-      
+
       return { success: true };
-      
+
     } catch (error) {
       console.error('Sign out error:', error);
       return { success: false, error: this.formatError(error) };
@@ -278,13 +278,13 @@ export class DAMPAuthService {
   async resetPassword(email) {
     try {
       await sendPasswordResetEmail(this.auth, email);
-      
-      this.trackAnalytics('password_reset_request', { 
-        platform: this.platform 
+
+      this.trackAnalytics('password_reset_request', {
+        platform: this.platform
       });
-      
+
       return { success: true };
-      
+
     } catch (error) {
       console.error('Password reset error:', error);
       return { success: false, error: this.formatError(error) };
@@ -298,7 +298,7 @@ export class DAMPAuthService {
     if (!this.currentUser) {
       return { success: false, error: 'No user signed in' };
     }
-    
+
     try {
       // Update Firebase Auth profile
       if (updates.displayName || updates.photoURL) {
@@ -307,20 +307,20 @@ export class DAMPAuthService {
           photoURL: updates.photoURL
         });
       }
-      
+
       // Update Firestore user document
       const userRef = doc(this.db, 'users', this.currentUser.uid);
       await updateDoc(userRef, {
         ...updates,
         updatedAt: serverTimestamp()
       });
-      
-      this.trackAnalytics('profile_update', { 
-        platform: this.platform 
+
+      this.trackAnalytics('profile_update', {
+        platform: this.platform
       });
-      
+
       return { success: true };
-      
+
     } catch (error) {
       console.error('Profile update error:', error);
       return { success: false, error: this.formatError(error) };
@@ -334,7 +334,7 @@ export class DAMPAuthService {
     try {
       const userRef = doc(this.db, 'users', user.uid);
       const userSnap = await getDoc(userRef);
-      
+
       if (!userSnap.exists()) {
         const userData = {
           uid: user.uid,
@@ -362,13 +362,13 @@ export class DAMPAuthService {
           },
           ...additionalData
         };
-        
+
         await setDoc(userRef, userData);
-        
+
         // Update global stats
         await this.updateGlobalStats('userSignUp');
       }
-      
+
     } catch (error) {
       console.error('User profile creation error:', error);
       throw error;
@@ -382,7 +382,7 @@ export class DAMPAuthService {
     try {
       const userRef = doc(this.db, 'users', user.uid);
       const userSnap = await getDoc(userRef);
-      
+
       if (!userSnap.exists()) {
         await this.createUserProfile(user);
       } else {
@@ -393,9 +393,9 @@ export class DAMPAuthService {
           platform: this.platform
         });
       }
-      
+
       await this.updateGlobalStats('userSignIn');
-      
+
     } catch (error) {
       console.error('Handle user sign in error:', error);
     }
@@ -424,7 +424,7 @@ export class DAMPAuthService {
     try {
       const statsRef = doc(this.db, 'stats', 'global');
       const updates = {};
-      
+
       switch (action) {
         case 'userSignUp':
           updates.totalUsers = increment(1);
@@ -437,12 +437,12 @@ export class DAMPAuthService {
           updates.dailyActiveUsers = increment(1);
           break;
       }
-      
+
       if (Object.keys(updates).length > 0) {
         updates.updatedAt = serverTimestamp();
         await updateDoc(statsRef, updates);
       }
-      
+
     } catch (error) {
       console.error('Global stats update error:', error);
     }
@@ -460,7 +460,7 @@ export class DAMPAuthService {
           platform: this.platform,
           timestamp: new Date().toISOString()
         };
-        
+
         // Platform-specific analytics tracking
         if (this.platform === 'web') {
           // Firebase Analytics for web
@@ -469,7 +469,7 @@ export class DAMPAuthService {
           // React Native Firebase Analytics
           // analytics().logEvent(eventName, eventData);
         }
-        
+
       } catch (error) {
         console.warn('Analytics tracking error:', error);
       }
@@ -489,7 +489,7 @@ export class DAMPAuthService {
       'auth/too-many-requests': 'Too many failed attempts. Please try again later.',
       'auth/network-request-failed': 'Network error. Please check your connection.',
     };
-    
+
     return errorMessages[error.code] || error.message || 'An unexpected error occurred.';
   }
 
@@ -498,17 +498,17 @@ export class DAMPAuthService {
    */
   async getCurrentUserData() {
     if (!this.currentUser) return null;
-    
+
     try {
       const userRef = doc(this.db, 'users', this.currentUser.uid);
       const userSnap = await getDoc(userRef);
-      
+
       if (userSnap.exists()) {
         return { id: userSnap.id, ...userSnap.data() };
       }
-      
+
       return null;
-      
+
     } catch (error) {
       console.error('Get current user data error:', error);
       return null;
@@ -520,8 +520,8 @@ export class DAMPAuthService {
    */
   async hasPermission(permission) {
     const userData = await this.getCurrentUserData();
-    return userData?.permissions?.includes(permission) || 
-           userData?.role === 'admin' || 
+    return userData?.permissions?.includes(permission) ||
+           userData?.role === 'admin' ||
            false;
   }
 

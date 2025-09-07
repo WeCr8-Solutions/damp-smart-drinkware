@@ -20,7 +20,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   useFrameworkReady();
-  
+
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const mounted = useRef(true);
@@ -35,7 +35,7 @@ export default function RootLayout() {
   useEffect(() => {
     // Listen for auth changes with Firebase
     let unsubscribe: (() => void) | null = null;
-    
+
     const setupAuthListener = () => {
       try {
         if (auth && typeof auth.onAuthStateChanged === 'function') {

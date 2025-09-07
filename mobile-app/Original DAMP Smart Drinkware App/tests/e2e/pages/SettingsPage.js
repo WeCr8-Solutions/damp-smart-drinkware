@@ -1,6 +1,6 @@
 /**
  * Settings Page Object
- * 
+ *
  * Represents the settings pages and provides methods
  * to interact with them in tests.
  */
@@ -11,7 +11,7 @@ export class SettingsPage {
    */
   constructor(page) {
     this.page = page;
-    
+
     // Selectors
     this.accountTab = page.locator('[data-testid="tab-account"]');
     this.preferencesTab = page.locator('[data-testid="tab-preferences"]');
@@ -19,21 +19,21 @@ export class SettingsPage {
     this.zonesTab = page.locator('[data-testid="tab-zones"]');
     this.storeTab = page.locator('[data-testid="tab-store"]');
     this.supportTab = page.locator('[data-testid="tab-support"]');
-    
+
     this.subscriptionSection = page.locator('[data-testid="section-subscription"]');
     this.deviceManagementSection = page.locator('[data-testid="section-device-management"]');
     this.zoneManagementSection = page.locator('[data-testid="section-zone-management"]');
     this.locationTrackingSection = page.locator('[data-testid="section-location-tracking"]');
-    
+
     this.deviceLimitModal = page.locator('[data-testid="device-limit-modal"]');
     this.upgradeToAddDevicesButton = page.locator('[data-testid="upgrade-to-add-devices-button"]');
     this.zoneLimitModal = page.locator('[data-testid="zone-limit-modal"]');
     this.upgradeForMoreZonesButton = page.locator('[data-testid="upgrade-for-more-zones-button"]');
-    
+
     this.locationTrackingToggle = page.locator('[data-testid="location-tracking-toggle"]');
     this.upgradeModal = page.locator('[data-testid="upgrade-modal"]');
     this.upgradeButton = page.locator('[data-testid="upgrade-button"]');
-    
+
     this.addDeviceModal = page.locator('[data-testid="add-device-modal"]');
     this.createZoneButton = page.locator('[data-testid="create-zone-button"]');
     this.zoneManagement = page.locator('[data-testid="zone-management"]');

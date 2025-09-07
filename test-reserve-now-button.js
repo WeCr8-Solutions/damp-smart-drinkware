@@ -52,7 +52,7 @@ function logRecommendation(recommendation) {
  */
 async function testBackendServer() {
     logStep('Testing Backend Server Availability');
-    
+
     try {
         // Test if backend server is running
         const response = await fetch('http://localhost:3000/api/campaign-status');
@@ -67,7 +67,7 @@ async function testBackendServer() {
         logRecommendation('Start the backend server: cd backend && node stripe-preorder-server.js');
         return false;
     }
-    
+
     return true;
 }
 
@@ -76,56 +76,56 @@ async function testBackendServer() {
  */
 async function testPreSaleFunnelPage() {
     logStep('Testing Pre-Sale Funnel Page');
-    
+
     let browser;
     try {
-        browser = await puppeteer.launch({ 
+        browser = await puppeteer.launch({
             headless: 'new',
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
         const page = await browser.newPage();
-        
+
         // Enable console logging
         const consoleMessages = [];
         const errors = [];
-        
+
         page.on('console', msg => {
             consoleMessages.push({
                 type: msg.type(),
                 text: msg.text()
             });
         });
-        
+
         page.on('pageerror', error => {
             errors.push(error.message);
         });
-        
+
         // Navigate to pre-sale funnel page
         const pagePath = path.resolve('website/pages/pre-sale-funnel.html');
         await page.goto(`file://${pagePath}`, { waitUntil: 'networkidle0' });
-        
+
         testResults.pageLoad = true;
         logStep('Pre-sale funnel page loaded successfully', 'success');
-        
+
         // Check if Reserve Now button exists
         const reserveButton = await page.$('#checkout-button');
         if (reserveButton) {
             testResults.buttonPresent = true;
             logStep('Reserve Now button found', 'success');
-            
+
             // Get button text
             const buttonText = await page.$eval('#checkout-button', el => el.textContent.trim());
             logStep(`Button text: "${buttonText}"`, 'info');
-            
+
         } else {
             logError(new Error('Reserve Now button not found'), 'Button Detection');
         }
-        
+
         // Check if Stripe is loaded
         const stripeLoaded = await page.evaluate(() => {
             return typeof window.Stripe !== 'undefined';
         });
-        
+
         if (stripeLoaded) {
             testResults.stripeLoaded = true;
             logStep('Stripe JavaScript SDK loaded', 'success');
@@ -133,17 +133,17 @@ async function testPreSaleFunnelPage() {
             logError(new Error('Stripe JavaScript SDK not loaded'), 'Stripe Loading');
             logRecommendation('Ensure Stripe script tag is present and loading correctly');
         }
-        
+
         // Test button click (without actually processing payment)
         if (reserveButton && stripeLoaded) {
             logStep('Testing button click behavior');
-            
+
             // Mock fetch to prevent actual API calls during testing
             await page.evaluateOnNewDocument(() => {
                 window.originalFetch = window.fetch;
                 window.fetch = async (url, options) => {
                     console.log('Mock fetch called:', url, options);
-                    
+
                     if (url.includes('create-checkout-session')) {
                         // Simulate successful session creation
                         return {
@@ -154,11 +154,11 @@ async function testPreSaleFunnelPage() {
                             })
                         };
                     }
-                    
+
                     return window.originalFetch(url, options);
                 };
             });
-            
+
             // Mock Stripe.redirectToCheckout to prevent actual redirect
             await page.evaluate(() => {
                 if (window.Stripe) {
@@ -173,26 +173,26 @@ async function testPreSaleFunnelPage() {
                     };
                 }
             });
-            
+
             // Click the button
             await reserveButton.click();
-            
+
             // Wait a moment for any async operations
             await page.waitForTimeout(2000);
-            
+
             // Check if button state changed (indicating click was processed)
             const buttonAfterClick = await page.$eval('#checkout-button', el => ({
                 disabled: el.disabled,
                 text: el.textContent.trim(),
                 opacity: window.getComputedStyle(el).opacity
             }));
-            
+
             logStep(`Button state after click: disabled=${buttonAfterClick.disabled}, text="${buttonAfterClick.text}"`, 'info');
-            
+
             testResults.clickResponse = true;
             logStep('Button click processed successfully', 'success');
         }
-        
+
         // Check for JavaScript errors
         if (errors.length > 0) {
             logStep(`JavaScript errors found: ${errors.length}`, 'warning');
@@ -202,24 +202,24 @@ async function testPreSaleFunnelPage() {
         } else {
             logStep('No JavaScript errors detected', 'success');
         }
-        
+
         // Check console messages for relevant information
-        const relevantMessages = consoleMessages.filter(msg => 
-            msg.text.includes('checkout') || 
-            msg.text.includes('stripe') || 
+        const relevantMessages = consoleMessages.filter(msg =>
+            msg.text.includes('checkout') ||
+            msg.text.includes('stripe') ||
             msg.text.includes('error') ||
             msg.text.includes('Mock')
         );
-        
+
         if (relevantMessages.length > 0) {
             logStep('Relevant console messages:', 'info');
             relevantMessages.forEach(msg => {
                 console.log(`  ${msg.type.toUpperCase()}: ${msg.text}`);
             });
         }
-        
+
         return true;
-        
+
     } catch (error) {
         logError(error, 'Page Testing');
         return false;
@@ -235,12 +235,12 @@ async function testPreSaleFunnelPage() {
  */
 async function testErrorHandling() {
     logStep('Testing Error Handling');
-    
+
     try {
         // Read the pre-sale funnel file
         const filePath = 'website/pages/pre-sale-funnel.html';
         const content = await fs.readFile(filePath, 'utf8');
-        
+
         // Check for error handling patterns
         const errorHandlingPatterns = [
             /catch\s*\(\s*error\s*\)/gi,
@@ -249,7 +249,7 @@ async function testErrorHandling() {
             /error\.message/gi,
             /support@dampdrink\.com/gi
         ];
-        
+
         let errorHandlingFound = 0;
         errorHandlingPatterns.forEach(pattern => {
             const matches = content.match(pattern);
@@ -257,14 +257,14 @@ async function testErrorHandling() {
                 errorHandlingFound += matches.length;
             }
         });
-        
+
         if (errorHandlingFound > 0) {
             testResults.errorHandling = true;
             logStep(`Found ${errorHandlingFound} error handling implementations`, 'success');
         } else {
             logError(new Error('No error handling found'), 'Error Handling');
         }
-        
+
         // Check if the old "hello@dampdrink.com" reference is removed
         if (content.includes('hello@dampdrink.com')) {
             logStep('Found old contact email reference', 'warning');
@@ -272,9 +272,9 @@ async function testErrorHandling() {
         } else {
             logStep('Contact email properly updated', 'success');
         }
-        
+
         return true;
-        
+
     } catch (error) {
         logError(error, 'Error Handling Test');
         return false;
@@ -286,17 +286,17 @@ async function testErrorHandling() {
  */
 async function testStripeConfiguration() {
     logStep('Testing Stripe Configuration');
-    
+
     try {
         // Check backend Stripe configuration
         const backendFile = 'backend/stripe-preorder-server.js';
         const backendContent = await fs.readFile(backendFile, 'utf8');
-        
+
         // Check for Stripe configuration
         const hasStripeKey = /sk_live_|sk_test_/.test(backendContent);
         const hasCheckoutEndpoint = /create-checkout-session/.test(backendContent);
         const hasProductConfig = /PRODUCTS\s*=/.test(backendContent);
-        
+
         if (hasStripeKey && hasCheckoutEndpoint && hasProductConfig) {
             testResults.stripeIntegration = true;
             logStep('Backend Stripe configuration verified', 'success');
@@ -306,23 +306,23 @@ async function testStripeConfiguration() {
             if (!hasCheckoutEndpoint) logRecommendation('Add checkout session endpoint');
             if (!hasProductConfig) logRecommendation('Configure product definitions');
         }
-        
+
         // Check frontend Stripe configuration
         const frontendFile = 'website/pages/pre-sale-funnel.html';
         const frontendContent = await fs.readFile(frontendFile, 'utf8');
-        
+
         const hasStripeScript = /stripe\.com\/v3/.test(frontendContent);
         const hasPublicKey = /pk_live_|pk_test_/.test(frontendContent);
-        
+
         if (hasStripeScript && hasPublicKey) {
             logStep('Frontend Stripe configuration verified', 'success');
         } else {
             if (!hasStripeScript) logRecommendation('Ensure Stripe script is loaded');
             if (!hasPublicKey) logRecommendation('Configure Stripe publishable key');
         }
-        
+
         return true;
-        
+
     } catch (error) {
         logError(error, 'Stripe Configuration');
         return false;
@@ -335,7 +335,7 @@ async function testStripeConfiguration() {
 function generateReport() {
     console.log('\n📋 RESERVE NOW BUTTON TEST REPORT');
     console.log('==================================\n');
-    
+
     // Test Results Summary
     console.log('🧪 TEST RESULTS SUMMARY');
     console.log('========================');
@@ -346,19 +346,19 @@ function generateReport() {
     console.log(`Error Handling: ${testResults.errorHandling ? '✅' : '❌'}`);
     console.log(`Backend Connection: ${testResults.backendConnection ? '✅' : '❌'}`);
     console.log(`Stripe Integration: ${testResults.stripeIntegration ? '✅' : '❌'}`);
-    
+
     // Calculate overall score
-    const totalTests = Object.keys(testResults).filter(key => 
+    const totalTests = Object.keys(testResults).filter(key =>
         typeof testResults[key] === 'boolean').length;
-    const passedTests = Object.values(testResults).filter(result => 
+    const passedTests = Object.values(testResults).filter(result =>
         result === true).length;
     const overallScore = Math.round((passedTests / totalTests) * 100);
-    
+
     console.log('\n🎯 OVERALL ASSESSMENT');
     console.log('====================');
     console.log(`Tests Passed: ${passedTests}/${totalTests}`);
     console.log(`Overall Score: ${overallScore}%`);
-    
+
     // Issues
     if (testResults.issues.length > 0) {
         console.log('\n⚠️ ISSUES FOUND');
@@ -367,7 +367,7 @@ function generateReport() {
             console.log(`${index + 1}. ${issue}`);
         });
     }
-    
+
     // Recommendations
     if (testResults.recommendations.length > 0) {
         console.log('\n💡 RECOMMENDATIONS');
@@ -376,11 +376,11 @@ function generateReport() {
             console.log(`${index + 1}. ${rec}`);
         });
     }
-    
+
     // Final Assessment
     console.log('\n🏁 FINAL ASSESSMENT');
     console.log('==================');
-    
+
     if (overallScore >= 90) {
         console.log('🎉 EXCELLENT: Reserve Now button is fully functional!');
         console.log('✅ Stripe integration is working correctly.');
@@ -398,7 +398,7 @@ function generateReport() {
         console.log('🚨 Immediate attention required.');
         console.log('📞 Consider reviewing the Stripe integration setup.');
     }
-    
+
     return overallScore >= 70;
 }
 
@@ -414,10 +414,10 @@ async function saveResults() {
             passedTests: Object.values(testResults).filter(result => result === true).length
         }
     };
-    
+
     try {
         await fs.writeFile(
-            'reserve-now-button-test-report.json', 
+            'reserve-now-button-test-report.json',
             JSON.stringify(reportData, null, 2)
         );
         logStep('Test report saved to reserve-now-button-test-report.json', 'success');
@@ -431,27 +431,27 @@ async function saveResults() {
  */
 async function runReserveNowTest() {
     logStep('🚀 Starting Reserve Now Button Testing...\n');
-    
+
     try {
         await testBackendServer();
         console.log();
-        
+
         await testPreSaleFunnelPage();
         console.log();
-        
+
         await testErrorHandling();
         console.log();
-        
+
         await testStripeConfiguration();
         console.log();
-        
+
         const success = generateReport();
-        
+
         await saveResults();
-        
+
         console.log('\n🏁 TESTING COMPLETE');
         console.log('===================');
-        
+
         if (success) {
             console.log('🎊 SUCCESS: Reserve Now button is working properly!');
             console.log('💳 Stripe integration is functional.');
@@ -460,9 +460,9 @@ async function runReserveNowTest() {
             console.log('📝 REVIEW NEEDED: Some issues need attention.');
             console.log('🔧 Please address the issues and recommendations above.');
         }
-        
+
         return success;
-        
+
     } catch (error) {
         logError(error, 'Main Test');
         return false;

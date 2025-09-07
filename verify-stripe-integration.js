@@ -88,7 +88,7 @@ function findStripePatterns(content, filePath) {
  */
 function verifyPresaleFunnel() {
   console.log('🛒 Verifying Pre-Sale Funnel Integration...');
-  
+
   const presaleFiles = [
     'website/pages/pre-sale-funnel.html',
     'website/assets/js/scripts.js',
@@ -104,7 +104,7 @@ function verifyPresaleFunnel() {
     const content = readFileContent(filePath);
     if (content) {
       const patterns = findStripePatterns(content, filePath);
-      
+
       // Check for pre-order buttons
       const preOrderMatches = content.match(/preOrderProduct|pre-order|checkout-button|buy-now/gi);
       if (preOrderMatches) {
@@ -147,7 +147,7 @@ function verifyPresaleFunnel() {
  */
 function verifyProductPages() {
   console.log('📦 Verifying Product Pages Integration...');
-  
+
   const productPageFiles = [
     'website/pages/damp-handle-v1.0-stanley-IceFlow.html',
     'website/pages/silicone-bottom.html',
@@ -198,7 +198,7 @@ function verifyProductPages() {
  */
 function verifyStoreCheckout() {
   console.log('🛍️ Verifying Store Checkout Flow...');
-  
+
   const storeFiles = [
     'website/assets/js/store-auth.js',
     'website/pages/cart.html',
@@ -247,7 +247,7 @@ function verifyStoreCheckout() {
  */
 function verifyBackendIntegration() {
   console.log('⚙️ Verifying Backend Integration...');
-  
+
   const backendFiles = [
     'backend/api/stripe-checkout.js',
     'backend/stripe-preorder-server.js',
@@ -302,7 +302,7 @@ function verifyBackendIntegration() {
  */
 function verifyMobileIntegration() {
   console.log('📱 Verifying Mobile App Integration...');
-  
+
   const mobileFiles = [
     'mobile-app/Original DAMP Smart Drinkware App/components/modals/StoreModal.tsx',
     'mobile-app/Original DAMP Smart Drinkware App/services/purchasing-service.ts',
@@ -341,7 +341,7 @@ function verifyMobileIntegration() {
  */
 function checkStripeConfiguration() {
   console.log('🔧 Checking Stripe Configuration...');
-  
+
   // Check environment files
   const envFiles = [
     '.env',
@@ -392,21 +392,21 @@ function generateReport() {
   sections.forEach(section => {
     const status = section.data.status === 'pass' ? '✅ PASS' : '❌ FAIL';
     console.log(`${section.name}: ${status}`);
-    
+
     if (section.data.issues && section.data.issues.length > 0) {
       console.log('  Issues:');
       section.data.issues.forEach(issue => {
         console.log(`    - ${issue}`);
       });
     }
-    
+
     if (section.data.status === 'pass') totalPassed++;
   });
 
   console.log('\n🎯 OVERALL SCORE');
   console.log('================');
   console.log(`Passed: ${totalPassed}/${totalSections} sections`);
-  
+
   if (totalPassed === totalSections) {
     console.log('🎉 ALL SYSTEMS GO! Stripe integration is complete and verified.');
   } else {
@@ -443,7 +443,7 @@ function runCompleteVerification() {
 
     console.log('\n🏁 VERIFICATION COMPLETE');
     console.log('========================');
-    
+
     if (allPassed) {
       console.log('🎊 SUCCESS: All Stripe integrations verified and working!');
       console.log('🚀 Your pre-sale funnel and product pages are ready for production!');

@@ -63,7 +63,7 @@ const submitVote = async (productId) => {
       },
       body: JSON.stringify({ productId })
     });
-    
+
     if (response.ok) {
       updateVotingResults();
     }
@@ -95,11 +95,11 @@ class UnifiedFirebaseServices {
   async submitVote(productId) {
     // Unified voting service used by both web and mobile
   }
-  
+
   async createCheckoutSession(items) {
     // Unified Stripe integration
   }
-  
+
   async getUserProfile(userId) {
     // Unified user data management
   }
@@ -130,15 +130,15 @@ class UnifiedFirebaseServices {
 
 ### **Content Security Policy**
 ```http
-Content-Security-Policy: 
-  default-src 'self'; 
-  script-src 'self' 'unsafe-inline' 'unsafe-eval' 
-    https://www.googletagmanager.com 
-    https://js.stripe.com 
+Content-Security-Policy:
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval'
+    https://www.googletagmanager.com
+    https://js.stripe.com
     https://checkout.stripe.com;
-  style-src 'self' 'unsafe-inline' 
+  style-src 'self' 'unsafe-inline'
     https://fonts.googleapis.com;
-  connect-src 'self' 
+  connect-src 'self'
     https://api.stripe.com
     https://checkout.stripe.com
     https://dampdrink.com;
@@ -271,9 +271,9 @@ const createCheckoutSession = async (items) => {
     },
     body: JSON.stringify({ items })
   });
-  
+
   const session = await response.json();
-  
+
   // Redirect to Stripe Checkout
   const stripe = Stripe('pk_test_your_publishable_key');
   const { error } = await stripe.redirectToCheckout({
@@ -400,7 +400,7 @@ This project is proprietary software owned by WeCr8 Solutions LLC. All rights re
 
 ---
 
-**Built with ❤️ by WeCr8 Solutions LLC**  
+**Built with ❤️ by WeCr8 Solutions LLC**
 *Revolutionizing hydration through smart technology*
 
 ## 🔄 **Recent Updates**

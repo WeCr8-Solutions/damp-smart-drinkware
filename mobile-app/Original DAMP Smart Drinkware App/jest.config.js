@@ -6,16 +6,16 @@
 
 module.exports = {
   preset: 'jest-expo',
-  
+
   // Test environment
   testEnvironment: 'jsdom',
-  
+
   // Setup files
   setupFilesAfterEnv: [
     '@testing-library/jest-native/extend-expect',
     '<rootDir>/tests/setup/jest-setup.ts'
   ],
-  
+
   // Module file extensions
   moduleFileExtensions: [
     'ts',
@@ -24,7 +24,7 @@ module.exports = {
     'jsx',
     'json'
   ],
-  
+
   // Transform files
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', {
@@ -32,7 +32,7 @@ module.exports = {
     }],
     '^.+\\.(js|jsx)$': 'babel-jest'
   },
-  
+
   // Module name mapping for aliases and assets
   moduleNameMapper: {
     // Path aliases
@@ -44,13 +44,13 @@ module.exports = {
     '^@hooks/(.*)$': '<rootDir>/hooks/$1',
     '^@contexts/(.*)$': '<rootDir>/contexts/$1',
     '^@styles/(.*)$': '<rootDir>/styles/$1',
-    
+
     // Mock static assets
     '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/tests/mocks/fileMock.js',
     '\\.(mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/tests/mocks/fileMock.js',
     '\\.(ttf|eot|woff|woff2)$': '<rootDir>/tests/mocks/fileMock.js',
   },
-  
+
   // Ignore patterns
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
@@ -59,12 +59,12 @@ module.exports = {
     '<rootDir>/build/',
     '<rootDir>/coverage/'
   ],
-  
+
   // Ignore transforms for these modules
   transformIgnorePatterns: [
     'node_modules/(?!(react-native|@react-native|expo|@expo|@firebase|firebase|@react-navigation|@testing-library|react-native-ble-plx|lucide-react-native|react-native-svg|react-native-reanimated|react-native-gesture-handler|react-native-screens|react-native-safe-area-context)/)'
   ],
-  
+
   // Coverage configuration
   collectCoverageFrom: [
     'components/**/*.{ts,tsx}',
@@ -80,7 +80,7 @@ module.exports = {
     '!**/.expo/**',
     '!**/coverage/**'
   ],
-  
+
   coverageReporters: [
     'html',
     'lcov',
@@ -88,9 +88,9 @@ module.exports = {
     'text-summary',
     'clover'
   ],
-  
+
   coverageDirectory: '<rootDir>/coverage',
-  
+
   coverageThreshold: {
     global: {
       branches: 70,
@@ -99,14 +99,14 @@ module.exports = {
       statements: 70
     }
   },
-  
+
   // Test match patterns
   testMatch: [
     '<rootDir>/tests/**/*.test.{ts,tsx}',
     '<rootDir>/tests/**/*.spec.{ts,tsx}',
     '<rootDir>/**/__tests__/**/*.{ts,tsx}'
   ],
-  
+
   // Globals for testing environment
   globals: {
     __DEV__: true,
@@ -115,28 +115,28 @@ module.exports = {
       isolatedModules: true
     }
   },
-  
+
   // Module directories
   moduleDirectories: [
     'node_modules',
     '<rootDir>'
   ],
-  
+
   // Clear mocks between tests
   clearMocks: true,
-  
+
   // Restore mocks after each test
   restoreMocks: true,
-  
+
   // Verbose output
   verbose: true,
-  
+
   // Max workers for parallel testing
   maxWorkers: '50%',
-  
+
   // Test timeout
   testTimeout: 10000,
-  
+
   // Projects for different test types
   projects: [
     {
@@ -145,7 +145,7 @@ module.exports = {
       setupFilesAfterEnv: ['<rootDir>/tests/setup/unit-setup.ts']
     },
     {
-      displayName: 'Integration Tests', 
+      displayName: 'Integration Tests',
       testMatch: ['<rootDir>/tests/integration/**/*.test.{ts,tsx}'],
       setupFilesAfterEnv: ['<rootDir>/tests/setup/integration-setup.ts']
     },
@@ -160,19 +160,19 @@ module.exports = {
       setupFilesAfterEnv: ['<rootDir>/tests/setup/accessibility-setup.ts']
     }
   ],
-  
+
   // Watch plugins
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname'
   ],
-  
+
   // Error handling
   errorOnDeprecated: true,
-  
+
   // ESM support
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
-  
+
   // Reporter configuration
   reporters: [
     'default',

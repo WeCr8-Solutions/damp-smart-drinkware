@@ -43,7 +43,7 @@ describe('SecurityUtils - Basic Functionality', () => {
     test('should remove script tags', () => {
       const maliciousInput = '<script>alert("xss")</script>Hello World';
       const sanitized = SecurityUtils.sanitizeInput(maliciousInput);
-      
+
       expect(sanitized).toBe('Hello World');
       expect(sanitized).not.toContain('<script>');
     });
@@ -51,7 +51,7 @@ describe('SecurityUtils - Basic Functionality', () => {
     test('should remove javascript: protocol', () => {
       const maliciousInput = 'javascript:alert("xss")';
       const sanitized = SecurityUtils.sanitizeInput(maliciousInput);
-      
+
       expect(sanitized).toBe('alert("xss")');
       expect(sanitized).not.toContain('javascript:');
     });
@@ -65,7 +65,7 @@ describe('SecurityUtils - Basic Functionality', () => {
     test('should limit input length', () => {
       const longInput = 'a'.repeat(20000);
       const sanitized = SecurityUtils.sanitizeInput(longInput);
-      
+
       expect(sanitized.length).toBeLessThanOrEqual(10000);
     });
   });
@@ -166,7 +166,7 @@ describe('SecurityUtils - Basic Functionality', () => {
 
     test('should handle non-object responses', () => {
       const schema = { id: { type: 'string' as const, required: true } };
-      
+
       expect(SecurityUtils.validateApiResponse(null, schema)).toBe(false);
       expect(SecurityUtils.validateApiResponse('string', schema)).toBe(false);
       expect(SecurityUtils.validateApiResponse(123, schema)).toBe(false);
@@ -177,7 +177,7 @@ describe('SecurityUtils - Basic Functionality', () => {
     test('should generate random string of correct length', () => {
       const random32 = SecurityUtils.generateSecureRandom(32);
       const random16 = SecurityUtils.generateSecureRandom(16);
-      
+
       expect(random32.length).toBe(32);
       expect(random16.length).toBe(16);
       expect(random32).not.toBe(random16);
@@ -185,14 +185,14 @@ describe('SecurityUtils - Basic Functionality', () => {
 
     test('should use default length', () => {
       const randomDefault = SecurityUtils.generateSecureRandom();
-      
+
       expect(randomDefault.length).toBe(32);
     });
 
     test('should generate different values', () => {
       const random1 = SecurityUtils.generateSecureRandom(16);
       const random2 = SecurityUtils.generateSecureRandom(16);
-      
+
       expect(random1).not.toBe(random2);
     });
   });
@@ -201,7 +201,7 @@ describe('SecurityUtils - Basic Functionality', () => {
     test('should obfuscate long tokens', () => {
       const longToken = 'sk_live_1234567890abcdef1234567890abcdef';
       const obfuscated = SecurityUtils.obfuscateToken(longToken);
-      
+
       expect(obfuscated).toBe('sk_l***cdef');
       expect(obfuscated).not.toBe(longToken);
     });
@@ -209,7 +209,7 @@ describe('SecurityUtils - Basic Functionality', () => {
     test('should handle short tokens', () => {
       const shortToken = '12345678';
       const obfuscated = SecurityUtils.obfuscateToken(shortToken);
-      
+
       expect(obfuscated).toBe('***');
     });
 
@@ -228,7 +228,7 @@ describe('SecurityUtils - Basic Functionality', () => {
 
     test('should allow requests within limit', () => {
       const key = 'test-user';
-      
+
       expect(SecurityUtils.rateLimiter.isAllowed(key, 5, 60000)).toBe(true);
       expect(SecurityUtils.rateLimiter.isAllowed(key, 5, 60000)).toBe(true);
       expect(SecurityUtils.rateLimiter.isAllowed(key, 5, 60000)).toBe(true);
@@ -236,12 +236,12 @@ describe('SecurityUtils - Basic Functionality', () => {
 
     test('should block requests exceeding limit', () => {
       const key = 'test-user-blocked';
-      
+
       // Use up the limit
       for (let i = 0; i < 5; i++) {
         expect(SecurityUtils.rateLimiter.isAllowed(key, 5, 60000)).toBe(true);
       }
-      
+
       // This should be blocked
       expect(SecurityUtils.rateLimiter.isAllowed(key, 5, 60000)).toBe(false);
     });
@@ -250,7 +250,7 @@ describe('SecurityUtils - Basic Functionality', () => {
   describe('JWT Validation', () => {
     test('should validate correct JWT format', () => {
       const validJWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-      
+
       expect(SecurityUtils.validateJWTFormat(validJWT)).toBe(true);
     });
 
@@ -273,9 +273,9 @@ describe('SecurityUtils - Basic Functionality', () => {
       const expiredPayload = btoa(JSON.stringify({
         exp: Math.floor(Date.now() / 1000) - 3600 // Expired 1 hour ago
       }));
-      
+
       const expiredJWT = `header.${expiredPayload}.signature`;
-      
+
       expect(SecurityUtils.isJWTExpired(expiredJWT)).toBe(true);
     });
 
@@ -283,9 +283,9 @@ describe('SecurityUtils - Basic Functionality', () => {
       const validPayload = btoa(JSON.stringify({
         exp: Math.floor(Date.now() / 1000) + 3600 // Expires in 1 hour
       }));
-      
+
       const validJWT = `header.${validPayload}.signature`;
-      
+
       expect(SecurityUtils.isJWTExpired(validJWT)).toBe(false);
     });
   });
@@ -293,21 +293,21 @@ describe('SecurityUtils - Basic Functionality', () => {
   describe('Security Headers', () => {
     test('should generate secure headers without token', () => {
       const headers = SecurityUtils.getSecureHeaders();
-      
+
       expect(headers).toMatchObject({
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
         'X-DAMP-Client': expect.any(String),
         'X-DAMP-Version': '1.0.0'
       });
-      
+
       expect(headers['Authorization']).toBeUndefined();
     });
 
     test('should generate secure headers with token', () => {
       const token = 'test-auth-token';
       const headers = SecurityUtils.getSecureHeaders(token);
-      
+
       expect(headers['Authorization']).toBe(`Bearer ${token}`);
     });
   });

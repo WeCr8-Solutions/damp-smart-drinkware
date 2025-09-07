@@ -39,7 +39,7 @@
             script.async = true;
             script.crossOrigin = 'anonymous';
             script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`;
-            
+
             script.onload = () => {
                 if (!document.querySelector('meta[name="google-adsense-account"]')) {
                     const meta = document.createElement('meta');
@@ -49,7 +49,7 @@
                 }
                 resolve();
             };
-            
+
             script.onerror = () => reject(new Error('Failed to load AdSense'));
             document.head.appendChild(script);
         });
@@ -62,7 +62,7 @@
         if (document.querySelector('link[href*="adsense-styles.css"]')) return;
 
         const link = document.createElement('link');
-        link.rel = 'stylesheet'; 
+        link.rel = 'stylesheet';
         link.href = '../assets/css/adsense-styles.css';
         document.head.appendChild(link);
     }
@@ -73,7 +73,7 @@
     function createEcommerceAd(format = 'rectangle', className = '', placement = 'general') {
         const adContainer = document.createElement('div');
         adContainer.className = `damp-ad-container ${className}`;
-        
+
         // E-commerce specific styling - more subtle
         let containerStyles = `
             margin: 40px auto;
@@ -125,7 +125,7 @@
         adUnit.style.display = 'block';
         adUnit.dataset.adClient = ADSENSE_CLIENT_ID;
         adUnit.dataset.fullWidthResponsive = 'true';
-        
+
         // Format selection based on context and screen size
         if (format === 'mobile' || window.innerWidth < 768) {
             adUnit.dataset.adFormat = '320x50';
@@ -254,14 +254,14 @@
         if (successSection) {
             const format = window.innerWidth < 768 ? 'mobile' : 'rectangle';
             const successAd = createEcommerceAd(format, 'damp-ad-success-celebration', 'success');
-            
+
             // Place after success content
             if (successSection.nextSibling) {
                 successSection.parentNode.insertBefore(successAd, successSection.nextSibling);
             } else {
                 successSection.parentNode.appendChild(successAd);
             }
-            
+
             console.log('📢 Success page ad placed');
         }
     }
@@ -271,18 +271,18 @@
      */
     function placeWaitlistAds() {
         const waitlistForm = document.querySelector('.waitlist-form, .newsletter-form, form');
-        
+
         if (waitlistForm) {
             const format = window.innerWidth < 768 ? 'mobile' : 'rectangle';
             const waitlistAd = createEcommerceAd(format, 'damp-ad-waitlist');
-            
+
             // Place after the form
             if (waitlistForm.nextSibling) {
                 waitlistForm.parentNode.insertBefore(waitlistAd, waitlistForm.nextSibling);
             } else {
                 waitlistForm.parentNode.appendChild(waitlistAd);
             }
-            
+
             console.log('📢 Waitlist page ad placed');
         }
     }
@@ -292,18 +292,18 @@
      */
     function placePreOrderAds() {
         const sections = document.querySelectorAll('section, .section');
-        
+
         if (sections.length >= 2) {
             const midSection = sections[Math.floor(sections.length / 2)];
             const format = window.innerWidth < 768 ? 'mobile' : 'rectangle';
             const preOrderAd = createEcommerceAd(format, 'damp-ad-pre-order');
-            
+
             if (midSection.nextSibling) {
                 midSection.parentNode.insertBefore(preOrderAd, midSection.nextSibling);
             } else {
                 midSection.parentNode.appendChild(preOrderAd);
             }
-            
+
             console.log('📢 Pre-order page ad placed');
         }
     }
@@ -316,10 +316,10 @@
 
         try {
             console.log('🔄 Initializing e-commerce AdSense...');
-            
+
             loadAdSenseStyles();
             await loadAdSenseScript();
-            
+
             // Longer delay for e-commerce pages to not interfere with checkout flow
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', () => {
@@ -328,9 +328,9 @@
             } else {
                 setTimeout(placeEcommerceAds, 2000);
             }
-            
+
             console.log('✅ E-commerce AdSense initialized');
-            
+
         } catch (error) {
             console.error('❌ E-commerce AdSense failed:', error);
         }

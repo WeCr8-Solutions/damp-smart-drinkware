@@ -2,7 +2,7 @@
  * Professional Error Handler Utility
  * Google Engineering Standards Implementation
  * Comprehensive Error Management & Recovery
- * 
+ *
  * @fileoverview Error handler utility for structured error management
  * @author WeCr8 Solutions LLC
  * @version 2.0.0
@@ -47,7 +47,7 @@ export class ErrorHandler {
     #errorHistory = [];
     #maxHistorySize = 100;
     #retryConfigs = new Map();
-    
+
     /**
      * Create a new error handler instance
      * @param {Object} options - Error handler configuration
@@ -56,17 +56,17 @@ export class ErrorHandler {
         this.#logger = options.logger || new Logger('ErrorHandler');
         this.#errorReporting = options.errorReporting || null;
         this.#maxHistorySize = options.maxHistorySize || 100;
-        
+
         // Initialize default recovery strategies
         this.#initializeRecoveryStrategies();
-        
+
         // Initialize default retry configurations
         this.#initializeRetryConfigs();
-        
+
         // Set up global error handlers
         this.#setupGlobalErrorHandlers();
     }
-    
+
     /**
      * Handle an error with comprehensive processing
      * @param {string} errorCode - Error code/identifier
@@ -79,22 +79,22 @@ export class ErrorHandler {
         try {
             // Create structured error entry
             const errorEntry = this.#createErrorEntry(errorCode, error, context);
-            
+
             // Add to error history
             this.#addToHistory(errorEntry);
-            
+
             // Log the error
             this.#logError(errorEntry);
-            
+
             // Report to external services if configured
             this.#reportError(errorEntry);
-            
+
             // Attempt recovery if strategy exists
             const recoveryResult = this.#attemptRecovery(errorEntry, options);
-            
+
             // Track error metrics
             this.#trackErrorMetrics(errorEntry);
-            
+
             return {
                 errorId: errorEntry.id,
                 handled: true,
@@ -105,7 +105,7 @@ export class ErrorHandler {
                 shouldRetry: this.#shouldRetry(errorEntry),
                 timestamp: errorEntry.timestamp
             };
-            
+
         } catch (handlingError) {
             // Fallback error handling
             this.#logger.fatal('Error handler failed', handlingError);
@@ -120,7 +120,7 @@ export class ErrorHandler {
             };
         }
     }
-    
+
     /**
      * Handle async operation with automatic retry
      * @param {Function} operation - Async operation to execute
@@ -136,58 +136,58 @@ export class ErrorHandler {
             retryCondition: options.retryCondition || this.#defaultRetryCondition,
             onRetry: options.onRetry || (() => {})
         };
-        
+
         let lastError = null;
-        
+
         for (let attempt = 1; attempt <= config.maxAttempts; attempt++) {
             try {
                 const result = await operation();
-                
+
                 // Success - log recovery if this wasn't the first attempt
                 if (attempt > 1) {
                     this.#logger.info(`Operation succeeded after ${attempt} attempts`);
                 }
-                
+
                 return result;
-                
+
             } catch (error) {
                 lastError = error;
-                
+
                 // Check if we should retry
                 if (attempt === config.maxAttempts || !config.retryCondition(error, attempt)) {
                     break;
                 }
-                
+
                 // Calculate delay
                 const delay = config.exponential
                     ? Math.min(config.baseDelay * Math.pow(2, attempt - 1), config.maxDelay)
                     : config.baseDelay;
-                
+
                 // Log retry attempt
                 this.#logger.warn(`Operation failed, retrying in ${delay}ms`, {
                     attempt,
                     maxAttempts: config.maxAttempts,
                     error: error.message
                 });
-                
+
                 // Call retry callback
                 await config.onRetry(error, attempt, delay);
-                
+
                 // Wait before retry
                 await this.#delay(delay);
             }
         }
-        
+
         // All retries failed
         const errorEntry = this.#createErrorEntry('RETRY_FAILED', lastError, {
             operation: operation.name || 'anonymous',
             attempts: config.maxAttempts
         });
-        
+
         this.#addToHistory(errorEntry);
         throw lastError;
     }
-    
+
     /**
      * Create a custom error with additional context
      * @param {string} message - Error message
@@ -200,10 +200,10 @@ export class ErrorHandler {
         error.code = code;
         error.context = context;
         error.timestamp = new Date().toISOString();
-        
+
         return error;
     }
-    
+
     /**
      * Add custom recovery strategy
      * @param {string} errorCode - Error code to handle
@@ -212,7 +212,7 @@ export class ErrorHandler {
     addRecoveryStrategy(errorCode, strategy) {
         this.#recoveryStrategies.set(errorCode, strategy);
     }
-    
+
     /**
      * Get error history
      * @param {Object} filters - Filter options
@@ -220,27 +220,27 @@ export class ErrorHandler {
      */
     getErrorHistory(filters = {}) {
         let history = [...this.#errorHistory];
-        
+
         if (filters.type) {
             history = history.filter(entry => entry.type === filters.type);
         }
-        
+
         if (filters.severity) {
             history = history.filter(entry => entry.severity === filters.severity);
         }
-        
+
         if (filters.since) {
             const since = new Date(filters.since);
             history = history.filter(entry => new Date(entry.timestamp) >= since);
         }
-        
+
         if (filters.limit) {
             history = history.slice(-filters.limit);
         }
-        
+
         return history;
     }
-    
+
     /**
      * Get error statistics
      * @returns {Object} Error statistics
@@ -249,15 +249,15 @@ export class ErrorHandler {
         const now = Date.now();
         const lastHour = now - (60 * 60 * 1000);
         const lastDay = now - (24 * 60 * 60 * 1000);
-        
+
         const recentErrors = this.#errorHistory.filter(
             entry => new Date(entry.timestamp).getTime() > lastHour
         );
-        
+
         const dailyErrors = this.#errorHistory.filter(
             entry => new Date(entry.timestamp).getTime() > lastDay
         );
-        
+
         return {
             total: this.#errorHistory.length,
             lastHour: recentErrors.length,
@@ -267,16 +267,16 @@ export class ErrorHandler {
             mostCommon: this.#getMostCommonErrors()
         };
     }
-    
+
     /**
      * Clear error history
      */
     clearHistory() {
         this.#errorHistory = [];
     }
-    
+
     // Private methods
-    
+
     /**
      * @private
      */
@@ -284,7 +284,7 @@ export class ErrorHandler {
         const timestamp = new Date().toISOString();
         const errorType = this.#classifyError(error, context);
         const severity = this.#determineSeverity(error, errorType, context);
-        
+
         return {
             id: this.#generateErrorId(),
             code: errorCode,
@@ -300,7 +300,7 @@ export class ErrorHandler {
             sessionId: context.sessionId || null
         };
     }
-    
+
     /**
      * @private
      */
@@ -309,30 +309,30 @@ export class ErrorHandler {
         if (error?.name === 'NetworkError' || error?.code === 'NETWORK_ERROR') {
             return ErrorType.NETWORK;
         }
-        
+
         // Authentication errors
         if (error?.code?.includes('auth') || context.type === 'auth') {
             return ErrorType.AUTHENTICATION;
         }
-        
+
         // Payment errors
         if (error?.code?.includes('payment') || error?.code?.includes('stripe')) {
             return ErrorType.PAYMENT;
         }
-        
+
         // Validation errors
         if (error?.name === 'ValidationError' || error?.code?.includes('validation')) {
             return ErrorType.VALIDATION;
         }
-        
+
         // Firebase/Database errors
         if (error?.code?.includes('firestore') || error?.code?.includes('database')) {
             return ErrorType.DATABASE;
         }
-        
+
         return ErrorType.UNKNOWN;
     }
-    
+
     /**
      * @private
      */
@@ -341,31 +341,31 @@ export class ErrorHandler {
         if (errorType === ErrorType.SYSTEM || error?.name === 'SecurityError') {
             return ErrorSeverity.CRITICAL;
         }
-        
+
         // High severity for payment and auth issues
         if (errorType === ErrorType.PAYMENT || errorType === ErrorType.AUTHENTICATION) {
             return ErrorSeverity.HIGH;
         }
-        
+
         // Medium severity for network and database issues
         if (errorType === ErrorType.NETWORK || errorType === ErrorType.DATABASE) {
             return ErrorSeverity.MEDIUM;
         }
-        
+
         // Low severity for validation and user input
         if (errorType === ErrorType.VALIDATION || errorType === ErrorType.USER_INPUT) {
             return ErrorSeverity.LOW;
         }
-        
+
         return ErrorSeverity.MEDIUM;
     }
-    
+
     /**
      * @private
      */
     #logError(errorEntry) {
         const logMethod = this.#getLogMethod(errorEntry.severity);
-        
+
         this.#logger[logMethod](`[${errorEntry.code}] ${errorEntry.message}`, {
             errorId: errorEntry.id,
             type: errorEntry.type,
@@ -373,7 +373,7 @@ export class ErrorHandler {
             context: errorEntry.context
         });
     }
-    
+
     /**
      * @private
      */
@@ -391,49 +391,49 @@ export class ErrorHandler {
                 return 'error';
         }
     }
-    
+
     /**
      * @private
      */
     #reportError(errorEntry) {
         if (!this.#errorReporting) return;
-        
+
         try {
             this.#errorReporting.report(errorEntry);
         } catch (reportingError) {
             this.#logger.warn('Error reporting failed', reportingError);
         }
     }
-    
+
     /**
      * @private
      */
     #attemptRecovery(errorEntry, options) {
         const strategy = this.#recoveryStrategies.get(errorEntry.code);
-        
+
         if (!strategy || options.skipRecovery) {
             return { recovered: false, action: null };
         }
-        
+
         try {
             const result = strategy(errorEntry, options);
-            
+
             this.#logger.info(`Recovery attempted for ${errorEntry.code}`, {
                 errorId: errorEntry.id,
                 recovered: result.success
             });
-            
+
             return {
                 recovered: result.success,
                 action: result.action
             };
-            
+
         } catch (recoveryError) {
             this.#logger.error('Recovery strategy failed', recoveryError);
             return { recovered: false, action: null };
         }
     }
-    
+
     /**
      * @private
      */
@@ -446,10 +446,10 @@ export class ErrorHandler {
             [ErrorType.DATABASE]: 'We\'re experiencing technical difficulties. Please try again in a moment.',
             [ErrorType.EXTERNAL_API]: 'A service we depend on is currently unavailable. Please try again later.'
         };
-        
+
         return userMessages[errorEntry.type] || 'An unexpected error occurred. Please try again.';
     }
-    
+
     /**
      * @private
      */
@@ -459,23 +459,23 @@ export class ErrorHandler {
             ErrorType.DATABASE,
             ErrorType.EXTERNAL_API
         ];
-        
-        return retryableTypes.includes(errorEntry.type) && 
+
+        return retryableTypes.includes(errorEntry.type) &&
                errorEntry.severity !== ErrorSeverity.CRITICAL;
     }
-    
+
     /**
      * @private
      */
     #addToHistory(errorEntry) {
         this.#errorHistory.push(errorEntry);
-        
+
         // Keep history size manageable
         if (this.#errorHistory.length > this.#maxHistorySize) {
             this.#errorHistory = this.#errorHistory.slice(-this.#maxHistorySize);
         }
     }
-    
+
     /**
      * @private
      */
@@ -493,14 +493,14 @@ export class ErrorHandler {
             });
         }
     }
-    
+
     /**
      * @private
      */
     #generateErrorId() {
         return `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
-    
+
     /**
      * @private
      */
@@ -510,20 +510,20 @@ export class ErrorHandler {
             // Attempt to retry after a delay
             return { success: true, action: 'retry_with_delay' };
         });
-        
+
         // Authentication error recovery
         this.#recoveryStrategies.set('AUTH_TOKEN_EXPIRED', (errorEntry) => {
             // Trigger token refresh
             return { success: true, action: 'refresh_token' };
         });
-        
+
         // Payment error recovery
         this.#recoveryStrategies.set('PAYMENT_FAILED', (errorEntry) => {
             // Suggest alternative payment method
             return { success: true, action: 'suggest_alternative_payment' };
         });
     }
-    
+
     /**
      * @private
      */
@@ -533,20 +533,20 @@ export class ErrorHandler {
             baseDelay: 1000,
             exponential: true
         });
-        
+
         this.#retryConfigs.set('database', {
             maxAttempts: 5,
             baseDelay: 500,
             exponential: true
         });
-        
+
         this.#retryConfigs.set('api', {
             maxAttempts: 3,
             baseDelay: 2000,
             exponential: false
         });
     }
-    
+
     /**
      * @private
      */
@@ -560,7 +560,7 @@ export class ErrorHandler {
                     colno: event.colno
                 });
             });
-            
+
             // Unhandled promise rejections
             window.addEventListener('unhandledrejection', (event) => {
                 this.handleError('UNHANDLED_PROMISE_REJECTION', event.reason, {
@@ -569,7 +569,7 @@ export class ErrorHandler {
             });
         }
     }
-    
+
     /**
      * @private
      */
@@ -578,20 +578,20 @@ export class ErrorHandler {
         if (error?.name === 'ValidationError' || error?.code?.includes('auth')) {
             return false;
         }
-        
+
         // Retry network errors and server errors
-        return error?.name === 'NetworkError' || 
+        return error?.name === 'NetworkError' ||
                error?.code === 'NETWORK_ERROR' ||
                (error?.status >= 500 && error?.status < 600);
     }
-    
+
     /**
      * @private
      */
     #delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-    
+
     /**
      * @private
      */
@@ -602,13 +602,13 @@ export class ErrorHandler {
             return groups;
         }, {});
     }
-    
+
     /**
      * @private
      */
     #getMostCommonErrors() {
         const errorCounts = this.#groupBy(this.#errorHistory, 'code');
-        
+
         return Object.entries(errorCounts)
             .sort(([,a], [,b]) => b - a)
             .slice(0, 5)
@@ -630,4 +630,4 @@ export function createErrorHandler(options = {}) {
     return new ErrorHandler(options);
 }
 
-export default ErrorHandler; 
+export default ErrorHandler;

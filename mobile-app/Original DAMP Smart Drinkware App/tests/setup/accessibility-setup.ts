@@ -20,7 +20,7 @@ const axeConfig: RunOptions = {
     'aria-labels': { enabled: true },
     'touch-targets': { enabled: true },
     'text-alternatives': { enabled: true },
-    
+
     // React Native specific rules
     'accessibility-label': { enabled: true },
     'accessibility-hint': { enabled: true },
@@ -88,13 +88,13 @@ export const accessibilityTestUtils = {
       // In real implementation, this would use proper color parsing
       const fgLuminance = parseInt(foreground.replace('#', ''), 16) / 0xffffff;
       const bgLuminance = parseInt(background.replace('#', ''), 16) / 0xffffff;
-      
+
       const lighter = Math.max(fgLuminance, bgLuminance);
       const darker = Math.min(fgLuminance, bgLuminance);
-      
+
       return (lighter + 0.05) / (darker + 0.05);
     },
-    
+
     meetsWCAGAA: (ratio: number): boolean => ratio >= 4.5,
     meetsWCAGAAA: (ratio: number): boolean => ratio >= 7,
     meetsLargeTextAA: (ratio: number): boolean => ratio >= 3
@@ -103,30 +103,30 @@ export const accessibilityTestUtils = {
   // Touch target utilities
   touchTarget: {
     minimumSize: 44, // 44pt minimum as per Apple/Google guidelines
-    
+
     isTouchTargetAccessible: (width: number, height: number): boolean => {
-      return width >= accessibilityTestUtils.touchTarget.minimumSize && 
+      return width >= accessibilityTestUtils.touchTarget.minimumSize &&
              height >= accessibilityTestUtils.touchTarget.minimumSize;
     },
-    
+
     hasAdequateSpacing: (targets: Array<{ x: number, y: number, width: number, height: number }>): boolean => {
       const minSpacing = 8; // 8pt minimum spacing
-      
+
       for (let i = 0; i < targets.length; i++) {
         for (let j = i + 1; j < targets.length; j++) {
           const target1 = targets[i];
           const target2 = targets[j];
-          
+
           const distance = Math.sqrt(
             Math.pow(target2.x - target1.x, 2) + Math.pow(target2.y - target1.y, 2)
           );
-          
+
           if (distance < minSpacing) {
             return false;
           }
         }
       }
-      
+
       return true;
     }
   },
@@ -135,18 +135,18 @@ export const accessibilityTestUtils = {
   focusManagement: {
     focusOrder: [] as string[],
     currentFocus: null as string | null,
-    
+
     simulateFocusChange: (elementId: string) => {
       accessibilityTestUtils.focusManagement.currentFocus = elementId;
       accessibilityTestUtils.focusManagement.focusOrder.push(elementId);
     },
-    
+
     isFocusOrderLogical: (): boolean => {
       // Check if focus order follows reading order (top to bottom, left to right)
       // This is a simplified check
       return accessibilityTestUtils.focusManagement.focusOrder.length > 0;
     },
-    
+
     reset: () => {
       accessibilityTestUtils.focusManagement.focusOrder = [];
       accessibilityTestUtils.focusManagement.currentFocus = null;
@@ -158,12 +158,12 @@ export const accessibilityTestUtils = {
     validateRole: (role: string, allowedRoles: string[]): boolean => {
       return allowedRoles.includes(role);
     },
-    
+
     validateState: (state: any): boolean => {
       // Check if accessibility state is properly defined
       return typeof state === 'object' && state !== null;
     },
-    
+
     validateValue: (value: any): boolean => {
       // Check if accessibility value is properly defined for controls
       return value !== undefined && value !== null;
@@ -176,7 +176,7 @@ export const accessibilityTestUtils = {
       console.log(`Keyboard: ${key} pressed${element ? ` on ${element}` : ''}`);
       return Promise.resolve();
     },
-    
+
     simulateTabNavigation: (direction: 'forward' | 'backward' = 'forward') => {
       const key = direction === 'forward' ? 'Tab' : 'Shift+Tab';
       return accessibilityTestUtils.keyboard.simulateKeyPress(key);
@@ -221,9 +221,9 @@ expect.extend({
   toBeAccessible(received: any) {
     // This would integrate with axe-core to run accessibility tests
     const violations: any[] = []; // Mock violations array
-    
+
     const pass = violations.length === 0;
-    
+
     return {
       message: () => {
         if (pass) {
@@ -239,14 +239,14 @@ expect.extend({
 
   toHaveSufficientColorContrast(received: { foreground: string, background: string }, level: 'AA' | 'AAA' = 'AA') {
     const ratio = accessibilityTestUtils.colorContrast.calculateRatio(
-      received.foreground, 
+      received.foreground,
       received.background
     );
-    
-    const meetsStandard = level === 'AA' 
+
+    const meetsStandard = level === 'AA'
       ? accessibilityTestUtils.colorContrast.meetsWCAGAA(ratio)
       : accessibilityTestUtils.colorContrast.meetsWCAGAAA(ratio);
-    
+
     return {
       message: () =>
         meetsStandard
@@ -258,10 +258,10 @@ expect.extend({
 
   toHaveAccessibleTouchTarget(received: { width: number, height: number }) {
     const isAccessible = accessibilityTestUtils.touchTarget.isTouchTargetAccessible(
-      received.width, 
+      received.width,
       received.height
     );
-    
+
     return {
       message: () =>
         isAccessible
@@ -272,9 +272,9 @@ expect.extend({
   },
 
   toHaveAccessibilityLabel(received: any) {
-    const hasLabel = received.props?.accessibilityLabel || 
+    const hasLabel = received.props?.accessibilityLabel ||
                     received.props?.accessible !== false;
-    
+
     return {
       message: () =>
         hasLabel
@@ -287,7 +287,7 @@ expect.extend({
   toSupportKeyboardNavigation(received: any) {
     const supportsKeyboard = received.props?.accessible !== false &&
                             (received.props?.onPress || received.props?.focusable);
-    
+
     return {
       message: () =>
         supportsKeyboard
@@ -310,8 +310,8 @@ beforeEach(() => {
 const originalWarn = console.warn;
 console.warn = (...args) => {
   // Log accessibility-related warnings prominently
-  if (args.some(arg => 
-    typeof arg === 'string' && 
+  if (args.some(arg =>
+    typeof arg === 'string' &&
     (arg.includes('accessibility') || arg.includes('a11y'))
   )) {
     originalWarn('🔴 ACCESSIBILITY WARNING:', ...args);

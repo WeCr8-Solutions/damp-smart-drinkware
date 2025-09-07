@@ -154,7 +154,7 @@ async function initializeVotingSystem() {
     console.log('🎉 DAMP Voting System fully initialized!');
     console.log('\n📋 Collections created:');
     console.log('  - voting/productVoting (main voting data)');
-    console.log('  - voting/settings (admin settings)'); 
+    console.log('  - voting/settings (admin settings)');
     console.log('  - stats/global (global statistics)');
     console.log('  - userVotes/template (authenticated user votes template)');
     console.log('  - publicVotes/template (public votes template)');

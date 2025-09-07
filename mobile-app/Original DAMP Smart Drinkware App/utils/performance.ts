@@ -23,7 +23,7 @@ export class PerformanceMonitor {
   private static instance: PerformanceMonitor;
   private metrics: Map<string, number> = new Map();
   private memorySnapshots: Array<{ timestamp: number; used: number }> = [];
-  
+
   static getInstance(): PerformanceMonitor {
     if (!PerformanceMonitor.instance) {
       PerformanceMonitor.instance = new PerformanceMonitor();
@@ -53,14 +53,14 @@ export class PerformanceMonitor {
       console.warn(`⚠️  Timer not found for label: ${label}`);
       return 0;
     }
-    
+
     const duration = performance.now() - startTime;
     this.metrics.delete(label);
-    
+
     // Log slow operations (Google's 100ms threshold)
     if (duration > 100) {
       console.warn(`🐌 Slow operation detected: ${label} took ${duration.toFixed(2)}ms`);
-      
+
       // Report to analytics in production
       if (!isDev()) {
         this.reportMetric('performance_slow_operation', {
@@ -71,11 +71,11 @@ export class PerformanceMonitor {
         });
       }
     }
-    
+
     if (isDev()) {
       console.log(`✅ ${label} completed in ${duration.toFixed(2)}ms`);
     }
-    
+
     return duration;
   }
 
@@ -93,7 +93,7 @@ export class PerformanceMonitor {
       };
 
       this.memorySnapshots.push(snapshot);
-      
+
       // Keep only last 50 snapshots
       if (this.memorySnapshots.length > 50) {
         this.memorySnapshots.shift();
@@ -103,7 +103,7 @@ export class PerformanceMonitor {
       if (this.memorySnapshots.length >= 10) {
         const oldSnapshot = this.memorySnapshots[this.memorySnapshots.length - 10];
         const growthRatio = snapshot.used / oldSnapshot.used;
-        
+
         if (growthRatio > 1.5) {
           console.warn(`🚨 Potential memory leak detected: ${((growthRatio - 1) * 100).toFixed(1)}% growth`);
           this.reportMetric('memory_leak_warning', {
@@ -144,7 +144,7 @@ export class PerformanceMonitor {
         // Report every 60 frames (~1 second at 60fps)
         if (frameCount >= 60) {
           const jankPercentage = (jankyFrames / frameCount) * 100;
-          
+
           if (jankPercentage > 5) { // >5% janky frames is concerning
             this.reportMetric('frame_rate_jank', {
               jank_percentage: Math.round(jankPercentage * 100) / 100,
@@ -174,7 +174,7 @@ export class PerformanceMonitor {
       if (isDev()) {
         console.log(`📊 Analytics: ${eventName}`, parameters);
       }
-      
+
       // Example Firebase Analytics call:
       // firebase.analytics().logEvent(eventName, parameters);
     } catch (error) {
@@ -217,7 +217,7 @@ export function performanceMonitor(label?: string) {
     descriptor.value = async function (...args: any[]) {
       const monitor = PerformanceMonitor.getInstance();
       monitor.startTiming(monitorLabel);
-      
+
       try {
         const result = await originalMethod.apply(this, args);
         return result;
@@ -235,7 +235,7 @@ export function performanceMonitor(label?: string) {
  */
 export function useRenderPerformance(componentName: string): void {
   const monitor = PerformanceMonitor.getInstance();
-  
+
   React.useEffect(() => {
     monitor.startTiming(`render_${componentName}`);
     return () => {
@@ -252,7 +252,7 @@ export class BundleAnalyzer {
     if (isDev() && typeof (global as any).__BUNDLE_START_TIME__ !== 'undefined') {
       const loadTime = Date.now() - (global as any).__BUNDLE_START_TIME__;
       console.log(`📦 Bundle loaded in ${loadTime}ms`);
-      
+
       PerformanceMonitor.getInstance().reportMetric('bundle_load_time', {
         load_time_ms: loadTime,
         platform: Platform.OS,
@@ -263,10 +263,10 @@ export class BundleAnalyzer {
   static measureCodeSplitting(chunkName: string): Promise<any> {
     const monitor = PerformanceMonitor.getInstance();
     monitor.startTiming(`chunk_load_${chunkName}`);
-    
+
     // Use a mockable import function for testing
     const importFn = (global as any).import || ((path: string) => import(path));
-    
+
     return importFn(`../chunks/${chunkName}`).then((module: any) => {
       monitor.endTiming(`chunk_load_${chunkName}`);
       return module;
@@ -293,12 +293,12 @@ export interface PerformanceSnapshot {
 // Global performance monitoring setup
 if (!isDev() && typeof jest === 'undefined') {
   const monitor = PerformanceMonitor.getInstance();
-  
+
   // Monitor memory every 30 seconds in production
   setInterval(() => {
     monitor.captureMemorySnapshot();
   }, 30000);
-  
+
   // Start frame rate monitoring
   monitor.monitorFrameRate();
 }

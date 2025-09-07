@@ -1,6 +1,6 @@
 /**
  * DAMP Smart Drinkware - Simple Firebase Auth Setup
- * 
+ *
  * Simplified Firebase authentication setup for website
  * Compatible with mobile app via shared Firebase project
  */
@@ -29,22 +29,22 @@ try {
   if (typeof firebase === 'undefined') {
     throw new Error('Firebase SDK not loaded. Make sure Firebase scripts are loaded before this file.');
   }
-  
+
   app = firebase.initializeApp(firebaseConfig);
   console.log('✅ Firebase app initialized');
-  
+
   auth = firebase.auth();
   console.log('✅ Firebase Auth initialized');
-  
+
   db = firebase.firestore();
   console.log('✅ Firebase Firestore initialized');
-  
+
   // Initialize Analytics if available
   if (typeof gtag !== 'undefined') {
     analytics = firebase.analytics();
     console.log('✅ Firebase Analytics initialized');
   }
-  
+
   console.log('✅ Firebase initialization complete');
 } catch (error) {
   console.error('❌ Firebase initialization failed:', error);
@@ -56,7 +56,7 @@ class WebAuthService {
   constructor() {
     this.currentUser = null;
     this.listeners = [];
-    
+
     // Set up auth state listener
     if (auth) {
       auth.onAuthStateChanged((user) => {
@@ -70,15 +70,15 @@ class WebAuthService {
   async signUpWithEmail(email, password, userData = {}) {
     try {
       console.log('🔄 Starting sign up process...', { email, userData });
-      
+
       if (!auth) {
         throw new Error('Firebase Auth not initialized');
       }
-      
+
       const result = await auth.createUserWithEmailAndPassword(email, password);
       const user = result.user;
       console.log('✅ User created successfully:', user.uid);
-      
+
       // Update user profile
       if (userData.displayName) {
         await user.updateProfile({
@@ -86,7 +86,7 @@ class WebAuthService {
         });
         console.log('✅ User profile updated');
       }
-      
+
       // Save additional user data to Firestore
       if (db) {
         await db.collection('users').doc(user.uid).set({
@@ -101,11 +101,11 @@ class WebAuthService {
         });
         console.log('✅ User data saved to Firestore');
       }
-      
+
       // Send verification email
       await user.sendEmailVerification();
       console.log('✅ Verification email sent');
-      
+
       return {
         success: true,
         user: user,
@@ -127,14 +127,14 @@ class WebAuthService {
     try {
       const result = await auth.signInWithEmailAndPassword(email, password);
       const user = result.user;
-      
+
       // Update last login time
       if (db) {
         await db.collection('users').doc(user.uid).update({
           lastLoginAt: firebase.firestore.FieldValue.serverTimestamp()
         });
       }
-      
+
       return {
         success: true,
         user: user,
@@ -155,7 +155,7 @@ class WebAuthService {
       const provider = new firebase.auth.GoogleAuthProvider();
       const result = await auth.signInWithPopup(provider);
       const user = result.user;
-      
+
       // Save user data to Firestore
       if (db) {
         await db.collection('users').doc(user.uid).set({
@@ -169,7 +169,7 @@ class WebAuthService {
           lastLoginAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
       }
-      
+
       return {
         success: true,
         user: user,
@@ -223,7 +223,7 @@ class WebAuthService {
     this.listeners.push(callback);
     // Call immediately with current user
     callback(this.currentUser);
-    
+
     // Return unsubscribe function
     return () => {
       const index = this.listeners.indexOf(callback);

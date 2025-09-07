@@ -1,6 +1,6 @@
 /**
  * Theme Picker Modal
- * 
+ *
  * Allows users to select their preferred theme
  */
 

@@ -63,15 +63,15 @@ const PRODUCTS = {
 app.post('/create-checkout-session', async (req, res) => {
     try {
         const { productId, quantity = 1 } = req.body;
-        
+
         // Validate product
         if (!PRODUCTS[productId]) {
             return res.status(400).json({ error: 'Invalid product' });
         }
-        
+
         const product = PRODUCTS[productId];
         const totalAmount = product.price * quantity;
-        
+
         // Create Stripe Checkout Session using lookup key
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -82,7 +82,7 @@ app.post('/create-checkout-session', async (req, res) => {
                 }
             ],
             mode: 'payment',
-            
+
             // Pre-order specific settings
             payment_intent_data: {
                 capture_method: 'manual', // Don't capture payment immediately
@@ -96,23 +96,23 @@ app.post('/create-checkout-session', async (req, res) => {
                     order_date: new Date().toISOString()
                 }
             },
-            
+
             // Success/Cancel URLs
             success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${req.headers.origin}/cancel`,
-            
+
             // Additional metadata
             metadata: {
                 product_id: productId,
                 quantity: quantity.toString(),
                 order_type: 'pre_order'
             },
-            
+
             // Collect shipping address
             shipping_address_collection: {
                 allowed_countries: ['US', 'CA', 'GB', 'AU', 'DE', 'FR', 'JP']
             },
-            
+
             // Custom messaging
             custom_text: {
                 shipping_address: {
@@ -123,9 +123,9 @@ app.post('/create-checkout-session', async (req, res) => {
                 }
             }
         });
-        
+
         res.json({ id: session.id });
-        
+
     } catch (error) {
         console.error('Error creating checkout session:', error);
         res.status(500).json({ error: error.message });
@@ -136,13 +136,13 @@ app.post('/create-checkout-session', async (req, res) => {
 app.get('/success', async (req, res) => {
     try {
         const { session_id } = req.query;
-        
+
         // Retrieve the session
         const session = await stripe.checkout.sessions.retrieve(session_id);
-        
+
         // Get payment intent details
         const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent);
-        
+
         // Store pre-order in your database (example)
         const preOrder = {
             id: session.id,
@@ -157,16 +157,16 @@ app.get('/success', async (req, res) => {
             createdAt: new Date(),
             estimatedDelivery: paymentIntent.metadata.estimated_delivery
         };
-        
+
         // TODO: Save to your database
         console.log('Pre-order created:', preOrder);
-        
+
         // Send confirmation email (using your email service)
         await sendPreOrderConfirmation(preOrder);
-        
+
         // Increment pre-order count
         await incrementPreorderCount(session.metadata.product_id, parseInt(session.metadata.quantity));
-        
+
         // Return success page
         res.send(`
             <html>
@@ -194,7 +194,7 @@ app.get('/success', async (req, res) => {
                 </body>
             </html>
         `);
-        
+
     } catch (error) {
         console.error('Error handling success:', error);
         res.status(500).send('Error processing your order');
@@ -205,38 +205,38 @@ app.get('/success', async (req, res) => {
 app.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event;
-    
+
     try {
         event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
     } catch (err) {
         console.log(`Webhook signature verification failed.`, err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
-    
+
     // Handle the event
     switch (event.type) {
         case 'payment_intent.succeeded':
             // Payment was authorized successfully
             const paymentIntent = event.data.object;
             console.log('Payment authorized:', paymentIntent.id);
-            
+
             // Update order status in your database
             await updateOrderStatus(paymentIntent.id, 'payment_authorized');
             break;
-            
+
         case 'payment_intent.payment_failed':
             // Payment failed
             const failedPayment = event.data.object;
             console.log('Payment failed:', failedPayment.id);
-            
+
             // Handle failed payment (email customer, etc.)
             await handleFailedPayment(failedPayment);
             break;
-            
+
         default:
             console.log(`Unhandled event type ${event.type}`);
     }
-    
+
     res.json({received: true});
 });
 
@@ -244,21 +244,21 @@ app.post('/webhook', express.raw({type: 'application/json'}), async (req, res) =
 app.post('/charge-preorder', async (req, res) => {
     try {
         const { paymentIntentId } = req.body;
-        
+
         // Retrieve the payment intent
         const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-        
+
         // Capture the payment
         const capturedPayment = await stripe.paymentIntents.capture(paymentIntentId);
-        
+
         // Update order status
         await updateOrderStatus(paymentIntentId, 'payment_captured');
-        
+
         // Send shipping notification
         await sendShippingNotification(paymentIntentId);
-        
+
         res.json({ success: true, payment: capturedPayment });
-        
+
     } catch (error) {
         console.error('Error capturing payment:', error);
         res.status(500).json({ error: error.message });
@@ -269,18 +269,18 @@ app.post('/charge-preorder', async (req, res) => {
 app.post('/cancel-preorder', async (req, res) => {
     try {
         const { paymentIntentId } = req.body;
-        
+
         // Cancel the payment intent
         const canceledPayment = await stripe.paymentIntents.cancel(paymentIntentId);
-        
+
         // Update order status
         await updateOrderStatus(paymentIntentId, 'cancelled');
-        
+
         // Send cancellation email
         await sendCancellationEmail(paymentIntentId);
-        
+
         res.json({ success: true, payment: canceledPayment });
-        
+
     } catch (error) {
         console.error('Error canceling payment:', error);
         res.status(500).json({ error: error.message });
@@ -322,11 +322,11 @@ async function sendCancellationEmail(paymentIntentId) {
 app.post('/admin/switch-pricing', async (req, res) => {
     try {
         const { mode } = req.body; // 'preorder' or 'default'
-        
+
         if (!mode || !['preorder', 'default'].includes(mode)) {
             return res.status(400).json({ error: 'Mode must be "preorder" or "default"' });
         }
-        
+
         const currentPricing = {};
         Object.keys(PRODUCTS).forEach(productId => {
             const product = PRODUCTS[productId];
@@ -336,13 +336,13 @@ app.post('/admin/switch-pricing', async (req, res) => {
                 activePrice: mode === 'preorder' ? product.price : product.originalPrice
             };
         });
-        
-        res.json({ 
+
+        res.json({
             message: `Pricing mode set to: ${mode}`,
             currentPricing: currentPricing,
             instructions: `Update your frontend to use the ${mode === 'preorder' ? 'preOrderLookupKey' : 'defaultLookupKey'} for each product.`
         });
-        
+
     } catch (error) {
         console.error('Error switching pricing:', error);
         res.status(500).json({ error: error.message });
@@ -357,7 +357,7 @@ app.get('/admin/preorders', async (req, res) => {
             limit: 100,
             created: { gte: Math.floor(Date.now() / 1000) - (30 * 24 * 60 * 60) } // Last 30 days
         });
-        
+
         const preOrders = paymentIntents.data
             .filter(pi => pi.metadata.order_type === 'pre_order')
             .map(pi => ({
@@ -369,9 +369,9 @@ app.get('/admin/preorders', async (req, res) => {
                 created: new Date(pi.created * 1000),
                 estimatedDelivery: pi.metadata.estimated_delivery
             }));
-        
+
         res.json({ preOrders });
-        
+
     } catch (error) {
         console.error('Error fetching pre-orders:', error);
         res.status(500).json({ error: error.message });
@@ -401,7 +401,7 @@ const CAMPAIGN_CONFIG = {
 async function ensureDataDirectory() {
     try {
         await fs.mkdir(path.join(__dirname, 'data'), { recursive: true });
-        
+
         // Initialize counts file if it doesn't exist
         try {
             await fs.access(COUNTS_DB_PATH);
@@ -416,7 +416,7 @@ async function ensureDataDirectory() {
                 ]
             });
         }
-        
+
         // Initialize campaign config
         try {
             await fs.access(CAMPAIGN_CONFIG_PATH);
@@ -473,18 +473,18 @@ app.get('/api/campaign-status', async (req, res) => {
     try {
         const counts = await loadCounts();
         const config = await loadCampaignConfig();
-        
+
         const now = new Date();
         const deadline = new Date(config.deadline);
         const timeRemaining = deadline - now;
-        
+
         // Calculate progress percentage
         const progressPercentage = Math.min((counts.total_preorders / config.goal_units) * 100, 100);
-        
+
         // Determine urgency messaging
         let urgencyLevel = 'normal';
         let urgencyMessage = '';
-        
+
         if (timeRemaining < 24 * 60 * 60 * 1000) { // Less than 24 hours
             urgencyLevel = 'critical';
             urgencyMessage = 'Less than 24 hours left!';
@@ -495,12 +495,12 @@ app.get('/api/campaign-status', async (req, res) => {
             urgencyLevel = 'high';
             urgencyMessage = 'Almost sold out!';
         }
-        
+
         // Calculate realistic time remaining
         const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
         const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-        
+
         res.json({
             counts: {
                 current: counts.total_preorders,
@@ -533,7 +533,7 @@ app.get('/api/campaign-status', async (req, res) => {
             },
             last_updated: counts.last_updated
         });
-        
+
     } catch (error) {
         console.error('Error fetching campaign status:', error);
         res.status(500).json({ error: 'Failed to fetch campaign status' });
@@ -545,16 +545,16 @@ async function incrementPreorderCount(productId, quantity = 1) {
     try {
         const counts = await loadCounts();
         const today = new Date().toISOString().split('T')[0];
-        
+
         // Update total count
         counts.total_preorders += quantity;
-        
+
         // Update daily count
         if (!counts.daily_counts[today]) {
             counts.daily_counts[today] = 0;
         }
         counts.daily_counts[today] += quantity;
-        
+
         // Check for milestones
         const milestones = [100, 200, 250, 300, 350, 400, 450, 500];
         milestones.forEach(milestone => {
@@ -568,12 +568,12 @@ async function incrementPreorderCount(productId, quantity = 1) {
                 console.log(`🎉 Milestone reached: ${milestone} pre-orders!`);
             }
         });
-        
+
         counts.last_updated = new Date().toISOString();
         await saveCounts(counts);
-        
+
         console.log(`Pre-order count updated: ${counts.total_preorders} (added ${quantity})`);
-        
+
     } catch (error) {
         console.error('Error incrementing preorder count:', error);
     }
@@ -589,12 +589,12 @@ await incrementPreorderCount(session.metadata.product_id, parseInt(session.metad
 app.post('/api/admin/adjust-count', async (req, res) => {
     try {
         const { adjustment, reason } = req.body;
-        
+
         const counts = await loadCounts();
         const oldCount = counts.total_preorders;
         counts.total_preorders += adjustment;
         counts.last_updated = new Date().toISOString();
-        
+
         // Log the adjustment
         if (!counts.adjustment_history) counts.adjustment_history = [];
         counts.adjustment_history.push({
@@ -604,15 +604,15 @@ app.post('/api/admin/adjust-count', async (req, res) => {
             reason: reason || 'Manual adjustment',
             timestamp: new Date().toISOString()
         });
-        
+
         await saveCounts(counts);
-        
-        res.json({ 
-            success: true, 
-            old_count: oldCount, 
-            new_count: counts.total_preorders 
+
+        res.json({
+            success: true,
+            old_count: oldCount,
+            new_count: counts.total_preorders
         });
-        
+
     } catch (error) {
         console.error('Error adjusting count:', error);
         res.status(500).json({ error: 'Failed to adjust count' });
@@ -625,4 +625,4 @@ app.listen(PORT, () => {
     console.log(`Webhook endpoint: http://localhost:${PORT}/webhook`);
 });
 
-module.exports = app; 
+module.exports = app;

@@ -18,7 +18,7 @@ async function loadPricingConfig() {
     try {
         const configPath = path.join(__dirname, '../../../website/assets/js/pricing-config.js');
         const configContent = await fs.readFile(configPath, 'utf-8');
-        
+
         // Extract the config object from the JavaScript file
         const configMatch = configContent.match(/this\.config\s*=\s*({[\s\S]*?});/);
         if (configMatch) {
@@ -506,7 +506,7 @@ router.put('/admin/config', ensurePricingConfig, (req, res) => {
         lastConfigUpdate = new Date();
 
         // In production, you would save to database here
-        
+
         res.json({
             success: true,
             message: 'Configuration updated successfully',
@@ -563,18 +563,18 @@ router.post('/admin/promotion', ensurePricingConfig, (req, res) => {
 
 function getCurrentPricingPhase() {
     const now = new Date();
-    
+
     for (const [phase, config] of Object.entries(pricingConfigCache.pricing_phases)) {
         if (config.active) {
             const startDate = new Date(config.start_date);
             const endDate = config.end_date ? new Date(config.end_date) : null;
-            
+
             if (now >= startDate && (!endDate || now <= endDate)) {
                 return { phase, config };
             }
         }
     }
-    
+
     return { phase: 'standard', config: pricingConfigCache.pricing_phases.standard };
 }
 
@@ -649,8 +649,8 @@ function calculateCurrentPricing(productId, quantity = 1, promoCode = null) {
         discounts: discounts,
         pricing_phase: currentPhase.phase,
         phase_badge: currentPhase.config.badge,
-        delivery_estimate: currentPhase.phase === 'pre_order' ? 
-            product.delivery.pre_order_delivery : 
+        delivery_estimate: currentPhase.phase === 'pre_order' ?
+            product.delivery.pre_order_delivery :
             product.delivery.standard_delivery,
         currency: product.pricing.currency
     };
@@ -666,7 +666,7 @@ function getQuantityDiscount(productId, quantity) {
     if (!discountConfig.applicable_products.includes(productId)) return null;
 
     for (const tier of discountConfig.tiers) {
-        if (quantity >= tier.min_quantity && 
+        if (quantity >= tier.min_quantity &&
             (!tier.max_quantity || quantity <= tier.max_quantity)) {
             return tier;
         }
@@ -677,18 +677,18 @@ function getQuantityDiscount(productId, quantity) {
 
 function getSeasonalDiscount(productId) {
     const now = new Date();
-    
+
     for (const [season, config] of Object.entries(pricingConfigCache.seasonal_pricing)) {
         if (config.active && config.applicable_products.includes(productId)) {
             const startDate = new Date(config.start_date);
             const endDate = new Date(config.end_date);
-            
+
             if (now >= startDate && now <= endDate) {
                 return config;
             }
         }
     }
-    
+
     return null;
 }
 
@@ -746,7 +746,7 @@ function applyPromoCode(code, orderTotal) {
 
     // Increment usage count
     pricingConfigCache.promotions[code.toUpperCase()].usage_count += 1;
-    
+
     return validation;
 }
 
@@ -844,4 +844,4 @@ function validatePromotionStructure(promotion) {
     return promotion.type && promotion.value && promotion.start_date && promotion.end_date;
 }
 
-module.exports = router; 
+module.exports = router;

@@ -1,13 +1,13 @@
 /**
  * Store Page Object
- * 
+ *
  * Page object for interacting with the store functionality
  */
 
 export class StorePage {
   constructor(page) {
     this.page = page;
-    
+
     // Selectors
     this.categoryButtonsSelector = '[data-testid="category-button"]';
     this.productCardSelector = '[data-testid="product-card"]';
@@ -97,11 +97,11 @@ export class StorePage {
     // Find all products in cart and remove them
     const productCards = this.page.locator(this.productCardSelector);
     const count = await productCards.count();
-    
+
     for (let i = 0; i < count; i++) {
       const card = productCards.nth(0); // Always remove the first one
       await card.locator(this.decreaseQuantityButtonSelector).click();
-      
+
       // If quantity is 1, clicking decrease will remove it from cart
       // Otherwise, keep clicking until removed
       let quantityElement = await card.locator(this.productQuantitySelector).isVisible();
@@ -125,16 +125,16 @@ export class StorePage {
     // Get the first product's position
     const firstProduct = this.page.locator(this.productCardSelector).first();
     const firstBounds = await firstProduct.boundingBox();
-    
+
     // Get the second product's position
     const secondProduct = this.page.locator(this.productCardSelector).nth(1);
     const secondBounds = await secondProduct.boundingBox();
-    
+
     // If they're on the same row, their y positions will be similar
     if (Math.abs(firstBounds.y - secondBounds.y) < 20) {
       return 2; // At least 2 per row
     }
-    
+
     return 1; // One per row
   }
 

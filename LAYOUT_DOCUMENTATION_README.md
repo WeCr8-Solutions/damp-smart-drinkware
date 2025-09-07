@@ -72,10 +72,10 @@ cat PAGES_LAYOUT_GUIDE_TEMPLATE.md
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f23">
-    
+
     <!-- Security headers (8 required) -->
     <!-- Performance hints (DNS prefetch, preconnect, preload) -->
-    <!-- SEO meta tags (title, description, keywords, canonical) -->  
+    <!-- SEO meta tags (title, description, keywords, canonical) -->
     <!-- Social media tags (Open Graph, Twitter Cards) -->
     <!-- Structured data (Organization, Product schemas) -->
     <!-- Google Analytics 4 with consent management -->
@@ -87,9 +87,9 @@ cat PAGES_LAYOUT_GUIDE_TEMPLATE.md
 <body class="page-loading">
     <div class="safe-area-wrapper">
         <damp-header></damp-header>
-        
+
         <!-- Page-specific content -->
-        
+
         <footer class="footer lazy-section">
             <!-- All sitemap links required -->
         </footer>
@@ -155,10 +155,10 @@ gtag('consent', 'default', {
 
 ### Content Security Policy (EXACT)
 ```
-default-src 'self'; 
-script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://js.stripe.com; 
-style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
-img-src 'self' data: https://www.googletagmanager.com; 
+default-src 'self';
+script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://js.stripe.com;
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+img-src 'self' data: https://www.googletagmanager.com;
 font-src 'self' https://fonts.gstatic.com;
 ```
 
@@ -208,7 +208,7 @@ npm run lighthouse
 # Core Web Vitals
 npm run test-cwv
 
-# PWA compliance  
+# PWA compliance
 npm run test-pwa
 
 # Cross-browser testing
@@ -271,7 +271,7 @@ npm run test-browsers
 ```javascript
 // Browser console commands
 dampDebug.performance()    // Performance metrics
-dampDebug.seo()           // SEO report  
+dampDebug.seo()           // SEO report
 dampDebug.iconReport()    // Icon validation
 dampDebug.lazyLoading()   // Lazy loading stats
 ```
@@ -285,7 +285,7 @@ dampDebug.lazyLoading()   // Lazy loading stats
 
 ---
 
-**Master Documentation Version**: 1.0  
-**Last Updated**: January 2025  
-**Covers**: Complete site architecture and development standards  
-**Next Update**: After Phase 1 implementation (Week 1) 
+**Master Documentation Version**: 1.0
+**Last Updated**: January 2025
+**Covers**: Complete site architecture and development standards
+**Next Update**: After Phase 1 implementation (Week 1)

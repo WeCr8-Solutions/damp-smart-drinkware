@@ -423,7 +423,7 @@ This project is proprietary software owned by WeCr8 Solutions LLC. All rights re
 
 ---
 
-**Built with ❤️ by WeCr8 Solutions LLC**  
+**Built with ❤️ by WeCr8 Solutions LLC**
 *Revolutionizing hydration through smart technology*
 
 ## 🔄 **Recent Updates**

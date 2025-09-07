@@ -19,7 +19,7 @@ export const DATABASE_CONFIG = {
   // Firebase project configuration
   projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID || 'damp-smart-drinkware',
   owner: process.env.EXPO_PUBLIC_ADMIN_EMAIL || 'zach@wecr8.info',
-  
+
   // Collection names (consistent across platforms)
   collections: {
     // User management
@@ -27,36 +27,36 @@ export const DATABASE_CONFIG = {
     userProfiles: 'userProfiles',
     userVotes: 'userVotes',
     userDevices: 'userDevices',
-    
+
     // Product voting
     voting: 'voting',
     publicVotes: 'publicVotes',
     voteSubmissions: 'voteSubmissions',
-    
+
     // E-commerce
     products: 'products',
     orders: 'orders',
     preOrders: 'preOrders',
     cart: 'cart',
-    
+
     // Subscriptions
     subscriptions: 'subscriptions',
     subscriptionPlans: 'subscriptionPlans',
-    
+
     // Device management
     devices: 'devices',
     deviceData: 'deviceData',
     deviceSessions: 'deviceSessions',
-    
+
     // Analytics
     analytics: 'analytics',
     events: 'events',
-    
+
     // Store configuration
     store: 'store',
     settings: 'settings'
   },
-  
+
   // Document structure for voting
   votingDocuments: {
     authenticated: 'voting/products',
@@ -68,7 +68,7 @@ export const DATABASE_CONFIG = {
 export const AUTH_CONFIG = {
   // Firebase Auth settings
   persistence: 'local',
-  
+
   // User roles and permissions
   roles: {
     superAdmin: 'super_admin',
@@ -76,12 +76,12 @@ export const AUTH_CONFIG = {
     user: 'user',
     guest: 'guest'
   },
-  
+
   // Super admin configuration
   superAdmins: [
     'zach@wecr8.info'
   ],
-  
+
   // Auth requirements
   requireAuth: {
     voting: true,
@@ -123,7 +123,7 @@ export const PRODUCT_CONFIG = {
       estimatedShipping: 'Q1 2026'
     }
   },
-  
+
   // Voting initial data
   initialVotingData: {
     handle: { votes: 0, percentage: 0 },
@@ -131,7 +131,7 @@ export const PRODUCT_CONFIG = {
     cupSleeve: { votes: 0, percentage: 0 },
     babyBottle: { votes: 0, percentage: 0 }
   },
-  
+
   // E-commerce settings
   ecommerce: {
     taxRate: 0.08, // 8%
@@ -189,36 +189,36 @@ export const SUBSCRIPTION_CONFIG = {
 // API endpoints (consistent across platforms)
 export const API_CONFIG = {
   baseUrl: process.env.EXPO_PUBLIC_API_BASE_URL || 'https://dampdrink.com/api',
-  
+
   endpoints: {
     // Authentication
     auth: '/auth',
     login: '/auth/login',
     signup: '/auth/signup',
     logout: '/auth/logout',
-    
+
     // Voting
     voting: '/voting',
     vote: '/voting/vote',
-    
+
     // Products
     products: '/products',
     preorder: '/products/preorder',
-    
+
     // Orders
     orders: '/orders',
     checkout: '/checkout',
-    
+
     // Subscriptions
     subscriptions: '/subscriptions',
-    
+
     // Devices
     devices: '/devices',
-    
+
     // Analytics
     analytics: '/analytics'
   },
-  
+
   // Timeouts
   timeout: 10000, // 10 seconds
   retryAttempts: 3
@@ -233,14 +233,14 @@ export const UNIFIED_FEATURES = {
   deviceManagement: FeatureFlags.FIREBASE && FeatureFlags.BLE,
   subscriptions: FeatureFlags.FIREBASE && FeatureFlags.STRIPE,
   analytics: FeatureFlags.FIREBASE && FeatureFlags.ANALYTICS,
-  
+
   // Platform-specific features
   webFeatures: {
     pwa: false, // Disabled as requested
     pushNotifications: true,
     offlineMode: true
   },
-  
+
   mobileFeatures: {
     bluetooth: FeatureFlags.BLE,
     pushNotifications: true,
@@ -256,7 +256,7 @@ export const URL_CONFIG = {
   support: 'mailto:zach@wecr8.info',
   privacy: 'https://dampdrink.com/privacy',
   terms: 'https://dampdrink.com/terms',
-  
+
   // Deep linking (mobile)
   scheme: 'dampapp',
   universalLinks: 'https://dampdrink.com/app'
@@ -268,16 +268,16 @@ export const ERROR_MESSAGES = {
   authRequired: 'Please log in to continue',
   invalidCredentials: 'Invalid email or password',
   accountExists: 'An account with this email already exists',
-  
+
   // Voting
   alreadyVoted: 'You have already voted for this product',
   votingFailed: 'Unable to submit your vote. Please try again.',
-  
+
   // Purchasing
   emptyCart: 'Your cart is empty',
   paymentFailed: 'Payment failed. Please try again.',
   orderFailed: 'Unable to create order. Please try again.',
-  
+
   // General
   networkError: 'Network error. Please check your connection.',
   serverError: 'Server error. Please try again later.',
@@ -290,15 +290,15 @@ export const SUCCESS_MESSAGES = {
   loginSuccess: 'Successfully logged in',
   signupSuccess: 'Account created successfully',
   logoutSuccess: 'Successfully logged out',
-  
+
   // Voting
   voteSubmitted: 'Thank you for voting! Your voice helps us prioritize development.',
-  
+
   // Purchasing
   orderCreated: 'Order created successfully',
   paymentSuccess: 'Payment completed successfully',
   preOrderSubmitted: 'Pre-order submitted successfully',
-  
+
   // General
   dataUpdated: 'Data updated successfully',
   settingsSaved: 'Settings saved successfully'

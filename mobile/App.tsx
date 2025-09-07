@@ -106,7 +106,7 @@ const notificationService = new NotificationService();
  */
 function TabNavigator() {
   const insets = useSafeAreaInsets();
-  
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -125,8 +125,8 @@ function TabNavigator() {
         },
       }}
     >
-      <Tab.Screen 
-        name="Home" 
+      <Tab.Screen
+        name="Home"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color }) => (
@@ -134,8 +134,8 @@ function TabNavigator() {
           ),
         }}
       />
-      <Tab.Screen 
-        name="Devices" 
+      <Tab.Screen
+        name="Devices"
         component={DevicesScreen}
         options={{
           tabBarIcon: ({ color }) => (
@@ -143,8 +143,8 @@ function TabNavigator() {
           ),
         }}
       />
-      <Tab.Screen 
-        name="Voting" 
+      <Tab.Screen
+        name="Voting"
         component={VotingScreen}
         options={{
           tabBarIcon: ({ color }) => (
@@ -152,8 +152,8 @@ function TabNavigator() {
           ),
         }}
       />
-      <Tab.Screen 
-        name="Profile" 
+      <Tab.Screen
+        name="Profile"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color }) => (
@@ -261,7 +261,7 @@ export default function App() {
     try {
       // Update user offline status
       if (user) {
-        await authService.updateUserStatus(user.uid, { 
+        await authService.updateUserStatus(user.uid, {
           isOnline: false,
           lastSeen: new Date().toISOString()
         });
@@ -296,7 +296,7 @@ export default function App() {
         backgroundColor="#0f0f23"
         translucent={false}
       />
-      
+
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
@@ -308,8 +308,8 @@ export default function App() {
             // User is authenticated
             <>
               <Stack.Screen name="Main" component={TabNavigator} />
-              <Stack.Screen 
-                name="DeviceDetail" 
+              <Stack.Screen
+                name="DeviceDetail"
                 component={DeviceDetailScreen}
                 options={{
                   headerShown: true,
@@ -323,8 +323,8 @@ export default function App() {
                   },
                 }}
               />
-              <Stack.Screen 
-                name="Settings" 
+              <Stack.Screen
+                name="Settings"
                 component={SettingsScreen}
                 options={{
                   headerShown: true,

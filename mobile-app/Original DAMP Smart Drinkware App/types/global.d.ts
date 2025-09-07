@@ -19,13 +19,13 @@ declare global {
       FIREBASE_MESSAGING_SENDER_ID: string;
       FIREBASE_APP_ID: string;
       FIREBASE_MEASUREMENT_ID: string;
-      
+
           // Supabase Configuration removed - Firebase only
-      
+
       // App Configuration
       NODE_ENV: 'development' | 'staging' | 'production' | 'test';
       EXPO_PUBLIC_API_URL: string;
-      
+
       // Feature Flags
       EXPO_PUBLIC_ENABLE_ANALYTICS?: string;
       EXPO_PUBLIC_ENABLE_CRASHLYTICS?: string;

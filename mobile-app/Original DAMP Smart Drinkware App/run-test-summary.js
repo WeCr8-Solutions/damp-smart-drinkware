@@ -77,7 +77,7 @@ console.log('-'.repeat(50));
 
 const testFiles = [
   'tests/setup/jest-setup.ts',
-  'tests/unit/utils/performance-simple.test.ts', 
+  'tests/unit/utils/performance-simple.test.ts',
   'tests/unit/utils/security-simple.test.ts',
   'tests/unit/utils/index.test.ts',
   'tests/unit/components/ErrorBoundary.test.tsx',

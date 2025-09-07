@@ -1,6 +1,6 @@
 /**
  * Device Information Modal
- * 
+ *
  * Displays comprehensive device details in a standardized format with zone management
  */
 
@@ -99,7 +99,7 @@ export default function DeviceInfoModal({
       const result = await updateDevice(device.id, {
         status: isActive ? 'connected' : 'disconnected',
       });
-      
+
       if (result.success && result.data && onDeviceUpdate) {
         onDeviceUpdate(result.data);
       } else {
@@ -130,8 +130,8 @@ export default function DeviceInfoModal({
     setLocationTracking(enabled);
     try {
       const result = await updateDevice(device.id, {
-        metadata: { 
-          ...device.metadata, 
+        metadata: {
+          ...device.metadata,
           locationTracking: enabled,
           lastLocationUpdate: enabled ? new Date().toISOString() : undefined
         },
@@ -150,8 +150,8 @@ export default function DeviceInfoModal({
     setShareLocation(enabled);
     try {
       const result = await updateDevice(device.id, {
-        metadata: { 
-          ...device.metadata, 
+        metadata: {
+          ...device.metadata,
           shareLocation: enabled
         },
       });
@@ -186,9 +186,9 @@ export default function DeviceInfoModal({
       if (!result.canceled && result.assets[0]) {
         setLoading(true);
         const updateResult = await updateDevice(device.id, {
-          metadata: { 
-            ...device.metadata, 
-            image: result.assets[0].uri 
+          metadata: {
+            ...device.metadata,
+            image: result.assets[0].uri
           },
         });
 
@@ -264,11 +264,11 @@ export default function DeviceInfoModal({
             const newZoneId = `zone-${Date.now()}`;
             const updatedZones = [...noAlertZones, newZoneId];
             setNoAlertZones(updatedZones);
-            
+
             try {
               const result = await updateDevice(device.id, {
-                metadata: { 
-                  ...device.metadata, 
+                metadata: {
+                  ...device.metadata,
                   noAlertZones: updatedZones
                 },
               });

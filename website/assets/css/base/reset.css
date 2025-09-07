@@ -130,7 +130,7 @@ select {
     html:focus-within {
         scroll-behavior: auto;
     }
-    
+
     *,
     *::before,
     *::after {
@@ -179,4 +179,4 @@ select {
 
 .skip-link:focus {
     top: 6px;
-} 
+}

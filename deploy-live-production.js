@@ -43,7 +43,7 @@ const LIVE_PRODUCTS = {
 async function deployLiveProduction() {
   console.log('🎯 PRODUCTION DEPLOYMENT CHECKLIST');
   console.log('==================================\n');
-  
+
   // Step 1: Confirm readiness
   console.log('✅ System Verification Complete:');
   console.log('   - Cart functionality: VERIFIED');
@@ -51,39 +51,39 @@ async function deployLiveProduction() {
   console.log('   - Security measures: VERIFIED');
   console.log('   - Webhook handling: VERIFIED');
   console.log('   - Error handling: VERIFIED\n');
-  
+
   const ready = await askQuestion('Are you ready to deploy live Stripe integration? (yes/no): ');
   if (ready.toLowerCase() !== 'yes') {
     console.log('❌ Deployment cancelled. Run when ready.');
     process.exit(0);
   }
-  
+
   console.log('\n🔧 DEPLOYMENT STEPS:\n');
-  
+
   // Step 2: Environment Configuration
   console.log('📋 Step 1: Environment Configuration');
   console.log('====================================');
   console.log('✅ Live Stripe keys ready:');
   console.log(`   Secret Key: ${LIVE_STRIPE_CONFIG.secretKey.substring(0, 20)}...`);
   console.log(`   Publishable Key: ${LIVE_STRIPE_CONFIG.publishableKey.substring(0, 20)}...`);
-  
+
   // Step 3: Product Setup
   console.log('\n📋 Step 2: Stripe Products Setup');
   console.log('=================================');
   console.log('🔗 Go to Stripe Dashboard: https://dashboard.stripe.com/products');
   console.log('⚠️  Make sure you are in LIVE mode (toggle in top left)');
   console.log('\n📦 Create these products:');
-  
+
   for (const [productId, product] of Object.entries(LIVE_PRODUCTS)) {
     console.log(`   - ${product.name}: $${(product.price / 100).toFixed(2)}`);
   }
-  
+
   const productsCreated = await askQuestion('\nHave you created all products in Stripe Dashboard? (yes/no): ');
   if (productsCreated.toLowerCase() !== 'yes') {
     console.log('⚠️  Please create products first, then run this script again.');
     process.exit(0);
   }
-  
+
   // Step 4: Webhook Configuration
   console.log('\n📋 Step 3: Webhook Configuration');
   console.log('=================================');
@@ -95,17 +95,17 @@ async function deployLiveProduction() {
   console.log('   - payment_intent.payment_failed');
   console.log('   - customer.created');
   console.log('   - customer.updated');
-  
+
   const webhookSecret = await askQuestion('\nEnter your webhook signing secret (whsec_...): ');
   if (!webhookSecret.startsWith('whsec_')) {
     console.log('❌ Invalid webhook secret. Should start with whsec_');
     process.exit(1);
   }
-  
+
   // Step 5: Environment File Update
   console.log('\n📋 Step 4: Updating Production Environment');
   console.log('==========================================');
-  
+
   const productionEnv = `# 🔒 DAMP Smart Drinkware - Production Environment Variables
 # ⚠️ CRITICAL: This file contains PRODUCTION secrets - handle with extreme care!
 # 🚨 NEVER commit this file to version control!
@@ -181,7 +181,7 @@ RATE_LIMIT_MAX_REQUESTS=50
     console.error('❌ Error creating environment file:', error.message);
     process.exit(1);
   }
-  
+
   // Step 6: Deployment Instructions
   console.log('\n📋 Step 5: Final Deployment');
   console.log('===========================');
@@ -193,11 +193,11 @@ RATE_LIMIT_MAX_REQUESTS=50
   console.log(`   STRIPE_WEBHOOK_SECRET = ${webhookSecret}`);
   console.log('   NODE_ENV = production');
   console.log('3. Deploy the site');
-  
+
   console.log('\n🚀 FIREBASE FUNCTIONS:');
   console.log('1. firebase use production');
   console.log('2. firebase deploy --only functions');
-  
+
   // Step 7: Testing Instructions
   console.log('\n📋 Step 6: Live Testing Plan');
   console.log('============================');
@@ -209,7 +209,7 @@ RATE_LIMIT_MAX_REQUESTS=50
   console.log('- Stripe Dashboard: https://dashboard.stripe.com/payments');
   console.log('- Firebase Console: https://console.firebase.google.com/project/damp-smart-drinkware');
   console.log('- Site Performance: Netlify Analytics');
-  
+
   console.log('\n🎊 DEPLOYMENT COMPLETE!');
   console.log('=======================');
   console.log('✅ Environment configured for live transactions');
@@ -218,7 +218,7 @@ RATE_LIMIT_MAX_REQUESTS=50
   console.log('✅ Test plan prepared');
   console.log('\n💰 You are now ready to accumulate real money!');
   console.log('🎯 First transaction expected within 1 hour of deployment');
-  
+
   rl.close();
 }
 

@@ -147,7 +147,7 @@ GET  /api/health               # Health check
 #### Stripe Checkout API (Port 3002)
 ```javascript
 POST /api/create-checkout-session  # Create Stripe checkout
-POST /api/stripe-webhook           # Handle Stripe webhooks  
+POST /api/stripe-webhook           # Handle Stripe webhooks
 GET  /api/checkout-session/:id     # Get session details
 GET  /api/checkout-health          # Health check
 ```
@@ -345,11 +345,11 @@ window.debugNavigation()
 Track these KPIs to measure funnel performance:
 
 - **Conversion Rate**: Visitors → Pre-orders (Target: 2-5%)
-- **Time on Page**: Average engagement (Target: 2+ minutes)  
+- **Time on Page**: Average engagement (Target: 2+ minutes)
 - **Scroll Depth**: Content consumption (Target: 75%+ reach bottom)
 - **Cart Abandonment**: Checkout starts vs. completions (Target: <30%)
 - **Social Sharing**: Viral coefficient (Target: 0.1+)
 
 **Built with ❤️ for successful product launches**
 
-*Copyright 2025 WeCr8 Solutions LLC - Licensed under MIT* 
+*Copyright 2025 WeCr8 Solutions LLC - Licensed under MIT*

@@ -1,7 +1,7 @@
 /**
  * DAMP Smart Drinkware - Playwright E2E Test Configuration
  * Enterprise-grade testing setup for CI/CD pipeline
- * 
+ *
  * @see https://playwright.dev/docs/test-configuration
  */
 
@@ -16,19 +16,19 @@ const timeout = isCI ? 30000 : 15000;
 module.exports = defineConfig({
   // Test directory
   testDir: '../e2e',
-  
+
   // Global test configuration
   timeout: timeout,
   expect: {
     timeout: 10000
   },
-  
+
   // Test execution configuration
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
   workers: isCI ? 2 : undefined,
-  
+
   // Reporter configuration
   reporter: [
     ['html', { outputFolder: '../../website/playwright-report' }],
@@ -36,30 +36,30 @@ module.exports = defineConfig({
     ['json', { outputFile: '../../website/test-results/playwright-results.json' }],
     isCI ? ['github'] : ['list']
   ],
-  
+
   // Global test configuration
   use: {
     // Base URL for tests
     baseURL,
-    
+
     // Browser configuration
     headless,
     viewport: { width: 1280, height: 720 },
     ignoreHTTPSErrors: true,
-    
+
     // Test artifacts
     trace: isCI ? 'retain-on-failure' : 'off',
     screenshot: isCI ? 'only-on-failure' : 'off',
     video: isCI ? 'retain-on-failure' : 'off',
-    
+
     // Action configuration
     actionTimeout: 10000,
     navigationTimeout: 15000,
-    
+
     // Context options
     locale: 'en-US',
     timezoneId: 'America/New_York',
-    
+
     // Extra HTTP headers
     extraHTTPHeaders: {
       'Accept-Language': 'en-US,en;q=0.9',
@@ -72,7 +72,7 @@ module.exports = defineConfig({
     // Desktop browsers
     {
       name: 'chromium',
-      use: { 
+      use: {
         ...devices['Desktop Chrome'],
         channel: 'chrome'
       },
@@ -85,7 +85,7 @@ module.exports = defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
-    
+
     // Mobile browsers (for responsive testing)
     {
       name: 'mobile-chrome',
@@ -95,7 +95,7 @@ module.exports = defineConfig({
       name: 'mobile-safari',
       use: { ...devices['iPhone 12'] },
     },
-    
+
     // Tablet testing
     {
       name: 'tablet',
@@ -119,16 +119,16 @@ module.exports = defineConfig({
 
   // Output directories
   outputDir: '../../website/test-results/playwright-artifacts',
-  
+
   // Test match patterns
   testMatch: [
     '../e2e/**/*.spec.js',
     '../e2e/**/*.test.js'
   ],
-  
+
   // Test ignore patterns
   testIgnore: [
     '../e2e/**/node_modules/**',
     '../e2e/**/*.ignore.js'
   ]
-}); 
+});

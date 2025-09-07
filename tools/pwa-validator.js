@@ -34,19 +34,19 @@ const PWA_REQUIREMENTS = {
     icons192: {
         name: 'Web app manifest with 192px icon',
         required: true,
-        check: (manifest) => manifest.icons && manifest.icons.some(icon => 
+        check: (manifest) => manifest.icons && manifest.icons.some(icon =>
             icon.sizes && icon.sizes.includes('192x192'))
     },
     icons512: {
         name: 'Web app manifest with 512px icon',
         required: true,
-        check: (manifest) => manifest.icons && manifest.icons.some(icon => 
+        check: (manifest) => manifest.icons && manifest.icons.some(icon =>
             icon.sizes && icon.sizes.includes('512x512'))
     },
     maskableIcons: {
         name: 'Maskable icons for adaptive icon support',
         required: false,
-        check: (manifest) => manifest.icons && manifest.icons.some(icon => 
+        check: (manifest) => manifest.icons && manifest.icons.some(icon =>
             icon.purpose && icon.purpose.includes('maskable'))
     },
     themeColor: {
@@ -163,24 +163,24 @@ class PWAValidator {
         try {
             // Validate manifest
             await this.validateManifest();
-            
+
             // Validate service worker
             await this.validateServiceWorker();
-            
+
             // Validate HTML pages
             await this.validateHTMLPages();
-            
+
             // Validate icons
             await this.validateIcons();
-            
+
             // Calculate overall score
             this.calculateOverallScore();
-            
+
             // Generate report
             this.generateReport();
-            
+
             return this.results;
-            
+
         } catch (error) {
             console.error('❌ PWA validation failed:', error);
             return null;
@@ -189,12 +189,12 @@ class PWAValidator {
 
     async validateManifest() {
         console.log('📱 Validating Web App Manifest...');
-        
+
         try {
             const manifestPath = path.join(this.websiteDir, 'manifest.json');
             const manifestContent = await fs.readFile(manifestPath, 'utf8');
             const manifest = JSON.parse(manifestContent);
-            
+
             for (const [key, requirement] of Object.entries(PWA_REQUIREMENTS)) {
                 const passed = requirement.check(manifest);
                 this.results.manifest[key] = {
@@ -204,12 +204,12 @@ class PWAValidator {
                     points: passed ? (requirement.required ? 10 : 5) : 0,
                     maxPoints: requirement.required ? 10 : 5
                 };
-                
+
                 const icon = passed ? '✅' : '❌';
                 const req = requirement.required ? '[REQUIRED]' : '[OPTIONAL]';
                 console.log(`  ${icon} ${requirement.name} ${req}`);
             }
-            
+
         } catch (error) {
             console.error('❌ Manifest validation failed:', error.message);
             for (const key of Object.keys(PWA_REQUIREMENTS)) {
@@ -224,24 +224,24 @@ class PWAValidator {
 
     async validateServiceWorker() {
         console.log('⚙️ Validating Service Worker...');
-        
+
         try {
             const swPath = path.join(this.websiteDir, 'sw.js');
             const swContent = await fs.readFile(swPath, 'utf8');
-            
+
             // Also check HTML files for SW registration
             const indexPath = path.join(this.websiteDir, 'index.html');
             const htmlContent = await fs.readFile(indexPath, 'utf8');
-            
+
             for (const [key, requirement] of Object.entries(SW_REQUIREMENTS)) {
                 let passed = false;
-                
+
                 if (key === 'caching' || key === 'offline') {
                     passed = requirement.check(swContent);
                 } else {
                     passed = requirement.check(htmlContent);
                 }
-                
+
                 this.results.serviceWorker[key] = {
                     name: requirement.name,
                     required: requirement.required,
@@ -249,12 +249,12 @@ class PWAValidator {
                     points: passed ? (requirement.required ? 15 : 8) : 0,
                     maxPoints: requirement.required ? 15 : 8
                 };
-                
+
                 const icon = passed ? '✅' : '❌';
                 const req = requirement.required ? '[REQUIRED]' : '[OPTIONAL]';
                 console.log(`  ${icon} ${requirement.name} ${req}`);
             }
-            
+
         } catch (error) {
             console.error('❌ Service Worker validation failed:', error.message);
             for (const key of Object.keys(SW_REQUIREMENTS)) {
@@ -269,14 +269,14 @@ class PWAValidator {
 
     async validateHTMLPages() {
         console.log('📄 Validating HTML Pages...');
-        
+
         try {
             const indexPath = path.join(this.websiteDir, 'index.html');
             const htmlContent = await fs.readFile(indexPath, 'utf8');
-            
+
             for (const [key, requirement] of Object.entries(HTML_REQUIREMENTS)) {
                 const passed = requirement.check(htmlContent);
-                
+
                 this.results.html[key] = {
                     name: requirement.name,
                     required: requirement.required,
@@ -284,12 +284,12 @@ class PWAValidator {
                     points: passed ? (requirement.required ? 8 : 4) : 0,
                     maxPoints: requirement.required ? 8 : 4
                 };
-                
+
                 const icon = passed ? '✅' : '❌';
                 const req = requirement.required ? '[REQUIRED]' : '[OPTIONAL]';
                 console.log(`  ${icon} ${requirement.name} ${req}`);
             }
-            
+
         } catch (error) {
             console.error('❌ HTML validation failed:', error.message);
             for (const key of Object.keys(HTML_REQUIREMENTS)) {
@@ -304,7 +304,7 @@ class PWAValidator {
 
     async validateIcons() {
         console.log('🎨 Validating PWA Icons...');
-        
+
         const requiredIcons = [
             { size: '16x16', path: 'favicon-16x16.png' },
             { size: '32x32', path: 'favicon-32x32.png' },
@@ -314,16 +314,16 @@ class PWAValidator {
             { size: '96x96', path: 'icon-96.png', maskable: true },
             { size: '144x144', path: 'icon-144.png', maskable: true }
         ];
-        
+
         const logoDir = path.join(this.websiteDir, 'assets', 'images', 'logo');
-        
+
         for (const icon of requiredIcons) {
             const iconPath = path.join(logoDir, icon.path);
-            
+
             try {
                 await fs.access(iconPath);
                 const passed = true;
-                
+
                 this.results.icons[icon.size] = {
                     name: `Icon ${icon.size}${icon.maskable ? ' (maskable)' : ''}`,
                     required: icon.required || false,
@@ -331,12 +331,12 @@ class PWAValidator {
                     points: passed ? (icon.required ? 5 : 3) : 0,
                     maxPoints: icon.required ? 5 : 3
                 };
-                
+
                 console.log(`  ✅ Icon ${icon.size} exists`);
-                
+
             } catch (error) {
                 const passed = false;
-                
+
                 this.results.icons[icon.size] = {
                     name: `Icon ${icon.size}${icon.maskable ? ' (maskable)' : ''}`,
                     required: icon.required || false,
@@ -344,7 +344,7 @@ class PWAValidator {
                     points: 0,
                     maxPoints: icon.required ? 5 : 3
                 };
-                
+
                 const req = icon.required ? '[REQUIRED]' : '[OPTIONAL]';
                 console.log(`  ❌ Icon ${icon.size} missing ${req}`);
             }
@@ -354,7 +354,7 @@ class PWAValidator {
     calculateOverallScore() {
         let totalPoints = 0;
         let maxPoints = 0;
-        
+
         // Sum all categories
         for (const category of ['manifest', 'serviceWorker', 'html', 'icons']) {
             for (const result of Object.values(this.results[category])) {
@@ -362,10 +362,10 @@ class PWAValidator {
                 maxPoints += result.maxPoints || 0;
             }
         }
-        
+
         const score = maxPoints > 0 ? Math.round((totalPoints / maxPoints) * 100) : 0;
         const passed = score >= 85; // Google recommends 85%+ for PWA
-        
+
         this.results.overall = {
             score,
             totalPoints,
@@ -390,45 +390,45 @@ class PWAValidator {
         console.log('\n' + '═'.repeat(60));
         console.log('📊 PWA VALIDATION REPORT');
         console.log('═'.repeat(60));
-        
+
         const { score, totalPoints, maxPoints, passed, grade } = this.results.overall;
-        
+
         console.log(`\n🎯 OVERALL SCORE: ${score}% (${grade})`);
         console.log(`📈 Points: ${totalPoints}/${maxPoints}`);
         console.log(`✅ PWA Ready: ${passed ? 'YES' : 'NO'}`);
-        
+
         if (passed) {
             console.log('\n🎉 Congratulations! Your PWA meets Google standards and is ready for production.');
         } else {
             console.log('\n⚠️ Your PWA needs improvements to meet Google standards.');
             console.log('Focus on fixing REQUIRED items first.');
         }
-        
+
         // Category breakdown
         console.log('\n📋 CATEGORY BREAKDOWN:');
-        
+
         const categories = [
             { name: 'Web App Manifest', key: 'manifest', icon: '📱' },
             { name: 'Service Worker', key: 'serviceWorker', icon: '⚙️' },
             { name: 'HTML Meta Tags', key: 'html', icon: '📄' },
             { name: 'PWA Icons', key: 'icons', icon: '🎨' }
         ];
-        
+
         for (const category of categories) {
             const results = Object.values(this.results[category.key]);
             const categoryPoints = results.reduce((sum, r) => sum + (r.points || 0), 0);
             const categoryMax = results.reduce((sum, r) => sum + (r.maxPoints || 0), 0);
             const categoryScore = categoryMax > 0 ? Math.round((categoryPoints / categoryMax) * 100) : 0;
-            
+
             console.log(`${category.icon} ${category.name}: ${categoryScore}% (${categoryPoints}/${categoryMax})`);
         }
-        
+
         // Recommendations
         console.log('\n💡 RECOMMENDATIONS:');
-        
+
         const failedRequired = [];
         const failedOptional = [];
-        
+
         for (const category of ['manifest', 'serviceWorker', 'html', 'icons']) {
             for (const [key, result] of Object.entries(this.results[category])) {
                 if (!result.passed) {
@@ -440,27 +440,27 @@ class PWAValidator {
                 }
             }
         }
-        
+
         if (failedRequired.length > 0) {
             console.log('\n🚨 CRITICAL (Fix These First):');
             failedRequired.forEach(item => console.log(`  ${item}`));
         }
-        
+
         if (failedOptional.length > 0) {
             console.log('\n📈 IMPROVEMENTS (Optional):');
             failedOptional.forEach(item => console.log(`  ${item}`));
         }
-        
+
         if (failedRequired.length === 0 && failedOptional.length === 0) {
             console.log('✨ All checks passed! Your PWA is fully optimized.');
         }
-        
+
         console.log('\n🔗 Next Steps:');
         console.log('  1. Test your PWA with Chrome DevTools (Application > Manifest)');
         console.log('  2. Run Lighthouse PWA audit for detailed analysis');
         console.log('  3. Test installation on mobile devices');
         console.log('  4. Verify offline functionality');
-        
+
         console.log('\n' + '═'.repeat(60));
     }
 }
@@ -477,4 +477,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { PWAValidator }; 
+module.exports = { PWAValidator };

@@ -1,6 +1,6 @@
 /**
  * Device Management Component
- * 
+ *
  * Displays device cards and handles device information modal
  */
 
@@ -106,8 +106,8 @@ export default function DeviceManagement() {
     setLoading(true);
     try {
       const result = await updateDevice(device.id, {
-        metadata: { 
-          ...device.metadata, 
+        metadata: {
+          ...device.metadata,
           locationTracking: enabled,
           lastLocationUpdate: enabled ? new Date().toISOString() : undefined
         },
@@ -151,11 +151,11 @@ export default function DeviceManagement() {
             const newZoneId = `zone-${Date.now()}`;
             const currentZones = device.metadata?.noAlertZones || [];
             const updatedZones = [...currentZones, newZoneId];
-            
+
             try {
               const result = await updateDevice(device.id, {
-                metadata: { 
-                  ...device.metadata, 
+                metadata: {
+                  ...device.metadata,
                   noAlertZones: updatedZones
                 },
               });
@@ -326,8 +326,8 @@ export default function DeviceManagement() {
                               onValueChange={async (enabled) => {
                                 try {
                                   const result = await updateDevice(device.id, {
-                                    metadata: { 
-                                      ...device.metadata, 
+                                    metadata: {
+                                      ...device.metadata,
                                       shareLocation: enabled
                                     },
                                   });

@@ -12,19 +12,19 @@ graph TB
         A[Local Development] --> B[Feature Branch]
         B --> C[Pull Request]
     end
-    
+
     subgraph "Staging"
         C --> D[Staging Branch]
         D --> E[Staging Environment]
         E --> F[QA Testing]
     end
-    
+
     subgraph "Production"
         F --> G[Main Branch]
         G --> H[Production Deploy]
         H --> I[Live Systems]
     end
-    
+
     subgraph "Platforms"
         I --> J[Website - Netlify]
         I --> K[Mobile - App Stores]
@@ -80,7 +80,7 @@ npx netlify env:set NETLIFY_NEXT_PLUGIN_SKIP "true"
 [build]
   command = "cd 'mobile-app/Original DAMP Smart Drinkware App' && npm install && npm run build:netlify:production"
   publish = "mobile-app/Original DAMP Smart Drinkware App/dist"
-  
+
 [build.environment]
   NODE_VERSION = "18"
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
@@ -303,16 +303,16 @@ esp_err_t perform_ota_update(const char* firmware_url) {
         .timeout_ms = 30000,
         .keep_alive_enable = true,
     };
-    
+
     esp_https_ota_config_t ota_config = {
         .http_config = &config,
     };
-    
+
     esp_err_t ret = esp_https_ota(&ota_config);
     if (ret == ESP_OK) {
         esp_restart();
     }
-    
+
     return ret;
 }
 ```
@@ -416,7 +416,7 @@ const healthCheck = async () => {
     { name: 'API', url: 'https://api.dampdrink.com/health' },
     { name: 'Firebase', url: 'https://damp-smart-drinkware.firebaseapp.com' }
   ];
-  
+
   for (const check of checks) {
     try {
       const response = await fetch(check.url);

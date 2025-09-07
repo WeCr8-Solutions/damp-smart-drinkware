@@ -1,6 +1,6 @@
 /**
  * Device Page Object
- * 
+ *
  * Represents the device management pages and provides methods
  * to interact with them in tests.
  */
@@ -11,7 +11,7 @@ export class DevicePage {
    */
   constructor(page) {
     this.page = page;
-    
+
     // Selectors
     this.devicesList = page.locator('[data-testid="devices-list"]');
     this.deviceCount = page.locator('[data-testid="device-count"]');
@@ -149,7 +149,7 @@ export class DevicePage {
     await this.page.evaluate((url) => {
       window.mockFilePickerResult = { uri: url };
     }, imageUrl);
-    
+
     // Trigger the file picker result handler
     await this.page.locator('[data-testid="confirm-image-selection"]').click();
   }

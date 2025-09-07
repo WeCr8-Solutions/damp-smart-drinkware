@@ -1,6 +1,6 @@
 /**
  * Language Picker Modal
- * 
+ *
  * Allows users to select their preferred language
  */
 

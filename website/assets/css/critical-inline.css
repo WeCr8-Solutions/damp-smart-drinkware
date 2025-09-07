@@ -68,8 +68,8 @@ body {
     z-index: 10000;
     font-weight: 700;
 }
-.skip-to-content:focus { 
-    top: 0; 
+.skip-to-content:focus {
+    top: 0;
 }
 
 /* Critical Hero Section */

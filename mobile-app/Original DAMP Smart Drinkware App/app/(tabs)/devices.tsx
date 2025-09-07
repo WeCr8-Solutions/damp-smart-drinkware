@@ -58,7 +58,7 @@ export default function DevicesScreen() {
 
         <View style={styles.content}>
           {/* Connected Devices */}
-          <DeviceList 
+          <DeviceList
             title="Connected Devices"
             filterByStatus="connected"
             emptyStateMessage="No connected devices found. Scan to discover nearby devices."
@@ -66,7 +66,7 @@ export default function DevicesScreen() {
 
           {/* Disconnected Devices */}
           <View style={styles.section}>
-            <DeviceList 
+            <DeviceList
               title="Available Devices"
               filterByStatus="disconnected"
               emptyStateMessage="No disconnected devices found."

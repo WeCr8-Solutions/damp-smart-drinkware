@@ -191,19 +191,19 @@ export const BLEProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const updateDeviceBattery = (deviceId: string, batteryLevel: number) => {
     if (Platform.OS === 'web') return;
-    
-    setDevices(prev => prev.map(device => 
+
+    setDevices(prev => prev.map(device =>
       device.id === deviceId ? { ...device, batteryLevel } : device
     ));
   };
 
   const updateDeviceRSSI = (deviceId: string, rssi: number) => {
     if (Platform.OS === 'web') return;
-    
-    setDevices(prev => prev.map(device => 
+
+    setDevices(prev => prev.map(device =>
       device.id === deviceId ? { ...device, rssi } : device
     ));
-    
+
     if (connectedDevice && connectedDevice.id === deviceId) {
       setConnectedDevice((prev: any) => prev ? { ...prev, rssi } : null);
     }

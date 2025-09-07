@@ -86,7 +86,7 @@ export default function StoreSuccessScreen() {
           </View>
 
           <Text style={styles.title}>Order Confirmed!</Text>
-          
+
           {loading ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#0277BD" />
@@ -111,7 +111,7 @@ export default function StoreSuccessScreen() {
 
               <View style={styles.timelineContainer}>
                 <Text style={styles.timelineTitle}>What happens next:</Text>
-                
+
                 <View style={styles.timelineItem}>
                   <View style={styles.timelineIcon}>
                     <CheckCircle size={20} color="#4CAF50" />

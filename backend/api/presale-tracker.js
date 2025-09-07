@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3001;
 // Security middleware
 app.use(helmet());
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
+    origin: process.env.NODE_ENV === 'production'
         ? ['https://dampdrink.com', 'https://www.dampdrink.com']
         : ['http://localhost:8000', 'http://127.0.0.1:8000'],
     credentials: true
@@ -74,28 +74,28 @@ function simulateRealisticGrowth() {
         const hour = new Date().getHours();
         const isBusinessHours = hour >= 9 && hour <= 21;
         const baseChance = isBusinessHours ? 0.4 : 0.1;
-        
+
         if (Math.random() < baseChance && presaleData.currentCount < presaleData.goalCount) {
             const ordersToAdd = Math.random() < 0.7 ? 1 : Math.floor(Math.random() * 3) + 1;
             presaleData.currentCount += ordersToAdd;
-            
+
             // Add to recent orders
             const cities = ['Austin, TX', 'Seattle, WA', 'Denver, CO', 'Portland, OR', 'San Francisco, CA', 'New York, NY', 'Miami, FL', 'Chicago, IL'];
             const randomCity = cities[Math.floor(Math.random() * cities.length)];
-            
+
             presaleData.recentOrders.unshift({
                 timestamp: new Date().toISOString(),
                 location: randomCity,
                 count: ordersToAdd
             });
-            
+
             // Keep only last 10 orders
             presaleData.recentOrders = presaleData.recentOrders.slice(0, 10);
-            
+
             // Update conversion rate
-            presaleData.analytics.conversionRate = 
+            presaleData.analytics.conversionRate =
                 (presaleData.currentCount / presaleData.analytics.pageViews * 100).toFixed(2);
-            
+
             saveData();
             console.log(`📈 Simulated ${ordersToAdd} order(s) from ${randomCity}. Total: ${presaleData.currentCount}`);
         }
@@ -110,7 +110,7 @@ app.get('/api/presale-status', (req, res) => {
         const now = new Date();
         const endDate = new Date(presaleData.endDate);
         const timeRemaining = Math.max(0, endDate.getTime() - now.getTime());
-        
+
         const response = {
             currentCount: presaleData.currentCount,
             goalCount: presaleData.goalCount,
@@ -131,10 +131,10 @@ app.get('/api/presale-status', (req, res) => {
                 totalPageViews: presaleData.analytics.pageViews
             }
         };
-        
+
         // Track page view
         presaleData.analytics.pageViews++;
-        
+
         res.json(response);
     } catch (error) {
         console.error('Error getting presale status:', error);
@@ -146,11 +146,11 @@ app.get('/api/presale-status', (req, res) => {
 app.post('/api/track-event', (req, res) => {
     try {
         const { event, data } = req.body;
-        
+
         if (!event) {
             return res.status(400).json({ error: 'Event type required' });
         }
-        
+
         // Track specific events
         switch (event) {
             case 'checkout_initiated':
@@ -169,17 +169,17 @@ app.post('/api/track-event', (req, res) => {
                 });
                 break;
         }
-        
+
         // Update conversion rate
-        presaleData.analytics.conversionRate = 
+        presaleData.analytics.conversionRate =
             (presaleData.analytics.checkoutAttempts / presaleData.analytics.pageViews * 100).toFixed(2);
-        
+
         saveData();
-        
-        res.json({ 
-            success: true, 
+
+        res.json({
+            success: true,
             message: 'Event tracked successfully',
-            currentCount: presaleData.currentCount 
+            currentCount: presaleData.currentCount
         });
     } catch (error) {
         console.error('Error tracking event:', error);
@@ -191,11 +191,11 @@ app.post('/api/track-event', (req, res) => {
 app.post('/api/track-purchase', (req, res) => {
     try {
         const { product_id, product_name, quantity, location, timestamp, session_id } = req.body;
-        
+
         if (!product_id || !quantity || !timestamp) {
             return res.status(400).json({ error: 'Missing required purchase data' });
         }
-        
+
         // Add real purchase to recent orders
         presaleData.recentOrders.unshift({
             timestamp: timestamp,
@@ -206,22 +206,22 @@ app.post('/api/track-purchase', (req, res) => {
             product_id: product_id,
             session_id: session_id
         });
-        
+
         // Keep only last 20 orders for performance
         presaleData.recentOrders = presaleData.recentOrders.slice(0, 20);
-        
+
         // Update current count
         presaleData.currentCount += quantity;
-        
+
         // Update analytics
         presaleData.analytics.totalRevenue = (presaleData.analytics.totalRevenue || 0) + (quantity * 50); // Estimate
-        
+
         saveData();
-        
+
         console.log(`📦 Real purchase tracked: ${quantity}x ${product_name} from ${location}`);
-        
-        res.json({ 
-            success: true, 
+
+        res.json({
+            success: true,
             message: 'Purchase tracked successfully',
             currentCount: presaleData.currentCount,
             recentActivity: generateRecentActivityMessage()
@@ -237,7 +237,7 @@ app.get('/api/recent-activity', (req, res) => {
     try {
         const recentActivity = generateRecentActivityMessage();
         const realOrders = presaleData.recentOrders.filter(order => order.real);
-        
+
         res.json({
             success: true,
             activity: recentActivity,
@@ -255,23 +255,23 @@ app.get('/api/recent-activity', (req, res) => {
 app.post('/api/admin/update-count', (req, res) => {
     try {
         const { adminKey, newCount } = req.body;
-        
+
         // Simple admin authentication (use proper auth in production)
         if (adminKey !== process.env.ADMIN_KEY) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        
+
         if (typeof newCount !== 'number' || newCount < 0 || newCount > presaleData.goalCount) {
             return res.status(400).json({ error: 'Invalid count value' });
         }
-        
+
         presaleData.currentCount = newCount;
         saveData();
-        
-        res.json({ 
-            success: true, 
+
+        res.json({
+            success: true,
             message: 'Count updated successfully',
-            newCount: presaleData.currentCount 
+            newCount: presaleData.currentCount
         });
     } catch (error) {
         console.error('Error updating count:', error);
@@ -283,11 +283,11 @@ app.post('/api/admin/update-count', (req, res) => {
 app.get('/api/admin/analytics', (req, res) => {
     try {
         const { adminKey } = req.query;
-        
+
         if (adminKey !== process.env.ADMIN_KEY) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
-        
+
         res.json({
             presaleData,
             serverStats: {
@@ -304,8 +304,8 @@ app.get('/api/admin/analytics', (req, res) => {
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.json({ 
-        status: 'healthy', 
+    res.json({
+        status: 'healthy',
         timestamp: new Date().toISOString(),
         uptime: process.uptime()
     });
@@ -316,10 +316,10 @@ function generateRecentActivityMessage() {
     if (presaleData.recentOrders.length === 0) {
         return "Join the growing community of early adopters!";
     }
-    
+
     const lastOrder = presaleData.recentOrders[0];
     const minutesAgo = Math.floor((new Date() - new Date(lastOrder.timestamp)) / 60000);
-    
+
     if (minutesAgo < 60) {
         return `Last order: ${minutesAgo} minutes ago from ${lastOrder.location}`;
     } else {
@@ -333,7 +333,7 @@ function calculateUrgencyLevel() {
     const now = new Date();
     const endDate = new Date(presaleData.endDate);
     const hoursRemaining = (endDate.getTime() - now.getTime()) / (1000 * 60 * 60);
-    
+
     if (progressPercentage >= 95 || hoursRemaining < 24) {
         return 'critical';
     } else if (progressPercentage >= 80 || hoursRemaining < 72) {
@@ -348,7 +348,7 @@ function calculateUrgencyLevel() {
 // Error handling
 app.use((error, req, res, next) => {
     console.error('❌ Server error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
         error: 'Internal server error',
         message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
     });
@@ -364,7 +364,7 @@ async function startServer() {
     try {
         await loadData();
         simulateRealisticGrowth();
-        
+
         app.listen(PORT, () => {
             console.log(`🚀 DAMP Pre-Sale Tracker API running on port ${PORT}`);
             console.log(`📊 Current pre-orders: ${presaleData.currentCount}/${presaleData.goalCount}`);
@@ -394,4 +394,4 @@ if (require.main === module) {
     startServer();
 }
 
-module.exports = app; 
+module.exports = app;

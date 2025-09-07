@@ -1,13 +1,13 @@
 /**
  * Auth Page Object
- * 
+ *
  * Page object for interacting with authentication screens
  */
 
 export class AuthPage {
   constructor(page) {
     this.page = page;
-    
+
     // Selectors
     this.loginFormSelector = '[data-testid="login-form"]';
     this.emailInputSelector = '[data-testid="email-input"]';

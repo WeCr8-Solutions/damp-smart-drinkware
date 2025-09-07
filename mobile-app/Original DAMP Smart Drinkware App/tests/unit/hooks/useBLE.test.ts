@@ -74,7 +74,7 @@ describe('useBLE Hook', () => {
 
     it('should cleanup on unmount', () => {
       const { unmount } = renderHook(() => useBLE());
-      
+
       unmount();
 
       expect(mockBleManager.destroy).toHaveBeenCalled();
@@ -214,7 +214,7 @@ describe('useBLE Hook', () => {
 
     it('should auto-stop scan after timeout', async () => {
       jest.useFakeTimers();
-      
+
       const { result } = renderHook(() => useBLE());
 
       await act(async () => {
@@ -268,7 +268,7 @@ describe('useBLE Hook', () => {
 
     it('should handle connection timeout', async () => {
       jest.useFakeTimers();
-      
+
       // Mock connection to never resolve
       mockBleManager.connectToDevice.mockImplementation(() => new Promise(() => {}));
 
@@ -413,7 +413,7 @@ describe('useBLE Hook', () => {
     it('should monitor characteristic changes', async () => {
       let monitorCallback: Function;
       const mockSubscription = { remove: jest.fn() };
-      
+
       mockBleManager.monitorCharacteristicForDevice.mockImplementation((deviceId, serviceUUID, characteristicUUID, callback) => {
         monitorCallback = callback;
         return mockSubscription;
@@ -623,7 +623,7 @@ describe('useBLE Hook', () => {
 
       // Simulate discovering many devices
       const startTime = performance.now();
-      
+
       act(() => {
         for (let i = 0; i < 100; i++) {
           const device = { ...mockDevice, id: `device-${i}`, name: `Device ${i}` };

@@ -479,7 +479,7 @@ describe('BLEManager', () => {
   describe('Performance', () => {
     it('should scan for devices within acceptable time', async () => {
       const startTime = performance.now();
-      
+
       let scanCallback: Function;
       mockBleManager.startDeviceScan.mockImplementation((serviceUUIDs, options, callback) => {
         scanCallback = callback;
@@ -491,7 +491,7 @@ describe('BLEManager', () => {
           <BLEManagerComponent />
         </BLEProvider>
       );
-      
+
       act(() => {
         getByText('Start Scan').props.onPress();
       });
@@ -502,13 +502,13 @@ describe('BLEManager', () => {
 
       const endTime = performance.now();
       const scanTime = endTime - startTime;
-      
+
       expect(scanTime).toBeLessThan(500); // Should complete within 500ms
     });
 
     it('should connect within acceptable time', async () => {
       const startTime = performance.now();
-      
+
       mockBleManager.connectToDevice.mockImplementation(() => {
         return new Promise(resolve => {
           setTimeout(() => resolve(mockDevice), 100); // Simulate connection time
@@ -545,7 +545,7 @@ describe('BLEManager', () => {
 
       const endTime = performance.now();
       const connectionTime = endTime - startTime;
-      
+
       expect(connectionTime).toBeLessThan(1000); // Should connect within 1s
     });
   });

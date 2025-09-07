@@ -28,7 +28,7 @@ if (!process.env.DEBUG) {
 // Global test utilities
 global.testUtils = {
   wait: (ms: number) => new Promise(resolve => setTimeout(resolve, ms)),
-  
+
   waitFor: async (condition: () => boolean, timeout = 5000, interval = 100) => {
     const start = Date.now();
     while (!condition() && Date.now() - start < timeout) {
@@ -125,10 +125,10 @@ global.performance = global.performance || {
 afterEach(() => {
   // Clear all mocks
   jest.clearAllMocks();
-  
+
   // Clear any timers
   jest.clearAllTimers();
-  
+
   // Reset any global state if needed
   if (global.testUtils) {
     // Reset any test utilities state
@@ -136,11 +136,11 @@ afterEach(() => {
 });
 
 // Import TypeScript types for testing integration (commented until global types available)
-// import type { 
-//   AppUser, 
-//   BLEDevice, 
-//   DeviceReading, 
-//   AppDatabase 
+// import type {
+//   AppUser,
+//   BLEDevice,
+//   DeviceReading,
+//   AppDatabase
 // } from '@/types/global';
 
 // Temporary type definitions for testing
@@ -202,46 +202,46 @@ declare global {
 // Custom Jest matchers for TypeScript type validation
 expect.extend({
   toBeValidAppUser(received) {
-    const pass = received && 
-      typeof received.id === 'string' && 
+    const pass = received &&
+      typeof received.id === 'string' &&
       typeof received.email === 'string' &&
       received.email.includes('@') &&
       typeof received.displayName === 'string';
-    
+
     return {
-      message: () => 
-        pass ? 
+      message: () =>
+        pass ?
         `Expected ${JSON.stringify(received)} not to be a valid AppUser` :
         `Expected ${JSON.stringify(received)} to be a valid AppUser with id, email, and displayName`,
       pass,
     };
   },
-  
+
   toBeValidBLEDevice(received) {
-    const pass = received && 
-      typeof received.id === 'string' && 
+    const pass = received &&
+      typeof received.id === 'string' &&
       typeof received.name === 'string' &&
       typeof received.type === 'string' &&
       typeof received.batteryLevel === 'number';
-    
+
     return {
-      message: () => 
-        pass ? 
+      message: () =>
+        pass ?
         `Expected ${JSON.stringify(received)} not to be a valid BLEDevice` :
         `Expected ${JSON.stringify(received)} to be a valid BLEDevice with id, name, type, and batteryLevel`,
       pass,
     };
   },
-  
+
   toBeValidDeviceReading(received) {
-    const pass = received && 
-      typeof received.deviceId === 'string' && 
+    const pass = received &&
+      typeof received.deviceId === 'string' &&
       typeof received.timestamp === 'number' &&
       typeof received.temperature === 'number';
-    
+
     return {
-      message: () => 
-        pass ? 
+      message: () =>
+        pass ?
         `Expected ${JSON.stringify(received)} not to be a valid DeviceReading` :
         `Expected ${JSON.stringify(received)} to be a valid DeviceReading with deviceId, timestamp, and temperature`,
       pass,
@@ -257,11 +257,11 @@ expect.extend({
       typeof received.displayName === 'string' &&
       typeof received.emailVerified === 'boolean' &&
       typeof received.createdAt === 'string';
-    
+
     const pass = hasAllFields && hasValidTypes;
-    
+
     return {
-      message: () => 
+      message: () =>
         pass ?
         `Expected ${JSON.stringify(received)} not to match AppUser schema` :
         `Expected ${JSON.stringify(received)} to match AppUser schema with all required fields and correct types`,
@@ -276,11 +276,11 @@ expect.extend({
       typeof received.temperature === 'number' &&
       typeof received.timestamp === 'number' &&
       typeof received.deviceId === 'string';
-    
+
     const pass = hasAllFields && hasValidTypes;
-    
+
     return {
-      message: () => 
+      message: () =>
         pass ?
         `Expected ${JSON.stringify(received)} not to match DeviceReading schema` :
         `Expected ${JSON.stringify(received)} to match DeviceReading schema with all required fields and correct types`,
@@ -311,7 +311,7 @@ expect.extend({
   validatePathMappings: () => {
     const paths = [
       '@/types',
-      '@/components', 
+      '@/components',
       '@/contexts',
       '@/hooks',
       '@/lib',
@@ -329,7 +329,7 @@ expect.extend({
   },
 
   testTypeConnectivity: () => {
-    return (global as any).typeValidationUtils.validateCircularReferences() && 
+    return (global as any).typeValidationUtils.validateCircularReferences() &&
            (global as any).typeValidationUtils.validatePathMappings();
   }
 } as any;
@@ -339,7 +339,7 @@ afterAll(() => {
   // Final cleanup
   jest.clearAllTimers();
   jest.restoreAllMocks();
-  
+
   // Run final type connectivity validation
   if (process.env.NODE_ENV === 'test') {
     console.log('🔍 Final TypeScript connectivity check...');

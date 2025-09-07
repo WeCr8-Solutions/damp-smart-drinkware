@@ -13,7 +13,7 @@ const app = express();
 // Security middleware
 app.use(helmet());
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
+    origin: process.env.NODE_ENV === 'production'
         ? ['https://dampdrink.com', 'https://www.dampdrink.com']
         : ['http://localhost:8000', 'http://127.0.0.1:8000'],
     credentials: true
@@ -51,14 +51,14 @@ const PRESALE_PRODUCTS = {
 app.post('/api/create-checkout-session', checkoutLimiter, async (req, res) => {
     try {
         const { productId, quantity = 1, customerEmail, metadata = {} } = req.body;
-        
+
         // Validate product
         if (!PRESALE_PRODUCTS[productId]) {
             return res.status(400).json({ error: 'Invalid product ID' });
         }
-        
+
         const product = PRESALE_PRODUCTS[productId];
-        
+
         // Create Stripe session
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -106,7 +106,7 @@ app.post('/api/create-checkout-session', checkoutLimiter, async (req, res) => {
                 enabled: true,
             }
         });
-        
+
         // Track checkout initiation
         await trackCheckoutEvent('checkout_initiated', {
             session_id: session.id,
@@ -114,15 +114,15 @@ app.post('/api/create-checkout-session', checkoutLimiter, async (req, res) => {
             amount: product.price * quantity,
             customer_email: customerEmail
         });
-        
-        res.json({ 
+
+        res.json({
             sessionId: session.id,
-            url: session.url 
+            url: session.url
         });
-        
+
     } catch (error) {
         console.error('Stripe checkout error:', error);
-        res.status(500).json({ 
+        res.status(500).json({
             error: 'Failed to create checkout session',
             message: process.env.NODE_ENV === 'development' ? error.message : 'Payment processing error'
         });
@@ -133,14 +133,14 @@ app.post('/api/create-checkout-session', checkoutLimiter, async (req, res) => {
 app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event;
-    
+
     try {
         event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
     } catch (err) {
         console.error('Webhook signature verification failed:', err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
-    
+
     // Handle the event
     switch (event.type) {
         case 'checkout.session.completed':
@@ -155,7 +155,7 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), (req, r
         default:
             console.log(`Unhandled event type ${event.type}`);
     }
-    
+
     res.json({received: true});
 });
 
@@ -163,11 +163,11 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), (req, r
 app.get('/api/checkout-session/:sessionId', async (req, res) => {
     try {
         const { sessionId } = req.params;
-        
+
         const session = await stripe.checkout.sessions.retrieve(sessionId, {
             expand: ['line_items', 'customer']
         });
-        
+
         // Only return safe data to frontend
         const safeSession = {
             id: session.id,
@@ -177,9 +177,9 @@ app.get('/api/checkout-session/:sessionId', async (req, res) => {
             currency: session.currency,
             metadata: session.metadata
         };
-        
+
         res.json(safeSession);
-        
+
     } catch (error) {
         console.error('Error retrieving session:', error);
         res.status(500).json({ error: 'Failed to retrieve session' });
@@ -190,10 +190,10 @@ app.get('/api/checkout-session/:sessionId', async (req, res) => {
 async function handleSuccessfulPayment(session) {
     try {
         console.log('💰 Payment successful:', session.id);
-        
+
         // Extract location from shipping address or billing address
         const location = extractLocationFromSession(session);
-        
+
         // Track successful conversion with location
         await trackCheckoutEvent('conversion_completed', {
             session_id: session.id,
@@ -203,10 +203,10 @@ async function handleSuccessfulPayment(session) {
             quantity: parseInt(session.metadata?.quantity) || 1,
             location: location
         });
-        
+
         // Update pre-sale counter
         await updatePresaleCount(parseInt(session.metadata?.quantity) || 1);
-        
+
         // Track real purchase activity for funnel display
         await trackRealPurchaseActivity({
             product_id: session.metadata?.product_id,
@@ -216,12 +216,12 @@ async function handleSuccessfulPayment(session) {
             timestamp: new Date().toISOString(),
             session_id: session.id
         });
-        
+
         // Send confirmation email (implement with your email service)
         await sendConfirmationEmail(session);
-        
+
         console.log('✅ Post-payment processing completed for session:', session.id);
-        
+
     } catch (error) {
         console.error('Error handling successful payment:', error);
     }
@@ -236,7 +236,7 @@ async function handlePaymentSuccess(paymentIntent) {
 // Handle payment failure
 async function handlePaymentFailure(paymentIntent) {
     console.log('❌ Payment failed:', paymentIntent.id);
-    
+
     await trackCheckoutEvent('payment_failed', {
         payment_intent_id: paymentIntent.id,
         failure_reason: paymentIntent.last_payment_error?.message
@@ -258,13 +258,13 @@ async function trackCheckoutEvent(eventType, data) {
                 timestamp: new Date().toISOString()
             })
         });
-        
+
         if (!response.ok) {
             throw new Error(`Failed to track event: ${response.statusText}`);
         }
-        
+
         console.log(`📊 Tracked event: ${eventType}`);
-        
+
     } catch (error) {
         console.error('Error tracking checkout event:', error);
     }
@@ -283,13 +283,13 @@ async function updatePresaleCount(quantity) {
                 data: { quantity }
             })
         });
-        
+
         if (!response.ok) {
             throw new Error(`Failed to update count: ${response.statusText}`);
         }
-        
+
         console.log(`📈 Updated pre-sale count by ${quantity}`);
-        
+
     } catch (error) {
         console.error('Error updating pre-sale count:', error);
     }
@@ -300,7 +300,7 @@ async function sendConfirmationEmail(session) {
     try {
         // Implement with your preferred email service (SendGrid, Mailgun, etc.)
         console.log(`📧 Sending confirmation email to: ${session.customer_details?.email}`);
-        
+
         // Example email content
         const emailData = {
             to: session.customer_details?.email,
@@ -314,10 +314,10 @@ async function sendConfirmationEmail(session) {
                 orderId: session.id
             }
         };
-        
+
         // This would integrate with your email service
         // await emailService.send(emailData);
-        
+
     } catch (error) {
         console.error('Error sending confirmation email:', error);
     }
@@ -325,7 +325,7 @@ async function sendConfirmationEmail(session) {
 
 // Health check
 app.get('/api/checkout-health', (req, res) => {
-    res.json({ 
+    res.json({
         status: 'healthy',
         stripe: !!process.env.STRIPE_SECRET_KEY,
         webhook: !!process.env.STRIPE_WEBHOOK_SECRET,
@@ -336,7 +336,7 @@ app.get('/api/checkout-health', (req, res) => {
 // Error handling
 app.use((error, req, res, next) => {
     console.error('💥 Checkout API error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
         error: 'Checkout service error',
         message: process.env.NODE_ENV === 'development' ? error.message : 'Payment processing unavailable'
     });
@@ -350,7 +350,7 @@ module.exports = app;
 function extractLocationFromSession(session) {
     // Try shipping address first, then billing address
     const address = session.shipping_details?.address || session.customer_details?.address;
-    
+
     if (address?.city && address?.state) {
         return `${address.city}, ${address.state}`;
     } else if (address?.city) {
@@ -384,13 +384,13 @@ async function trackRealPurchaseActivity(purchaseData) {
             },
             body: JSON.stringify(purchaseData)
         });
-        
+
         if (!response.ok) {
             throw new Error(`Failed to track purchase: ${response.statusText}`);
         }
-        
+
         console.log('✅ Real purchase activity tracked:', purchaseData.session_id);
-        
+
     } catch (error) {
         console.error('Error tracking real purchase activity:', error);
         // Don't throw - this shouldn't break the payment flow
@@ -404,4 +404,4 @@ if (require.main === module) {
         console.log(`🔐 Stripe configured: ${!!process.env.STRIPE_SECRET_KEY}`);
         console.log(`🎯 Webhook endpoint: /api/stripe-webhook`);
     });
-} 
+}

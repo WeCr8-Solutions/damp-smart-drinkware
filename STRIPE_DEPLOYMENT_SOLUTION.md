@@ -4,7 +4,7 @@
 
 We encountered a Google Cloud Storage permissions issue when deploying Firebase Functions:
 ```
-Build failed: Access to bucket gcf-sources-309818614427-us-central1 denied. 
+Build failed: Access to bucket gcf-sources-309818614427-us-central1 denied.
 You must grant Storage Object Viewer permission to 309818614427-compute@developer.gserviceaccount.com.
 ```
 
@@ -162,7 +162,7 @@ firebase deploy --only functions:handleStripeWebhook
 Your DAMP Smart Drinkware Stripe integration is **FULLY OPERATIONAL** with multiple deployment options:
 
 - 🚀 **Netlify Functions** (Production Ready)
-- 🧪 **Local Backend** (Development Ready) 
+- 🧪 **Local Backend** (Development Ready)
 - ⏳ **Firebase Functions** (Pending Permissions Fix)
 
 **Your presale funnel can accept live payments RIGHT NOW using either Netlify or local backend!** 💳✨

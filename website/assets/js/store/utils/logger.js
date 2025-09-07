@@ -2,7 +2,7 @@
  * Professional Logger Utility
  * Google Engineering Standards Implementation
  * Cross-Platform Logging with Analytics Integration
- * 
+ *
  * @fileoverview Logger utility for structured logging and debugging
  * @author WeCr8 Solutions LLC
  * @version 2.0.0
@@ -44,7 +44,7 @@ export class Logger {
     #enabled = true;
     #environment = 'production';
     #seenObjects = null;
-    
+
     /**
      * Create a new logger instance
      * @param {string} name - Logger name/component
@@ -56,11 +56,11 @@ export class Logger {
         this.#metadata = options.metadata || {};
         this.#enabled = options.enabled !== false;
         this.#environment = options.environment || this.#detectEnvironment();
-        
+
         // Initialize default outputs
         this.#initializeOutputs(options.outputs);
     }
-    
+
     /**
      * Log trace message
      * @param {string} message - Log message
@@ -69,7 +69,7 @@ export class Logger {
     trace(message, data = null) {
         this.#log(LogLevel.TRACE, message, data);
     }
-    
+
     /**
      * Log debug message
      * @param {string} message - Log message
@@ -78,7 +78,7 @@ export class Logger {
     debug(message, data = null) {
         this.#log(LogLevel.DEBUG, message, data);
     }
-    
+
     /**
      * Log info message
      * @param {string} message - Log message
@@ -87,7 +87,7 @@ export class Logger {
     info(message, data = null) {
         this.#log(LogLevel.INFO, message, data);
     }
-    
+
     /**
      * Log warning message
      * @param {string} message - Log message
@@ -96,7 +96,7 @@ export class Logger {
     warn(message, data = null) {
         this.#log(LogLevel.WARN, message, data);
     }
-    
+
     /**
      * Log error message
      * @param {string} message - Log message
@@ -105,7 +105,7 @@ export class Logger {
     error(message, error = null) {
         this.#log(LogLevel.ERROR, message, error);
     }
-    
+
     /**
      * Log fatal error message
      * @param {string} message - Log message
@@ -114,7 +114,7 @@ export class Logger {
     fatal(message, error = null) {
         this.#log(LogLevel.FATAL, message, error);
     }
-    
+
     /**
      * Create a child logger with additional context
      * @param {string} childName - Child logger name
@@ -130,7 +130,7 @@ export class Logger {
             outputs: this.#outputs
         });
     }
-    
+
     /**
      * Set log level
      * @param {number} level - Log level
@@ -138,7 +138,7 @@ export class Logger {
     setLevel(level) {
         this.#minLevel = level;
     }
-    
+
     /**
      * Enable/disable logging
      * @param {boolean} enabled - Enable logging
@@ -146,7 +146,7 @@ export class Logger {
     setEnabled(enabled) {
         this.#enabled = enabled;
     }
-    
+
     /**
      * Add log output
      * @param {Object} output - Log output configuration
@@ -154,7 +154,7 @@ export class Logger {
     addOutput(output) {
         this.#outputs.push(output);
     }
-    
+
     /**
      * Get logger metrics
      * @returns {Object} Logger metrics
@@ -170,9 +170,9 @@ export class Logger {
             metadata: this.#metadata
         };
     }
-    
+
     // Private methods
-    
+
     /**
      * @private
      */
@@ -180,9 +180,9 @@ export class Logger {
         if (!this.#enabled || level < this.#minLevel) {
             return;
         }
-        
+
         const logEntry = this.#createLogEntry(level, message, data);
-        
+
         // Send to all outputs
         this.#outputs.forEach(output => {
             try {
@@ -194,14 +194,14 @@ export class Logger {
             }
         });
     }
-    
+
     /**
      * @private
      */
     #createLogEntry(level, message, data) {
         const timestamp = new Date().toISOString();
         const levelName = LOG_LEVEL_NAMES[level];
-        
+
         const entry = {
             timestamp,
             level,
@@ -211,7 +211,7 @@ export class Logger {
             environment: this.#environment,
             ...this.#metadata
         };
-        
+
         // Add data if provided
         if (data !== null && data !== undefined) {
             if (data instanceof Error) {
@@ -227,7 +227,7 @@ export class Logger {
                 entry.data = data;
             }
         }
-        
+
         // Add browser/platform info for web environments
         if (typeof window !== 'undefined') {
             entry.platform = {
@@ -239,10 +239,10 @@ export class Logger {
                 }
             };
         }
-        
+
         return entry;
     }
-    
+
     /**
      * @private
      */
@@ -254,7 +254,7 @@ export class Logger {
                 if (this.#isSensitiveKey(key)) {
                     return '[REDACTED]';
                 }
-                
+
                 // Handle circular references
                 if (typeof value === 'object' && value !== null) {
                     if (this.#seenObjects?.has(value)) {
@@ -265,7 +265,7 @@ export class Logger {
                     }
                     this.#seenObjects.add(value);
                 }
-                
+
                 return value;
             }));
         } catch (error) {
@@ -274,7 +274,7 @@ export class Logger {
             this.#seenObjects = null;
         }
     }
-    
+
     /**
      * @private
      */
@@ -284,12 +284,12 @@ export class Logger {
             'cookie', 'session', 'credential', 'private', 'confidential',
             'ssn', 'social', 'creditcard', 'cc', 'cvv', 'pin'
         ];
-        
-        return sensitiveKeys.some(sensitive => 
+
+        return sensitiveKeys.some(sensitive =>
             key.toLowerCase().includes(sensitive)
         );
     }
-    
+
     /**
      * @private
      */
@@ -298,20 +298,20 @@ export class Logger {
             // Browser environment
             const urlParams = new URLSearchParams(window.location.search);
             const debugParam = urlParams.get('debug');
-            
+
             if (debugParam === 'true' || localStorage.getItem('dampDebug') === 'true') {
                 return LogLevel.DEBUG;
             }
-            
+
             return window.location.hostname === 'localhost' ? LogLevel.DEBUG : LogLevel.INFO;
         } else if (typeof process !== 'undefined') {
             // Node.js environment
             return process.env.NODE_ENV === 'development' ? LogLevel.DEBUG : LogLevel.INFO;
         }
-        
+
         return LogLevel.INFO;
     }
-    
+
     /**
      * @private
      */
@@ -327,30 +327,30 @@ export class Logger {
         } else if (typeof process !== 'undefined') {
             return process.env.NODE_ENV || 'production';
         }
-        
+
         return 'production';
     }
-    
+
     /**
      * @private
      */
     #initializeOutputs(customOutputs = []) {
         // Always include console output
         this.#outputs.push(new ConsoleOutput());
-        
+
         // Add browser-specific outputs
         if (typeof window !== 'undefined') {
             // Add analytics output for production
             if (this.#environment === 'production') {
                 this.#outputs.push(new AnalyticsOutput());
             }
-            
+
             // Add local storage output for debugging
             if (this.#environment === 'development') {
                 this.#outputs.push(new LocalStorageOutput());
             }
         }
-        
+
         // Add custom outputs
         customOutputs.forEach(output => this.#outputs.push(output));
     }
@@ -362,9 +362,9 @@ export class Logger {
 class ConsoleOutput {
     write(logEntry) {
         const { levelName, logger, message, data, error } = logEntry;
-        
+
         const prefix = `[${new Date(logEntry.timestamp).toLocaleTimeString()}] ${levelName} (${logger}):`;
-        
+
         switch (logEntry.level) {
             case LogLevel.TRACE:
             case LogLevel.DEBUG:
@@ -396,7 +396,7 @@ class AnalyticsOutput {
         if (logEntry.level < LogLevel.ERROR) {
             return;
         }
-        
+
         try {
             // Send to Google Analytics
             if (window.gtag) {
@@ -410,7 +410,7 @@ class AnalyticsOutput {
                     }
                 });
             }
-            
+
             // Send to Firebase Analytics
             if (window.firebase?.analytics) {
                 window.firebase.analytics().logEvent('app_error', {
@@ -434,18 +434,18 @@ class LocalStorageOutput {
         this.maxEntries = 1000;
         this.storageKey = 'dampLogs';
     }
-    
+
     write(logEntry) {
         try {
             let logs = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
-            
+
             logs.push(logEntry);
-            
+
             // Keep only recent entries
             if (logs.length > this.maxEntries) {
                 logs = logs.slice(-this.maxEntries);
             }
-            
+
             localStorage.setItem(this.storageKey, JSON.stringify(logs));
         } catch (error) {
             // Storage might be full, clear old logs
@@ -457,7 +457,7 @@ class LocalStorageOutput {
             }
         }
     }
-    
+
     /**
      * Get stored logs
      * @returns {Array} Stored log entries
@@ -469,7 +469,7 @@ class LocalStorageOutput {
             return [];
         }
     }
-    
+
     /**
      * Clear stored logs
      */
@@ -510,4 +510,4 @@ export function clearStoredLogs() {
     storage.clearLogs();
 }
 
-export default Logger; 
+export default Logger;

@@ -13,13 +13,13 @@ class DAMPErrorBoundary {
         this.maxRetries = 3;
         this.errorThreshold = 5; // Max errors per minute
         this.recoveryMode = false;
-        
+
         this.init();
     }
 
     async init() {
         console.log('[DAMP Error Boundary] Initializing Google-level error management...');
-        
+
         try {
             this.setupGlobalErrorHandlers();
             this.setupPromiseRejectionHandler();
@@ -28,7 +28,7 @@ class DAMPErrorBoundary {
             this.setupMemoryLeakPrevention();
             this.initializeRecoveryStrategies();
             this.startErrorMonitoring();
-            
+
             console.log('[DAMP Error Boundary] Advanced error boundary system active');
         } catch (error) {
             console.error('[DAMP Error Boundary] System initialization failed:', error);
@@ -80,7 +80,7 @@ class DAMPErrorBoundary {
     setupPromiseRejectionHandler() {
         // Override Promise.prototype.catch for better tracking
         const originalCatch = Promise.prototype.catch;
-        
+
         Promise.prototype.catch = function(onRejected) {
             return originalCatch.call(this, (reason) => {
                 // Track promise rejections that are caught
@@ -89,7 +89,7 @@ class DAMPErrorBoundary {
                     reason: reason,
                     timestamp: Date.now()
                 });
-                
+
                 if (onRejected) {
                     return onRejected(reason);
                 }
@@ -124,7 +124,7 @@ class DAMPErrorBoundary {
     setupCustomElementErrorBoundaries() {
         // Wrap custom element constructors with error boundaries
         const originalDefine = customElements.define;
-        
+
         customElements.define = function(name, constructor, options) {
             const WrappedConstructor = class extends constructor {
                 constructor() {
@@ -137,7 +137,7 @@ class DAMPErrorBoundary {
                         return window.dampErrorBoundary?.createFallbackComponent(name);
                     }
                 }
-                
+
                 connectedCallback() {
                     try {
                         if (super.connectedCallback) {
@@ -148,7 +148,7 @@ class DAMPErrorBoundary {
                         this.innerHTML = window.dampErrorBoundary?.getFallbackHTML(name);
                     }
                 }
-                
+
                 disconnectedCallback() {
                     try {
                         if (super.disconnectedCallback) {
@@ -160,7 +160,7 @@ class DAMPErrorBoundary {
                     }
                 }
             };
-            
+
             return originalDefine.call(this, name, WrappedConstructor, options);
         };
     }
@@ -184,7 +184,7 @@ class DAMPErrorBoundary {
 
     wrapComponentWithBoundary(element) {
         const componentName = element.dataset.component || element.className;
-        
+
         // Store original content as fallback
         const originalHTML = element.innerHTML;
         this.componentStates.set(element, {
@@ -224,19 +224,19 @@ class DAMPErrorBoundary {
         }
 
         console.error('[DAMP Error Boundary] Handling error:', errorInfo);
-        
+
         // Add to error queue
         this.errorQueue.push(errorInfo);
 
         // Determine error severity
         const severity = this.determineErrorSeverity(errorInfo);
-        
+
         // Apply recovery strategy
         this.applyRecoveryStrategy(errorInfo, severity);
-        
+
         // Update user if necessary
         this.updateUserExperience(errorInfo, severity);
-        
+
         // Report error for monitoring
         this.reportError(errorInfo, severity);
     }
@@ -244,7 +244,7 @@ class DAMPErrorBoundary {
     handleResourceError(event) {
         const element = event.target;
         const resourceType = element.tagName.toLowerCase();
-        
+
         const errorInfo = {
             type: 'resource-error',
             resourceType: resourceType,
@@ -260,7 +260,7 @@ class DAMPErrorBoundary {
 
     handleComponentError(error, componentName, phase) {
         console.error(`[DAMP Error Boundary] Component error in ${componentName} (${phase}):`, error);
-        
+
         const errorInfo = {
             type: 'component-error',
             componentName: componentName,
@@ -314,7 +314,7 @@ class DAMPErrorBoundary {
 
     async applyRecoveryStrategy(errorInfo, severity) {
         const strategies = this.recoveryStrategies.get(errorInfo.type) || [];
-        
+
         for (const strategyConfig of strategies) {
             try {
                 const success = await this.executeRecoveryStrategy(errorInfo, strategyConfig);
@@ -326,7 +326,7 @@ class DAMPErrorBoundary {
                 console.warn(`[DAMP Error Boundary] Recovery strategy failed: ${strategyConfig.strategy}`, recoveryError);
             }
         }
-        
+
         // If all strategies failed, use last resort
         this.useLastResortRecovery(errorInfo);
     }
@@ -335,25 +335,25 @@ class DAMPErrorBoundary {
         switch (config.strategy) {
             case 'retry':
                 return await this.retryOperation(errorInfo, config.maxAttempts);
-            
+
             case 'retry-with-backoff':
                 return await this.retryWithBackoff(errorInfo, config.maxAttempts);
-            
+
             case 'graceful-degradation':
                 return this.gracefulDegradation(errorInfo, config);
-            
+
             case 'component-restart':
                 return this.restartComponent(errorInfo, config.preserveState);
-            
+
             case 'fallback-resource':
                 return this.useFallbackResource(errorInfo, config);
-            
+
             case 'offline-mode':
                 return this.enterOfflineMode(errorInfo);
-            
+
             case 'queue-for-sync':
                 return this.queueForBackgroundSync(errorInfo);
-            
+
             default:
                 console.warn(`[DAMP Error Boundary] Unknown recovery strategy: ${config.strategy}`);
                 return false;
@@ -364,16 +364,16 @@ class DAMPErrorBoundary {
     async retryOperation(errorInfo, maxAttempts = 3) {
         const operationKey = this.getOperationKey(errorInfo);
         const currentAttempts = this.retryAttempts.get(operationKey) || 0;
-        
+
         if (currentAttempts >= maxAttempts) {
             return false;
         }
-        
+
         this.retryAttempts.set(operationKey, currentAttempts + 1);
-        
+
         // Wait before retry
         await this.delay(Math.pow(2, currentAttempts) * 1000);
-        
+
         try {
             // Attempt to re-execute the failed operation
             return await this.reExecuteOperation(errorInfo);
@@ -385,17 +385,17 @@ class DAMPErrorBoundary {
 
     gracefulDegradation(errorInfo, config) {
         console.log('[DAMP Error Boundary] Applying graceful degradation...');
-        
+
         switch (errorInfo.type) {
             case 'javascript':
                 return this.degradeJavaScriptFeatures(errorInfo);
-            
+
             case 'component-error':
                 return this.degradeComponent(errorInfo.componentName);
-            
+
             case 'resource-error':
                 return this.degradeResourceFeatures(errorInfo);
-            
+
             default:
                 return this.enableBasicMode();
         }
@@ -404,10 +404,10 @@ class DAMPErrorBoundary {
     restartComponent(errorInfo, preserveState = true) {
         const componentName = errorInfo.componentName;
         console.log(`[DAMP Error Boundary] Restarting component: ${componentName}`);
-        
+
         // Find component elements
         const elements = document.querySelectorAll(`[data-component="${componentName}"], ${componentName}`);
-        
+
         elements.forEach(element => {
             try {
                 // Save state if requested
@@ -415,7 +415,7 @@ class DAMPErrorBoundary {
                 if (preserveState && element.getState) {
                     savedState = element.getState();
                 }
-                
+
                 // Restart the component
                 if (element.restart) {
                     element.restart();
@@ -424,47 +424,47 @@ class DAMPErrorBoundary {
                     const componentState = this.componentStates.get(element);
                     if (componentState) {
                         element.innerHTML = componentState.originalHTML;
-                        
+
                         // Re-initialize if possible
                         if (element.init) {
                             element.init();
                         }
                     }
                 }
-                
+
                 // Restore state if available
                 if (savedState && element.setState) {
                     element.setState(savedState);
                 }
-                
+
                 return true;
             } catch (error) {
                 console.error('[DAMP Error Boundary] Component restart failed:', error);
                 return false;
             }
         });
-        
+
         return elements.length > 0;
     }
 
     recoverFromResourceError(errorInfo) {
         const { element, resourceType, src } = errorInfo;
-        
+
         console.log(`[DAMP Error Boundary] Recovering from ${resourceType} error: ${src}`);
-        
+
         switch (resourceType) {
             case 'img':
                 this.recoverImage(element);
                 break;
-            
+
             case 'script':
                 this.recoverScript(element);
                 break;
-            
+
             case 'link':
                 this.recoverStylesheet(element);
                 break;
-            
+
             default:
                 this.hideFailedResource(element);
         }
@@ -473,7 +473,7 @@ class DAMPErrorBoundary {
     recoverImage(img) {
         // Try fallback image
         const fallbackSrc = '/assets/images/fallback/image-placeholder.png';
-        
+
         if (img.src !== fallbackSrc) {
             img.src = fallbackSrc;
             img.alt = 'Image temporarily unavailable';
@@ -481,7 +481,7 @@ class DAMPErrorBoundary {
         } else {
             // Even fallback failed, hide the image
             img.style.display = 'none';
-            
+
             // Create text fallback
             const textFallback = document.createElement('div');
             textFallback.className = 'image-text-fallback';
@@ -492,10 +492,10 @@ class DAMPErrorBoundary {
 
     recoverScript(script) {
         console.log('[DAMP Error Boundary] Attempting script recovery:', script.src);
-        
+
         // Try loading from CDN fallback
         const fallbackSources = this.getScriptFallbacks(script.src);
-        
+
         for (const fallbackSrc of fallbackSources) {
             const newScript = document.createElement('script');
             newScript.src = fallbackSrc;
@@ -505,11 +505,11 @@ class DAMPErrorBoundary {
             newScript.onerror = () => {
                 console.warn('[DAMP Error Boundary] Fallback script also failed:', fallbackSrc);
             };
-            
+
             script.parentNode.insertBefore(newScript, script);
             break; // Try one fallback at a time
         }
-        
+
         // Remove the failed script
         script.remove();
     }
@@ -520,11 +520,11 @@ class DAMPErrorBoundary {
             case 'critical':
                 this.showCriticalErrorMessage(errorInfo);
                 break;
-            
+
             case 'major':
                 this.showMajorErrorMessage(errorInfo);
                 break;
-            
+
             case 'minor':
                 this.logMinorError(errorInfo);
                 break;
@@ -533,7 +533,7 @@ class DAMPErrorBoundary {
 
     showCriticalErrorMessage(errorInfo) {
         if (this.userNotifications.has('critical')) return;
-        
+
         const notification = this.createErrorNotification({
             type: 'critical',
             title: 'Service Temporarily Unavailable',
@@ -544,14 +544,14 @@ class DAMPErrorBoundary {
             ],
             persistent: true
         });
-        
+
         this.userNotifications.add('critical');
         this.displayNotification(notification);
     }
 
     showMajorErrorMessage(errorInfo) {
         if (this.userNotifications.has('major')) return;
-        
+
         const notification = this.createErrorNotification({
             type: 'major',
             title: 'Some Features Unavailable',
@@ -561,7 +561,7 @@ class DAMPErrorBoundary {
             ],
             autoHide: 8000
         });
-        
+
         this.userNotifications.add('major');
         this.displayNotification(notification);
     }
@@ -577,7 +577,7 @@ class DAMPErrorBoundary {
                     <p>${config.message}</p>
                 </div>
                 <div class="error-notification-actions">
-                    ${config.actions.map(action => 
+                    ${config.actions.map(action =>
                         `<button class="error-notification-btn" data-action="${action.text}">
                             ${action.text}
                         </button>`
@@ -586,7 +586,7 @@ class DAMPErrorBoundary {
                 ${!config.persistent ? '<button class="error-notification-close">×</button>' : ''}
             </div>
         `;
-        
+
         // Add event listeners
         config.actions.forEach(action => {
             const button = notification.querySelector(`[data-action="${action.text}"]`);
@@ -594,7 +594,7 @@ class DAMPErrorBoundary {
                 button.addEventListener('click', action.action);
             }
         });
-        
+
         if (!config.persistent) {
             const closeBtn = notification.querySelector('.error-notification-close');
             if (closeBtn) {
@@ -603,7 +603,7 @@ class DAMPErrorBoundary {
                 });
             }
         }
-        
+
         return notification;
     }
 
@@ -613,12 +613,12 @@ class DAMPErrorBoundary {
         if (this.isCriticalError(errorInfo)) {
             return 'critical';
         }
-        
+
         // Major errors that affect user experience
         if (this.isMajorError(errorInfo)) {
             return 'major';
         }
-        
+
         // Minor errors that don't significantly impact users
         return 'minor';
     }
@@ -631,7 +631,7 @@ class DAMPErrorBoundary {
             /Service Worker registration failed/,
             /Critical component initialization failed/
         ];
-        
+
         return criticalPatterns.some(pattern => pattern.test(errorInfo.message));
     }
 
@@ -642,7 +642,7 @@ class DAMPErrorBoundary {
             /Component render failed/,
             /Resource load failed/
         ];
-        
+
         return majorPatterns.some(pattern => pattern.test(errorInfo.message));
     }
 
@@ -659,7 +659,7 @@ class DAMPErrorBoundary {
                 }
             });
         }
-        
+
         // Report to error monitoring service
         if (window.Sentry) {
             window.Sentry.captureException(errorInfo.error || new Error(errorInfo.message), {
@@ -670,7 +670,7 @@ class DAMPErrorBoundary {
                 }
             });
         }
-        
+
         // Custom event for other systems
         window.dispatchEvent(new CustomEvent('damp:error:reported', {
             detail: { errorInfo, severity }
@@ -687,7 +687,7 @@ class DAMPErrorBoundary {
     enterRecoveryMode() {
         this.recoveryMode = true;
         console.log('[DAMP Error Boundary] Entering recovery mode - throttling error handling');
-        
+
         // Exit recovery mode after 2 minutes
         setTimeout(() => {
             this.recoveryMode = false;
@@ -708,7 +708,7 @@ class DAMPErrorBoundary {
         const now = Date.now();
         const oneHourAgo = now - 3600000;
         const recentErrors = this.errorQueue.filter(error => error.timestamp > oneHourAgo);
-        
+
         return {
             totalErrors: this.errorQueue.length,
             recentErrors: recentErrors.length,
@@ -731,13 +731,13 @@ class DAMPErrorBoundary {
             javascript: () => { throw new Error('Test JavaScript error'); },
             promise: () => { Promise.reject(new Error('Test promise rejection')); },
             component: () => { this.handleComponentError(new Error('Test component error'), 'test-component', 'manual'); },
-            resource: () => { 
+            resource: () => {
                 const img = document.createElement('img');
                 img.src = 'nonexistent-image.jpg';
                 document.body.appendChild(img);
             }
         };
-        
+
         if (testErrors[type]) {
             console.log(`[DAMP Error Boundary] Simulating ${type} error for testing`);
             testErrors[type]();
@@ -853,4 +853,4 @@ const styleElement = document.createElement('style');
 styleElement.textContent = errorNotificationCSS;
 document.head.appendChild(styleElement);
 
-console.log('[DAMP Error Boundary] Google-level error boundary system initialized'); 
+console.log('[DAMP Error Boundary] Google-level error boundary system initialized');

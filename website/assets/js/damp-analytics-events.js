@@ -15,7 +15,7 @@ export const trackProductView = (productId, productName, source = 'organic') => 
     source: source,
     value: 49.99 // Default price, can be dynamic
   });
-  
+
   logUserAction('product_viewed', {
     product_id: productId,
     product_name: productName,
@@ -55,7 +55,7 @@ export const trackPreOrderCompleted = (orderId, productId, productName, price, q
     quantity: quantity,
     order_type: 'preorder'
   });
-  
+
   // Custom DAMP event
   logUserAction('preorder_completed', {
     product_id: productId,
@@ -73,7 +73,7 @@ export const trackDevicePairing = (deviceType, pairingMethod, success = true) =>
     success: success,
     timestamp: Date.now()
   });
-  
+
   if (success) {
     logUserAction('device_paired_success', {
       device_type: deviceType,
@@ -114,7 +114,7 @@ export const trackNewsletterSignup = (source, productInterest = null) => {
     source: source, // 'homepage', 'product_page', 'voting_page'
     product_interest: productInterest
   });
-  
+
   logUserAction('newsletter_subscribed', {
     source: source,
     interested_product: productInterest
@@ -127,7 +127,7 @@ export const trackVoting = (productId, voteType) => {
     vote_type: voteType, // 'public', 'authenticated'
     engagement_level: 'high'
   });
-  
+
   logUserAction('product_voted', {
     product_id: productId,
     vote_type: voteType
@@ -153,7 +153,7 @@ export const trackFunnelStep = (step, productId = null, additionalData = {}) => 
     'evaluation': 5,
     'purchase': 6
   };
-  
+
   logEvent('funnel_step', {
     step_name: step,
     step_number: funnelSteps[step] || 0,
@@ -237,7 +237,7 @@ export const trackDevicePerformance = (deviceId, metrics) => {
 export const initializeAnalytics = () => {
   // Track initial page load
   logPageView(document.title);
-  
+
   // Track user device info
   logEvent('user_tech_info', {
     user_agent: navigator.userAgent,
@@ -245,7 +245,7 @@ export const initializeAnalytics = () => {
     browser_language: navigator.language,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
   });
-  
+
   // Track if user has Bluetooth capability
   if ('bluetooth' in navigator) {
     logEvent('bluetooth_capability', {
@@ -281,4 +281,4 @@ export default {
   trackSubscriptionConversion,
   trackDevicePerformance,
   initializeAnalytics
-}; 
+};

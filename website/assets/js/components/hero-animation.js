@@ -8,7 +8,7 @@ class DAMPHeroAnimation {
         this.bubbleCount = this.getOptimalBubbleCount();
         this.animationContainer = null;
         this.hasPlayed = false;
-        
+
         // Sequential timing - ONE ELEMENT AT A TIME
         this.phases = {
             bubblesRise: 0,          // 0s - Bubbles rise up
@@ -21,10 +21,10 @@ class DAMPHeroAnimation {
             textFadeOut: 8500,       // 8.5s - Text fades out
             showContent: 9000        // 9s - Show main page
         };
-        
+
         this.playOnEveryLoad = options.playOnEveryLoad ?? true;
         this.allowSkip = options.allowSkip ?? true;
-        
+
         this.initializeAnimation();
     }
 
@@ -75,17 +75,17 @@ class DAMPHeroAnimation {
         // Create bubbles container
         const bubblesContainer = document.createElement('div');
         bubblesContainer.className = 'bubbles-container';
-        
+
         // Generate bubbles
         for (let i = 0; i < this.bubbleCount; i++) {
             const bubble = document.createElement('div');
             bubble.className = 'animation-bubble';
-            
+
             const x = Math.random() * 100;
             const y = 100 + Math.random() * 20; // Start below screen
             const size = 20 + Math.random() * 40;
             const delay = Math.random() * 1000;
-            
+
             bubble.style.cssText = `
                 position: absolute;
                 left: ${x}%;
@@ -98,7 +98,7 @@ class DAMPHeroAnimation {
                 animation-delay: ${delay}ms;
                 backdrop-filter: blur(5px);
             `;
-            
+
             bubblesContainer.appendChild(bubble);
         }
 
@@ -161,10 +161,10 @@ class DAMPHeroAnimation {
         this.animationContainer.appendChild(logoElement);
         this.animationContainer.appendChild(dampText);
         this.animationContainer.appendChild(mainText);
-        
+
         // Add skip button
         this.addSkipButton();
-        
+
         document.body.appendChild(this.animationContainer);
     }
 
@@ -274,7 +274,7 @@ class DAMPHeroAnimation {
                 this.hasPlayed = true;
             }, 1000);
         }
-        
+
         // Call global showMainContent function for consistency
         if (window.showMainContent) {
             window.showMainContent();
@@ -283,7 +283,7 @@ class DAMPHeroAnimation {
             document.body.classList.add('animation-complete');
             document.body.style.overflow = 'auto';
             document.body.style.height = 'auto';
-            
+
             const allContent = document.querySelectorAll('body > *:not(.hero-animation-overlay)');
             allContent.forEach(element => {
                 element.style.opacity = '1';
@@ -311,15 +311,15 @@ class DAMPHeroAnimation {
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         `;
-        
+
         skipButton.addEventListener('mouseenter', () => {
             skipButton.style.background = 'rgba(255, 255, 255, 0.3)';
         });
-        
+
         skipButton.addEventListener('mouseleave', () => {
             skipButton.style.background = 'rgba(255, 255, 255, 0.2)';
         });
-        
+
         this.animationContainer.appendChild(skipButton);
     }
 
@@ -350,7 +350,7 @@ class DAMPHeroAnimation {
             this.animationContainer.remove();
             this.hasPlayed = true;
         }
-        
+
         // Call global showMainContent function for consistency
         if (window.showMainContent) {
             window.showMainContent();
@@ -359,7 +359,7 @@ class DAMPHeroAnimation {
             document.body.classList.add('animation-complete');
             document.body.style.overflow = 'auto';
             document.body.style.height = 'auto';
-            
+
             const allContent = document.querySelectorAll('body > *:not(.hero-animation-overlay)');
             allContent.forEach(element => {
                 element.style.opacity = '1';

@@ -28,22 +28,22 @@ class DAMPFaviconSetup {
                         <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
                     </filter>
                 </defs>
-                <path d="M50 10 
-                         Q30 30 25 50 
-                         Q25 70 35 80 
-                         Q45 90 50 90 
-                         Q55 90 65 80 
-                         Q75 70 75 50 
-                         Q70 30 50 10 Z" 
-                      fill="url(#dropletGradient)" 
+                <path d="M50 10
+                         Q30 30 25 50
+                         Q25 70 35 80
+                         Q45 90 50 90
+                         Q55 90 65 80
+                         Q75 70 75 50
+                         Q70 30 50 10 Z"
+                      fill="url(#dropletGradient)"
                       filter="url(#dropShadow)"
-                      stroke="#a0a0a0" 
+                      stroke="#a0a0a0"
                       stroke-width="1"/>
                 <ellipse cx="42" cy="35" rx="8" ry="12" fill="#ffffff" opacity="0.6"/>
                 <ellipse cx="45" cy="30" rx="4" ry="6" fill="#ffffff" opacity="0.8"/>
             </svg>
         `;
-        
+
         this.fallbackSVG = 'data:image/svg+xml;base64,' + btoa(svgString);
     }
 
@@ -52,7 +52,7 @@ class DAMPFaviconSetup {
      */
     setupFavicons() {
         const head = document.head;
-        
+
         // Remove existing favicon links to avoid duplicates
         const existingFavicons = head.querySelectorAll('link[rel*="icon"], link[rel="manifest"]');
         existingFavicons.forEach(link => {
@@ -81,13 +81,13 @@ class DAMPFaviconSetup {
             // Main favicon - use favicon.ico for best browser compatibility
             { rel: 'icon', type: 'image/x-icon', href: faviconPaths[0] },
             { rel: 'shortcut icon', type: 'image/x-icon', href: faviconPaths[0] },
-            
+
             // PNG favicons - use logo.png for all PNG-based favicons
             { rel: 'icon', type: 'image/png', sizes: '32x32', href: logoPaths[0] },
             { rel: 'icon', type: 'image/png', sizes: '16x16', href: logoPaths[0] },
             { rel: 'icon', type: 'image/png', sizes: '192x192', href: logoPaths[0] },
             { rel: 'icon', type: 'image/png', sizes: '512x512', href: logoPaths[0] },
-            
+
             // Apple touch icons - use logo.png for iOS devices
             { rel: 'apple-touch-icon', sizes: '180x180', href: logoPaths[0] },
             { rel: 'apple-touch-icon', sizes: '152x152', href: logoPaths[0] },
@@ -98,7 +98,7 @@ class DAMPFaviconSetup {
             { rel: 'apple-touch-icon', sizes: '72x72', href: logoPaths[0] },
             { rel: 'apple-touch-icon', sizes: '60x60', href: logoPaths[0] },
             { rel: 'apple-touch-icon', sizes: '57x57', href: logoPaths[0] },
-            
+
             // Manifest for PWA support
             { rel: 'manifest', href: `${this.basePath}manifest.json` }
         ];
@@ -109,14 +109,14 @@ class DAMPFaviconSetup {
                 Object.entries(linkData).forEach(([key, value]) => {
                     link.setAttribute(key, value);
                 });
-                
+
                 // Add error handling for favicon loading
                 if (linkData.rel.includes('icon')) {
                     link.onerror = () => {
                         this.handleFaviconError(link, linkData);
                     };
                 }
-                
+
                 head.appendChild(link);
             });
 
@@ -129,7 +129,7 @@ class DAMPFaviconSetup {
                 { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
                 { name: 'apple-mobile-web-app-title', content: 'DAMP Smart Drinkware' }
             ];
-            
+
             metaTags.forEach(metaData => {
                 const meta = document.createElement('meta');
                 Object.entries(metaData).forEach(([key, value]) => {
@@ -149,13 +149,13 @@ class DAMPFaviconSetup {
      */
     handleFaviconError(link, linkData) {
         const isAppleIcon = linkData.rel.includes('apple-touch-icon');
-        const currentPaths = isAppleIcon ? 
+        const currentPaths = isAppleIcon ?
             [
                 `${this.basePath}assets/images/logo/logo.png`,
                 `${this.basePath}assets/images/logo/icon.png`,
                 `${this.basePath}assets/images/logo/favicon.png`,
                 this.fallbackSVG
-            ] : 
+            ] :
             [
                 `${this.basePath}assets/images/logo/favicon.ico`,
                 `${this.basePath}assets/images/logo/icon.png`,
@@ -212,7 +212,7 @@ class DAMPFaviconSetup {
                 continue;
             }
         }
-        
+
         // If all fail, use fallback
         callback(this.fallbackSVG);
     }

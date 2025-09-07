@@ -33,7 +33,7 @@ storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET
 ```typescript
 // Subscription Management
 - createSubscriptionCheckout
-- handleSubscriptionSuccess  
+- handleSubscriptionSuccess
 - manageSubscription
 - getSubscriptionStatus
 
@@ -49,7 +49,7 @@ storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET
 // Stripe Webhook Processing
 - handleStripeWebhook
 
-// Device Management  
+// Device Management
 - updateDeviceStatus
 - getDeviceData
 - registerDevice
@@ -148,11 +148,11 @@ async createSubscriptionCheckout(subscriptionData) {
 **Website Should Use Same Pattern as Mobile:**
 ```javascript
 // website/js/auth-service.js (simplified)
-import { 
-  signInWithEmailAndPassword, 
+import {
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  onAuthStateChanged 
+  onAuthStateChanged
 } from 'firebase/auth';
 import { auth } from './firebase-config.js';
 
@@ -160,7 +160,7 @@ export class UnifiedAuthService {
   async signIn(email, password) {
     return await signInWithEmailAndPassword(auth, email, password);
   }
-  
+
   async signUp(email, password) {
     return await createUserWithEmailAndPassword(auth, email, password);
   }
@@ -173,7 +173,7 @@ export class UnifiedAuthService {
 ```
 shared-services/
 ├── voting-service.js (for website)
-├── purchasing-service.js (for website)  
+├── purchasing-service.js (for website)
 ├── auth-service.js (unified)
 └── device-service.js (unified)
 ```
@@ -199,7 +199,7 @@ shared-services/
 ```
 Primary Functions:
 ├── Product information and marketing
-├── User registration and authentication  
+├── User registration and authentication
 ├── Product voting (community engagement)
 ├── Pre-orders and purchasing
 ├── Subscription management (DAMP+)

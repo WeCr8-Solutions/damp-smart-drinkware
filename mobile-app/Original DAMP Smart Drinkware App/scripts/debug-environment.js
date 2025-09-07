@@ -42,7 +42,7 @@ console.log(`${colors.cyan}
 // Debug categories
 const debugCategories = {
   '1': 'Environment Files & Variables',
-  '2': 'Firebase Configuration', 
+  '2': 'Firebase Configuration',
   '3': 'Stripe Setup',
   '4': 'Expo/React Native Issues',
   '5': 'GitHub Actions Pipeline',
@@ -63,19 +63,19 @@ async function debugEnvironmentFiles() {
     if (fs.existsSync(file)) {
       foundFiles.push(file);
       log('green', `✅ Found: ${file}`);
-      
+
       try {
         const content = fs.readFileSync(file, 'utf8');
-        
+
         // Check for common issues
         if (content.includes('your-api-key-here') || content.includes('CHANGE_ME')) {
           issues.push(`${file}: Contains placeholder values`);
         }
-        
+
         if (content.includes('sk_live_') || content.includes('pk_live_')) {
           issues.push(`${file}: Contains live Stripe keys (security risk)`);
         }
-        
+
         const lines = content.split('\n');
         lines.forEach((line, index) => {
           if (line.includes('=') && !line.startsWith('#') && line.includes(' ')) {
@@ -85,7 +85,7 @@ async function debugEnvironmentFiles() {
             }
           }
         });
-        
+
       } catch (error) {
         issues.push(`${file}: Cannot read file - ${error.message}`);
       }
@@ -97,7 +97,7 @@ async function debugEnvironmentFiles() {
   if (issues.length > 0) {
     log('red', '\n❌ Issues found:');
     issues.forEach(issue => log('red', `   • ${issue}`));
-    
+
     const fix = await question('\nWould you like to create a template .env file? (y/n): ');
     if (fix.toLowerCase() === 'y') {
       await createEnvTemplate();
@@ -147,7 +147,7 @@ async function debugFirebase() {
   if (Object.keys(envVars).length === 0) {
     log('yellow', '\nNo Firebase environment variables found.');
     const help = await question('Would you like help setting up Firebase? (y/n): ');
-    
+
     if (help.toLowerCase() === 'y') {
       log('white', '\nFirebase Setup Steps:');
       log('white', '1. Go to https://console.firebase.google.com');
@@ -194,19 +194,19 @@ async function debugStripe() {
     const value = process.env[key];
     if (value) {
       log('green', `✅ ${key}: ${description} (${value.substring(0, 8)}...)`);
-      
+
       // Validate format
       if (key.includes('SECRET') && !value.match(/^sk_(test_|live_)[0-9A-Za-z]{99}$/)) {
         log('yellow', `   ⚠️  Format may be incorrect for secret key`);
       }
-      
+
       if (key.includes('PUBLISHABLE') && !value.match(/^pk_(test_|live_)[0-9A-Za-z]{99}$/)) {
         log('yellow', `   ⚠️  Format may be incorrect for publishable key`);
       }
 
       if (value.includes('test_')) hasTestKeys = true;
       if (value.includes('live_')) hasLiveKeys = true;
-      
+
     } else {
       log('red', `❌ ${key}: Missing (${description})`);
     }
@@ -215,7 +215,7 @@ async function debugStripe() {
   if (!hasTestKeys && !hasLiveKeys) {
     log('yellow', '\nNo Stripe keys found.');
     const help = await question('Would you like help setting up Stripe? (y/n): ');
-    
+
     if (help.toLowerCase() === 'y') {
       log('white', '\nStripe Setup Steps:');
       log('white', '1. Go to https://dashboard.stripe.com');
@@ -248,7 +248,7 @@ async function debugExpo() {
     log('green', `✅ EXPO_TOKEN: Found (${expoToken.substring(0, 10)}...)`);
   } else {
     log('red', '❌ EXPO_TOKEN: Missing');
-    
+
     const help = await question('Would you like help setting up Expo token? (y/n): ');
     if (help.toLowerCase() === 'y') {
       log('white', '\nExpo Token Setup:');
@@ -265,22 +265,22 @@ async function debugExpo() {
   // Check app.json
   if (fs.existsSync('app.json')) {
     log('green', '✅ app.json found');
-    
+
     try {
       const appConfig = JSON.parse(fs.readFileSync('app.json', 'utf8'));
-      
+
       if (appConfig.expo?.name) {
         log('green', `   App name: ${appConfig.expo.name}`);
       }
-      
+
       if (appConfig.expo?.slug) {
         log('green', `   App slug: ${appConfig.expo.slug}`);
       }
-      
+
       if (appConfig.expo?.version) {
         log('green', `   Version: ${appConfig.expo.version}`);
       }
-      
+
     } catch (error) {
       log('red', '❌ app.json is not valid JSON');
     }
@@ -292,7 +292,7 @@ async function debugExpo() {
   // Check package.json for expo dependencies
   if (fs.existsSync('package.json')) {
     const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-    
+
     if (packageJson.dependencies?.expo) {
       log('green', `✅ Expo SDK: ${packageJson.dependencies.expo}`);
     } else {
@@ -307,7 +307,7 @@ async function debugGitHubActions() {
   log('blue', '====================================');
 
   const workflowPath = '.github/workflows/ci.yml';
-  
+
   if (!fs.existsSync(workflowPath)) {
     log('red', '❌ GitHub Actions workflow not found');
     log('white', '   Expected: .github/workflows/ci.yml');
@@ -318,11 +318,11 @@ async function debugGitHubActions() {
 
   try {
     const workflow = fs.readFileSync(workflowPath, 'utf8');
-    
+
     // Check for required sections
     const requiredSections = [
       'secrets-check',
-      'quality-gates', 
+      'quality-gates',
       'build-staging',
       'deploy-production'
     ];
@@ -338,7 +338,7 @@ async function debugGitHubActions() {
     // Check for secrets usage
     const secretsUsed = [
       'FIREBASE_PROJECT_ID',
-      'STRIPE_SECRET_KEY', 
+      'STRIPE_SECRET_KEY',
       'EXPO_TOKEN'
     ];
 
@@ -361,7 +361,7 @@ async function debugGitHubActions() {
   log('white', '4. Click on a run to see detailed logs');
 }
 
-// Build issues debugger  
+// Build issues debugger
 async function debugBuildIssues() {
   log('bright', '\n🏗️ DEBUGGING BUILD & DEPLOYMENT ISSUES');
   log('blue', '======================================');
@@ -379,7 +379,7 @@ async function debugBuildIssues() {
   // Check package.json scripts
   if (fs.existsSync('package.json')) {
     const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-    
+
     const importantScripts = ['build', 'test', 'start'];
     importantScripts.forEach(script => {
       if (packageJson.scripts?.[script]) {
@@ -427,7 +427,7 @@ async function generalTroubleshooting() {
 
   const issues = [
     'Pipeline fails at secrets check',
-    'Build fails with dependency errors', 
+    'Build fails with dependency errors',
     'Tests are not running',
     'Environment variables not loading',
     'Firebase connection issues',
@@ -466,7 +466,7 @@ async function handleSpecificIssue(issueIndex) {
       log('white', '3. Check secret names are exact matches');
       log('white', '4. Verify environment settings in GitHub');
     },
-    
+
     // Build fails with dependency errors
     () => {
       log('blue', '\n🏗️ BUILD DEPENDENCY ERRORS');
@@ -478,8 +478,8 @@ async function handleSpecificIssue(issueIndex) {
       log('white', '5. Fix Expo dependencies: npx expo install --fix');
       log('white', '6. If still failing, try: npm install --legacy-peer-deps');
     },
-    
-    // Tests are not running  
+
+    // Tests are not running
     () => {
       log('blue', '\n🧪 TESTS NOT RUNNING');
       log('white', 'Check these items:');
@@ -575,7 +575,7 @@ EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789
 EXPO_PUBLIC_FIREBASE_APP_ID=1:123456789:web:abcdef123456
 
 # ===================================================
-# 💳 STRIPE CONFIGURATION  
+# 💳 STRIPE CONFIGURATION
 # ===================================================
 # Get these from: Stripe Dashboard > Developers > API keys
 # Use test keys for development, live keys for production
@@ -584,7 +584,7 @@ STRIPE_SECRET_KEY=sk_test_your-secret-key-here
 
 # ===================================================
 # 📱 EXPO CONFIGURATION
-# ===================================================  
+# ===================================================
 # Get this from: Expo Dashboard > Account Settings > Access Tokens
 EXPO_TOKEN=your-expo-token-here
 
@@ -613,7 +613,7 @@ ANALYTICS_KEY=your-analytics-key-here
 async function runInteractiveDebugger() {
   try {
     log('white', '\nWhat would you like to debug?');
-    
+
     Object.entries(debugCategories).forEach(([num, category]) => {
       log('white', `${num}. ${category}`);
     });
@@ -668,10 +668,10 @@ if (require.main === module) {
   });
 }
 
-module.exports = { 
-  debugEnvironmentFiles, 
-  debugFirebase, 
-  debugStripe, 
+module.exports = {
+  debugEnvironmentFiles,
+  debugFirebase,
+  debugStripe,
   debugExpo,
   debugGitHubActions,
   debugBuildIssues

@@ -108,7 +108,7 @@ describe('AppErrorBoundary', () => {
   describe('Retry Functionality', () => {
     test('should allow retry on app-level errors', async () => {
       let shouldThrow = true;
-      
+
       const RetryTestComponent = () => {
         if (shouldThrow) {
           throw new Error('Retry test error');

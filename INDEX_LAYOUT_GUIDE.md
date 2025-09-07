@@ -10,7 +10,7 @@ This document defines the complete layout structure and requirements for the DAM
 - **Priority 1.0** - Homepage (`/`)
 - **Priority 0.95** - Product pages, Pre-sale funnel
 - **Priority 0.9** - Individual product pages, How it works, Product voting
-- **Priority 0.85** - Subscription pages, Stanley variants  
+- **Priority 0.85** - Subscription pages, Stanley variants
 - **Priority 0.8** - About, Support
 - **Priority 0.75** - Waitlist
 - **Priority 0.7** - Cart, Checkout flows
@@ -34,7 +34,7 @@ This document defines the complete layout structure and requirements for the DAM
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f23">
-    
+
     <!-- Enhanced Security Meta Tags -->
     <meta http-equiv="Content-Security-Policy" content="[EXACT CSP POLICY]">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -182,14 +182,14 @@ This document defines the complete layout structure and requirements for the DAM
             <div class="hero-logo">
                 <img src="assets/images/logo/logo.png" alt="DAMP Smart Drinkware Logo" width="80" height="80" loading="eager">
             </div>
-            
+
             <h1 class="hero-title">Never Leave Your Drink Behind</h1>
-            
+
             <p class="hero-subtitle">
-                Revolutionary BLE technology that alerts you when you're about to abandon your beverage. 
+                Revolutionary BLE technology that alerts you when you're about to abandon your beverage.
                 Works with any cup, bottle, or drinkware you already own.
             </p>
-            
+
             <div class="hero-stats">
                 <div class="stat-item">
                     <span class="stat-number">10K+</span>
@@ -204,7 +204,7 @@ This document defines the complete layout structure and requirements for the DAM
                     <span class="stat-label">Alert Time</span>
                 </div>
             </div>
-            
+
             <div class="hero-cta">
                 <a href="pages/pre-order.html" class="btn btn-primary" data-analytics="hero-preorder-cta">
                     🚀 Pre-Order Now - $29
@@ -335,7 +335,7 @@ This document defines the complete layout structure and requirements for the DAM
 
 #### Core Web Vitals Targets
 - **LCP**: < 2.5 seconds
-- **FID**: < 100 milliseconds  
+- **FID**: < 100 milliseconds
 - **CLS**: < 0.1
 
 #### Loading Strategy
@@ -425,11 +425,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ### Content Security Policy (EXACT SPECIFICATION)
 ```
-default-src 'self'; 
-script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://js.stripe.com https://www.google-analytics.com; 
-style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
-img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com; 
-font-src 'self' https://fonts.gstatic.com; 
+default-src 'self';
+script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://js.stripe.com https://www.google-analytics.com;
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com;
+font-src 'self' https://fonts.gstatic.com;
 connect-src 'self' https://www.google-analytics.com https://api.stripe.com;
 ```
 
@@ -480,6 +480,6 @@ For questions about this layout guide:
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: January 2025  
-**Maintained By**: DAMP Development Team 
+**Document Version**: 1.0
+**Last Updated**: January 2025
+**Maintained By**: DAMP Development Team

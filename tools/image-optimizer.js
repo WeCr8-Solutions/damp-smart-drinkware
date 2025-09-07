@@ -12,7 +12,7 @@ class DAMPImageOptimizer {
         this.inputDir = './website/assets/images';
         this.outputDir = './website/assets/images/optimized';
         this.formats = ['webp', 'avif', 'png'];
-        
+
         // Responsive breakpoints
         this.breakpoints = {
             // Product images
@@ -20,14 +20,14 @@ class DAMPImageOptimizer {
             'product-medium': 400,
             'product-small': 200,
             'product-thumb': 150,
-            
+
             // Logo sizes
             'logo-large': 256,
             'logo-medium': 128,
             'logo-small': 64,
             'logo-icon': 32,
             'logo-favicon': 16,
-            
+
             // Hero images
             'hero-desktop': 1200,
             'hero-tablet': 768,
@@ -37,23 +37,23 @@ class DAMPImageOptimizer {
 
     async optimizeAll() {
         console.log('🚀 Starting DAMP Image Optimization...');
-        
+
         try {
             // Create output directory
             await fs.mkdir(this.outputDir, { recursive: true });
-            
+
             // Optimize product images
             await this.optimizeProductImages();
-            
+
             // Optimize logo images
             await this.optimizeLogos();
-            
+
             // Generate manifests
             await this.generateManifests();
-            
+
             console.log('✅ Image optimization completed successfully!');
             console.log(`📁 Optimized images saved to: ${this.outputDir}`);
-            
+
         } catch (error) {
             console.error('❌ Image optimization failed:', error);
         }
@@ -61,10 +61,10 @@ class DAMPImageOptimizer {
 
     async optimizeProductImages() {
         console.log('🖼️  Optimizing product images...');
-        
+
         const productDirs = [
             'products/damp-handle',
-            'products/silicone-bottom', 
+            'products/silicone-bottom',
             'products/cup-sleeve',
             'products/baby-bottle'
         ];
@@ -72,11 +72,11 @@ class DAMPImageOptimizer {
         for (const dir of productDirs) {
             const inputPath = path.join(this.inputDir, dir);
             const outputPath = path.join(this.outputDir, dir);
-            
+
             try {
                 await fs.mkdir(outputPath, { recursive: true });
                 const files = await fs.readdir(inputPath);
-                
+
                 for (const file of files) {
                     if (this.isImageFile(file)) {
                         await this.optimizeProductImage(
@@ -94,7 +94,7 @@ class DAMPImageOptimizer {
 
     async optimizeProductImage(inputPath, outputDir, filename) {
         const baseName = path.parse(filename).name;
-        
+
         // Generate multiple sizes for responsive images
         const sizes = [
             { suffix: '-large', width: this.breakpoints['product-large'] },
@@ -106,7 +106,7 @@ class DAMPImageOptimizer {
         for (const size of sizes) {
             for (const format of this.formats) {
                 const outputPath = path.join(outputDir, `${baseName}${size.suffix}.${format}`);
-                
+
                 try {
                     await sharp(inputPath)
                         .resize(size.width, null, {
@@ -119,7 +119,7 @@ class DAMPImageOptimizer {
                             png: { quality: 90, compressionLevel: 9 }
                         })
                         .toFile(outputPath);
-                    
+
                     console.log(`✅ Generated: ${path.basename(outputPath)}`);
                 } catch (error) {
                     console.warn(`⚠️  Failed to generate ${outputPath}:`, error.message);
@@ -130,14 +130,14 @@ class DAMPImageOptimizer {
 
     async optimizeLogos() {
         console.log('🏷️  Optimizing logos...');
-        
+
         const logoDir = path.join(this.inputDir, 'logo');
         const outputDir = path.join(this.outputDir, 'logo');
-        
+
         try {
             await fs.mkdir(outputDir, { recursive: true });
             const files = await fs.readdir(logoDir);
-            
+
             for (const file of files) {
                 if (this.isImageFile(file)) {
                     await this.optimizeLogo(
@@ -154,7 +154,7 @@ class DAMPImageOptimizer {
 
     async optimizeLogo(inputPath, outputDir, filename) {
         const baseName = path.parse(filename).name;
-        
+
         const sizes = [
             { suffix: '-256', width: 256 },
             { suffix: '-128', width: 128 },
@@ -166,7 +166,7 @@ class DAMPImageOptimizer {
         for (const size of sizes) {
             for (const format of this.formats) {
                 const outputPath = path.join(outputDir, `${baseName}${size.suffix}.${format}`);
-                
+
                 try {
                     await sharp(inputPath)
                         .resize(size.width, size.width, {
@@ -179,7 +179,7 @@ class DAMPImageOptimizer {
                             png: { quality: 95, compressionLevel: 9 }
                         })
                         .toFile(outputPath);
-                    
+
                     console.log(`✅ Generated: ${path.basename(outputPath)}`);
                 } catch (error) {
                     console.warn(`⚠️  Failed to generate ${outputPath}:`, error.message);
@@ -190,7 +190,7 @@ class DAMPImageOptimizer {
 
     async generateManifests() {
         console.log('📋 Generating image manifests...');
-        
+
         const manifest = {
             generated: new Date().toISOString(),
             formats: this.formats,
@@ -198,10 +198,10 @@ class DAMPImageOptimizer {
             products: {},
             logos: {}
         };
-        
+
         // Generate product manifest
         const productDirs = ['damp-handle', 'silicone-bottom', 'cup-sleeve', 'baby-bottle'];
-        
+
         for (const product of productDirs) {
             manifest.products[product] = {
                 large: `assets/images/optimized/products/${product}/${product}-large`,
@@ -210,18 +210,18 @@ class DAMPImageOptimizer {
                 thumb: `assets/images/optimized/products/${product}/${product}-thumb`
             };
         }
-        
+
         // Generate logo manifest
         manifest.logos = {
             icon: 'assets/images/optimized/logo/icon',
             favicon: 'assets/images/optimized/logo/favicon'
         };
-        
+
         await fs.writeFile(
             path.join(this.outputDir, 'image-manifest.json'),
             JSON.stringify(manifest, null, 2)
         );
-        
+
         console.log('📋 Image manifest generated');
     }
 
@@ -238,4 +238,4 @@ module.exports = DAMPImageOptimizer;
 if (require.main === module) {
     const optimizer = new DAMPImageOptimizer();
     optimizer.optimizeAll();
-} 
+}

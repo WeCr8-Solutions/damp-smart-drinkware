@@ -9,7 +9,7 @@
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
-    
+
     <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -17,18 +17,18 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="msapplication-TileColor" content="#1a1a2e">
     <meta name="msapplication-tap-highlight" content="no">
-    
+
     <!-- PWA Theme Colors -->
     <meta name="theme-color" content="#00d4ff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
-    
+
     <!-- PWA Icons -->
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/logo/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="48x48" href="/assets/images/logo/icon-48.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/logo/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/assets/images/logo/icon-512.png">
-    
+
     <!-- Apple Touch Icons -->
     <link rel="apple-touch-icon" sizes="57x57" href="/assets/images/logo/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/assets/images/logo/apple-icon-60x60.png">
@@ -41,10 +41,10 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/logo/apple-icon-180x180.png"></head>
 <body>
     <p>Redirecting to <a href="silicone-bottom-v1.0.html">DAMP Silicone Bottom v1.0</a>...</p>
-    
+
     <!-- Scripts -->
     <script src="../assets/js/components/safe-area-wrapper.js"></script>
-    
+
     <script>
         // Immediate redirect fallback
         if (!document.querySelector('meta[http-equiv="refresh"]')) {
@@ -63,7 +63,7 @@
                         updateViaCache: 'none'
                     });
                     console.log('✅ Service Worker registered:', registration.scope);
-                    
+
                     // Handle updates
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
@@ -73,20 +73,20 @@
                             }
                         });
                     });
-                    
+
                     window.dampPWA = { registration };
                 } catch (error) {
                     console.error('❌ Service Worker failed:', error);
                 }
             });
         }
-        
+
         function showUpdateNotification() {
             const notification = document.createElement('div');
             notification.innerHTML = '<div style="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00d4ff,#00ff88);color:#1a1a2e;padding:15px 25px;border-radius:30px;font-weight:600;z-index:10000;display:flex;align-items:center;gap:15px;"><span>🚀</span><span>New version available!</span><button onclick="refreshApp()" style="background:rgba(26,26,46,0.2);color:#1a1a2e;border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;">Update</button><button onclick="this.parentElement.parentElement.remove()" style="background:transparent;border:none;color:#1a1a2e;cursor:pointer;padding:5px;">×</button></div>';
             document.body.appendChild(notification);
         }
-        
+
         function refreshApp() {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistration().then(registration => {
@@ -97,11 +97,11 @@
                 });
             }
         }
-        
+
         // Load Mobile App Redirect Script
         const mobileAppScript = document.createElement('script');
         mobileAppScript.src = '/assets/js/mobile-app-redirect.js';
         mobileAppScript.async = true;
         document.head.appendChild(mobileAppScript);
     </script></body>
-</html> 
+</html>

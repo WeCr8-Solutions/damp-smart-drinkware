@@ -45,7 +45,7 @@ FIREBASE_PROJECT_ID=damp-smart-drinkware                   # ✅ CONFIGURED
 #### **Application Structure:**
 ```
 ✅ /backend/api/stripe-checkout.js     - Checkout API endpoint
-✅ /backend/stripe-preorder-server.js  - Pre-order server  
+✅ /backend/stripe-preorder-server.js  - Pre-order server
 ✅ /functions/src/stripe-webhooks.ts   - Webhook handlers
 ✅ /functions/lib/ (compiled)          - Compiled functions
 ✅ /website/                           - Frontend files

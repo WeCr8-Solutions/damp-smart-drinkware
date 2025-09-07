@@ -14,7 +14,7 @@ export interface SettingsConfig {
 export default SettingsState;
 /**
  * Settings Types
- * 
+ *
  * TypeScript interfaces and types for the settings system
  */
 

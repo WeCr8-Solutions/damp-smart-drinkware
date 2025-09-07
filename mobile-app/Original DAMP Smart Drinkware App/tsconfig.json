@@ -10,7 +10,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "exactOptionalPropertyTypes": false,
-    
+
     // Module resolution
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
@@ -20,19 +20,19 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
-    
+
     // React Native + Expo specific
     "jsx": "react-jsx",
     "incremental": true,
     "baseUrl": ".",
-    
+
     // Comprehensive path mappings for circular loop system
     "paths": {
   "react-native-ble-plx": ["types/react-native-ble-plx-override.d.ts"],
   "react-native-ble-plx/*": ["types/react-native-ble-plx-override.d.ts"],
       // Root alias
       "@/*": ["./*"],
-      
+
       // App structure
       "@/app/*": ["./app/*"],
       "@/components/*": ["./components/*"],
@@ -43,17 +43,17 @@
       "@/styles/*": ["./styles/*"],
       "@/assets/*": ["./assets/*"],
       "@/types/*": ["./types/*"],
-      
+
       // Services and integrations
   "@/firebase/*": ["./firebase/*"],
   "@/supabase/*": ["./supabase/*"],
       "@/src/*": ["./src/*"],
-      
+
       // Testing infrastructure
       "@/tests/*": ["./tests/*"],
       "@/mocks/*": ["./tests/setup/mocks/*"],
       "@/test-utils/*": ["./tests/setup/*"],
-      
+
       // Common aliases for better imports
       "@components/*": ["./components/*"],
       "@contexts/*": ["./contexts/*"],
@@ -66,14 +66,14 @@
       "@firebase/*": ["./firebase/*"],
       "@supabase/*": ["./supabase/*"],
       "@tests/*": ["./tests/*"],
-      
+
       // Cross-directory references for circular system
   "@/config": ["./firebase/config.ts"],
   "@/auth": ["./firebase/auth.ts", "./contexts/AuthContext.tsx"],
   "@/database": ["./firebase/database.ts", "./types/supabase.ts", "./lib/supabase.ts"],
   "@/lib/supabase": ["./lib/supabase.ts"]
     },
-    
+
     // Type checking configuration
     "typeRoots": [
       "node_modules/@types",
@@ -81,7 +81,7 @@
       "./types"
     ]
   },
-  
+
   // Comprehensive include patterns for complete coverage
   "include": [
     // Core app files
@@ -89,7 +89,7 @@
     "**/*.tsx",
     "**/*.js",
     "**/*.jsx",
-    
+
     // App structure
     "app/**/*",
     "components/**/*",
@@ -99,31 +99,31 @@
     "utils/**/*",
     "styles/**/*",
     "src/**/*",
-    
+
     // Types and configurations
   "types/**/*",
   "firebase/**/*",
-    
+
     // Testing files
     "tests/**/*",
     "**/*.test.ts",
     "**/*.test.tsx",
     "**/*.spec.ts",
     "**/*.spec.tsx",
-    
+
     // Expo and React Native types
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind-env.d.ts",
     "metro.config.js",
-    
+
     // Configuration files
     "*.config.js",
     "*.config.ts",
     "jest.config.js",
     "eslint.config.js"
   ],
-  
+
   // Exclude unnecessary files for performance
   "exclude": [
     "node_modules",
@@ -142,7 +142,7 @@
     "**/*.bak",
     ".env*"
   ],
-  
+
   // TypeScript project settings
   "ts-node": {
     "esm": true,

@@ -319,4 +319,4 @@ For additional support with analytics implementation:
 
 ---
 
-*This analytics implementation provides comprehensive tracking for user behavior, conversions, and SEO performance to help optimize the DAMP Smart Drinkware website for maximum effectiveness.* 
+*This analytics implementation provides comprehensive tracking for user behavior, conversions, and SEO performance to help optimize the DAMP Smart Drinkware website for maximum effectiveness.*

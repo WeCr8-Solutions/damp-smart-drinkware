@@ -13,15 +13,15 @@ class DAMPNavigation {
         this.hamburger = null;
         this.backdrop = null;
         this.navLinks = null;
-        
+
         // State Management
         this.isMenuOpen = false;
         this.scrolled = false;
         this.lastScrollY = 0;
-        
+
         // Event Listeners Storage
         this.eventListeners = {};
-        
+
         // Initialize the system
         this.init();
     }
@@ -47,7 +47,7 @@ class DAMPNavigation {
         this.setupSmoothScrolling();
         this.setupAccessibility();
         this.updateActiveLink();
-        
+
         if (this.isDebugMode()) {
             console.log('🧭 DAMP Navigation System initialized', this.getState());
         }
@@ -58,25 +58,25 @@ class DAMPNavigation {
      */
     findElements() {
         // Try multiple selectors for compatibility
-        this.nav = document.getElementById('main-nav') || 
-                   document.querySelector('nav') || 
+        this.nav = document.getElementById('main-nav') ||
+                   document.querySelector('nav') ||
                    document.querySelector('.damp-nav');
-        
-        this.mobileMenu = document.getElementById('mobile-menu') || 
-                         document.querySelector('.safe-area-mobile-menu') || 
+
+        this.mobileMenu = document.getElementById('mobile-menu') ||
+                         document.querySelector('.safe-area-mobile-menu') ||
                          document.querySelector('.mobile-menu');
-        
-        this.hamburger = document.getElementById('hamburger-btn') || 
-                        document.querySelector('.hamburger') || 
+
+        this.hamburger = document.getElementById('hamburger-btn') ||
+                        document.querySelector('.hamburger') ||
                         document.querySelector('.hamburger-menu');
-        
-        this.backdrop = document.getElementById('mobile-menu-backdrop') || 
-                       document.querySelector('.mobile-menu-backdrop') || 
+
+        this.backdrop = document.getElementById('mobile-menu-backdrop') ||
+                       document.querySelector('.mobile-menu-backdrop') ||
                        document.querySelector('.backdrop');
-        
-        this.navLinks = document.querySelector('.nav-links') || 
+
+        this.navLinks = document.querySelector('.nav-links') ||
                        document.querySelector('.navigation-links');
-        
+
         // Log missing critical elements
         if (!this.hamburger && this.isDebugMode()) {
             console.warn('🧭 Hamburger button not found');
@@ -122,7 +122,7 @@ class DAMPNavigation {
             mobileLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
                     const href = link.getAttribute('href');
-                    
+
                     // If it's an anchor link, close menu after navigation
                     if (href && href.startsWith('#')) {
                         setTimeout(() => this.closeMobileMenu(), 300);
@@ -139,7 +139,7 @@ class DAMPNavigation {
             if (e.key === 'Escape' && this.isMenuOpen) {
                 this.closeMobileMenu();
             }
-            
+
             // Handle tab navigation in mobile menu
             if (this.isMenuOpen && e.key === 'Tab') {
                 this.handleTabNavigation(e);
@@ -174,10 +174,10 @@ class DAMPNavigation {
 
         // Click outside to close menu
         document.addEventListener('click', (e) => {
-            if (this.isMenuOpen && 
-                this.mobileMenu && 
-                !this.mobileMenu.contains(e.target) && 
-                this.hamburger && 
+            if (this.isMenuOpen &&
+                this.mobileMenu &&
+                !this.mobileMenu.contains(e.target) &&
+                this.hamburger &&
                 !this.hamburger.contains(e.target)) {
                 this.closeMobileMenu();
             }
@@ -192,7 +192,7 @@ class DAMPNavigation {
 
         const updateNav = () => {
             const scrollY = window.scrollY;
-            
+
             // Add scrolled class for styling when scrolled past threshold
             if (scrollY > 50 && !this.scrolled) {
                 if (this.nav) {
@@ -251,7 +251,7 @@ class DAMPNavigation {
     smoothScrollTo(target) {
         const headerHeight = this.nav ? (this.nav.offsetHeight + 20) : 100;
         const targetPosition = target.offsetTop - headerHeight;
-        
+
         window.scrollTo({
             top: Math.max(0, targetPosition),
             behavior: 'smooth'
@@ -335,7 +335,7 @@ class DAMPNavigation {
         const focusableElements = this.mobileMenu.querySelectorAll(
             'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
-        
+
         if (focusableElements.length === 0) return;
 
         const firstFocusable = focusableElements[0];
@@ -397,14 +397,14 @@ class DAMPNavigation {
 
         // Update state
         this.isMenuOpen = true;
-        
+
         // Prevent body scroll
         document.body.classList.add('mobile-menu-open');
         document.body.style.overflow = 'hidden';
-        
+
         // Add fade-in animation
         this.mobileMenu.classList.add('fade-in');
-        
+
         // Focus management
         const firstLink = this.mobileMenu.querySelector('a, .mobile-nav-link, button');
         if (firstLink) {
@@ -412,13 +412,13 @@ class DAMPNavigation {
                 firstLink.focus();
             }, 300);
         }
-        
+
         // Announce to screen readers
         this.announceMenuState();
-        
+
         // Emit custom events
         this.dispatchEvent('menuOpened');
-        
+
         if (this.isDebugMode()) {
             console.log('🧭 Mobile menu opened');
         }
@@ -439,25 +439,25 @@ class DAMPNavigation {
 
         // Update state
         this.isMenuOpen = false;
-        
+
         // Restore body scroll
         document.body.classList.remove('mobile-menu-open');
         document.body.style.overflow = '';
-        
+
         // Remove fade-in animation
         this.mobileMenu.classList.remove('fade-in');
-        
+
         // Return focus to hamburger button
         if (this.hamburger) {
             this.hamburger.focus();
         }
-        
+
         // Announce to screen readers
         this.announceMenuState();
-        
+
         // Emit custom events
         this.dispatchEvent('menuClosed');
-        
+
         if (this.isDebugMode()) {
             console.log('🧭 Mobile menu closed');
         }
@@ -473,7 +473,7 @@ class DAMPNavigation {
         announcement.setAttribute('aria-atomic', 'true');
         announcement.classList.add('sr-only');
         announcement.textContent = message;
-        
+
         document.body.appendChild(announcement);
         setTimeout(() => {
             if (announcement.parentNode) {
@@ -488,12 +488,12 @@ class DAMPNavigation {
     updateActiveLink() {
         const currentPage = this.getCurrentPage();
         const links = document.querySelectorAll('.nav-links a, .mobile-menu a, .mobile-nav-link');
-        
+
         links.forEach(link => {
             link.classList.remove('active');
             const href = link.getAttribute('href');
-            
-            if (href === currentPage || 
+
+            if (href === currentPage ||
                 (currentPage === '/' && href === '/index.html') ||
                 (currentPage === '/index.html' && href === '/') ||
                 (currentPage.includes(href) && href !== '#')) {
@@ -513,7 +513,7 @@ class DAMPNavigation {
      * Check if debug mode is enabled
      */
     isDebugMode() {
-        return window.location.hostname === 'localhost' || 
+        return window.location.hostname === 'localhost' ||
                window.location.hostname === '127.0.0.1' ||
                window.location.search.includes('debug=true');
     }
@@ -537,7 +537,7 @@ class DAMPNavigation {
      */
     removeEventListener(event, callback) {
         if (!this.eventListeners[event]) return;
-        
+
         const index = this.eventListeners[event].indexOf(callback);
         if (index > -1) {
             this.eventListeners[event].splice(index, 1);
@@ -554,7 +554,7 @@ class DAMPNavigation {
                 callback(data);
             });
         }
-        
+
         // DOM event system
         const event = new CustomEvent(`damp-nav-${eventName}`, {
             detail: data,
@@ -636,10 +636,10 @@ class DAMPNavigation {
         if (this.isMenuOpen) {
             this.closeMobileMenu();
         }
-        
+
         // Clear event listeners
         this.eventListeners = {};
-        
+
         // Remove global references
         if (window.dampNavigation === this) {
             window.dampNavigation = null;
@@ -659,15 +659,15 @@ let dampNavigation;
  */
 function initNavigation() {
     dampNavigation = new DAMPNavigation();
-    
+
     // Make it globally accessible
     window.dampNavigation = dampNavigation;
-    
+
     // Update active link after initialization
     setTimeout(() => {
         dampNavigation.updateActiveLink();
     }, 100);
-    
+
     return dampNavigation;
 }
 
@@ -716,8 +716,8 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 // Console logging for debugging
-if (typeof window !== 'undefined' && 
-    (window.location.hostname === 'localhost' || 
+if (typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' ||
      window.location.hostname === '127.0.0.1')) {
     console.log('🧭 DAMP Navigation System loaded successfully');
-} 
+}

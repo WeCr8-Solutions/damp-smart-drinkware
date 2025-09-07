@@ -2,10 +2,10 @@
 
 /**
  * DAMP Smart Drinkware - Firebase Database Initialization Script (Emulator Version)
- * 
+ *
  * This script initializes your Firestore database with all required collections,
  * documents, and sample data for the emulator environment.
- * 
+ *
  * Usage:
  *   npm install -g firebase-tools
  *   firebase emulators:start --only firestore
@@ -37,7 +37,7 @@ function initializeFirebase() {
       admin.initializeApp({
         projectId: 'damp-smart-drinkware'
       });
-      
+
       // Connect to Firestore emulator
       const db = admin.firestore();
       db.settings({
@@ -60,7 +60,7 @@ const getDb = () => admin.firestore();
 // Database initialization functions
 async function initializeGlobalStats() {
   log('📊 Initializing global stats...', 'blue');
-  
+
   const db = getDb();
   const statsRef = db.doc('stats/global');
   const statsData = {
@@ -82,16 +82,16 @@ async function initializeGlobalStats() {
       version: '1.0.0'
     }
   };
-  
+
   await statsRef.set(statsData);
   log('✅ Global stats initialized', 'green');
 }
 
 async function initializeVotingCollections() {
   log('🗳️ Initializing voting collections...', 'blue');
-  
+
   const db = getDb();
-  
+
   // Customer voting data
   const customerVotingRef = db.doc('voting/products');
   const customerVotingData = {
@@ -132,7 +132,7 @@ async function initializeVotingCollections() {
       initializedAt: admin.firestore.FieldValue.serverTimestamp()
     }
   };
-  
+
   // Public voting data
   const publicVotingRef = db.doc('voting/public');
   const publicVotingData = {
@@ -173,18 +173,18 @@ async function initializeVotingCollections() {
       initializedAt: admin.firestore.FieldValue.serverTimestamp()
     }
   };
-  
+
   await Promise.all([
     customerVotingRef.set(customerVotingData),
     publicVotingRef.set(publicVotingData)
   ]);
-  
+
   log('✅ Voting collections initialized', 'green');
 }
 
 async function initializeSampleNewsletterSubscribers() {
   log('📧 Creating sample newsletter subscribers...', 'blue');
-  
+
   const db = getDb();
   const sampleSubscribers = [
     {
@@ -237,21 +237,21 @@ async function initializeSampleNewsletterSubscribers() {
       votedProduct: 'handle'
     }
   ];
-  
+
   const batch = db.batch();
-  
+
   sampleSubscribers.forEach((subscriber, index) => {
     const subscriberRef = db.collection('newsletter_subscribers').doc();
     batch.set(subscriberRef, subscriber);
   });
-  
+
   await batch.commit();
   log(`✅ Created ${sampleSubscribers.length} sample newsletter subscribers`, 'green');
 }
 
 async function initializeProductsCollection() {
   log('🛍️ Initializing products collection...', 'blue');
-  
+
   const db = getDb();
   const products = [
     {
@@ -372,14 +372,14 @@ async function initializeProductsCollection() {
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     }
   ];
-  
+
   const batch = db.batch();
-  
+
   products.forEach(product => {
     const productRef = db.collection('products').doc(product.id);
     batch.set(productRef, product);
   });
-  
+
   await batch.commit();
   log(`✅ Created ${products.length} products in collection`, 'green');
 }
@@ -388,7 +388,7 @@ async function initializeProductsCollection() {
 async function initializeDatabase() {
   log('🚀 Starting DAMP Smart Drinkware database initialization (EMULATOR)...', 'cyan');
   log('', 'reset');
-  
+
   try {
     // Initialize Firebase
     const firebaseInit = initializeFirebase();
@@ -396,15 +396,15 @@ async function initializeDatabase() {
       log('❌ Cannot proceed without Firebase initialization', 'red');
       process.exit(1);
     }
-    
+
     log('', 'reset');
-    
+
     // Run all initialization functions
     await initializeGlobalStats();
     await initializeVotingCollections();
     await initializeSampleNewsletterSubscribers();
     await initializeProductsCollection();
-    
+
     log('', 'reset');
     log('🎉 Emulator database initialization completed successfully!', 'green');
     log('', 'reset');
@@ -416,7 +416,7 @@ async function initializeDatabase() {
     log('', 'reset');
     log('💡 For production, you\'ll need to set up service account credentials', 'yellow');
     log('', 'reset');
-    
+
   } catch (error) {
     log('❌ Database initialization failed:', 'red');
     log(error.message, 'red');
@@ -438,4 +438,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { initializeDatabase }; 
+module.exports = { initializeDatabase };

@@ -55,7 +55,7 @@ class TypeScriptConnectivityValidator {
 
   private loadTsConfig(): void {
     const tsConfigPath = join(this.baseDir, 'tsconfig.json');
-    
+
     if (!existsSync(tsConfigPath)) {
       throw new Error('tsconfig.json not found');
     }
@@ -70,20 +70,20 @@ class TypeScriptConnectivityValidator {
 
   private scanDirectory(dir: string): void {
     const fullPath = join(this.baseDir, dir);
-    
+
     if (!existsSync(fullPath)) return;
 
     const entries = readdirSync(fullPath);
-    
+
     entries.forEach(entry => {
       const entryPath = join(fullPath, entry);
       const stat = statSync(entryPath);
-      
+
       if (stat.isDirectory() && !entry.startsWith('.') && entry !== 'node_modules') {
         // Check if directory has an index file
         const hasIndex = this.hasIndexFile(entryPath);
         const relativePath = join(dir, entry).replace(/\\/g, '/');
-        
+
         const moduleInfo: ModuleInfo = {
           name: entry,
           path: relativePath,
@@ -94,13 +94,13 @@ class TypeScriptConnectivityValidator {
           hasIndex,
           isConnected: false
         };
-        
+
         if (hasIndex) {
           this.analyzeIndexFile(entryPath, moduleInfo);
         }
-        
+
         this.modules.set(relativePath, moduleInfo);
-        
+
         // Recursively scan subdirectories
         this.scanDirectory(relativePath);
       }
@@ -115,7 +115,7 @@ class TypeScriptConnectivityValidator {
   private analyzeIndexFile(dirPath: string, moduleInfo: ModuleInfo): void {
     const indexFiles = ['index.ts', 'index.tsx', 'index.js', 'index.jsx'];
     let indexFile: string | null = null;
-    
+
     for (const file of indexFiles) {
       const filePath = join(dirPath, file);
       if (existsSync(filePath)) {
@@ -123,27 +123,27 @@ class TypeScriptConnectivityValidator {
         break;
       }
     }
-    
+
     if (!indexFile) return;
 
     try {
       const content = readFileSync(indexFile, 'utf8');
-      
+
       // Extract exports
       const exportMatches = content.match(/export\s+(?:\{[^}]*\}|[*]|\w+)/g) || [];
       moduleInfo.exports = exportMatches.map(match => match.trim());
-      
+
       // Extract imports
       const importMatches = content.match(/import\s+.*?from\s+['"][^'"]*['"]/g) || [];
       moduleInfo.imports = importMatches.map(match => {
         const fromMatch = match.match(/from\s+['"]([^'"]*)['"]/);
         return fromMatch ? fromMatch[1] : '';
       }).filter(Boolean);
-      
+
       // Extract path alias imports
       const pathAliasImports = moduleInfo.imports.filter(imp => imp.startsWith('@/'));
       moduleInfo.dependencies = pathAliasImports;
-      
+
     } catch (error) {
       console.warn(`Failed to analyze ${indexFile}: ${error}`);
     }
@@ -152,7 +152,7 @@ class TypeScriptConnectivityValidator {
   private validatePathMappings(): Record<string, boolean> {
     const pathMappings = this.tsConfig.compilerOptions?.paths || {};
     const results: Record<string, boolean> = {};
-    
+
     Object.entries(pathMappings).forEach(([alias, paths]) => {
       if (Array.isArray(paths)) {
         const mappingExists = paths.some(path => {
@@ -162,7 +162,7 @@ class TypeScriptConnectivityValidator {
         results[alias] = mappingExists;
       }
     });
-    
+
     return results;
   }
 
@@ -170,7 +170,7 @@ class TypeScriptConnectivityValidator {
     const circular: string[] = [];
     const visited = new Set<string>();
     const recursionStack = new Set<string>();
-    
+
     const dfs = (modulePath: string, path: string[] = []): void => {
       if (recursionStack.has(modulePath)) {
         const cycleStart = path.indexOf(modulePath);
@@ -180,14 +180,14 @@ class TypeScriptConnectivityValidator {
         }
         return;
       }
-      
+
       if (visited.has(modulePath)) {
         return;
       }
-      
+
       visited.add(modulePath);
       recursionStack.add(modulePath);
-      
+
       const moduleInfo = this.modules.get(modulePath);
       if (moduleInfo) {
         moduleInfo.dependencies.forEach(dep => {
@@ -197,32 +197,32 @@ class TypeScriptConnectivityValidator {
           }
         });
       }
-      
+
       recursionStack.delete(modulePath);
     };
-    
+
     this.modules.forEach((_, modulePath) => {
       if (!visited.has(modulePath)) {
         dfs(modulePath);
       }
     });
-    
+
     return circular;
   }
 
   private resolvePathAlias(alias: string): string | null {
     const pathMappings = this.tsConfig.compilerOptions?.paths || {};
-    
+
     for (const [pattern, paths] of Object.entries(pathMappings)) {
       if (Array.isArray(paths)) {
         const regex = new RegExp(pattern.replace('*', '(.*)'));
         const match = alias.match(regex);
-        
+
         if (match) {
           for (const path of paths) {
             const resolved = path.replace('*', match[1] || '');
             const fullPath = resolved.startsWith('./') ? resolved.slice(2) : resolved;
-            
+
             if (this.modules.has(fullPath)) {
               return fullPath;
             }
@@ -230,28 +230,28 @@ class TypeScriptConnectivityValidator {
         }
       }
     }
-    
+
     return null;
   }
 
   private findDeadEnds(): string[] {
     const deadEnds: string[] = [];
-    
+
     this.modules.forEach((moduleInfo, modulePath) => {
       // Check if module has no exports and no imports
       if (moduleInfo.exports.length === 0 && moduleInfo.imports.length === 0) {
         deadEnds.push(modulePath);
         return;
       }
-      
+
       // Check if module has exports but is not imported by anyone
       if (moduleInfo.exports.length > 0) {
         const isImportedByOthers = Array.from(this.modules.values()).some(
-          otherModule => otherModule.dependencies.some(dep => 
+          otherModule => otherModule.dependencies.some(dep =>
             this.resolvePathAlias(dep) === modulePath
           )
         );
-        
+
         if (!isImportedByOthers) {
           // Check if it's not a root module (app, components index, etc.)
           const rootModules = ['app', 'components', 'contexts', 'hooks', 'lib', 'utils'];
@@ -261,19 +261,19 @@ class TypeScriptConnectivityValidator {
         }
       }
     });
-    
+
     return deadEnds;
   }
 
   private calculateConnectivity(): void {
     const graph = new Map<string, Set<string>>();
-    
+
     // Build connectivity graph
     this.modules.forEach((moduleInfo, modulePath) => {
       if (!graph.has(modulePath)) {
         graph.set(modulePath, new Set());
       }
-      
+
       moduleInfo.dependencies.forEach(dep => {
         const depPath = this.resolvePathAlias(dep);
         if (depPath) {
@@ -281,23 +281,23 @@ class TypeScriptConnectivityValidator {
         }
       });
     });
-    
+
     // Mark connected modules using DFS
     const visited = new Set<string>();
-    
+
     const dfs = (modulePath: string): void => {
       if (visited.has(modulePath)) return;
-      
+
       visited.add(modulePath);
       const moduleInfo = this.modules.get(modulePath);
       if (moduleInfo) {
         moduleInfo.isConnected = true;
       }
-      
+
       const connections = graph.get(modulePath) || new Set();
       connections.forEach(connected => dfs(connected));
     };
-    
+
     // Start DFS from root modules
     const rootModules = ['app', 'components', 'contexts', 'hooks', 'lib', 'utils'];
     rootModules.forEach(root => {
@@ -396,7 +396,7 @@ class TypeScriptConnectivityValidator {
                        report.systemHealth === 'degraded' ? colors.yellow : colors.red;
     const healthIcon = report.systemHealth === 'healthy' ? '✅' :
                       report.systemHealth === 'degraded' ? '⚠️' : '❌';
-    
+
     console.log(`${colors.bold}System Health: ${healthColor}${healthIcon} ${report.systemHealth.toUpperCase()}${colors.reset}`);
     console.log(`${colors.bold}Type Connectivity: ${report.typeConnectivity.toFixed(1)}%${colors.reset}`);
     console.log('');
@@ -412,7 +412,7 @@ class TypeScriptConnectivityValidator {
 
     // Recommendations
     console.log(`${colors.bold}${colors.blue}💡 RECOMMENDATIONS:${colors.reset}`);
-    
+
     if (report.systemHealth === 'critical') {
       console.log(`${colors.red}🚨 CRITICAL ISSUES DETECTED:${colors.reset}`);
       console.log(`  • System connectivity is below acceptable threshold (${report.typeConnectivity.toFixed(1)}%)`);
@@ -429,7 +429,7 @@ class TypeScriptConnectivityValidator {
       console.log(`  • TypeScript configuration supports circular loop system`);
       console.log(`  • No dead ends detected in the module graph`);
     }
-    
+
     console.log('');
     console.log(`${colors.bold}Generated by DAMP Smart Drinkware TypeScript Connectivity Validator${colors.reset}`);
   }
@@ -440,11 +440,11 @@ function main(): void {
   try {
     const validator = new TypeScriptConnectivityValidator();
     const report = validator.validate();
-    
+
     // Exit with appropriate code based on system health
     const exitCode = report.systemHealth === 'critical' ? 1 : 0;
     process.exit(exitCode);
-    
+
   } catch (error) {
     console.error(`${colors.red}❌ Validation failed: ${error}${colors.reset}`);
     process.exit(1);

@@ -56,14 +56,14 @@ export interface TypeConnections {
     theme: any; // Will be created
     settings: any; // Will be created
   };
-  
+
   // Hooks -> Services
   hookServices: {
     firebase: typeof import('@/firebase/auth');
     // supabase removed - Firebase only
     ble: any; // Will be connected to BLE services
   };
-  
+
   // Utils -> Types
   utilTypes: {
     deviceManager: DeviceReading[];
@@ -180,8 +180,8 @@ export function isBLEDevice(obj: any): obj is BLEDevice {
 }
 
 export function isDeviceReading(obj: any): obj is DeviceReading {
-  return obj && 
-    typeof obj.deviceId === 'string' && 
+  return obj &&
+    typeof obj.deviceId === 'string' &&
     typeof obj.timestamp === 'number' &&
     typeof obj.temperature === 'number';
 }

@@ -27,14 +27,14 @@ const PRODUCTION_CONFIG = {
       testQuantity: 1
     },
     'damp-handle': {
-      id: 'damp-handle', 
+      id: 'damp-handle',
       name: 'DAMP Handle v1.0',
       price: 4999, // $49.99
       testQuantity: 1
     },
     'cup-sleeve': {
       id: 'cup-sleeve',
-      name: 'DAMP Cup Sleeve', 
+      name: 'DAMP Cup Sleeve',
       price: 3499, // $34.99
       testQuantity: 2
     }
@@ -108,17 +108,17 @@ function formatCurrency(cents) {
  */
 async function checkProductionEnvironment() {
   logStep('Checking Production Environment Configuration');
-  
+
   try {
     // Check if .env.production exists and has live keys
     const envProdPath = '.env.production';
     if (fs.existsSync(envProdPath)) {
       const envContent = fs.readFileSync(envProdPath, 'utf8');
-      
+
       // Check for live Stripe keys
       const hasLiveSecretKey = envContent.includes('sk_live_');
       const hasLivePublishableKey = envContent.includes('pk_live_');
-      
+
       if (hasLiveSecretKey && hasLivePublishableKey) {
         testResults.environment.stripeKeysConfigured = true;
         logStep('Live Stripe keys configured in .env.production', 'success');
@@ -126,7 +126,7 @@ async function checkProductionEnvironment() {
         logStep('Live Stripe keys NOT found in .env.production', 'warning');
         logRecommendation('Configure live Stripe keys (sk_live_ and pk_live_) in .env.production');
       }
-      
+
       // Check production mode
       if (envContent.includes('NODE_ENV=production')) {
         testResults.environment.productionMode = true;
@@ -136,11 +136,11 @@ async function checkProductionEnvironment() {
       logStep('.env.production file not found', 'warning');
       logRecommendation('Create .env.production with live Stripe keys');
     }
-    
+
     // Check HTTPS configuration
     testResults.environment.httpsEnabled = true; // Netlify provides HTTPS
     logStep('HTTPS enabled (Netlify)', 'success');
-    
+
   } catch (error) {
     logError(error, 'Environment Check');
   }
@@ -151,49 +151,49 @@ async function checkProductionEnvironment() {
  */
 async function testCartFunctionality() {
   logStep('Testing Cart Functionality');
-  
+
   // Test cart JavaScript implementations
   const cartFiles = [
     'website/js/unified-firebase-services.js',
     'website/assets/js/store-auth.js'
   ];
-  
+
   for (const filePath of cartFiles) {
     try {
       if (fs.existsSync(filePath)) {
         const content = fs.readFileSync(filePath, 'utf8');
-        
+
         // Check for cart methods
         const hasAddToCart = /addToCart|add.to.cart/gi.test(content);
         const hasRemoveFromCart = /removeFromCart|remove.from.cart/gi.test(content);
         const hasUpdateQuantity = /updateQuantity|update.quantity/gi.test(content);
         const hasCartPersistence = /localStorage|sessionStorage|saveCart/gi.test(content);
         const hasCalculations = /calculateTotal|cart.total|getTotal/gi.test(content);
-        
+
         if (hasAddToCart) {
           testResults.cartFunctionality.addToCart.status = 'pass';
           testResults.cartFunctionality.addToCart.details.push(`Found in ${filePath}`);
           logStep(`Add to cart functionality found in ${path.basename(filePath)}`, 'success');
         }
-        
+
         if (hasRemoveFromCart) {
           testResults.cartFunctionality.removeFromCart.status = 'pass';
           testResults.cartFunctionality.removeFromCart.details.push(`Found in ${filePath}`);
           logStep(`Remove from cart functionality found in ${path.basename(filePath)}`, 'success');
         }
-        
+
         if (hasUpdateQuantity) {
           testResults.cartFunctionality.updateQuantity.status = 'pass';
           testResults.cartFunctionality.updateQuantity.details.push(`Found in ${filePath}`);
           logStep(`Update quantity functionality found in ${path.basename(filePath)}`, 'success');
         }
-        
+
         if (hasCartPersistence) {
           testResults.cartFunctionality.cartPersistence.status = 'pass';
           testResults.cartFunctionality.cartPersistence.details.push(`Found in ${filePath}`);
           logStep(`Cart persistence found in ${path.basename(filePath)}`, 'success');
         }
-        
+
         if (hasCalculations) {
           testResults.cartFunctionality.cartCalculations.status = 'pass';
           testResults.cartFunctionality.cartCalculations.details.push(`Found in ${filePath}`);
@@ -211,9 +211,9 @@ async function testCartFunctionality() {
  */
 async function testCheckoutSessionCreation() {
   logStep('Testing Checkout Session Creation');
-  
+
   const testProduct = PRODUCTION_CONFIG.testProducts['silicone-bottom'];
-  
+
   try {
     const checkoutData = {
       productId: testProduct.id,
@@ -224,16 +224,16 @@ async function testCheckoutSessionCreation() {
         timestamp: new Date().toISOString()
       }
     };
-    
+
     logStep(`Creating checkout session for ${testProduct.name} (${formatCurrency(testProduct.price)})`, 'info');
-    
+
     // This would make an actual API call to your checkout endpoint
     // For now, we'll simulate the test
     testResults.checkoutFlow.sessionCreation.status = 'ready';
     testResults.checkoutFlow.sessionCreation.details.push(`Ready to test ${testProduct.name}`);
-    
+
     logStep('Checkout session creation ready for testing', 'success');
-    
+
   } catch (error) {
     logError(error, 'Checkout Session Creation');
     testResults.checkoutFlow.sessionCreation.status = 'fail';
@@ -245,12 +245,12 @@ async function testCheckoutSessionCreation() {
  */
 async function simulateTransactionTesting() {
   logStep('Preparing Real Transaction Testing');
-  
+
   for (const [productKey, product] of Object.entries(PRODUCTION_CONFIG.testProducts)) {
     const transactionAmount = product.price * product.testQuantity;
-    
+
     logStep(`Ready to test: ${product.name} x${product.testQuantity} = ${formatCurrency(transactionAmount)}`, 'money');
-    
+
     // Store transaction details for manual testing
     testResults.realTransactions.transactions.push({
       productId: product.id,
@@ -260,10 +260,10 @@ async function simulateTransactionTesting() {
       totalAmount: transactionAmount,
       status: 'ready_for_manual_test'
     });
-    
+
     testResults.realTransactions.totalAmount += transactionAmount;
   }
-  
+
   logStep(`Total test amount ready: ${formatCurrency(testResults.realTransactions.totalAmount)}`, 'money');
 }
 
@@ -272,27 +272,27 @@ async function simulateTransactionTesting() {
  */
 async function checkWebhookConfiguration() {
   logStep('Checking Webhook Configuration');
-  
+
   const webhookFiles = [
     'functions/src/stripe-webhooks.ts',
     'backend/api/stripe-checkout.js',
     'netlify/functions/stripe-webhook.js'
   ];
-  
+
   let webhooksFound = 0;
-  
+
   for (const filePath of webhookFiles) {
     if (fs.existsSync(filePath)) {
       const content = fs.readFileSync(filePath, 'utf8');
-      
+
       if (content.includes('webhook') && content.includes('stripe')) {
         webhooksFound++;
         logStep(`Webhook handler found in ${path.basename(filePath)}`, 'success');
-        
+
         // Check for required event handling
         const hasCheckoutCompleted = content.includes('checkout.session.completed');
         const hasPaymentSucceeded = content.includes('payment_intent.succeeded');
-        
+
         if (hasCheckoutCompleted) {
           logStep('  - checkout.session.completed event handled', 'success');
         }
@@ -302,7 +302,7 @@ async function checkWebhookConfiguration() {
       }
     }
   }
-  
+
   if (webhooksFound > 0) {
     testResults.environment.webhooksConfigured = true;
     logStep(`${webhooksFound} webhook handlers configured`, 'success');
@@ -318,22 +318,22 @@ async function checkWebhookConfiguration() {
 function generateTestingInstructions() {
   console.log('\n🎯 PRODUCTION TESTING INSTRUCTIONS');
   console.log('==================================\n');
-  
+
   console.log('📋 **MANUAL TESTING STEPS:**\n');
-  
+
   console.log('**1. Environment Setup:**');
   console.log('   - Ensure live Stripe keys are configured');
   console.log('   - Deploy to production environment');
   console.log('   - Verify HTTPS is working');
   console.log('');
-  
+
   console.log('**2. Cart Testing:**');
   console.log('   - Visit https://dampdrink.com/pages/store.html');
   console.log('   - Add products to cart');
   console.log('   - Test quantity updates');
   console.log('   - Verify cart persistence');
   console.log('');
-  
+
   console.log('**3. Checkout Testing:**');
   testResults.realTransactions.transactions.forEach((transaction, index) => {
     console.log(`   Test ${index + 1}: ${transaction.productName}`);
@@ -343,14 +343,14 @@ function generateTestingInstructions() {
     console.log(`   - Use test card: 4242 4242 4242 4242`);
     console.log('');
   });
-  
+
   console.log('**4. Payment Verification:**');
   console.log('   - Check Stripe Dashboard for payments');
   console.log('   - Verify webhook delivery');
   console.log('   - Confirm order emails sent');
   console.log('   - Check Firebase for order records');
   console.log('');
-  
+
   console.log('**5. Success Criteria:**');
   console.log('   ✅ Payment processes successfully');
   console.log('   ✅ Customer receives confirmation email');
@@ -366,7 +366,7 @@ function generateTestingInstructions() {
 function generateReport() {
   console.log('\n📊 PRODUCTION TESTING READINESS REPORT');
   console.log('======================================\n');
-  
+
   // Environment Status
   console.log('🔧 **ENVIRONMENT STATUS:**');
   console.log(`Stripe Keys: ${testResults.environment.stripeKeysConfigured ? '✅' : '❌'}`);
@@ -374,7 +374,7 @@ function generateReport() {
   console.log(`HTTPS Enabled: ${testResults.environment.httpsEnabled ? '✅' : '❌'}`);
   console.log(`Webhooks: ${testResults.environment.webhooksConfigured ? '✅' : '❌'}`);
   console.log('');
-  
+
   // Cart Functionality
   console.log('🛒 **CART FUNCTIONALITY:**');
   console.log(`Add to Cart: ${testResults.cartFunctionality.addToCart.status === 'pass' ? '✅' : '❌'}`);
@@ -383,7 +383,7 @@ function generateReport() {
   console.log(`Cart Persistence: ${testResults.cartFunctionality.cartPersistence.status === 'pass' ? '✅' : '❌'}`);
   console.log(`Cart Calculations: ${testResults.cartFunctionality.cartCalculations.status === 'pass' ? '✅' : '❌'}`);
   console.log('');
-  
+
   // Test Transactions Ready
   console.log('💰 **TEST TRANSACTIONS READY:**');
   testResults.realTransactions.transactions.forEach((transaction, index) => {
@@ -391,7 +391,7 @@ function generateReport() {
   });
   console.log(`**Total Test Amount: ${formatCurrency(testResults.realTransactions.totalAmount)}**`);
   console.log('');
-  
+
   // Issues and Recommendations
   if (testResults.issues.length > 0) {
     console.log('⚠️ **ISSUES TO ADDRESS:**');
@@ -400,7 +400,7 @@ function generateReport() {
     });
     console.log('');
   }
-  
+
   if (testResults.recommendations.length > 0) {
     console.log('💡 **RECOMMENDATIONS:**');
     testResults.recommendations.forEach((rec, index) => {
@@ -408,11 +408,11 @@ function generateReport() {
     });
     console.log('');
   }
-  
+
   // Overall Assessment
   const environmentReady = Object.values(testResults.environment).every(status => status === true);
   const cartReady = Object.values(testResults.cartFunctionality).every(item => item.status === 'pass');
-  
+
   console.log('🎯 **OVERALL ASSESSMENT:**');
   if (environmentReady && cartReady) {
     console.log('🎉 **READY FOR PRODUCTION TESTING!**');
@@ -425,7 +425,7 @@ function generateReport() {
     console.log('🔧 Address issues above before testing');
     console.log('📋 Follow recommendations for optimal setup');
   }
-  
+
   return environmentReady && cartReady;
 }
 
@@ -444,7 +444,7 @@ async function saveTestResults() {
       testTransactionCount: testResults.realTransactions.transactions.length
     }
   };
-  
+
   try {
     fs.writeFileSync(
       'production-testing-report.json',
@@ -461,32 +461,32 @@ async function saveTestResults() {
  */
 async function runProductionTesting() {
   logStep('🚀 Starting Production Cart & Checkout Testing...\n');
-  
+
   try {
     await checkProductionEnvironment();
     console.log('');
-    
+
     await testCartFunctionality();
     console.log('');
-    
+
     await testCheckoutSessionCreation();
     console.log('');
-    
+
     await simulateTransactionTesting();
     console.log('');
-    
+
     await checkWebhookConfiguration();
     console.log('');
-    
+
     const ready = generateReport();
-    
+
     generateTestingInstructions();
-    
+
     await saveTestResults();
-    
+
     console.log('\n🏁 PRODUCTION TESTING PREPARATION COMPLETE');
     console.log('==========================================');
-    
+
     if (ready) {
       console.log('🎊 **SUCCESS:** System ready for live transaction testing!');
       console.log('💰 **NEXT STEP:** Follow manual testing instructions above');
@@ -495,9 +495,9 @@ async function runProductionTesting() {
       console.log('📝 **SETUP NEEDED:** Address issues before proceeding');
       console.log('🔧 **ACTION:** Follow recommendations above');
     }
-    
+
     return ready;
-    
+
   } catch (error) {
     logError(error, 'Main Production Testing');
     return false;

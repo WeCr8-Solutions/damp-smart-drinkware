@@ -1,6 +1,6 @@
 /**
  * DAMP Smart Drinkware - React Native Authentication Screens
- * 
+ *
  * Complete authentication UI for mobile app
  */
 
@@ -28,7 +28,7 @@ const { width, height } = Dimensions.get('window');
 // Main Auth Navigator Component
 export const AuthNavigator: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<'welcome' | 'signin' | 'signup' | 'forgot'>('welcome');
-  
+
   const renderScreen = () => {
     switch (currentScreen) {
       case 'welcome':
@@ -58,8 +58,8 @@ const WelcomeScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onN
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Logo and Branding */}
         <View style={styles.logoSection}>
-          <Image 
-            source={require('../assets/images/logo/logo-white.png')} 
+          <Image
+            source={require('../assets/images/logo/logo-white.png')}
             style={styles.logo}
             resizeMode="contain"
           />
@@ -71,39 +71,39 @@ const WelcomeScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onN
 
         {/* Features Preview */}
         <View style={styles.featuresSection}>
-          <FeatureItem 
-            icon="📍" 
-            title="Smart Tracking" 
-            description="Real-time location tracking for your drinks" 
+          <FeatureItem
+            icon="📍"
+            title="Smart Tracking"
+            description="Real-time location tracking for your drinks"
           />
-          <FeatureItem 
-            icon="🔔" 
-            title="Smart Alerts" 
-            description="Get notified when you leave your drink behind" 
+          <FeatureItem
+            icon="🔔"
+            title="Smart Alerts"
+            description="Get notified when you leave your drink behind"
           />
-          <FeatureItem 
-            icon="🛡️" 
-            title="Safe Zones" 
-            description="Define safe areas where alerts are disabled" 
+          <FeatureItem
+            icon="🛡️"
+            title="Safe Zones"
+            description="Define safe areas where alerts are disabled"
           />
-          <FeatureItem 
-            icon="📱" 
-            title="Multi-Device" 
-            description="Manage multiple DAMP devices from one app" 
+          <FeatureItem
+            icon="📱"
+            title="Multi-Device"
+            description="Manage multiple DAMP devices from one app"
           />
         </View>
 
         {/* Authentication Buttons */}
         <View style={styles.authButtons}>
-          <TouchableOpacity 
-            style={[styles.button, styles.primaryButton]} 
+          <TouchableOpacity
+            style={[styles.button, styles.primaryButton]}
             onPress={() => onNavigate('signup')}
           >
             <Text style={styles.primaryButtonText}>Get Started</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.button, styles.secondaryButton]} 
+
+          <TouchableOpacity
+            style={[styles.button, styles.secondaryButton]}
             onPress={() => onNavigate('signin')}
           >
             <Text style={styles.secondaryButtonText}>Sign In</Text>
@@ -138,10 +138,10 @@ const SignInScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
     }
 
     setLoading(true);
-    
+
     try {
       const result = await authService.signInWithEmail(email.trim(), password);
-      
+
       if (result.success) {
         // Navigation will be handled by auth state change
       } else {
@@ -156,10 +156,10 @@ const SignInScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    
+
     try {
       const result = await authService.signInWithGoogle();
-      
+
       if (result.success) {
         // Navigation will be handled by auth state change
       } else {
@@ -173,8 +173,8 @@ const SignInScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
+    <KeyboardAvoidingView
+      style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.authScrollContent} showsVerticalScrollIndicator={false}>
@@ -216,8 +216,8 @@ const SignInScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
                 autoCapitalize="none"
                 autoCorrect={false}
               />
-              <TouchableOpacity 
-                style={styles.passwordToggle} 
+              <TouchableOpacity
+                style={styles.passwordToggle}
                 onPress={() => setShowPassword(!showPassword)}
               >
                 <Text style={styles.passwordToggleText}>
@@ -231,8 +231,8 @@ const SignInScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
             <Text style={styles.forgotPasswordText}>Forgot password?</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={[styles.button, styles.primaryButton, loading && styles.disabledButton]} 
+          <TouchableOpacity
+            style={[styles.button, styles.primaryButton, loading && styles.disabledButton]}
             onPress={handleSignIn}
             disabled={loading}
           >
@@ -252,7 +252,7 @@ const SignInScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
         </View>
 
         {/* Social Sign In */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.button, styles.socialButton]}
           onPress={handleGoogleSignIn}
           disabled={loading}
@@ -310,7 +310,7 @@ const SignUpScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
     }
 
     setLoading(true);
-    
+
     try {
       const result = await authService.signUpWithEmail(email.trim(), password, {
         firstName: firstName.trim(),
@@ -320,10 +320,10 @@ const SignUpScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
         newsletter,
         source: 'mobile_app'
       });
-      
+
       if (result.success) {
         Alert.alert(
-          'Account Created!', 
+          'Account Created!',
           'Welcome to DAMP! Your account has been created successfully.',
           [{ text: 'OK' }]
         );
@@ -339,10 +339,10 @@ const SignUpScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
 
   const handleGoogleSignUp = async () => {
     setLoading(true);
-    
+
     try {
       const result = await authService.signInWithGoogle();
-      
+
       if (result.success) {
         // Navigation will be handled by auth state change
       } else {
@@ -356,8 +356,8 @@ const SignUpScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
+    <KeyboardAvoidingView
+      style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.authScrollContent} showsVerticalScrollIndicator={false}>
@@ -384,7 +384,7 @@ const SignUpScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
                 autoCapitalize="words"
               />
             </View>
-            
+
             <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
               <Text style={styles.inputLabel}>Last Name *</Text>
               <TextInput
@@ -437,8 +437,8 @@ const SignUpScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
                 autoCapitalize="none"
                 autoCorrect={false}
               />
-              <TouchableOpacity 
-                style={styles.passwordToggle} 
+              <TouchableOpacity
+                style={styles.passwordToggle}
                 onPress={() => setShowPassword(!showPassword)}
               >
                 <Text style={styles.passwordToggleText}>
@@ -465,9 +465,9 @@ const SignUpScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
           {/* Preferences */}
           <View style={styles.preferencesSection}>
             <Text style={styles.preferencesTitle}>Stay updated</Text>
-            
-            <TouchableOpacity 
-              style={styles.checkboxRow} 
+
+            <TouchableOpacity
+              style={styles.checkboxRow}
               onPress={() => setNewsletter(!newsletter)}
             >
               <View style={[styles.checkbox, newsletter && styles.checkboxChecked]}>
@@ -480,8 +480,8 @@ const SignUpScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
           </View>
 
           {/* Terms */}
-          <TouchableOpacity 
-            style={styles.checkboxRow} 
+          <TouchableOpacity
+            style={styles.checkboxRow}
             onPress={() => setTerms(!terms)}
           >
             <View style={[styles.checkbox, terms && styles.checkboxChecked]}>
@@ -494,8 +494,8 @@ const SignUpScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={[styles.button, styles.primaryButton, loading && styles.disabledButton]} 
+          <TouchableOpacity
+            style={[styles.button, styles.primaryButton, loading && styles.disabledButton]}
             onPress={handleSignUp}
             disabled={loading}
           >
@@ -515,7 +515,7 @@ const SignUpScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
         </View>
 
         {/* Social Sign Up */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.button, styles.socialButton]}
           onPress={handleGoogleSignUp}
           disabled={loading}
@@ -550,14 +550,14 @@ const ForgotPasswordScreen: React.FC<{ onNavigate: (screen: string) => void }> =
     }
 
     setLoading(true);
-    
+
     try {
       const result = await authService.sendPasswordReset(email.trim());
-      
+
       if (result.success) {
         setSent(true);
         Alert.alert(
-          'Reset Email Sent!', 
+          'Reset Email Sent!',
           'Check your email for password reset instructions.',
           [{ text: 'OK' }]
         );
@@ -572,8 +572,8 @@ const ForgotPasswordScreen: React.FC<{ onNavigate: (screen: string) => void }> =
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
+    <KeyboardAvoidingView
+      style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.authScrollContent} showsVerticalScrollIndicator={false}>
@@ -604,8 +604,8 @@ const ForgotPasswordScreen: React.FC<{ onNavigate: (screen: string) => void }> =
             />
           </View>
 
-          <TouchableOpacity 
-            style={[styles.button, styles.primaryButton, loading && styles.disabledButton]} 
+          <TouchableOpacity
+            style={[styles.button, styles.primaryButton, loading && styles.disabledButton]}
             onPress={handlePasswordReset}
             disabled={loading || sent}
           >
@@ -662,7 +662,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0f0f23',
   },
-  
+
   // Welcome Screen
   welcomeContainer: {
     flex: 1,
@@ -694,7 +694,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
   },
-  
+
   // Features Section
   featuresSection: {
     marginBottom: 40,
@@ -725,7 +725,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.7)',
     lineHeight: 20,
   },
-  
+
   // Auth Buttons
   authButtons: {
     marginBottom: 32,
@@ -768,7 +768,7 @@ const styles = StyleSheet.create({
   disabledButton: {
     opacity: 0.6,
   },
-  
+
   // Legal Section
   legalSection: {
     alignItems: 'center',
@@ -783,7 +783,7 @@ const styles = StyleSheet.create({
     color: '#00d4ff',
     textDecorationLine: 'underline',
   },
-  
+
   // Auth Screens
   authScrollContent: {
     flexGrow: 1,
@@ -813,7 +813,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.7)',
     lineHeight: 22,
   },
-  
+
   // Form Section
   formSection: {
     marginBottom: 32,
@@ -856,7 +856,7 @@ const styles = StyleSheet.create({
   passwordToggleText: {
     fontSize: 18,
   },
-  
+
   // Preferences
   preferencesSection: {
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
@@ -901,7 +901,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.8)',
     lineHeight: 20,
   },
-  
+
   // Forgot Password
   forgotPassword: {
     alignSelf: 'flex-end',
@@ -911,7 +911,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#00d4ff',
   },
-  
+
   // Divider
   divider: {
     flexDirection: 'row',
@@ -928,7 +928,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.5)',
     marginHorizontal: 16,
   },
-  
+
   // Footer
   authFooter: {
     alignItems: 'center',
@@ -938,7 +938,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.7)',
   },
-  
+
   // Success Message
   successMessage: {
     backgroundColor: 'rgba(0, 255, 136, 0.1)',
@@ -954,4 +954,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
   },
-}); 
+});

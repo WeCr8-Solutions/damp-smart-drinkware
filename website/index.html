@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f23">
-    
+
     <!-- Security Headers -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://*.firebase.com https://*.firebaseapp.com https://*.googleapis.com https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://js.stripe.com https://checkout.stripe.com; script-src-elem 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://*.firebase.com https://*.firebaseapp.com https://*.googleapis.com https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://js.stripe.com https://checkout.stripe.com; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://firestore.googleapis.com https://firebasestorage.googleapis.com https://fcm.googleapis.com https://firebaseremoteconfig.googleapis.com https://securetoken.googleapis.com https://identitytoolkit.googleapis.com https://oauth2.googleapis.com https://www.googleapis.com https://firebase.googleapis.com https://ep1.adtrafficquality.google https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://api.stripe.com wss://*.firebase.com; frame-src 'self' https://accounts.google.com https://js.stripe.com https://checkout.stripe.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com; img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.gstatic.com https://*.googleusercontent.com https://firebasestorage.googleapis.com https://images.unsplash.com https://dampdrink.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; worker-src 'self'; manifest-src 'self'; media-src 'self' blob:; child-src 'self'; form-action 'self' https://checkout.stripe.com https://formspree.io;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <!-- X-Frame-Options moved to HTTP headers via netlify.toml -->
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    
+
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    
+
     <!-- Optimized Favicon Loading -->
     <link rel="icon" type="image/x-icon" href="assets/images/logo/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/images/logo/icon.png">
-    
+
     <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -26,11 +26,11 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="msapplication-TileColor" content="#1a1a2e">
     <meta name="msapplication-tap-highlight" content="no">
-    
+
     <!-- Critical PWA Icons Only -->
     <link rel="icon" type="image/png" sizes="192x192" href="assets/images/logo/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="assets/images/logo/icon-512.png">
-    
+
     <!-- SEO Meta Tags -->
     <title>DAMP - Never Leave Your Drink Behind | Smart Drinkware Technology</title>
     <meta name="description" content="Revolutionary smart drinkware technology that alerts you when you're about to leave your beverage behind. Works with any cup or bottle.">
@@ -38,23 +38,23 @@
     <meta name="author" content="WeCr8 Solutions LLC">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://dampdrink.com/">
-    
+
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dampdrink.com/">
     <meta property="og:title" content="DAMP - Never Leave Your Drink Behind">
     <meta property="og:description" content="Revolutionary smart drinkware technology that alerts you when you're about to leave your beverage behind.">
     <meta property="og:image" content="https://dampdrink.com/assets/images/og-image.jpg">
-    
+
     <!-- PERFORMANCE OPTIMIZATION: Resource Hints -->
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://www.gstatic.com">
     <link rel="preconnect" href="https://pagead2.googlesyndication.com">
     <link rel="dns-prefetch" href="https://js.stripe.com">
-    
+
     <!-- AdSense Meta (script deferred to improve performance) -->
     <meta name="google-adsense-account" content="ca-pub-3639153716376265">
-    
+
     <!-- Critical CSS Inlined for Performance -->
     <style id="critical-css">
         /* Critical CSS Variables and Base Styles */
@@ -73,44 +73,44 @@
             --nav-height: 80px;
             --safe-area-top: env(safe-area-inset-top);
         }
-        
+
         *,*::before,*::after{box-sizing:border-box}
         body,h1,h2,h3,h4,p{margin:0}
         html{font-display:swap;text-rendering:optimizeSpeed;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
         body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);color:var(--text-primary);line-height:1.6;overflow-x:hidden;margin:0;padding:0}
-        
+
         .container{max-width:1200px;margin:0 auto;padding:0 20px}
         .skip-to-content{position:absolute;top:-40px;left:0;background:var(--primary-color);color:#000;padding:8px;text-decoration:none;z-index:10000;font-weight:700}
         .skip-to-content:focus{top:0}
-        
+
         .hero-section{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 20px 80px;position:relative;contain:layout style paint}
         .hero-content{max-width:900px;z-index:2}
         .hero-logo{margin-bottom:40px}
         .hero-logo img{width:90px;height:90px;object-fit:contain}
         .hero-title{font-size:clamp(3.5rem,8vw,5rem);font-weight:900;margin-bottom:30px;background:linear-gradient(45deg,var(--text-primary),var(--primary-color));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1}
         .hero-subtitle{font-size:clamp(1.2rem,2.5vw,1.5rem);color:var(--text-secondary);margin-bottom:50px;line-height:1.5}
-        
+
         .btn{display:inline-block;padding:18px 40px;border-radius:50px;font-size:1.1rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;transition:transform 0.2s ease,box-shadow 0.2s ease;text-transform:uppercase;letter-spacing:0.5px;margin:10px;text-align:center}
         .btn-primary{background:linear-gradient(45deg,var(--primary-color),var(--primary-dark));color:white;box-shadow:0 6px 20px rgba(0,212,255,0.3)}
         .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,212,255,0.4)}
         .btn-secondary{background:transparent;color:var(--primary-color);border:2px solid var(--primary-color)}
         .btn-secondary:hover{background:var(--primary-color);color:white}
-        
+
         .hero-animation-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);z-index:100000;display:flex;align-items:center;justify-content:center;overflow:hidden}
         body:not(.animation-complete){overflow:hidden;height:100vh}
         body:not(.animation-complete) main{opacity:0}
         body.animation-complete{overflow:auto;height:auto}
         body.animation-complete main{opacity:1;transition:opacity 0.5s ease}
-        
+
         @media(max-width:768px){.hero-section{padding:100px 20px 60px}.btn{display:block;margin:10px auto;text-align:center}}
         @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
     </style>
-    
+
     <!-- Preload Critical Resources -->
     <link rel="preload" href="assets/css/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="assets/css/navigation.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="assets/images/logo/logo.png" as="image">
-    
+
     <!-- Load Non-Critical Styles Asynchronously -->
     <noscript>
         <link rel="stylesheet" href="assets/css/main.css">
@@ -120,7 +120,7 @@
         <link rel="stylesheet" href="assets/css/adsense-styles.css">
         <link rel="stylesheet" href="assets/css/performance-optimizations.css">
     </noscript>
-    
+
     <!-- Enhanced Visual Styles with Animations -->
     <style>
         /* Critical above-the-fold styles - Load immediately */
@@ -144,7 +144,7 @@
             --pain-color: #ff4757;
             --solution-color: #00ff88;
         }
-        
+
         /* Ensure page loads without flash */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -155,13 +155,13 @@
             margin: 0;
             padding: 0;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-        
+
         /* Skip to content for accessibility */
         .skip-to-content {
             position: absolute;
@@ -174,7 +174,7 @@
             z-index: 10000;
         }
         .skip-to-content:focus { top: 0; }
-        
+
         /* Hero Section Immediate Styles */
         .hero-section {
             min-height: 100vh;
@@ -185,22 +185,22 @@
             padding: 120px 20px 80px;
             position: relative;
         }
-        
+
         .hero-content {
             max-width: 900px;
             z-index: 2;
         }
-        
+
         .hero-logo {
             margin-bottom: 40px;
         }
-        
+
         .hero-logo img {
             width: 90px;
             height: 90px;
             object-fit: contain;
         }
-        
+
         .hero-title {
             font-size: clamp(3.5rem, 8vw, 5rem);
             font-weight: 900;
@@ -210,14 +210,14 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .hero-subtitle {
             font-size: clamp(1.2rem, 2.5vw, 1.5rem);
             color: var(--text-secondary);
             margin-bottom: 50px;
             line-height: 1.5;
         }
-        
+
         .btn {
             display: inline-block;
             padding: 18px 40px;
@@ -232,29 +232,29 @@
             letter-spacing: 0.5px;
             margin: 10px;
         }
-        
+
         .btn-primary {
             background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
             color: white;
             box-shadow: 0 6px 20px rgba(0, 212, 255, 0.3);
         }
-        
+
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
         }
-        
+
         .btn-secondary {
             background: transparent;
             color: var(--primary-color);
             border: 2px solid var(--primary-color);
         }
-        
+
         .btn-secondary:hover {
             background: var(--primary-color);
             color: white;
         }
-        
+
         /* Hero Animation Support */
         .hero-animation-overlay {
             position: fixed;
@@ -269,7 +269,7 @@
             justify-content: center;
             overflow: hidden;
         }
-        
+
         .bubbles-container {
             position: absolute;
             top: 0;
@@ -278,7 +278,7 @@
             height: 100%;
             pointer-events: none;
         }
-        
+
         /* Animation Keyframes */
         @keyframes bubbleRise {
             0% {
@@ -293,7 +293,7 @@
                 opacity: 0;
             }
         }
-        
+
         @keyframes bubbleDisappear {
             0% {
                 opacity: 0.8;
@@ -303,7 +303,7 @@
                 transform: scale(0);
             }
         }
-        
+
         @keyframes fadeIn {
             0% {
                 opacity: 0;
@@ -314,7 +314,7 @@
                 transform: translate(-50%, -50%) scale(1);
             }
         }
-        
+
         @keyframes fadeOut {
             0% {
                 opacity: 1;
@@ -325,33 +325,33 @@
                 transform: translate(-50%, -50%) scale(1.2);
             }
         }
-        
+
         /* Initially hide main content during animation */
         body:not(.animation-complete) {
             overflow: hidden;
             height: 100vh;
         }
-        
+
         body:not(.animation-complete) main {
             opacity: 0;
         }
-        
+
         body.animation-complete {
             overflow: auto;
             height: auto;
         }
-        
+
         body.animation-complete main {
             opacity: 1;
             transition: opacity 0.5s ease;
         }
-        
+
         /* Section Styles */
         .section {
             padding: 80px 0;
             position: relative;
         }
-        
+
         .section-title {
             font-size: clamp(2.5rem, 5vw, 3.5rem);
             font-weight: 800;
@@ -359,7 +359,7 @@
             margin-bottom: 20px;
             color: var(--text-primary);
         }
-        
+
         .section-subtitle {
             font-size: 1.2rem;
             color: var(--text-secondary);
@@ -369,21 +369,21 @@
             margin-left: auto;
             margin-right: auto;
         }
-        
+
         /* Pain Points Section - Red Theme */
         .pain-points-section {
             background: linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, rgba(255, 71, 87, 0.05) 100%);
             border-top: 2px solid rgba(255, 71, 87, 0.3);
             border-bottom: 2px solid rgba(255, 71, 87, 0.3);
         }
-        
+
         .pain-points-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 40px;
             margin-top: 60px;
         }
-        
+
         .pain-point-card {
             background: rgba(255, 71, 87, 0.1);
             border: 2px solid rgba(255, 71, 87, 0.3);
@@ -392,25 +392,25 @@
             text-align: center;
             transition: all 0.3s ease;
         }
-        
+
         .pain-point-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(255, 71, 87, 0.2);
         }
-        
+
         .pain-icon {
             font-size: 3rem;
             margin-bottom: 20px;
             display: block;
         }
-        
+
         .pain-title {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--pain-color);
             margin-bottom: 15px;
         }
-        
+
         /* Features Section */
         .features-grid {
             display: grid;
@@ -418,7 +418,7 @@
             gap: 40px;
             margin-top: 60px;
         }
-        
+
         .feature-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -427,25 +427,25 @@
             text-align: center;
             transition: all 0.3s ease;
         }
-        
+
         .feature-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
         }
-        
+
         .feature-icon {
             font-size: 3rem;
             margin-bottom: 20px;
             display: block;
         }
-        
+
         .feature-title {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary-color);
             margin-bottom: 15px;
         }
-        
+
         /* Products Section */
         .products-grid {
             display: grid;
@@ -453,7 +453,7 @@
             gap: 40px;
             margin-top: 60px;
         }
-        
+
         .product-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -464,12 +464,12 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .product-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
         }
-        
+
         .product-image {
             width: 120px;
             height: 120px;
@@ -477,27 +477,27 @@
             border-radius: 15px;
             overflow: hidden;
         }
-        
+
         .product-image img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
-        
+
         .product-name {
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--primary-color);
             margin-bottom: 10px;
         }
-        
+
         .product-price {
             font-size: 1.5rem;
             font-weight: 900;
             color: var(--secondary-color);
             margin-bottom: 20px;
         }
-        
+
         /* Testimonials Section */
         .testimonials-grid {
             display: grid;
@@ -505,7 +505,7 @@
             gap: 40px;
             margin-top: 60px;
         }
-        
+
         .testimonial-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -514,12 +514,12 @@
             text-align: center;
             transition: all 0.3s ease;
         }
-        
+
         .testimonial-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(0, 255, 136, 0.2);
         }
-        
+
         .testimonial-text {
             font-size: 1.1rem;
             font-style: italic;
@@ -527,51 +527,51 @@
             margin-bottom: 20px;
             line-height: 1.6;
         }
-        
+
         .testimonial-author {
             font-weight: 700;
             color: var(--secondary-color);
         }
-        
+
         /* CTA Section */
         .cta-section {
             background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 255, 136, 0.1) 100%);
             border-top: 2px solid rgba(0, 212, 255, 0.3);
             text-align: center;
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 40px;
             margin: 60px 0;
         }
-        
+
         .stat-item {
             text-align: center;
         }
-        
+
         .stat-number {
             font-size: 3rem;
             font-weight: 900;
             color: var(--secondary-color);
             display: block;
         }
-        
+
         .stat-label {
             font-size: 1rem;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        
+
         /* Newsletter Section */
         .newsletter-section {
             background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(0, 255, 136, 0.05) 100%);
             border-top: 1px solid rgba(0, 212, 255, 0.2);
             border-bottom: 1px solid rgba(0, 212, 255, 0.2);
         }
-        
+
         .newsletter-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -579,19 +579,19 @@
             align-items: center;
             margin-top: 60px;
         }
-        
+
         .newsletter-benefits {
             display: flex;
             flex-direction: column;
             gap: 30px;
         }
-        
+
         .benefit-item {
             display: flex;
             align-items: flex-start;
             gap: 15px;
         }
-        
+
         .benefit-icon {
             font-size: 2rem;
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
@@ -600,19 +600,19 @@
             background-clip: text;
             flex-shrink: 0;
         }
-        
+
         .benefit-item h4 {
             font-size: 1.2rem;
             font-weight: 700;
             color: var(--primary-color);
             margin-bottom: 5px;
         }
-        
+
         .benefit-item p {
             color: var(--text-secondary);
             line-height: 1.5;
         }
-        
+
         .newsletter-form-container {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -620,7 +620,7 @@
             padding: 40px;
             backdrop-filter: blur(15px);
         }
-        
+
         .newsletter-badge {
             background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
             color: var(--bg-primary);
@@ -633,18 +633,18 @@
             font-size: 0.9rem;
             margin-bottom: 30px;
         }
-        
+
         .newsletter-input-group {
             display: flex;
             gap: 15px;
             margin-bottom: 25px;
         }
-        
+
         .input-wrapper {
             position: relative;
             flex: 1;
         }
-        
+
         .newsletter-input {
             width: 100%;
             padding: 18px 50px 18px 20px;
@@ -655,13 +655,13 @@
             font-size: 1rem;
             transition: all 0.3s ease;
         }
-        
+
         .newsletter-input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
         }
-        
+
         .input-icon {
             position: absolute;
             right: 15px;
@@ -670,7 +670,7 @@
             font-size: 1.2rem;
             opacity: 0.6;
         }
-        
+
         .newsletter-button {
             background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
             color: white;
@@ -686,36 +686,36 @@
             gap: 8px;
             white-space: nowrap;
         }
-        
+
         .newsletter-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
         }
-        
+
         .newsletter-button:active {
             transform: scale(0.95);
         }
-        
+
         .newsletter-button.loading {
             background: linear-gradient(45deg, #ffa500, #ff8c00);
             pointer-events: none;
         }
-        
+
         .newsletter-button.loading .button-text {
             opacity: 0.7;
         }
-        
+
         .newsletter-button.loading .button-icon {
             animation: spin 1s linear infinite;
         }
-        
+
         .newsletter-options {
             display: flex;
             flex-direction: column;
             gap: 15px;
             margin-bottom: 20px;
         }
-        
+
         .checkbox-label {
             display: flex;
             align-items: center;
@@ -724,11 +724,11 @@
             cursor: pointer;
             font-size: 0.95rem;
         }
-        
+
         .checkbox-label input[type="checkbox"] {
             display: none;
         }
-        
+
         .checkmark {
             width: 20px;
             height: 20px;
@@ -742,29 +742,29 @@
             font-size: 12px;
             color: transparent;
         }
-        
+
         .checkbox-label input[type="checkbox"]:checked + .checkmark {
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             border-color: var(--primary-color);
             color: white;
         }
-        
+
         .newsletter-privacy {
             color: var(--text-muted);
             font-size: 0.85rem;
             line-height: 1.4;
             text-align: center;
         }
-        
+
         .newsletter-privacy a {
             color: var(--primary-color);
             text-decoration: none;
         }
-        
+
         .newsletter-privacy a:hover {
             text-decoration: underline;
         }
-        
+
         .newsletter-success,
         .newsletter-error {
             text-align: center;
@@ -772,32 +772,32 @@
             border-radius: 15px;
             margin-top: 20px;
         }
-        
+
         .newsletter-success {
             background: rgba(0, 255, 136, 0.1);
             border: 2px solid rgba(0, 255, 136, 0.3);
         }
-        
+
         .newsletter-success .success-icon {
             font-size: 3rem;
             margin-bottom: 15px;
         }
-        
+
         .newsletter-success h3 {
             color: var(--secondary-color);
             margin-bottom: 10px;
         }
-        
+
         .newsletter-error {
             background: rgba(255, 71, 87, 0.1);
             border: 2px solid rgba(255, 71, 87, 0.3);
         }
-        
+
         .newsletter-error .error-icon {
             font-size: 3rem;
             margin-bottom: 15px;
         }
-        
+
         .newsletter-error h3 {
             color: var(--accent-color);
             margin-bottom: 10px;
@@ -813,11 +813,11 @@
                 margin: 10px auto;
                 text-align: center;
             }
-            
+
             .section {
                 padding: 60px 0;
             }
-            
+
             .pain-points-grid,
             .features-grid,
             .products-grid,
@@ -825,27 +825,27 @@
                 grid-template-columns: 1fr;
                 gap: 30px;
             }
-            
+
             /* Newsletter mobile optimizations */
             .newsletter-container {
                 grid-template-columns: 1fr;
                 gap: 40px;
             }
-            
+
             .newsletter-input-group {
                 flex-direction: column;
                 gap: 15px;
             }
-            
+
             .newsletter-button {
                 width: 100%;
                 justify-content: center;
             }
-            
+
             .newsletter-form-container {
                 padding: 30px 20px;
             }
-            
+
             /* Reduce bubble effects on mobile for performance */
             .hero-animation-overlay .animation-bubble {
                 will-change: transform, opacity;
@@ -860,7 +860,7 @@
 
     <!-- Navigation Header -->
     <damp-header></damp-header>
-    
+
     <!-- Main Content -->
     <main id="main-content">
         <!-- Hero Section -->
@@ -870,13 +870,13 @@
                     <div class="hero-logo">
                         <img src="assets/images/logo/logo.png" alt="DAMP Logo" width="90" height="90" loading="eager" decoding="async">
                     </div>
-                    
+
                     <h1 class="hero-title">Never Leave Your Drink Behind</h1>
-                    
+
                     <p class="hero-subtitle">
                         Transform any cup into a smart device with DAMP. Get instant alerts when you're about to abandon your favorite beverage. Works with major brands and most drinkware.
                     </p>
-                    
+
                     <div class="hero-cta">
                         <a href="pages/pre-sale-funnel.html" class="btn btn-primary">
                             Pre-Order Now - Starting $29.99
@@ -899,38 +899,38 @@
                 <p class="section-subtitle">
                     Every coffee lover, office worker, and busy parent has been there. Don't let these moments ruin your day.
                 </p>
-                
+
                 <div class="pain-points-grid">
                     <div class="pain-point-card">
                         <span class="pain-icon">😫</span>
                         <h3 class="pain-title">Left Coffee at Home</h3>
                         <p>Rushing out the door, only to realize your full mug is sitting on the kitchen counter getting cold.</p>
                     </div>
-                    
+
                     <div class="pain-point-card">
                         <span class="pain-icon">💸</span>
                         <h3 class="pain-title">Wasted Money</h3>
                         <p>That $6 specialty drink forgotten in the conference room. Again. Your wallet feels the pain every time.</p>
                     </div>
-                    
+
                     <div class="pain-point-card">
                         <span class="pain-icon">🏃‍♂️</span>
                         <h3 class="pain-title">The Panic Run</h3>
                         <p>Sprinting back to retrieve your drink, hoping it's still there and hasn't been thrown away.</p>
                     </div>
-                    
+
                     <div class="pain-point-card">
                         <span class="pain-icon">🤦‍♀️</span>
                         <h3 class="pain-title">Meeting Room Mishaps</h3>
                         <p>Walking into the next meeting only to realize your drink is still in the previous room.</p>
                     </div>
-                    
+
                     <div class="pain-point-card">
                         <span class="pain-icon">😴</span>
                         <h3 class="pain-title">Afternoon Crash</h3>
                         <p>Missing your afternoon caffeine boost because you forgot where you left your energy drink.</p>
                     </div>
-                    
+
                     <div class="pain-point-card">
                         <span class="pain-icon">🚗</span>
                         <h3 class="pain-title">Car Cup Casualties</h3>
@@ -947,38 +947,38 @@
                 <p class="section-subtitle">
                     DAMP uses advanced BLE technology to keep you connected to your favorite beverages. Never experience drink abandonment again.
                 </p>
-                
+
                 <div class="features-grid">
                     <div class="feature-card">
                         <span class="feature-icon">📱</span>
                         <h3 class="feature-title">Instant Phone Alerts</h3>
                         <p>Get immediate notifications when you move too far from your drink. Customizable distance settings.</p>
                     </div>
-                    
+
                     <div class="feature-card">
                         <span class="feature-icon">🔋</span>
                         <h3 class="feature-title">6-Month Battery Life</h3>
                         <p>Long-lasting battery with low-power BLE technology. Charge once, forget for months.</p>
                     </div>
-                    
+
                     <div class="feature-card">
                         <span class="feature-icon">💧</span>
                         <h3 class="feature-title">Waterproof Design</h3>
                         <p>IP67 rated protection. Works perfectly with hot drinks, cold beverages, and dishwasher safe.</p>
                     </div>
-                    
+
                     <div class="feature-card">
                         <span class="feature-icon">🌍</span>
                         <h3 class="feature-title">Universal Compatibility</h3>
                         <p>Works with any cup, mug, or bottle. Universal design that attaches to most drinkware.</p>
                     </div>
-                    
+
                     <div class="feature-card">
                         <span class="feature-icon">🎯</span>
                         <h3 class="feature-title">Smart Detection</h3>
                         <p>Advanced sensors know when you're intentionally leaving vs. accidentally forgetting your drink.</p>
                     </div>
-                    
+
                     <div class="feature-card">
                         <span class="feature-icon">📊</span>
                         <h3 class="feature-title">Hydration Tracking</h3>
@@ -998,7 +998,7 @@
                 <p class="section-subtitle">
                     Four different form factors to match your lifestyle and drinkware preferences.
                 </p>
-                
+
                 <div class="products-grid">
                     <div class="product-card">
                         <div class="product-image">
@@ -1009,7 +1009,7 @@
                         <p>Universal handle attachment. Perfect for most travel mugs and drinkware.</p>
                         <a href="pages/damp-handle-v1.0.html" class="btn btn-primary btn-small">Learn More</a>
                     </div>
-                    
+
                     <div class="product-card">
                         <div class="product-image">
                             <img src="assets/images/products/silicone-bottom/silicone-bottom.png" alt="Silicone Bottom" width="120" height="120" loading="lazy" decoding="async">
@@ -1019,7 +1019,7 @@
                         <p>Non-slip silicone base that makes any cup smart. Dishwasher safe and durable.</p>
                         <a href="pages/silicone-bottom-v1.0.html" class="btn btn-primary btn-small">Learn More</a>
                     </div>
-                    
+
                     <div class="product-card">
                         <div class="product-image">
                             <img src="assets/images/products/cup-sleeve/cup-sleeve.png" alt="Cup Sleeve" width="120" height="120" loading="lazy" decoding="async">
@@ -1029,7 +1029,7 @@
                         <p>Adjustable sleeve with thermal insulation. Great for coffee cups and standard mugs.</p>
                         <a href="pages/cup-sleeve-v1.0.html" class="btn btn-primary btn-small">Learn More</a>
                     </div>
-                    
+
                     <!-- TEMPORARILY DISABLED: FDA Regulation Compliance Review
                     <div class="product-card">
                         <div class="product-image">
@@ -1042,7 +1042,7 @@
                     </div>
                     -->
                 </div>
-                
+
                 <div style="text-align: center; margin-top: 40px;">
                     <a href="pages/products.html" class="btn btn-secondary">View All Products</a>
                 </div>
@@ -1059,7 +1059,7 @@
                 <p class="section-subtitle">
                     Join thousands of satisfied customers who never leave their drink behind anymore.
                 </p>
-                
+
                 <div class="testimonials-grid">
                     <div class="testimonial-card">
                         <p class="testimonial-text">
@@ -1067,14 +1067,14 @@
                         </p>
                         <div class="testimonial-author">- Sarah M., Software Engineer</div>
                     </div>
-                    
+
                     <div class="testimonial-card">
                         <p class="testimonial-text">
                             "As a busy mom, I'm constantly forgetting my coffee around the house. DAMP helps me stay caffeinated and saves me money on reheating or making new cups."
                         </p>
                         <div class="testimonial-author">- Jennifer K., Parent</div>
                     </div>
-                    
+
                     <div class="testimonial-card">
                         <p class="testimonial-text">
                             "The universal design fits perfectly on my travel mug. Battery life is amazing - I charge it maybe once every few months. Highly recommend!"
@@ -1092,7 +1092,7 @@
                 <p class="section-subtitle">
                     Get exclusive updates on DAMP development, early access to new products, and insider tips to never lose your drink again.
                 </p>
-                
+
                 <div class="newsletter-container">
                     <div class="newsletter-benefits">
                         <div class="benefit-item">
@@ -1111,18 +1111,18 @@
                             <p>Subscriber-only discounts and limited-time offers</p>
                         </div>
                     </div>
-                    
+
                     <div class="newsletter-form-container">
                         <div class="newsletter-badge">
                             <span class="badge-icon">📧</span>
                             <span class="badge-text">Join 12,000+ DAMP enthusiasts</span>
                         </div>
-                        
+
                         <form class="newsletter-form" id="newsletterForm">
                             <div class="form-group newsletter-input-group">
                                 <div class="input-wrapper">
-                                    <input type="email" 
-                                           class="newsletter-input" 
+                                    <input type="email"
+                                           class="newsletter-input"
                                            id="newsletterEmail"
                                            name="email"
                                            placeholder="Enter your email address"
@@ -1135,7 +1135,7 @@
                                     <span class="button-icon">→</span>
                                 </button>
                             </div>
-                            
+
                             <div class="newsletter-options">
                                 <label class="checkbox-label">
                                     <input type="checkbox" name="productUpdates" checked>
@@ -1148,20 +1148,20 @@
                                     New product launch alerts
                                 </label>
                             </div>
-                            
+
                             <p class="newsletter-privacy">
-                                We respect your privacy. Unsubscribe at any time. 
+                                We respect your privacy. Unsubscribe at any time.
                                 <a href="pages/privacy-policy.html">Privacy Policy</a>
                             </p>
                         </form>
-                        
+
                         <!-- Success Message -->
                         <div class="newsletter-success" id="newsletterSuccess" style="display: none;">
                             <div class="success-icon">🎉</div>
                             <h3>Welcome to the DAMP Community!</h3>
                             <p>Thank you for subscribing! Check your email for a confirmation message and your exclusive welcome gift.</p>
                         </div>
-                        
+
                         <!-- Error Message -->
                         <div class="newsletter-error" id="newsletterError" style="display: none;">
                             <div class="error-icon">⚠️</div>
@@ -1180,7 +1180,7 @@
                 <p class="section-subtitle">
                     Join thousands of users who've eliminated drink abandonment from their daily routine.
                 </p>
-                
+
                 <div class="stats-grid">
                     <div class="stat-item">
                         <span class="stat-number">5,247</span>
@@ -1199,7 +1199,7 @@
                         <span class="stat-label">Success Rate</span>
                     </div>
                 </div>
-                
+
                 <div style="text-align: center; margin-top: 40px;">
                     <a href="pages/pre-sale-funnel.html" class="btn btn-primary" style="font-size: 1.3rem; padding: 20px 50px;">
                         🚀 Pre-Order Now - Early Bird Pricing
@@ -1214,29 +1214,29 @@
 
     <!-- Load Lighthouse Performance Optimizer First -->
     <script src="assets/js/performance/lighthouse-optimizer.js"></script>
-    
+
     <!-- Load Critical Scripts -->
     <script defer src="assets/js/components/header.js"></script>
     <script defer src="assets/js/components/hero-animation.js"></script>
-    
+
     <!-- Load Newsletter System (Non-Critical) -->
     <script defer src="assets/js/newsletter.js"></script>
-    
+
     <!-- Authentication Styles -->
     <link rel="stylesheet" href="assets/css/auth-styles.css">
-    
+
     <!-- Firebase Fallback Loader (handles module resolution issues) -->
     <script src="assets/js/firebase-fallback-loader.js"></script>
-    
+
     <!-- Modern Firebase Setup (ES6 Modules) -->
     <script type="module" src="assets/js/firebase-modern-setup.js"></script>
-    
+
     <!-- Firebase Configuration Validator -->
     <script type="module" src="assets/js/firebase-config-validator.js"></script>
-    
+
     <!-- Authentication Modal -->
     <script src="assets/js/auth-modal.js"></script>
-    
+
     <!-- Performance Optimized Loading -->
     <script>
         // Global function for hero animation completion
@@ -1245,7 +1245,7 @@
             document.body.classList.add('animation-complete');
             document.body.style.overflow = 'auto';
             document.body.style.height = 'auto';
-            
+
             // Ensure main content is visible
             const mainContent = document.querySelector('main');
             if (mainContent) {
@@ -1253,23 +1253,23 @@
                 mainContent.style.transition = 'opacity 0.5s ease';
             }
         };
-        
+
         // Ensure page loads immediately
         document.addEventListener('DOMContentLoaded', function() {
             console.log('✅ DAMP website loaded successfully');
-            
+
             // If no animation is playing, show content immediately
             setTimeout(() => {
                 if (!document.querySelector('.hero-animation-overlay')) {
                     window.showMainContent();
                 }
             }, 500);
-            
+
             // Load additional scripts after page is ready
             setTimeout(() => {
                 loadAdditionalScripts();
             }, 1000);
-            
+
             // Failsafe: Ensure content shows after 12 seconds maximum
             setTimeout(() => {
                 if (!document.body.classList.contains('animation-complete')) {
@@ -1278,7 +1278,7 @@
                 }
             }, 12000);
         });
-        
+
         function loadAdditionalScripts() {
             const additionalScripts = [
                 'assets/js/navigation.js',
@@ -1288,7 +1288,7 @@
                 'assets/js/performance/advanced-optimization.js',
                 'assets/js/performance/image-optimization.js'
             ];
-            
+
             additionalScripts.forEach((src, index) => {
                 setTimeout(() => {
                     const script = document.createElement('script');
@@ -1306,13 +1306,13 @@
     <script src="assets/js/service-worker-registration.js"></script>
 
     <!-- Authentication Module (loaded above as regular script) -->
-    
+
     <!-- AdSense Configuration -->
     <script src="assets/js/adsense-config.js"></script>
-    
+
     <!-- AdSense Manager -->
     <script src="assets/js/adsense-manager.js"></script>
-    
+
     <!-- Initialize Homepage Ads -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1323,7 +1323,7 @@
                     const afterHero = document.getElementById('ad-after-hero');
                     const betweenFeatures = document.getElementById('ad-between-features');
                     const beforeTestimonials = document.getElementById('ad-before-testimonials');
-                    
+
                     if (afterHero) {
                         const heroAd = window.dampAdsense.createAdUnit({
                             format: 'banner',
@@ -1332,7 +1332,7 @@
                         });
                         afterHero.appendChild(heroAd);
                     }
-                    
+
                     if (betweenFeatures) {
                         const featuresAd = window.dampAdsense.createAdUnit({
                             format: 'rectangle',
@@ -1341,7 +1341,7 @@
                         });
                         betweenFeatures.appendChild(featuresAd);
                     }
-                    
+
                     if (beforeTestimonials) {
                         const testimonialsAd = window.dampAdsense.createAdUnit({
                             format: 'banner',
@@ -1350,7 +1350,7 @@
                         });
                         beforeTestimonials.appendChild(testimonialsAd);
                     }
-                    
+
                     console.log('✅ DAMP Homepage ads initialized');
                 }
             }, 1000);
@@ -1372,7 +1372,7 @@
             gtag.async = true;
             gtag.src = 'https://www.googletagmanager.com/gtag/js?id=G-YW2BN4SVPQ';
             document.head.appendChild(gtag);
-            
+
             gtag.onload = function() {
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -1380,28 +1380,28 @@
                 gtag('config', 'G-YW2BN4SVPQ', {
                     debug_mode: window.location.hostname === 'localhost'
                 });
-                
+
                 // Track initial page load
                 gtag('event', 'page_view', {
                     page_title: document.title,
                     page_location: window.location.href
                 });
-                
+
                 console.log('✅ Firebase Analytics loaded deferred');
             };
-            
+
             // Load AdSense
             const adsense = document.createElement('script');
             adsense.async = true;
             adsense.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3639153716376265';
             adsense.crossOrigin = 'anonymous';
             document.head.appendChild(adsense);
-            
+
             adsense.onload = function() {
                 console.log('✅ AdSense loaded deferred');
             };
         }
-        
+
         // Load analytics and ads after page interaction or timeout
         let analyticsLoaded = false;
         function triggerAnalyticsLoad() {
@@ -1409,12 +1409,12 @@
             analyticsLoaded = true;
             loadAnalyticsAndAds();
         }
-        
+
         // Load on first user interaction
         ['mousedown', 'touchstart', 'keydown', 'scroll'].forEach(event => {
             document.addEventListener(event, triggerAnalyticsLoad, { once: true, passive: true });
         });
-        
+
         // Fallback: Load after 3 seconds
         setTimeout(triggerAnalyticsLoad, 3000);
     </script>

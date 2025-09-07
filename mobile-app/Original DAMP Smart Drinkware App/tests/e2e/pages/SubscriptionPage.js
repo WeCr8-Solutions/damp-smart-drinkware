@@ -1,6 +1,6 @@
 /**
  * Subscription Page Object
- * 
+ *
  * Represents the subscription management pages and provides methods
  * to interact with them in tests.
  */
@@ -11,7 +11,7 @@ export class SubscriptionPage {
    */
   constructor(page) {
     this.page = page;
-    
+
     // Selectors
     this.planCards = page.locator('[data-testid="plan-card"]');
     this.freePlan = page.locator('[data-testid="plan-card-free"]');

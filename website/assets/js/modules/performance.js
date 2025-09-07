@@ -22,4 +22,4 @@ class DAMPPerformanceMonitor {
     }
 
     // ... other vital observations
-} 
+}

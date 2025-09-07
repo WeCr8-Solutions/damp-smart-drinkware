@@ -47,7 +47,7 @@ module.exports = {
     '!**/*.test.js',
     '!**/tests/**'
   ],
-  
+
   coverageThreshold: {
     global: {
       branches: 90,
@@ -186,4 +186,4 @@ module.exports = {
 
   // Test results processor
   testResultsProcessor: '<rootDir>/tests/config/results-processor.js'
-}; 
+};

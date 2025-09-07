@@ -43,7 +43,7 @@ if (!process.env.DEBUG) {
 // Simple test utilities
 (global as any).testUtils = {
   wait: (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms)),
-  
+
   waitFor: async (condition: () => boolean, timeout = 5000, interval = 100) => {
     const start = Date.now();
     while (!condition() && Date.now() - start < timeout) {

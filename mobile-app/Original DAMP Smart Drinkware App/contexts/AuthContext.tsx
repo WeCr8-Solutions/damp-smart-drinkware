@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         setUser(null);
       }
-      
+
       setLoading(false);
     });
 
@@ -133,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // TODO: Update Firestore user profile document
-      
+
       return { error: null };
     } catch (error) {
       return { error };

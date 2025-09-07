@@ -26,7 +26,7 @@ describe('SecurityUtils', () => {
     test('should remove script tags', () => {
       const maliciousInput = '<script>alert("xss")</script>Hello World';
       const sanitized = SecurityUtils.sanitizeInput(maliciousInput);
-      
+
       expect(sanitized).toBe('Hello World');
       expect(sanitized).not.toContain('<script>');
     });
@@ -34,7 +34,7 @@ describe('SecurityUtils', () => {
     test('should remove javascript: protocol', () => {
       const maliciousInput = 'javascript:alert("xss")';
       const sanitized = SecurityUtils.sanitizeInput(maliciousInput);
-      
+
       expect(sanitized).toBe('alert("xss")');
       expect(sanitized).not.toContain('javascript:');
     });
@@ -42,7 +42,7 @@ describe('SecurityUtils', () => {
     test('should remove on* event handlers', () => {
       const maliciousInput = '<div onclick="alert(\'xss\')">Click me</div>';
       const sanitized = SecurityUtils.sanitizeInput(maliciousInput);
-      
+
       expect(sanitized).not.toContain('onclick=');
     });
 
@@ -55,7 +55,7 @@ describe('SecurityUtils', () => {
     test('should limit input length', () => {
       const longInput = 'a'.repeat(20000);
       const sanitized = SecurityUtils.sanitizeInput(longInput);
-      
+
       expect(sanitized.length).toBeLessThanOrEqual(10000);
     });
   });
@@ -156,7 +156,7 @@ describe('SecurityUtils', () => {
 
     test('should handle non-object responses', () => {
       const schema = { id: { type: 'string' as const, required: true } };
-      
+
       expect(SecurityUtils.validateApiResponse(null, schema)).toBe(false);
       expect(SecurityUtils.validateApiResponse('string', schema)).toBe(false);
       expect(SecurityUtils.validateApiResponse(123, schema)).toBe(false);
@@ -167,7 +167,7 @@ describe('SecurityUtils', () => {
     test('should generate random string of correct length', () => {
       const random32 = SecurityUtils.generateSecureRandom(32);
       const random16 = SecurityUtils.generateSecureRandom(16);
-      
+
       expect(random32.length).toBe(32);
       expect(random16.length).toBe(16);
       expect(random32).not.toBe(random16);
@@ -175,14 +175,14 @@ describe('SecurityUtils', () => {
 
     test('should use default length', () => {
       const randomDefault = SecurityUtils.generateSecureRandom();
-      
+
       expect(randomDefault.length).toBe(32);
     });
 
     test('should generate different values', () => {
       const random1 = SecurityUtils.generateSecureRandom(16);
       const random2 = SecurityUtils.generateSecureRandom(16);
-      
+
       expect(random1).not.toBe(random2);
     });
   });
@@ -191,33 +191,33 @@ describe('SecurityUtils', () => {
     test('should encrypt and decrypt data', () => {
       const originalData = 'sensitive information';
       const key = 'test-encryption-key';
-      
+
       const encrypted = SecurityUtils.encryptData(originalData, key);
       const decrypted = SecurityUtils.decryptData(encrypted, key);
-      
+
       expect(encrypted).not.toBe(originalData);
       expect(decrypted).toBe(originalData);
     });
 
     test('should handle encryption errors', () => {
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-      
+
       const result = SecurityUtils.encryptData('test', '');
-      
+
       expect(result).toBe('');
       expect(consoleSpy).toHaveBeenCalled();
-      
+
       consoleSpy.mockRestore();
     });
 
     test('should handle decryption errors', () => {
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-      
+
       const result = SecurityUtils.decryptData('invalid-encrypted-data', 'key');
-      
+
       expect(result).toBe('');
       expect(consoleSpy).toHaveBeenCalled();
-      
+
       consoleSpy.mockRestore();
     });
   });
@@ -226,7 +226,7 @@ describe('SecurityUtils', () => {
     test('should obfuscate long tokens', () => {
       const longToken = 'sk_live_1234567890abcdef1234567890abcdef';
       const obfuscated = SecurityUtils.obfuscateToken(longToken);
-      
+
       expect(obfuscated).toBe('sk_l***cdef');
       expect(obfuscated).not.toBe(longToken);
     });
@@ -234,7 +234,7 @@ describe('SecurityUtils', () => {
     test('should handle short tokens', () => {
       const shortToken = '12345678';
       const obfuscated = SecurityUtils.obfuscateToken(shortToken);
-      
+
       expect(obfuscated).toBe('***');
     });
 
@@ -253,7 +253,7 @@ describe('SecurityUtils', () => {
 
     test('should allow requests within limit', () => {
       const key = 'test-user';
-      
+
       expect(SecurityUtils.rateLimiter.isAllowed(key, 5, 60000)).toBe(true);
       expect(SecurityUtils.rateLimiter.isAllowed(key, 5, 60000)).toBe(true);
       expect(SecurityUtils.rateLimiter.isAllowed(key, 5, 60000)).toBe(true);
@@ -261,24 +261,24 @@ describe('SecurityUtils', () => {
 
     test('should block requests exceeding limit', () => {
       const key = 'test-user-blocked';
-      
+
       // Use up the limit
       for (let i = 0; i < 5; i++) {
         expect(SecurityUtils.rateLimiter.isAllowed(key, 5, 60000)).toBe(true);
       }
-      
+
       // This should be blocked
       expect(SecurityUtils.rateLimiter.isAllowed(key, 5, 60000)).toBe(false);
     });
 
     test('should reset rate limit', () => {
       const key = 'test-user-reset';
-      
+
       // Use up the limit
       for (let i = 0; i < 5; i++) {
         SecurityUtils.rateLimiter.isAllowed(key, 5, 60000);
       }
-      
+
       // Reset and try again
       SecurityUtils.rateLimiter.reset(key);
       expect(SecurityUtils.rateLimiter.isAllowed(key, 5, 60000)).toBe(true);
@@ -288,7 +288,7 @@ describe('SecurityUtils', () => {
   describe('JWT Validation', () => {
     test('should validate correct JWT format', () => {
       const validJWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-      
+
       expect(SecurityUtils.validateJWTFormat(validJWT)).toBe(true);
     });
 
@@ -311,9 +311,9 @@ describe('SecurityUtils', () => {
       const expiredPayload = btoa(JSON.stringify({
         exp: Math.floor(Date.now() / 1000) - 3600 // Expired 1 hour ago
       }));
-      
+
       const expiredJWT = `header.${expiredPayload}.signature`;
-      
+
       expect(SecurityUtils.isJWTExpired(expiredJWT)).toBe(true);
     });
 
@@ -321,9 +321,9 @@ describe('SecurityUtils', () => {
       const validPayload = btoa(JSON.stringify({
         exp: Math.floor(Date.now() / 1000) + 3600 // Expires in 1 hour
       }));
-      
+
       const validJWT = `header.${validPayload}.signature`;
-      
+
       expect(SecurityUtils.isJWTExpired(validJWT)).toBe(false);
     });
   });
@@ -331,21 +331,21 @@ describe('SecurityUtils', () => {
   describe('Security Headers', () => {
     test('should generate secure headers without token', () => {
       const headers = SecurityUtils.getSecureHeaders();
-      
+
       expect(headers).toMatchObject({
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
         'X-DAMP-Client': expect.any(String),
         'X-DAMP-Version': '1.0.0'
       });
-      
+
       expect(headers['Authorization']).toBeUndefined();
     });
 
     test('should generate secure headers with token', () => {
       const token = 'test-auth-token';
       const headers = SecurityUtils.getSecureHeaders(token);
-      
+
       expect(headers['Authorization']).toBe(`Bearer ${token}`);
     });
   });
@@ -380,21 +380,21 @@ describe('SecurityUtils', () => {
   describe('Security Threat Detection', () => {
     test('should detect development mode', () => {
       (global as any).__DEV__ = true;
-      
+
       const report = SecurityUtils.detectSecurityThreats();
-      
+
       expect(report.threats).toContain('debug_mode_enabled');
       expect(report.threatLevel).toBe('medium');
-      
+
       delete (global as any).__DEV__;
     });
 
     test('should return low threat level for clean environment', () => {
       // Ensure clean environment
       delete (global as any).__DEV__;
-      
+
       const report = SecurityUtils.detectSecurityThreats();
-      
+
       expect(report.threatLevel).toBe('low');
       expect(report.threats.length).toBe(0);
     });

@@ -4,17 +4,17 @@
  * Owner: zach@wecr8.info
  */
 
-import { 
-  collection, 
-  doc, 
-  getDocs, 
-  getDoc, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  orderBy,
   limit,
   onSnapshot,
   serverTimestamp,
@@ -23,25 +23,25 @@ import {
   writeBatch
 } from 'firebase/firestore';
 
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut, 
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
   updateProfile
 } from 'firebase/auth';
 
-import { 
-  getFunctions, 
-  httpsCallable 
+import {
+  getFunctions,
+  httpsCallable
 } from 'firebase/functions';
 
-import { 
-  ref, 
-  uploadBytes, 
-  getDownloadURL, 
-  deleteObject 
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject
 } from 'firebase/storage';
 
 import { auth, db, storage, analytics } from './firebase-config.js';
@@ -93,7 +93,7 @@ export class UnifiedAuthService {
   onAuthStateChange(callback) {
     this.listeners.add(callback);
     callback(this.currentUser, this.loading);
-    
+
     return () => {
       this.listeners.delete(callback);
     };
@@ -119,7 +119,7 @@ export class UnifiedAuthService {
   async signUp(email, password, userData = {}) {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
-      
+
       // Update display name if provided
       if (userData.displayName) {
         await updateProfile(result.user, {
@@ -182,7 +182,7 @@ export class UnifiedSubscriptionService {
         cancelUrl: cancelUrl || `${window.location.origin}/pages/subscription-cancel.html`,
         platform: 'web'
       });
-      
+
       return { url: result.data.url, sessionId: result.data.sessionId, error: null };
     } catch (error) {
       console.error('Subscription checkout error:', error);
@@ -235,7 +235,7 @@ export class UnifiedVotingService {
     try {
       const collection = type === 'authenticated' ? 'products' : 'public';
       const votingDoc = await getDoc(doc(db, 'voting', collection));
-      
+
       if (votingDoc.exists()) {
         return { data: votingDoc.data(), error: null };
       }
@@ -264,7 +264,7 @@ export class UnifiedVotingService {
       // Get current voting data
       const votingDoc = await getDoc(doc(db, 'voting', 'products'));
       const votingData = votingDoc.data();
-      
+
       if (!votingData.products[productId]) {
         return { success: false, error: 'Invalid product ID' };
       }
@@ -272,7 +272,7 @@ export class UnifiedVotingService {
       // Update vote count
       const updatedProducts = { ...votingData.products };
       updatedProducts[productId].votes += 1;
-      
+
       // Recalculate percentages
       const totalVotes = votingData.totalVotes + 1;
       Object.keys(updatedProducts).forEach(key => {
@@ -373,7 +373,7 @@ export class UnifiedEcommerceService {
   // Add to cart (matches mobile app logic)
   addToCart(product, quantity = 1, options = {}) {
     const existingIndex = this.cart.findIndex(
-      item => item.productId === product.id && 
+      item => item.productId === product.id &&
               JSON.stringify(item.options) === JSON.stringify(options)
     );
 
@@ -396,7 +396,7 @@ export class UnifiedEcommerceService {
   // Remove from cart
   removeFromCart(productId, options = {}) {
     this.cart = this.cart.filter(
-      item => !(item.productId === productId && 
+      item => !(item.productId === productId &&
                JSON.stringify(item.options) === JSON.stringify(options))
     );
     this.saveCart();
@@ -490,7 +490,7 @@ window.dampServices = {
   subscriptions: unifiedSubscriptions,
   voting: unifiedVoting,
   ecommerce: unifiedEcommerce,
-  
+
   // Firebase instances
   firebaseAuth: auth,
   firestore: db,

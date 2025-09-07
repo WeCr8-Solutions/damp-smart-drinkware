@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  FlatList, 
-  ActivityIndicator 
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { Bluetooth } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
-import { 
-  getAllDevices, 
-  getDevicesByStatus, 
+import {
+  getAllDevices,
+  getDevicesByStatus,
   getDevicesByType,
-  Device 
+  Device
 } from '@/utils/deviceManager';
 import DeviceCard from './DeviceCard';
 import DeviceInfoModal from './modals/DeviceInfoModal';
@@ -54,7 +54,7 @@ export default function DeviceList({
     setLoading(true);
     try {
       let userDevices: Device[] = [];
-      
+
       // Get devices based on filters
       if (filterByStatus !== 'all' && filterByType) {
         // Filter by both status and type
@@ -70,12 +70,12 @@ export default function DeviceList({
         // No filters
         userDevices = await getAllDevices();
       }
-      
+
       // Limit number of devices if maxDevices is specified
       if (maxDevices && userDevices.length > maxDevices) {
         userDevices = userDevices.slice(0, maxDevices);
       }
-      
+
       setDevices(userDevices);
     } catch (error) {
       console.error('Error loading devices:', error);
@@ -107,7 +107,7 @@ export default function DeviceList({
 
   const renderEmptyState = () => {
     if (!showEmptyState) return null;
-    
+
     return (
       <View style={styles.emptyState}>
         <Bluetooth size={48} color="#64B5F6" />
@@ -141,9 +141,9 @@ export default function DeviceList({
         <FlatList
           data={devices}
           renderItem={({ item }) => (
-            <DeviceCard 
-              device={item} 
-              onPress={handleDevicePress} 
+            <DeviceCard
+              device={item}
+              onPress={handleDevicePress}
             />
           )}
           keyExtractor={(item) => item.id}

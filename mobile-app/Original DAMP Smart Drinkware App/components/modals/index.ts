@@ -1,6 +1,6 @@
 /**
  * Modal Components Index
- * 
+ *
  * Central export point for all modal components
  */
 

@@ -25,7 +25,7 @@ The app is connected to the `damp-smart-drinkware` Firebase project with the fol
 ## Setup Instructions
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 - Expo CLI (`npm install -g @expo/cli`)
 - Android Studio (for Android development)
@@ -104,7 +104,7 @@ mobile-app/
 
 ### 5. E-commerce Integration
 - [ ] Product catalog
-- [ ] Pre-order functionality  
+- [ ] Pre-order functionality
 - [ ] Order tracking
 - [ ] Payment processing
 
@@ -151,7 +151,7 @@ useEffect(() => {
     }));
     setDevices(devices);
   });
-  
+
   return unsubscribe;
 }, []);
 ```
@@ -198,7 +198,7 @@ Notifications.setNotificationHandler({
 - Utility functions
 - Component logic
 
-### Integration Tests  
+### Integration Tests
 - Authentication flow
 - Device pairing process
 - Notification handling
@@ -220,7 +220,7 @@ expo start
 # iOS
 expo build:ios
 
-# Android  
+# Android
 expo build:android
 ```
 
@@ -253,4 +253,4 @@ EXPO_PUBLIC_API_URL=https://your-api.com
 For questions or issues:
 - Email: zach@wecr8.info
 - Firebase Console: [damp-smart-drinkware](https://console.firebase.google.com/project/damp-smart-drinkware)
-- GitHub Issues: [Create Issue](https://github.com/WeCr8/damp-smart-drinkware/issues) 
+- GitHub Issues: [Create Issue](https://github.com/WeCr8/damp-smart-drinkware/issues)

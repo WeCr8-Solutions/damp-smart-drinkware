@@ -25,11 +25,11 @@ export class DampStorageManager {
       const optimizedFile = await this.optimizeImage(file);
       const fileName = `${imageType}_${Date.now()}_${file.name}`;
       const path = `products/${productId}/images/${fileName}`;
-      
+
       const storageRef = ref(this.storage, path);
       const snapshot = await uploadBytes(storageRef, optimizedFile);
       const downloadURL = await getDownloadURL(snapshot.ref);
-      
+
       console.log('Product image uploaded:', downloadURL);
       return {
         url: downloadURL,
@@ -71,11 +71,11 @@ export class DampStorageManager {
       const optimizedFile = await this.optimizeImage(file, 300, 300); // Profile image size
       const fileName = `profile_${Date.now()}.jpg`;
       const path = `users/${userId}/profile/${fileName}`;
-      
+
       const storageRef = ref(this.storage, path);
       const snapshot = await uploadBytes(storageRef, optimizedFile);
       const downloadURL = await getDownloadURL(snapshot.ref);
-      
+
       return {
         url: downloadURL,
         path: path,
@@ -100,10 +100,10 @@ export class DampStorageManager {
       const optimizedFile = await this.optimizeImage(file, 800, 600);
       const fileName = `device_${Date.now()}_${file.name}`;
       const path = `devices/${userId}/images/${deviceId}/${fileName}`;
-      
+
       const storageRef = ref(this.storage, path);
       const uploadTask = uploadBytesResumable(storageRef, optimizedFile);
-      
+
       // Return upload task for progress tracking
       return this.trackUploadProgress(uploadTask);
     } catch (error) {
@@ -128,11 +128,11 @@ export class DampStorageManager {
 
       const fileName = `${deviceType}_v${version}_${Date.now()}.bin`;
       const path = `firmware/${deviceType}/${fileName}`;
-      
+
       const storageRef = ref(this.storage, path);
       const snapshot = await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(snapshot.ref);
-      
+
       return {
         url: downloadURL,
         path: path,
@@ -156,11 +156,11 @@ export class DampStorageManager {
       const userPath = userId ? `users/${userId}/` : 'public/';
       const fileName = `${category}_${Date.now()}_${file.name}`;
       const path = `documents/${userPath}${fileName}`;
-      
+
       const storageRef = ref(this.storage, path);
       const snapshot = await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(snapshot.ref);
-      
+
       return {
         url: downloadURL,
         path: path,
@@ -184,11 +184,11 @@ export class DampStorageManager {
       const campaignPath = campaign ? `${campaign}/` : '';
       const fileName = `${assetType}_${Date.now()}_${file.name}`;
       const path = `marketing/${campaignPath}${fileName}`;
-      
+
       const storageRef = ref(this.storage, path);
       const snapshot = await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(snapshot.ref);
-      
+
       return {
         url: downloadURL,
         path: path,
@@ -220,7 +220,7 @@ export class DampStorageManager {
     try {
       const storageRef = ref(this.storage, path);
       const result = await listAll(storageRef);
-      
+
       const files = [];
       for (const item of result.items) {
         const url = await getDownloadURL(item);
@@ -230,7 +230,7 @@ export class DampStorageManager {
           url: url
         });
       }
-      
+
       return files;
     } catch (error) {
       console.error('Error listing files:', error);
@@ -267,25 +267,25 @@ export class DampStorageManager {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const img = new Image();
-      
+
       img.onload = () => {
         // Calculate new dimensions
         let { width, height } = img;
-        
+
         if (width > maxWidth || height > maxHeight) {
           const ratio = Math.min(maxWidth / width, maxHeight / height);
           width *= ratio;
           height *= ratio;
         }
-        
+
         canvas.width = width;
         canvas.height = height;
-        
+
         // Draw and compress
         ctx.drawImage(img, 0, 0, width, height);
         canvas.toBlob(resolve, 'image/jpeg', quality);
       };
-      
+
       img.src = URL.createObjectURL(file);
     });
   }
@@ -296,7 +296,7 @@ export class DampStorageManager {
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log('Upload progress:', progress + '%');
-          
+
           // You can emit events here for UI progress bars
           document.dispatchEvent(new CustomEvent('uploadProgress', {
             detail: { progress, snapshot }
@@ -329,17 +329,17 @@ export class DampStorageManager {
   async uploadMultipleFiles(files, basePath, options = {}) {
     const results = [];
     const errors = [];
-    
+
     for (let i = 0; i < files.length; i++) {
       try {
         const file = files[i];
         const fileName = options.prefix ? `${options.prefix}_${i}_${file.name}` : file.name;
         const path = `${basePath}/${fileName}`;
-        
+
         const storageRef = ref(this.storage, path);
         const snapshot = await uploadBytes(storageRef, file);
         const downloadURL = await getDownloadURL(snapshot.ref);
-        
+
         results.push({
           index: i,
           url: downloadURL,
@@ -355,7 +355,7 @@ export class DampStorageManager {
         });
       }
     }
-    
+
     return { results, errors };
   }
 }
@@ -364,16 +364,16 @@ export class DampStorageManager {
 export const dampStorage = new DampStorageManager();
 
 // Export individual functions for convenience
-export const uploadProductImage = (file, productId, imageType) => 
+export const uploadProductImage = (file, productId, imageType) =>
   dampStorage.uploadProductImage(file, productId, imageType);
 
-export const uploadUserProfileImage = (file, userId) => 
+export const uploadUserProfileImage = (file, userId) =>
   dampStorage.uploadUserProfileImage(file, userId);
 
-export const uploadDeviceImage = (file, userId, deviceId) => 
+export const uploadDeviceImage = (file, userId, deviceId) =>
   dampStorage.uploadDeviceImage(file, userId, deviceId);
 
-export const deleteFile = (path) => 
+export const deleteFile = (path) =>
   dampStorage.deleteFile(path);
 
-export default dampStorage; 
+export default dampStorage;

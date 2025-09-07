@@ -31,7 +31,7 @@ const TEST_DEVICE_ID = 'emulator-test-device-' + Date.now();
  */
 async function testAuthenticationFunctions() {
   console.log('🔐 Testing Authentication Functions...');
-  
+
   try {
     // Test 1: User Profile Creation
     const userData = {
@@ -40,7 +40,7 @@ async function testAuthenticationFunctions() {
       displayName: 'Emulator Test User',
       emailVerified: true,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      
+
       // Authentication preferences
       preferences: {
         notifications: {
@@ -68,7 +68,7 @@ async function testAuthenticationFunctions() {
           hapticFeedback: true,
         }
       },
-      
+
       // User statistics
       stats: {
         votesCount: 0,
@@ -82,14 +82,14 @@ async function testAuthenticationFunctions() {
           mobile: { appOpens: 0 }
         }
       },
-      
+
       // Social features
       social: {
         following: [],
         followers: [],
         blockedUsers: [],
       },
-      
+
       // Loyalty program
       loyalty: {
         tier: 'bronze',
@@ -97,14 +97,14 @@ async function testAuthenticationFunctions() {
         lifetimePoints: 100,
         nextTierRequirement: 500,
       },
-      
+
       // Subscription
       subscription: {
         plan: 'free',
         status: 'active',
         stripeCustomerId: null,
       },
-      
+
       // Security
       security: {
         lastPasswordChange: admin.firestore.FieldValue.serverTimestamp(),
@@ -154,7 +154,7 @@ async function testAuthenticationFunctions() {
  */
 async function testStripeIntegration() {
   console.log('💳 Testing Stripe Integration...');
-  
+
   try {
     // Test 1: Subscription Plans Configuration
     const subscriptionPlans = {
@@ -168,7 +168,7 @@ async function testStripeIntegration() {
         features: ['Basic device tracking', 'Email notifications']
       },
       premium: {
-        id: 'premium', 
+        id: 'premium',
         name: 'Premium Plan',
         price: 9.99,
         currency: 'usd',
@@ -298,7 +298,7 @@ async function testStripeIntegration() {
  */
 async function testDeviceManagement() {
   console.log('📱 Testing Device Management...');
-  
+
   try {
     // Test 1: Device Registration
     const deviceData = {
@@ -384,7 +384,7 @@ async function testDeviceManagement() {
  */
 async function testVotingSystem() {
   console.log('🗳️ Testing Voting System...');
-  
+
   try {
     // Test 1: Cast Vote
     const voteData = {
@@ -434,7 +434,7 @@ async function testVotingSystem() {
  */
 async function testNotificationSystem() {
   console.log('🔔 Testing Notification System...');
-  
+
   try {
     // Test 1: FCM Token Storage
     const fcmToken = 'emulator_test_token_' + Date.now();
@@ -505,7 +505,7 @@ async function testNotificationSystem() {
  */
 async function testDataQueries() {
   console.log('🔍 Testing Data Queries...');
-  
+
   try {
     // Test 1: User Profile Query
     const userDoc = await db.collection('users').doc(TEST_USER_ID).get();
@@ -555,20 +555,20 @@ async function testDataQueries() {
  */
 async function cleanupTestData() {
   console.log('🧹 Cleaning up test data...');
-  
+
   try {
     const batch = db.batch();
-    
+
     // Delete main documents
     batch.delete(db.collection('users').doc(TEST_USER_ID));
     batch.delete(db.collection('devices').doc(TEST_DEVICE_ID));
-    
+
     await batch.commit();
-    
+
     // Clean up collections with auto-generated IDs
     const collections = [
       'subscriptions',
-      'stripe_customers', 
+      'stripe_customers',
       'subscription_events',
       'webhook_logs',
       'userVotes',
@@ -577,12 +577,12 @@ async function cleanupTestData() {
       'notifications',
       'user_activity'
     ];
-    
+
     for (const collectionName of collections) {
       const query = await db.collection(collectionName)
         .where('userId', '==', TEST_USER_ID)
         .get();
-      
+
       if (!query.empty) {
         const deleteBatch = db.batch();
         query.forEach(doc => {
@@ -591,9 +591,9 @@ async function cleanupTestData() {
         await deleteBatch.commit();
       }
     }
-    
+
     console.log('✅ Test data cleaned up successfully');
-    
+
   } catch (error) {
     console.error('❌ Cleanup failed:', error.message);
   }
@@ -605,25 +605,25 @@ async function cleanupTestData() {
 async function runEmulatorTests() {
   try {
     console.log('🎬 Starting comprehensive testing...\n');
-    
+
     await testAuthenticationFunctions();
     console.log();
-    
+
     await testStripeIntegration();
     console.log();
-    
+
     await testDeviceManagement();
     console.log();
-    
+
     await testVotingSystem();
     console.log();
-    
+
     await testNotificationSystem();
     console.log();
-    
+
     await testDataQueries();
     console.log();
-    
+
     console.log('🎉 All emulator tests completed successfully!');
     console.log('✅ Authentication functions are working perfectly');
     console.log('✅ Stripe integration is fully functional');
@@ -631,7 +631,7 @@ async function runEmulatorTests() {
     console.log('✅ Voting system is working correctly');
     console.log('✅ Notification system is functional');
     console.log('🚀 Your Firebase project is ready for production!');
-    
+
   } catch (error) {
     console.error('💥 Test suite failed:', error);
     process.exit(1);

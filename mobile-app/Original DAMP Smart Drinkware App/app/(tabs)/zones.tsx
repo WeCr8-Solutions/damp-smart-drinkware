@@ -28,7 +28,7 @@ export default function ZonesScreen() {
   useEffect(() => {
     loadZones();
     setupEventListener();
-    
+
     return () => {
       if (monitoring) {
         zoneManager.stopMonitoring();
@@ -110,7 +110,7 @@ export default function ZonesScreen() {
     const now = new Date();
     const diff = now.getTime() - timestamp.getTime();
     const minutes = Math.floor(diff / 60000);
-    
+
     if (minutes < 1) return 'Just now';
     if (minutes < 60) return `${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
@@ -129,7 +129,7 @@ export default function ZonesScreen() {
           style: 'destructive',
           onPress: async () => {
             if (!user) return;
-            
+
             const result = await zoneManager.deleteZone(zone.id, user.id);
             if (result.success) {
               loadZones();
@@ -147,7 +147,7 @@ export default function ZonesScreen() {
     const activeZones = zones.filter(z => z.status === 'active').length;
     const totalDevices = zones.reduce((sum, zone) => sum + zone.deviceIds.length, 0);
     const totalEvents = zones.reduce((sum, zone) => sum + zone.stats.totalEntries + zone.stats.totalExits, 0);
-    
+
     return { activeZones, totalDevices, totalEvents };
   };
 
@@ -228,7 +228,7 @@ export default function ZonesScreen() {
               <Text style={styles.sectionTitle}>Recent Activity</Text>
               {recentEvents.slice(0, 3).map((event, index) => {
                 const zone = zones.find(z => z.id === event.zoneId);
-                
+
                 return (
                   <View key={`${event.zoneId}-${event.timestamp.getTime()}`} style={styles.eventCard}>
                     <View style={styles.eventIcon}>
@@ -242,7 +242,7 @@ export default function ZonesScreen() {
                     </View>
                     <View style={styles.eventInfo}>
                       <Text style={styles.eventTitle}>
-                        {event.type === 'enter' ? 'Zone Entry' : 
+                        {event.type === 'enter' ? 'Zone Entry' :
                          event.type === 'exit' ? 'Zone Exit' : 'Zone Event'}
                       </Text>
                       <Text style={styles.eventSubtitle}>

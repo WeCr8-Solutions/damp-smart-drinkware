@@ -3,11 +3,11 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'rea
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Plus, Coffee, Baby, Droplets, Bluetooth, Search, CircleCheck as CheckCircle } from 'lucide-react-native';
-import { 
-  addDevice, 
+import {
+  addDevice,
   validateDeviceInput,
   type DeviceInput,
-  type DeviceType 
+  type DeviceType
 } from '@/utils/deviceManager';
 
 interface DeviceTypeInfo {
@@ -92,7 +92,7 @@ export default function AddDeviceScreen() {
   const startScanning = () => {
     setScanning(true);
     setDiscoveredDevices([]);
-    
+
     // Simulate device discovery
     setTimeout(() => {
       const mockDevices: DiscoveredDevice[] = [
@@ -121,7 +121,7 @@ export default function AddDeviceScreen() {
 
   const handlePairDevice = async (discoveredDevice: DiscoveredDevice) => {
     setStep('pair');
-    
+
     try {
       // Create device input from discovered device
       const deviceInput: DeviceInput = {
@@ -143,9 +143,9 @@ export default function AddDeviceScreen() {
       }
 
       // Add the device
-      const result = await addDevice(deviceInput, { 
+      const result = await addDevice(deviceInput, {
         timeout: 15000,
-        notify: true 
+        notify: true
       });
 
       if (result.success) {

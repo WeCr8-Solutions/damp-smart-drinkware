@@ -39,7 +39,7 @@ export const handleStripeWebhook = functions.https.onRequest(async (req, res) =>
   try {
     // Process webhook event
     await processWebhookEvent(event);
-    
+
     // Log successful webhook processing
     await admin.firestore().collection('webhook_logs').add({
       eventId: event.id,
@@ -52,7 +52,7 @@ export const handleStripeWebhook = functions.https.onRequest(async (req, res) =>
 
   } catch (error) {
     console.error('Error handling webhook:', error);
-    
+
     // Log failed webhook processing
     await admin.firestore().collection('webhook_logs').add({
       eventId: event.id,
@@ -75,11 +75,11 @@ async function processWebhookEvent(event: Stripe.Event): Promise<void> {
     case 'customer.subscription.created':
       await handleSubscriptionCreated(event.data.object as Stripe.Subscription);
       break;
-    
+
     case 'customer.subscription.updated':
       await handleSubscriptionUpdated(event.data.object as Stripe.Subscription);
       break;
-    
+
     case 'customer.subscription.deleted':
       await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
       break;
@@ -88,7 +88,7 @@ async function processWebhookEvent(event: Stripe.Event): Promise<void> {
     case 'invoice.payment_succeeded':
       await handlePaymentSucceeded(event.data.object as Stripe.Invoice);
       break;
-    
+
     case 'invoice.payment_failed':
       await handlePaymentFailed(event.data.object as Stripe.Invoice);
       break;
@@ -289,7 +289,7 @@ async function handleUpcomingInvoice(invoice: Stripe.Invoice): Promise<void> {
  */
 async function handleCustomerCreated(customer: Stripe.Customer): Promise<void> {
   console.log('Processing customer created:', customer.id);
-  
+
   // Log customer creation - user will be linked when subscription is created
   await admin.firestore().collection('stripe_customers').doc(customer.id).set({
     customerId: customer.id,

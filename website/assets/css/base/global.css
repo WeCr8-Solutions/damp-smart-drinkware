@@ -208,19 +208,19 @@ section {
     .container {
         padding: 0 var(--space-4);
     }
-    
+
     section {
         padding: var(--space-12) 0;
     }
-    
+
     .grid-cols-2 {
         grid-template-columns: 1fr;
     }
-    
+
     .grid-cols-3 {
         grid-template-columns: 1fr;
     }
-    
+
     .grid-cols-4 {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -239,15 +239,15 @@ section {
         color: black;
         padding: 0;
     }
-    
+
     .container {
         max-width: none;
         padding: 0;
     }
-    
+
     nav,
     .hamburger,
     .mobile-menu {
         display: none;
     }
-} 
+}

@@ -62,12 +62,12 @@ export async function getUserProfile(userId?: string): Promise<UserProfile | nul
   try {
     const currentUser = auth.currentUser;
     const targetUserId = userId || currentUser?.uid;
-    
+
     if (!targetUserId) return null;
-    
+
     const userDocRef = doc(db, 'profiles', targetUserId);
     const userDoc = await getDoc(userDocRef);
-    
+
     if (!userDoc.exists()) {
       // Create a default profile if it doesn't exist
       const defaultProfile: UserProfile = {
@@ -84,11 +84,11 @@ export async function getUserProfile(userId?: string): Promise<UserProfile | nul
         updated_at: new Date().toISOString(),
         last_login: new Date().toISOString(),
       };
-      
+
       await setDoc(userDocRef, defaultProfile);
       return defaultProfile;
     }
-    
+
     return userDoc.data() as UserProfile;
   } catch (error) {
     console.error('Error in getUserProfile:', error);
@@ -107,17 +107,17 @@ export async function updateUserProfile(updates: Partial<UserProfile>): Promise<
 
   try {
     const currentUser = auth.currentUser;
-    
+
     if (!currentUser) return null;
-    
+
     const userDocRef = doc(db, 'profiles', currentUser.uid);
     const updateData = {
       ...updates,
       updated_at: new Date().toISOString(),
     };
-    
+
     await updateDoc(userDocRef, updateData);
-    
+
     // Return the updated profile
     return await getUserProfile(currentUser.uid);
   } catch (error) {
@@ -137,9 +137,9 @@ export async function registerCurrentDevice(): Promise<DeviceRegistration | null
 
   try {
     const currentUser = auth.currentUser;
-    
+
     if (!currentUser) return null;
-    
+
     const deviceId = `${currentUser.uid}_${getDeviceType()}_${Date.now()}`;
     const deviceRegistration: DeviceRegistration = {
       id: deviceId,
@@ -157,10 +157,10 @@ export async function registerCurrentDevice(): Promise<DeviceRegistration | null
         platform: Platform.OS,
       }
     };
-    
+
     const deviceDocRef = doc(db, 'user_devices', deviceId);
     await setDoc(deviceDocRef, deviceRegistration);
-    
+
     return deviceRegistration;
   } catch (error) {
     console.error('Error in registerCurrentDevice:', error);
@@ -180,21 +180,21 @@ export async function getUserDevices(userId?: string): Promise<DeviceRegistratio
   try {
     const currentUser = auth.currentUser;
     const targetUserId = userId || currentUser?.uid;
-    
+
     if (!targetUserId) return [];
-    
+
     const devicesQuery = query(
       collection(db, 'user_devices'),
       where('user_id', '==', targetUserId)
     );
-    
+
     const querySnapshot = await getDocs(devicesQuery);
     const devices: DeviceRegistration[] = [];
-    
+
     querySnapshot.forEach((doc) => {
       devices.push(doc.data() as DeviceRegistration);
     });
-    
+
     return devices;
   } catch (error) {
     console.error('Error in getUserDevices:', error);
@@ -212,19 +212,19 @@ export async function getUserGreeting(name?: string): Promise<string> {
 
   try {
     const currentUser = auth.currentUser;
-    
+
     if (!currentUser) return getDefaultGreeting();
-    
+
     // Try to get user profile for personalized greeting
     const profile = await getUserProfile(currentUser.uid);
     const userName = name || profile?.full_name || currentUser.displayName;
-    
+
     const timeGreeting = getDefaultGreeting();
-    
+
     if (userName) {
       return `${timeGreeting}, ${userName.split(' ')[0]}!`;
     }
-    
+
     return timeGreeting;
   } catch (error) {
     console.error('Error in getUserGreeting:', error);
@@ -236,7 +236,7 @@ export async function getUserGreeting(name?: string): Promise<string> {
  * Create or update a custom greeting for the user in Firebase Firestore
  */
 export async function setCustomGreeting(
-  message: string, 
+  message: string,
   timeContext: TimeOfDay = 'any'
 ): Promise<UserGreeting | null> {
   if (!FeatureFlags.FIREBASE) {
@@ -246,9 +246,9 @@ export async function setCustomGreeting(
 
   try {
     const currentUser = auth.currentUser;
-    
+
     if (!currentUser) return null;
-    
+
     const greetingId = `${currentUser.uid}_${timeContext}`;
     const customGreeting: UserGreeting = {
       id: greetingId,
@@ -260,10 +260,10 @@ export async function setCustomGreeting(
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
-    
+
     const greetingDocRef = doc(db, 'user_greetings', greetingId);
     await setDoc(greetingDocRef, customGreeting);
-    
+
     return customGreeting;
   } catch (error) {
     console.error('Error in setCustomGreeting:', error);
@@ -279,7 +279,7 @@ function getDeviceType(): 'mobile' | 'desktop' | 'tablet' {
     // Simple detection for web
     const userAgent = navigator.userAgent.toLowerCase();
     const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
-    
+
     if (isTablet) return 'tablet';
     if (/mobile|iphone|ipod|android|blackberry|opera mini|iemobile|wpdesktop/i.test(userAgent)) return 'mobile';
     return 'desktop';
@@ -313,7 +313,7 @@ function getOperatingSystem(): string {
  */
 export function getTimeOfDay(): TimeOfDay {
   const hour = new Date().getHours();
-  
+
   if (hour >= 5 && hour < 12) return 'morning';
   if (hour >= 12 && hour < 17) return 'afternoon';
   if (hour >= 17 && hour < 22) return 'evening';
@@ -325,7 +325,7 @@ export function getTimeOfDay(): TimeOfDay {
  */
 function getDefaultGreeting(timeContext?: TimeOfDay): string {
   const time = timeContext || getTimeOfDay();
-  
+
   switch (time) {
     case 'morning':
       return 'Good morning';

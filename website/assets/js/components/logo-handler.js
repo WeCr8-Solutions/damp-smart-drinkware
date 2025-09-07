@@ -25,22 +25,22 @@ class DAMPLogoHandler {
                         <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
                     </filter>
                 </defs>
-                <path d="M50 10 
-                         Q30 30 25 50 
-                         Q25 70 35 80 
-                         Q45 90 50 90 
-                         Q55 90 65 80 
-                         Q75 70 75 50 
-                         Q70 30 50 10 Z" 
-                      fill="url(#logoDropletGradient)" 
+                <path d="M50 10
+                         Q30 30 25 50
+                         Q25 70 35 80
+                         Q45 90 50 90
+                         Q55 90 65 80
+                         Q75 70 75 50
+                         Q70 30 50 10 Z"
+                      fill="url(#logoDropletGradient)"
                       filter="url(#logoDropShadow)"
-                      stroke="#a0a0a0" 
+                      stroke="#a0a0a0"
                       stroke-width="1"/>
                 <ellipse cx="42" cy="35" rx="8" ry="12" fill="#ffffff" opacity="0.6"/>
                 <ellipse cx="45" cy="30" rx="4" ry="6" fill="#ffffff" opacity="0.8"/>
             </svg>
         `;
-        
+
         this.fallbackSVG = 'data:image/svg+xml;base64,' + btoa(svgString);
     }
 
@@ -72,11 +72,11 @@ class DAMPLogoHandler {
      * Setup logo element with fallback chain
      */
     setupLogo(logoElement, options = {}) {
-        const { 
-            useFavicon = false, 
-            onLoad = null, 
+        const {
+            useFavicon = false,
+            onLoad = null,
             onError = null,
-            onFallback = null 
+            onFallback = null
         } = options;
 
         const paths = useFavicon ? this.getFaviconPaths() : this.getLogoPaths();
@@ -85,11 +85,11 @@ class DAMPLogoHandler {
         const tryNextLogo = () => {
             if (currentIndex < paths.length) {
                 logoElement.src = paths[currentIndex];
-                
+
                 if (currentIndex === paths.length - 1 && onFallback) {
                     onFallback(logoElement);
                 }
-                
+
                 currentIndex++;
             }
         };
@@ -143,7 +143,7 @@ class DAMPLogoHandler {
      */
     enhanceExistingLogos(selector = 'img[src*="logo"], img[src*="icon"]') {
         const logoElements = document.querySelectorAll(selector);
-        
+
         logoElements.forEach(element => {
             const useFavicon = element.src.includes('favicon');
             this.setupLogo(element, { useFavicon });
@@ -174,13 +174,13 @@ class DAMPLogoHandler {
      */
     async getBestLogo(useFavicon = false) {
         const paths = useFavicon ? this.getFaviconPaths() : this.getLogoPaths();
-        
+
         for (const path of paths) {
             if (await this.testLogo(path)) {
                 return path;
             }
         }
-        
+
         return this.fallbackSVG;
     }
 }
@@ -202,4 +202,4 @@ if (document.readyState === 'loading') {
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DAMPLogoHandler;
-} 
+}

@@ -1,16 +1,16 @@
 /**
  * Reusable Category Slider Component
- * 
+ *
  * A horizontal scrollable list of category buttons with consistent styling
  */
 
 import React from 'react';
-import { 
-  ScrollView, 
-  TouchableOpacity, 
-  Text, 
-  StyleSheet, 
-  View 
+import {
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  View
 } from 'react-native';
 import { ReactNode } from 'react';
 

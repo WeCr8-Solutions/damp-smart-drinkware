@@ -23,4 +23,4 @@ module.exports = {
       deviceScaleFactor: 2,
       disabled: false
     },
-    emulatedUserAgent: 'Mozilla/5.0 (Linux; Android 7.0; M 
+    emulatedUserAgent: 'Mozilla/5.0 (Linux; Android 7.0; M

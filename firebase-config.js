@@ -27,7 +27,7 @@ module.exports = {
   adminConfig,
   projectInfo: {
     name: "damp-smart-drinkware",
-    id: "damp-smart-drinkware", 
+    id: "damp-smart-drinkware",
     number: "309818614427",
     environment: "production"
   }

@@ -1,6 +1,6 @@
 /**
  * Zone Manager Unit Tests
- * 
+ *
  * Comprehensive test suite for the ZoneManager functionality
  */
 
@@ -274,7 +274,7 @@ describe('ZoneManager', () => {
 
     test('should trigger entry event', async () => {
       const deviceId = 'device-123';
-      
+
       // Move device into zone
       await zoneManager.processLocationUpdate(
         deviceId,
@@ -290,13 +290,13 @@ describe('ZoneManager', () => {
 
     test('should trigger exit event', async () => {
       const deviceId = 'device-123';
-      
+
       // First, enter the zone
       await zoneManager.processLocationUpdate(deviceId, 37.7749, -122.4194);
-      
+
       // Clear previous events
       receivedEvents = [];
-      
+
       // Move device out of zone
       await zoneManager.processLocationUpdate(
         deviceId,
@@ -312,10 +312,10 @@ describe('ZoneManager', () => {
 
     test('should update zone statistics', async () => {
       const deviceId = 'device-123';
-      
+
       // Enter zone
       await zoneManager.processLocationUpdate(deviceId, 37.7749, -122.4194);
-      
+
       // Exit zone
       await zoneManager.processLocationUpdate(deviceId, 37.7849, -122.4094);
 

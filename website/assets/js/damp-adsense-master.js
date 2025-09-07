@@ -33,10 +33,10 @@
 
         if (path === '/' || path === '/index.html') return 'homepage';
         if (path.includes('-v1.0.html') || title.includes('damp')) return 'product';
-        if (path.includes('/cart') || path.includes('/checkout') || 
+        if (path.includes('/cart') || path.includes('/checkout') ||
             path.includes('/success') || path.includes('/waitlist')) return 'ecommerce';
         if (path.includes('/pages/')) return 'content';
-        
+
         return 'general';
     }
 
@@ -90,10 +90,10 @@
             const script = document.createElement('script');
             script.src = src;
             script.async = true;
-            
+
             script.onload = () => resolve();
             script.onerror = () => reject(new Error(`Failed to load ${src}`));
-            
+
             document.head.appendChild(script);
         });
     }
@@ -122,7 +122,7 @@
      */
     function handleAdError(error, context = 'general') {
         console.error(`❌ AdSense Error (${context}):`, error);
-        
+
         trackAdPerformance('ad_error', {
             error_message: error.message,
             context: context,
@@ -153,18 +153,18 @@
                 if (entry.isIntersecting) {
                     const adContainer = entry.target;
                     const adUnit = adContainer.querySelector('.adsbygoogle');
-                    
+
                     if (adUnit && !adUnit.dataset.loaded) {
                         try {
                             (window.adsbygoogle = window.adsbygoogle || []).push({});
                             adUnit.dataset.loaded = 'true';
                             adUnitsLoaded++;
-                            
+
                             trackAdPerformance('ad_loaded', {
                                 ad_id: adContainer.id || 'unknown',
                                 load_time: Date.now()
                             });
-                            
+
                             observer.unobserve(adContainer);
                         } catch (error) {
                             handleAdError(error, 'lazy_loading');
@@ -204,18 +204,18 @@
             testAd.innerHTML = '&nbsp;';
             testAd.className = 'adsbox';
             testAd.style.cssText = 'position:absolute;left:-10000px;';
-            
+
             document.body.appendChild(testAd);
-            
+
             setTimeout(() => {
                 const blocked = testAd.offsetHeight === 0;
                 document.body.removeChild(testAd);
-                
+
                 if (blocked) {
                     console.log('🚫 Ad blocker detected');
                     trackAdPerformance('ad_blocker_detected');
                 }
-                
+
                 resolve(!blocked);
             }, 100);
         });
@@ -230,7 +230,7 @@
 
         try {
             console.log('🚀 DAMP Master AdSense initializing...');
-            
+
             // Performance and compatibility checks
             const [cspOk, adBlockerOk] = await Promise.all([
                 Promise.resolve(checkCSPCompliance()),
@@ -255,7 +255,7 @@
 
             // Setup performance monitoring
             setupLazyLoading();
-            
+
             // Track successful initialization
             trackAdPerformance('initialization_success', {
                 page_type: detectPageType(),

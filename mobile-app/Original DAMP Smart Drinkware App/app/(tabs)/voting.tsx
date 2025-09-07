@@ -34,22 +34,22 @@ function ProductVoteCard({ productId, product, hasVoted, onVote, isVoting }: Pro
         <Text style={styles.productName}>{product.name}</Text>
         <Text style={styles.productPercentage}>{product.percentage}%</Text>
       </View>
-      
+
       <Text style={styles.productDescription}>{product.description}</Text>
-      
+
       <View style={styles.voteSection}>
         <View style={styles.progressBar}>
-          <View 
+          <View
             style={[
-              styles.progressFill, 
+              styles.progressFill,
               { width: `${product.percentage}%` }
-            ]} 
+            ]}
           />
         </View>
-        
+
         <View style={styles.voteInfo}>
           <Text style={styles.voteCount}>{product.votes.toLocaleString()} votes</Text>
-          
+
           <TouchableOpacity
             style={[
               styles.voteButton,
@@ -134,7 +134,7 @@ export default function VotingScreen() {
 
     try {
       const result = await VotingService.submitAuthenticatedVote(productId);
-      
+
       if (result.success) {
         setUserVotes(prev => [...prev, productId]);
         Alert.alert(

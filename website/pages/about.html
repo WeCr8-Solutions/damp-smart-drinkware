@@ -7,14 +7,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>About DAMP Smart Drinkware - Our Story & Technology | WeCr8 Solutions</title>
-    
+
     <!-- SEO Meta Tags -->
     <meta name="description" content="Learn about DAMP Smart Drinkware and WeCr8 Solutions LLC. Discover our mission to revolutionize beverage tracking with advanced BLE technology and prevent drink abandonment.">
     <meta name="keywords" content="DAMP Smart Drinkware, WeCr8 Solutions, about us, company story, BLE technology, smart drinkware innovation, beverage tracking company">
     <meta name="author" content="WeCr8 Solutions LLC">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://dampdrink.com/pages/about.html">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dampdrink.com/pages/about.html">
@@ -22,13 +22,13 @@
     <meta property="og:description" content="Learn about DAMP Smart Drinkware and our mission to revolutionize beverage tracking with advanced BLE technology.">
     <meta property="og:image" content="https://dampdrink.com/assets/images/og-image.jpg">
     <meta property="og:site_name" content="DAMP Smart Drinkware">
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="About DAMP Smart Drinkware - Our Story & Technology">
     <meta name="twitter:description" content="Learn about DAMP Smart Drinkware and our mission to revolutionize beverage tracking with advanced BLE technology.">
     <meta name="twitter:image" content="https://dampdrink.com/assets/images/og-image.jpg">
-    
+
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YW2BN4SVPQ"></script>
     <script>
@@ -39,7 +39,7 @@
       // Set consent defaults (GDPR compliant)
       gtag('consent', 'default', {
         'ad_storage': 'denied',
-        'ad_user_data': 'denied', 
+        'ad_user_data': 'denied',
         'ad_personalization': 'denied',
         'analytics_storage': 'denied',
         'wait_for_update': 500
@@ -111,7 +111,7 @@
         if (element) {
           const analyticsData = element.dataset.analytics;
           const elementType = element.tagName.toLowerCase();
-          
+
           gtag('event', 'click', {
             'event_category': 'engagement',
             'event_label': analyticsData,
@@ -127,7 +127,7 @@
 
       console.log('✅ DAMP Analytics initialized for About Page');
     </script>
-    
+
     <!-- Structured Data - AboutPage -->
     <script type="application/ld+json">
     {
@@ -143,13 +143,13 @@
         }
     }
     </script>
-    
+
     <!-- CSS Architecture -->
     <link rel="stylesheet" href="../assets/css/main.css">
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
-    
+
     <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -157,18 +157,18 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="msapplication-TileColor" content="#1a1a2e">
     <meta name="msapplication-tap-highlight" content="no">
-    
+
     <!-- PWA Theme Colors -->
     <meta name="theme-color" content="#00d4ff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
-    
+
     <!-- PWA Icons -->
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/logo/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="48x48" href="/assets/images/logo/icon-48.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/logo/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/assets/images/logo/icon-512.png">
-    
+
     <!-- Apple Touch Icons -->
     <link rel="apple-touch-icon" sizes="57x57" href="/assets/images/logo/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/assets/images/logo/apple-icon-60x60.png">
@@ -227,19 +227,19 @@
                     <h3>Advanced BLE Connectivity</h3>
                     <p>Our proprietary Bluetooth Low Energy implementation provides reliable, long-range tracking while maintaining exceptional battery life. Each device can operate for weeks on a single charge.</p>
                 </div>
-                
+
                 <div class="feature-card animate-fade-in-up animate-delay-300">
                     <div class="feature-icon">🧠</div>
                     <h3>Smart Zone Detection</h3>
                     <p>Machine learning algorithms learn your daily patterns and create approved zones where leaving your drink is acceptable, reducing false alarms and improving user experience.</p>
                 </div>
-                
+
                 <div class="feature-card animate-fade-in-up animate-delay-400">
                     <div class="feature-icon">📱</div>
                     <h3>Seamless App Integration</h3>
                     <p>Our intuitive mobile app provides real-time notifications, customizable settings, and detailed analytics about your drinking habits and patterns.</p>
                 </div>
-                
+
                 <div class="feature-card animate-fade-in-up animate-delay-500">
                     <div class="feature-icon">🛡️</div>
                     <h3>Enterprise-Grade Security</h3>
@@ -317,7 +317,7 @@
     <script src="../assets/js/components/header.js"></script>
     <script src="../assets/js/auth-modal.js"></script>
     <script src="../assets/js/scripts.js"></script>
-    
+
     <!-- Page Load Animation -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -337,7 +337,7 @@
                         updateViaCache: 'none'
                     });
                     console.log('✅ Service Worker registered:', registration.scope);
-                    
+
                     // Handle updates
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
@@ -347,20 +347,20 @@
                             }
                         });
                     });
-                    
+
                     window.dampPWA = { registration };
                 } catch (error) {
                     console.error('❌ Service Worker failed:', error);
                 }
             });
         }
-        
+
         function showUpdateNotification() {
             const notification = document.createElement('div');
             notification.innerHTML = '<div style="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00d4ff,#00ff88);color:#1a1a2e;padding:15px 25px;border-radius:30px;font-weight:600;z-index:10000;display:flex;align-items:center;gap:15px;"><span>🚀</span><span>New version available!</span><button onclick="refreshApp()" style="background:rgba(26,26,46,0.2);color:#1a1a2e;border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;">Update</button><button onclick="this.parentElement.parentElement.remove()" style="background:transparent;border:none;color:#1a1a2e;cursor:pointer;padding:5px;">×</button></div>';
             document.body.appendChild(notification);
         }
-        
+
         function refreshApp() {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistration().then(registration => {
@@ -371,7 +371,7 @@
                 });
             }
         }
-        
+
         // Load Mobile App Redirect Script
         const mobileAppScript = document.createElement('script');
         mobileAppScript.src = '/assets/js/mobile-app-redirect.js';

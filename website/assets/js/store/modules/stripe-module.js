@@ -2,7 +2,7 @@
  * Stripe Integration Module
  * Google Engineering Standards Implementation
  * Payment Processing & Subscription Management
- * 
+ *
  * @fileoverview Stripe module for payment processing and subscription management
  * @author WeCr8 Solutions LLC
  * @version 2.0.0
@@ -27,7 +27,7 @@ export class StripeModule {
     #initialized = false;
     #publishableKey = null;
     #currentPaymentIntent = null;
-    
+
     /**
      * Initialize Stripe module
      * @param {Object} config - Stripe configuration
@@ -39,7 +39,7 @@ export class StripeModule {
         this.#errorHandler = new ErrorHandler();
         this.#securityValidator = new SecurityValidator();
     }
-    
+
     /**
      * Initialize Stripe services
      * @returns {Promise<void>}
@@ -47,33 +47,33 @@ export class StripeModule {
     async initialize() {
         try {
             this.#logger.info('Initializing Stripe Module');
-            
+
             // Load Stripe.js
             this.#stripe = await loadStripe(this.#publishableKey);
-            
+
             if (!this.#stripe) {
                 throw new Error('Failed to initialize Stripe');
             }
-            
+
             // Initialize Elements
             this.#elements = this.#stripe.elements({
                 appearance: this.#getElementsAppearance(),
                 loader: 'auto'
             });
-            
+
             this.#initialized = true;
             this.#logger.info('Stripe Module initialized successfully');
-            
+
         } catch (error) {
             this.#errorHandler.handleError('STRIPE_INITIALIZATION_FAILED', error);
             throw error;
         }
     }
-    
+
     /**
      * Payment Processing Methods
      */
-    
+
     /**
      * Create payment intent for one-time payment
      * @param {Object} paymentData - Payment information
@@ -85,7 +85,7 @@ export class StripeModule {
     async createPaymentIntent(paymentData) {
         try {
             this.#securityValidator.validatePaymentData(paymentData);
-            
+
             // Call your backend API to create payment intent
             const response = await fetch('/api/create-payment-intent', {
                 method: 'POST',
@@ -103,27 +103,27 @@ export class StripeModule {
                     }
                 })
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const paymentIntent = await response.json();
             this.#currentPaymentIntent = paymentIntent;
-            
-            this.#logger.info('Payment intent created', { 
+
+            this.#logger.info('Payment intent created', {
                 id: paymentIntent.id,
-                amount: paymentData.amount 
+                amount: paymentData.amount
             });
-            
+
             return paymentIntent;
-            
+
         } catch (error) {
             this.#errorHandler.handleError('PAYMENT_INTENT_CREATION_FAILED', error);
             throw this.#normalizeStripeError(error);
         }
     }
-    
+
     /**
      * Confirm payment with payment method
      * @param {string} clientSecret - Payment intent client secret
@@ -133,7 +133,7 @@ export class StripeModule {
     async confirmPayment(clientSecret, paymentMethodData) {
         try {
             this.#securityValidator.validateClientSecret(clientSecret);
-            
+
             const result = await this.#stripe.confirmPayment({
                 clientSecret,
                 confirmParams: {
@@ -142,27 +142,27 @@ export class StripeModule {
                 },
                 redirect: 'if_required'
             });
-            
+
             if (result.error) {
                 throw result.error;
             }
-            
-            this.#logger.info('Payment confirmed', { 
-                paymentIntentId: result.paymentIntent?.id 
+
+            this.#logger.info('Payment confirmed', {
+                paymentIntentId: result.paymentIntent?.id
             });
-            
+
             return {
                 success: true,
                 paymentIntent: result.paymentIntent,
                 redirectUrl: result.redirectUrl
             };
-            
+
         } catch (error) {
             this.#errorHandler.handleError('PAYMENT_CONFIRMATION_FAILED', error);
             throw this.#normalizeStripeError(error);
         }
     }
-    
+
     /**
      * Create payment method
      * @param {string} type - Payment method type (card, sepa_debit, etc.)
@@ -189,28 +189,28 @@ export class StripeModule {
                     }
                 }
             });
-            
+
             if (result.error) {
                 throw result.error;
             }
-            
-            this.#logger.info('Payment method created', { 
+
+            this.#logger.info('Payment method created', {
                 id: result.paymentMethod.id,
-                type: result.paymentMethod.type 
+                type: result.paymentMethod.type
             });
-            
+
             return result.paymentMethod;
-            
+
         } catch (error) {
             this.#errorHandler.handleError('PAYMENT_METHOD_CREATION_FAILED', error);
             throw this.#normalizeStripeError(error);
         }
     }
-    
+
     /**
      * Subscription Management Methods
      */
-    
+
     /**
      * Create subscription checkout session
      * @param {Object} subscriptionData - Subscription information
@@ -219,7 +219,7 @@ export class StripeModule {
     async createSubscriptionCheckout(subscriptionData) {
         try {
             this.#securityValidator.validateSubscriptionData(subscriptionData);
-            
+
             const response = await fetch('/api/create-checkout-session', {
                 method: 'POST',
                 headers: {
@@ -237,26 +237,26 @@ export class StripeModule {
                     }
                 })
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const session = await response.json();
-            
-            this.#logger.info('Checkout session created', { 
+
+            this.#logger.info('Checkout session created', {
                 sessionId: session.id,
-                priceId: subscriptionData.priceId 
+                priceId: subscriptionData.priceId
             });
-            
+
             return session;
-            
+
         } catch (error) {
             this.#errorHandler.handleError('CHECKOUT_SESSION_CREATION_FAILED', error);
             throw this.#normalizeStripeError(error);
         }
     }
-    
+
     /**
      * Redirect to Stripe Checkout
      * @param {string} sessionId - Checkout session ID
@@ -267,17 +267,17 @@ export class StripeModule {
             const result = await this.#stripe.redirectToCheckout({
                 sessionId: sessionId
             });
-            
+
             if (result.error) {
                 throw result.error;
             }
-            
+
         } catch (error) {
             this.#errorHandler.handleError('CHECKOUT_REDIRECT_FAILED', error);
             throw this.#normalizeStripeError(error);
         }
     }
-    
+
     /**
      * Get customer subscription details
      * @param {string} customerId - Stripe customer ID
@@ -290,21 +290,21 @@ export class StripeModule {
                     'Authorization': `Bearer ${await this.#getAuthToken()}`
                 }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const subscriptions = await response.json();
-            
+
             return subscriptions;
-            
+
         } catch (error) {
             this.#errorHandler.handleError('SUBSCRIPTION_FETCH_FAILED', error);
             throw error;
         }
     }
-    
+
     /**
      * Cancel subscription
      * @param {string} subscriptionId - Subscription ID
@@ -325,26 +325,26 @@ export class StripeModule {
                     reason: options.reason || 'customer_request'
                 })
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const result = await response.json();
-            
-            this.#logger.info('Subscription cancelled', { 
+
+            this.#logger.info('Subscription cancelled', {
                 subscriptionId,
-                cancelAtPeriodEnd: options.cancelAtPeriodEnd 
+                cancelAtPeriodEnd: options.cancelAtPeriodEnd
             });
-            
+
             return result;
-            
+
         } catch (error) {
             this.#errorHandler.handleError('SUBSCRIPTION_CANCELLATION_FAILED', error);
             throw error;
         }
     }
-    
+
     /**
      * Update subscription
      * @param {string} subscriptionId - Subscription ID
@@ -364,27 +364,27 @@ export class StripeModule {
                     updates
                 })
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const result = await response.json();
-            
+
             this.#logger.info('Subscription updated', { subscriptionId });
-            
+
             return result;
-            
+
         } catch (error) {
             this.#errorHandler.handleError('SUBSCRIPTION_UPDATE_FAILED', error);
             throw error;
         }
     }
-    
+
     /**
      * UI Element Creation Methods
      */
-    
+
     /**
      * Create card element
      * @param {Object} options - Element options
@@ -397,10 +397,10 @@ export class StripeModule {
             iconStyle: 'default',
             ...options
         };
-        
+
         return this.#elements.create('card', defaultOptions);
     }
-    
+
     /**
      * Create payment element (unified payment UI)
      * @param {Object} options - Element options
@@ -412,10 +412,10 @@ export class StripeModule {
             paymentMethodOrder: ['card', 'apple_pay', 'google_pay'],
             ...options
         };
-        
+
         return this.#elements.create('payment', defaultOptions);
     }
-    
+
     /**
      * Create address element
      * @param {Object} options - Element options
@@ -427,14 +427,14 @@ export class StripeModule {
             allowedCountries: ['US', 'CA'],
             ...options
         };
-        
+
         return this.#elements.create('address', defaultOptions);
     }
-    
+
     /**
      * Webhook Processing Methods
      */
-    
+
     /**
      * Verify webhook signature
      * @param {string} payload - Webhook payload
@@ -447,17 +447,17 @@ export class StripeModule {
             // Note: This should be done on your backend for security
             // This is just for reference
             return this.#stripe.webhooks.constructEvent(payload, signature, secret);
-            
+
         } catch (error) {
             this.#errorHandler.handleError('WEBHOOK_VERIFICATION_FAILED', error);
             throw error;
         }
     }
-    
+
     /**
      * Utility Methods
      */
-    
+
     /**
      * Format amount for display
      * @param {number} amount - Amount in cents
@@ -471,7 +471,7 @@ export class StripeModule {
             minimumFractionDigits: 2
         }).format(amount / 100);
     }
-    
+
     /**
      * Get payment method display name
      * @param {Object} paymentMethod - Stripe payment method
@@ -489,9 +489,9 @@ export class StripeModule {
                 return paymentMethod.type.replace('_', ' ').toUpperCase();
         }
     }
-    
+
     // Private methods
-    
+
     /**
      * @private
      */
@@ -499,14 +499,14 @@ export class StripeModule {
         if (!config.publishableKey) {
             throw new Error('Missing required Stripe publishable key');
         }
-        
+
         if (!config.publishableKey.startsWith('pk_')) {
             throw new Error('Invalid Stripe publishable key format');
         }
-        
+
         return config;
     }
-    
+
     /**
      * @private
      */
@@ -517,7 +517,7 @@ export class StripeModule {
         }
         throw new Error('User not authenticated');
     }
-    
+
     /**
      * @private
      */
@@ -548,7 +548,7 @@ export class StripeModule {
             }
         };
     }
-    
+
     /**
      * @private
      */
@@ -574,7 +574,7 @@ export class StripeModule {
             }
         };
     }
-    
+
     /**
      * @private
      */
@@ -613,15 +613,15 @@ export class StripeModule {
             'try_again_later': 'The bank could not process the payment. Please try again later.',
             'withdrawal_count_limit_exceeded': 'The customer has exceeded the balance or credit limit available on their card.'
         };
-        
+
         let message = error.message;
-        
+
         if (error.decline_code && errorMap[error.decline_code]) {
             message = errorMap[error.decline_code];
         } else if (error.code && errorMap[error.code]) {
             message = errorMap[error.code];
         }
-        
+
         return {
             code: error.code || error.type,
             message,
@@ -629,21 +629,21 @@ export class StripeModule {
             originalError: error
         };
     }
-    
+
     /**
      * Public getters
      */
     get initialized() {
         return this.#initialized;
     }
-    
+
     get stripe() {
         return this.#stripe;
     }
-    
+
     get elements() {
         return this.#elements;
     }
 }
 
-export default StripeModule; 
+export default StripeModule;

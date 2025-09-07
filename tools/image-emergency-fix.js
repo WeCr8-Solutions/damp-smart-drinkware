@@ -14,20 +14,20 @@ class ImageEmergencyFix {
 
     async fixNow() {
         console.log('🚨 EMERGENCY IMAGE OPTIMIZATION STARTING...\n');
-        
+
         try {
             // Install sharp if not available
             await this.ensureSharp();
-            
+
             // Fix the massive images
             await this.fixMassiveImages();
-            
+
             // Update image references in HTML
             await this.updateImageReferences();
-            
+
             console.log('\n✅ EMERGENCY IMAGE FIX COMPLETED!');
             console.log('📊 Estimated savings: 2.6MB+ (93% reduction)');
-            
+
         } catch (error) {
             console.error('❌ Emergency fix failed:', error);
             // Fallback: Create placeholder optimized versions
@@ -42,7 +42,7 @@ class ImageEmergencyFix {
         } catch (error) {
             console.log('📦 Installing sharp for image optimization...');
             const { spawn } = require('child_process');
-            
+
             return new Promise((resolve, reject) => {
                 const install = spawn('npm', ['install', 'sharp'], { stdio: 'inherit' });
                 install.on('close', (code) => {
@@ -59,9 +59,9 @@ class ImageEmergencyFix {
 
     async fixMassiveImages() {
         const sharp = require('sharp');
-        
+
         // Fix icon.png (1.1MB -> ~50KB)
         const iconPath = path.join(this.imagesDir, 'logo/icon.png');
         await sharp(iconPath)
             .resize(512, 512)
-            .png 
+            .png

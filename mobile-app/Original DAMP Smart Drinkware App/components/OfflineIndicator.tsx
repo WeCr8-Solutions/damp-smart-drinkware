@@ -51,7 +51,7 @@ export default function OfflineIndicator({
   const [serverStatus, setServerStatus] = useState<'connected' | 'disconnected' | 'checking'>('connected');
   const [queuedActions, setQueuedActions] = useState<number>(0);
   const [lastSyncTime, setLastSyncTime] = useState<Date>(new Date());
-  
+
   const fadeAnim = new Animated.Value(0);
   const slideAnim = new Animated.Value(-100);
 
@@ -229,10 +229,10 @@ export default function OfflineIndicator({
               <Text style={styles.statusLabel}>Server</Text>
               <Text style={[
                 styles.statusValue,
-                serverStatus === 'connected' ? styles.connectedText : 
+                serverStatus === 'connected' ? styles.connectedText :
                 serverStatus === 'checking' ? styles.checkingText : styles.disconnectedText
               ]}>
-                {serverStatus === 'connected' ? 'Online' : 
+                {serverStatus === 'connected' ? 'Online' :
                  serverStatus === 'checking' ? 'Checking' : 'Offline'}
               </Text>
             </View>
@@ -241,7 +241,7 @@ export default function OfflineIndicator({
           {networkStatus.isConnected && (
             <View style={styles.networkDetails}>
               <Text style={styles.networkType}>
-                {networkStatus.type.toUpperCase()} 
+                {networkStatus.type.toUpperCase()}
                 {networkStatus.strength < 100 && ` (${networkStatus.strength}%)`}
               </Text>
             </View>

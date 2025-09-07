@@ -11,7 +11,7 @@ const path = require('path');
 // Environment variables that are safe for client-side use
 const CLIENT_SAFE_ENV_VARS = [
   'FIREBASE_API_KEY',
-  'FIREBASE_AUTH_DOMAIN', 
+  'FIREBASE_AUTH_DOMAIN',
   'FIREBASE_PROJECT_ID',
   'FIREBASE_STORAGE_BUCKET',
   'FIREBASE_MESSAGING_SENDER_ID',
@@ -45,9 +45,9 @@ const SERVER_ONLY_ENV_VARS = [
 
 function validateEnvironment() {
   console.log('🔍 Validating environment variables...\n');
-  
+
   let hasErrors = false;
-  
+
   // Check that server-only vars aren't accidentally exposed
   for (const varName of SERVER_ONLY_ENV_VARS) {
     if (process.env[`EXPO_PUBLIC_${varName}`] || process.env[`REACT_APP_${varName}`]) {
@@ -55,7 +55,7 @@ function validateEnvironment() {
       hasErrors = true;
     }
   }
-  
+
   // Check that required client vars are available
   for (const varName of CLIENT_SAFE_ENV_VARS) {
     const value = process.env[varName];
@@ -63,25 +63,25 @@ function validateEnvironment() {
       console.warn(`⚠️  Warning: ${varName} appears to be a placeholder value`);
     }
   }
-  
+
   if (hasErrors) {
     console.error('\n❌ Build stopped due to security errors');
     process.exit(1);
   }
-  
+
   console.log('✅ Environment validation passed\n');
 }
 
 function generateClientConfig() {
   const config = {};
-  
+
   for (const varName of CLIENT_SAFE_ENV_VARS) {
     const value = process.env[varName];
     if (value && !value.includes('your_') && !value.includes('_here')) {
       config[varName] = value;
     }
   }
-  
+
   return config;
 }
 
@@ -90,21 +90,21 @@ function injectConfigIntoFile(filePath, config) {
     console.warn(`⚠️  File not found: ${filePath}`);
     return;
   }
-  
+
   let content = fs.readFileSync(filePath, 'utf-8');
-  
+
   // Replace Firebase config injection point
   if (content.includes('window.FIREBASE_CONFIG?.apiKey')) {
     const configScript = `
 // Environment configuration injected at build time
 window.FIREBASE_CONFIG = ${JSON.stringify(config, null, 2)};
 `;
-    
+
     // Add the config script before the existing script
     content = configScript + '\n' + content;
     console.log(`✅ Injected config into ${filePath}`);
   }
-  
+
   // Replace service worker config
   if (filePath.includes('firebase-messaging-sw.js')) {
     content = content.replace(
@@ -113,26 +113,26 @@ window.FIREBASE_CONFIG = ${JSON.stringify(config, null, 2)};
     );
     console.log(`✅ Updated service worker config in ${filePath}`);
   }
-  
+
   fs.writeFileSync(filePath, content);
 }
 
 function buildWebsite() {
   console.log('🏗️  Building website with environment injection...\n');
-  
+
   const config = generateClientConfig();
-  
+
   // Files to inject config into
   const filesToUpdate = [
     'website/assets/js/firebase-services.js',
     'website/firebase-messaging-sw.js',
     'website/js/firebase-config.js'
   ];
-  
+
   for (const file of filesToUpdate) {
     injectConfigIntoFile(file, config);
   }
-  
+
   console.log('\n✅ Website build completed with secure environment injection');
 }
 
@@ -154,12 +154,12 @@ window.DAMP_CONFIG = {
     appId: window.FIREBASE_CONFIG?.FIREBASE_APP_ID || '1:309818614427:web:db15a4851c05e58aa25c3e',
     measurementId: window.FIREBASE_CONFIG?.FIREBASE_MEASUREMENT_ID || 'G-YW2BN4SVPQ'
   },
-  
+
   // Stripe configuration (safe for client-side)
   stripe: {
     publishableKey: window.FIREBASE_CONFIG?.STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder'
   },
-  
+
   // Analytics
   analytics: {
     googleAnalyticsId: window.FIREBASE_CONFIG?.GOOGLE_ANALYTICS_ID || ''
@@ -169,7 +169,7 @@ window.DAMP_CONFIG = {
 // Validate configuration in development
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
   console.group('🔧 DAMP Configuration Status');
-  
+
   Object.entries(window.DAMP_CONFIG.firebase).forEach(([key, value]) => {
     if (value.includes('placeholder') || value.includes('your_') || value.includes('_here')) {
       console.warn(\`⚠️  \${key}: Using placeholder value\`);
@@ -177,7 +177,7 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
       console.log(\`✅ \${key}: Configured\`);
     }
   });
-  
+
   console.groupEnd();
 }
 `;
@@ -189,7 +189,7 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
 // Main execution
 if (require.main === module) {
   const command = process.argv[2] || 'build';
-  
+
   switch (command) {
     case 'validate':
       validateEnvironment();
@@ -208,4 +208,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { validateEnvironment, generateClientConfig, buildWebsite }; 
+module.exports = { validateEnvironment, generateClientConfig, buildWebsite };

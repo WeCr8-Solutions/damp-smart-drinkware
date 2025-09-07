@@ -105,7 +105,7 @@
       "label": "Pre-order checkout with dynamic pricing and smart device selection"
     }
   ],
-  
+
   "launch_images": [
     {
       "src": "/assets/images/logo/splash/splash-iphone-8.png",
@@ -222,7 +222,7 @@
     }
   ],
   "prefer_related_applications": true,
-  
+
   "protocol_handlers": [
     {
       "protocol": "web+damp",
@@ -233,7 +233,7 @@
       "url": "/pages/support.html?contact=%s"
     }
   ],
-  
+
   "share_target": {
     "action": "/pages/share-target.html",
     "method": "POST",
@@ -250,7 +250,7 @@
       ]
     }
   },
-  
+
   "file_handlers": [
     {
       "action": "/pages/handle-file.html",
@@ -262,27 +262,27 @@
       "launch_type": "single-client"
     }
   ],
-  
+
   "edge_side_panel": {
     "preferred_width": 400
   },
-  
+
   "launch_handler": {
     "client_mode": "navigate-existing"
   },
-  
+
   "handle_links": "preferred",
-  
+
   "capture_links": "existing-client-navigate",
-  
+
   "scope_extensions": [
     {"origin": "*.dampdrink.com"}
   ],
-  
+
   "note_taking": {
     "new_note_url": "/pages/notes.html"
   },
-  
+
   "tab_strip": {
     "home_tab": {
       "scope": "/",
@@ -295,4 +295,4 @@
       ]
     }
   }
-} 
+}

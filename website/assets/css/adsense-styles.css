@@ -118,12 +118,12 @@
     .damp-ad-container {
         margin: 80px auto;
     }
-    
+
     .damp-ad-between-features {
         position: relative;
         margin: 120px auto;
     }
-    
+
     .damp-ad-mid-content {
         margin-right: -50px;
     }
@@ -134,14 +134,14 @@
     .damp-ad-container {
         margin: 60px auto;
     }
-    
+
     .damp-ad-after-hero,
     .damp-ad-before-testimonials,
     .damp-ad-before-cta,
     .damp-ad-before-footer {
         max-width: 728px;
     }
-    
+
     .damp-ad-mid-content {
         float: none;
         margin: 40px auto;
@@ -155,18 +155,18 @@
         margin: 40px auto;
         padding: 0 20px;
     }
-    
+
     .damp-ad-unit {
         border-radius: 8px;
         max-width: 320px;
         margin: 0 auto;
     }
-    
+
     .damp-ad-label {
         font-size: 0.65rem;
         margin-bottom: 8px;
     }
-    
+
     /* Mobile-specific placements */
     .damp-ad-after-hero,
     .damp-ad-between-features,
@@ -179,7 +179,7 @@
         float: none;
         margin: 30px auto;
     }
-    
+
     .damp-ad-cart-sidebar {
         position: static;
         margin: 20px auto;
@@ -208,11 +208,11 @@
         border-color: rgba(0, 212, 255, 0.2);
         color: #fff;
     }
-    
+
     .damp-ad-label {
         color: #aaa;
     }
-    
+
     .damp-ad-unit:hover {
         box-shadow: 0 8px 24px rgba(0, 212, 255, 0.25);
     }
@@ -228,7 +228,7 @@
     .damp-ad-unit {
         transition: none;
     }
-    
+
     .damp-ad-unit:hover {
         transform: none;
     }
@@ -247,9 +247,9 @@
 /* Lazy loading states */
 .damp-ad-container:not(.loaded) {
     min-height: 90px;
-    background: linear-gradient(90deg, 
-        rgba(0, 212, 255, 0.05) 0%, 
-        rgba(0, 255, 136, 0.05) 50%, 
+    background: linear-gradient(90deg,
+        rgba(0, 212, 255, 0.05) 0%,
+        rgba(0, 255, 136, 0.05) 50%,
         rgba(0, 212, 255, 0.05) 100%);
     border-radius: 12px;
     animation: shimmer 2s infinite;

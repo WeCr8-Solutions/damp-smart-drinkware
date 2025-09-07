@@ -46,7 +46,7 @@ const requiredVariables = {
   staging: {
     critical: [
       'FIREBASE_API_KEY',
-      'VITE_FIREBASE_API_KEY', 
+      'VITE_FIREBASE_API_KEY',
       'FIREBASE_PROJECT_ID',
       'JWT_SECRET',
       'API_SECRET_KEY',
@@ -68,7 +68,7 @@ const requiredVariables = {
     critical: [
       'FIREBASE_API_KEY',
       'VITE_FIREBASE_API_KEY',
-      'FIREBASE_PROJECT_ID', 
+      'FIREBASE_PROJECT_ID',
       'JWT_SECRET',
       'API_SECRET_KEY',
       'STRIPE_SECRET_KEY',
@@ -148,7 +148,7 @@ function loadEnvironmentFile(envFile) {
     if (fs.existsSync(envFile)) {
       const content = fs.readFileSync(envFile, 'utf8');
       const lines = content.split('\n');
-      
+
       lines.forEach(line => {
         const trimmedLine = line.trim();
         if (trimmedLine && !trimmedLine.startsWith('#')) {
@@ -219,7 +219,7 @@ function checkEnvironmentVariables(environment) {
   ['critical', 'important', 'optional'].forEach(priority => {
     config[priority].forEach(key => {
       const value = process.env[key];
-      
+
       if (!value) {
         results[priority].missing.push(key);
       } else {
@@ -361,7 +361,7 @@ function main() {
 
   // Summary
   console.log(`${colors.bold}${'='.repeat(60)}${colors.reset}`);
-  
+
   if (hasErrors) {
     console.log(`${colors.red}${colors.bold}❌ VALIDATION FAILED${colors.reset}`);
     console.log(`${colors.red}Critical issues found. Application may not work correctly.${colors.reset}`);

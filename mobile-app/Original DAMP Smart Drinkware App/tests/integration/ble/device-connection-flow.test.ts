@@ -16,7 +16,7 @@ describe('BLE Device Connection Flow Integration', () => {
     // Reset BLE mock and storage
     bleManager = integrationTestUtils.ble.mockBleManager as any;
     await integrationTestUtils.storage.clearAll();
-    
+
     // Setup mock device
     mockDevice = {
       id: 'DAMP_SB_001',
@@ -34,10 +34,10 @@ describe('BLE Device Connection Flow Integration', () => {
     it('should discover DAMP devices during scan', async () => {
       const discoveredDevices: Device[] = [];
       let scanCallback: Function;
-      
+
       bleManager.startDeviceScan.mockImplementation((serviceUUIDs, options, callback) => {
         scanCallback = callback;
-        
+
         // Simulate discovering multiple devices
         setTimeout(() => {
           callback(null, mockDevice);
@@ -45,7 +45,7 @@ describe('BLE Device Connection Flow Integration', () => {
           callback(null, { id: 'OTHER_DEVICE', name: 'Other Device' }); // Should be filtered
         }, 100);
       });
-      
+
       // Start scanning
       bleManager.startDeviceScan(
         ['12345678-1234-1234-1234-123456789abc'],
@@ -59,11 +59,11 @@ describe('BLE Device Connection Flow Integration', () => {
           }
         }
       );
-      
+
       await new Promise(resolve => setTimeout(resolve, 200));
-      
+
       expect(discoveredDevices).toHaveLength(2);
-      expect(discoveredDevices.every(device => 
+      expect(discoveredDevices.every(device =>
         device.name?.includes('DAMP') || device.localName?.includes('DAMP')
       )).toBe(true);
     });
@@ -75,15 +75,15 @@ describe('BLE Device Connection Flow Integration', () => {
         if (!device.serviceUUIDs?.includes(requiredServiceUUID)) {
           return false;
         }
-        
+
         // Check device naming convention
         if (!device.name?.startsWith('DAMP') && !device.localName?.startsWith('DAMP')) {
           return false;
         }
-        
+
         return true;
       };
-      
+
       const compatibleDevice = { ...mockDevice };
       const incompatibleDevice = {
         ...mockDevice,
@@ -91,7 +91,7 @@ describe('BLE Device Connection Flow Integration', () => {
         name: 'Unknown Device',
         serviceUUIDs: ['00000000-0000-0000-0000-000000000000']
       } as Device;
-      
+
       expect(compatibilityCheck(compatibleDevice)).toBe(true);
       expect(compatibilityCheck(incompatibleDevice)).toBe(false);
     });
@@ -102,56 +102,56 @@ describe('BLE Device Connection Flow Integration', () => {
           // Step 1: Connect to device
           bleManager.connectToDevice.mockResolvedValue(device);
           const connectedDevice = await bleManager.connectToDevice(device.id);
-          
+
           // Step 2: Discover services
           bleManager.discoverAllServicesAndCharacteristicsForDevice.mockResolvedValue(device);
           await bleManager.discoverAllServicesAndCharacteristicsForDevice(device.id);
-          
+
           // Step 3: Write PIN to pairing characteristic
           const pairingServiceUUID = '12345678-1234-1234-1234-123456789abc';
           const pairingCharUUID = '87654321-4321-4321-4321-cba987654321';
-          
+
           bleManager.writeCharacteristicWithResponseForDevice.mockResolvedValue(
             { value: Buffer.from('PAIRED').toString('base64') } as any
           );
-          
+
           await bleManager.writeCharacteristicWithResponseForDevice(
             device.id,
             pairingServiceUUID,
             pairingCharUUID,
             Buffer.from(pin).toString('base64')
           );
-          
+
           // Step 4: Read pairing status
           bleManager.readCharacteristicForDevice.mockResolvedValue(
             { value: Buffer.from('PAIRED').toString('base64') } as any
           );
-          
+
           const pairingStatus = await bleManager.readCharacteristicForDevice(
             device.id,
             pairingServiceUUID,
             pairingCharUUID
           );
-          
+
           const status = Buffer.from(pairingStatus.value, 'base64').toString();
           return status === 'PAIRED';
-          
+
         } catch (error) {
           return false;
         }
       };
-      
+
       const validPin = '123456';
       const invalidPin = '000000';
-      
+
       const validResult = await pairingProcess(mockDevice, validPin);
       expect(validResult).toBe(true);
-      
+
       // Mock pairing failure for invalid PIN
       bleManager.writeCharacteristicWithResponseForDevice.mockRejectedValueOnce(
         new Error('Pairing failed')
       );
-      
+
       const invalidResult = await pairingProcess(mockDevice, invalidPin);
       expect(invalidResult).toBe(false);
     });
@@ -173,10 +173,10 @@ describe('BLE Device Connection Flow Integration', () => {
       const connectionFlow = async () => {
         // Connect
         const device = await bleManager.connectToDevice(mockDevice.id);
-        
+
         // Discover services
         await bleManager.discoverAllServicesAndCharacteristicsForDevice(device.id);
-        
+
         // Read device information
         bleManager.readCharacteristicForDevice.mockImplementation((deviceId, serviceId, charId) => {
           const responses: Record<string, string> = {
@@ -191,30 +191,30 @@ describe('BLE Device Connection Flow Integration', () => {
             '2a24': 'DAMP-SB', // Model number
             '2a26': '1.0.0' // Firmware version
           };
-          
+
           const response = responses[charId] || 'Unknown';
           return Promise.resolve({
             value: Buffer.from(response).toString('base64')
           });
         });
-        
+
         const sensorData = await bleManager.readCharacteristicForDevice(
           device.id, serviceUUID, sensorDataCharUUID
         );
-        
+
         const batteryLevel = await bleManager.readCharacteristicForDevice(
           device.id, serviceUUID, batteryCharUUID
         );
-        
+
         return {
           device,
           sensorData: JSON.parse(Buffer.from(sensorData.value, 'base64').toString()),
           batteryLevel: parseInt(Buffer.from(batteryLevel.value, 'base64').toString())
         };
       };
-      
+
       const result = await connectionFlow();
-      
+
       expect(result.device.id).toBe(mockDevice.id);
       expect(result.sensorData.temperature).toBe(23.5);
       expect(result.batteryLevel).toBe(85);
@@ -224,11 +224,11 @@ describe('BLE Device Connection Flow Integration', () => {
     it('should stream real-time sensor data', async () => {
       const sensorDataStream = [];
       let dataCallback: Function;
-      
+
       // Setup monitoring
       bleManager.monitorCharacteristicForDevice.mockImplementation((deviceId, serviceId, charId, callback) => {
         dataCallback = callback;
-        
+
         // Simulate periodic data updates
         const interval = setInterval(() => {
           const sensorReading = {
@@ -237,17 +237,17 @@ describe('BLE Device Connection Flow Integration', () => {
             pressure: 1000 + Math.random() * 50,
             timestamp: Date.now()
           };
-          
+
           callback(null, {
             value: Buffer.from(JSON.stringify(sensorReading)).toString('base64')
           });
         }, 1000);
-        
+
         return {
           remove: () => clearInterval(interval)
         };
       });
-      
+
       // Start monitoring
       const subscription = bleManager.monitorCharacteristicForDevice(
         mockDevice.id,
@@ -260,13 +260,13 @@ describe('BLE Device Connection Flow Integration', () => {
           }
         }
       );
-      
+
       // Wait for some data
       await new Promise(resolve => setTimeout(resolve, 3500));
       subscription.remove();
-      
+
       expect(sensorDataStream.length).toBeGreaterThanOrEqual(3);
-      expect(sensorDataStream.every(data => 
+      expect(sensorDataStream.every(data =>
         data.temperature && data.humidity && data.pressure && data.timestamp
       )).toBe(true);
     });
@@ -279,19 +279,19 @@ describe('BLE Device Connection Flow Integration', () => {
           timestamp: Date.now(),
           requestId: Math.random().toString(36).substr(2, 9)
         });
-        
+
         // Send command
         bleManager.writeCharacteristicWithResponseForDevice.mockResolvedValue(
           { value: Buffer.from('ACK').toString('base64') } as any
         );
-        
+
         await bleManager.writeCharacteristicWithResponseForDevice(
           mockDevice.id,
           serviceUUID,
           commandCharUUID,
           Buffer.from(commandPayload).toString('base64')
         );
-        
+
         // Wait for and read response
         bleManager.readCharacteristicForDevice.mockResolvedValue({
           value: Buffer.from(JSON.stringify({
@@ -300,26 +300,26 @@ describe('BLE Device Connection Flow Integration', () => {
             result: 'Command executed successfully'
           })).toString('base64')
         } as any);
-        
+
         const response = await bleManager.readCharacteristicForDevice(
           mockDevice.id,
           serviceUUID,
           commandCharUUID
         );
-        
+
         return JSON.parse(Buffer.from(response.value, 'base64').toString());
       };
-      
+
       // Test different commands
       const calibrateResponse = await commandFlow('calibrate', { type: 'temperature' });
       expect(calibrateResponse.status).toBe('success');
-      
+
       const resetResponse = await commandFlow('reset', {});
       expect(resetResponse.status).toBe('success');
-      
-      const configResponse = await commandFlow('configure', { 
-        sampleRate: 5000, 
-        powerMode: 'low' 
+
+      const configResponse = await commandFlow('configure', {
+        sampleRate: 5000,
+        powerMode: 'low'
       });
       expect(configResponse.status).toBe('success');
     });
@@ -327,7 +327,7 @@ describe('BLE Device Connection Flow Integration', () => {
     it('should handle connection loss and recovery', async () => {
       let connectionState = 'connected';
       const connectionEvents: string[] = [];
-      
+
       // Mock connection state monitoring
       const mockConnectionMonitor = {
         onStateChange: jest.fn((callback) => {
@@ -336,7 +336,7 @@ describe('BLE Device Connection Flow Integration', () => {
               connectionState = 'disconnected';
               connectionEvents.push('disconnected');
               callback('disconnected');
-              
+
               // Auto-reconnect after 2 seconds
               setTimeout(() => {
                 connectionState = 'connected';
@@ -345,11 +345,11 @@ describe('BLE Device Connection Flow Integration', () => {
               }, 2000);
             }
           }, 500);
-          
+
           return { remove: () => clearInterval(interval) };
         })
       };
-      
+
       // Start monitoring
       const stateSubscription = mockConnectionMonitor.onStateChange((state: string) => {
         if (state === 'disconnected') {
@@ -360,11 +360,11 @@ describe('BLE Device Connection Flow Integration', () => {
           console.log('Connection restored');
         }
       });
-      
+
       // Simulate running for 10 seconds
       await new Promise(resolve => setTimeout(resolve, 10000));
       stateSubscription.remove();
-      
+
       // Should have handled disconnection/reconnection events
       expect(connectionEvents.length).toBeGreaterThanOrEqual(0);
     });
@@ -373,14 +373,14 @@ describe('BLE Device Connection Flow Integration', () => {
   describe('Data Persistence and Sync', () => {
     it('should cache sensor data locally during connection', async () => {
       const sensorDataCache = [];
-      
+
       // Simulate receiving sensor data
       const mockSensorReadings = [
         { temperature: 23.1, humidity: 45.0, timestamp: Date.now() - 60000 },
         { temperature: 23.5, humidity: 45.2, timestamp: Date.now() - 30000 },
         { temperature: 23.8, humidity: 45.5, timestamp: Date.now() }
       ];
-      
+
       // Store data locally
       for (const reading of mockSensorReadings) {
         const cacheKey = `sensor_${mockDevice.id}_${reading.timestamp}`;
@@ -391,17 +391,17 @@ describe('BLE Device Connection Flow Integration', () => {
         }));
         sensorDataCache.push(reading);
       }
-      
+
       // Verify data is cached
       const cachedKeys = await AsyncStorage.getAllKeys();
       const sensorKeys = cachedKeys.filter(key => key.startsWith(`sensor_${mockDevice.id}`));
-      
+
       expect(sensorKeys).toHaveLength(3);
-      
+
       // Retrieve and verify cached data
       const cachedData = await AsyncStorage.multiGet(sensorKeys);
       const parsedData = cachedData.map(([key, value]) => JSON.parse(value!));
-      
+
       expect(parsedData.every(data => data.deviceId === mockDevice.id)).toBe(true);
       expect(parsedData.every(data => data.synced === false)).toBe(true);
     });
@@ -413,19 +413,19 @@ describe('BLE Device Connection Flow Integration', () => {
         { deviceId: mockDevice.id, temperature: 22.5, timestamp: Date.now() - 120000, synced: false },
         { deviceId: mockDevice.id, temperature: 23.0, timestamp: Date.now() - 60000, synced: false }
       ];
-      
+
       for (const [index, data] of unsyncedData.entries()) {
         await AsyncStorage.setItem(
           `sensor_${data.deviceId}_${data.timestamp}`,
           JSON.stringify(data)
         );
       }
-      
+
       // Mock sync function
       const syncToFirebase = async (data: any[]) => {
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         // Mark as synced
         for (const item of data) {
           const key = `sensor_${item.deviceId}_${item.timestamp}`;
@@ -435,26 +435,26 @@ describe('BLE Device Connection Flow Integration', () => {
             syncedAt: new Date().toISOString()
           }));
         }
-        
+
         return { success: true, syncedCount: data.length };
       };
-      
+
       // Perform sync
       const result = await syncToFirebase(unsyncedData);
-      
+
       expect(result.success).toBe(true);
       expect(result.syncedCount).toBe(3);
-      
+
       // Verify data is marked as synced
       const keys = await AsyncStorage.getAllKeys();
       const sensorKeys = keys.filter(key => key.startsWith(`sensor_${mockDevice.id}`));
       const syncedData = await AsyncStorage.multiGet(sensorKeys);
-      
+
       const allSynced = syncedData.every(([key, value]) => {
         const data = JSON.parse(value!);
         return data.synced === true;
       });
-      
+
       expect(allSynced).toBe(true);
     });
 
@@ -466,13 +466,13 @@ describe('BLE Device Connection Flow Integration', () => {
         localId: 'local-123',
         synced: false
       };
-      
+
       // Store locally
       await AsyncStorage.setItem(
         `sensor_${conflictingData.deviceId}_${conflictingData.timestamp}`,
         JSON.stringify(conflictingData)
       );
-      
+
       // Mock conflict resolution (server version wins)
       const resolveConflict = async (localData: any, serverData: any) => {
         if (serverData && localData.timestamp === serverData.timestamp) {
@@ -483,18 +483,18 @@ describe('BLE Device Connection Flow Integration', () => {
             conflictResolved: true,
             resolvedAt: new Date().toISOString()
           };
-          
+
           await AsyncStorage.setItem(
             `sensor_${resolvedData.deviceId}_${resolvedData.timestamp}`,
             JSON.stringify(resolvedData)
           );
-          
+
           return resolvedData;
         }
-        
+
         return localData;
       };
-      
+
       const serverData = {
         deviceId: mockDevice.id,
         temperature: 24.5, // Different value
@@ -502,9 +502,9 @@ describe('BLE Device Connection Flow Integration', () => {
         serverId: 'server-456',
         synced: true
       };
-      
+
       const resolved = await resolveConflict(conflictingData, serverData);
-      
+
       expect(resolved.temperature).toBe(24.5); // Server value
       expect(resolved.localId).toBe('local-123'); // Local metadata preserved
       expect(resolved.conflictResolved).toBe(true);
@@ -520,13 +520,13 @@ describe('BLE Device Connection Flow Integration', () => {
         { type: 'characteristic_not_found', code: 5 },
         { type: 'permission_denied', code: 1 }
       ];
-      
+
       for (const scenario of errorScenarios) {
         const error = new Error(`BLE Error: ${scenario.type}`);
         (error as any).code = scenario.code;
-        
+
         bleManager.connectToDevice.mockRejectedValueOnce(error);
-        
+
         try {
           await bleManager.connectToDevice(mockDevice.id);
           fail('Should have thrown error');
@@ -540,7 +540,7 @@ describe('BLE Device Connection Flow Integration', () => {
     it('should implement retry logic for failed operations', async () => {
       let attemptCount = 0;
       const maxRetries = 3;
-      
+
       const retryableOperation = async () => {
         attemptCount++;
         if (attemptCount < 3) {
@@ -548,10 +548,10 @@ describe('BLE Device Connection Flow Integration', () => {
         }
         return { success: true, attempts: attemptCount };
       };
-      
+
       const executeWithRetry = async (operation: Function, maxRetries: number) => {
         let lastError;
-        
+
         for (let i = 0; i < maxRetries; i++) {
           try {
             return await operation();
@@ -562,12 +562,12 @@ describe('BLE Device Connection Flow Integration', () => {
             }
           }
         }
-        
+
         throw lastError;
       };
-      
+
       const result = await executeWithRetry(retryableOperation, maxRetries);
-      
+
       expect(result.success).toBe(true);
       expect(result.attempts).toBe(3);
     });
@@ -575,11 +575,11 @@ describe('BLE Device Connection Flow Integration', () => {
     it('should handle device disconnection during data transfer', async () => {
       let transferInProgress = false;
       let transferCompleted = false;
-      
+
       // Mock large data transfer
       const transferLargeData = async () => {
         transferInProgress = true;
-        
+
         try {
           // Simulate chunks of data
           for (let chunk = 0; chunk < 10; chunk++) {
@@ -587,22 +587,22 @@ describe('BLE Device Connection Flow Integration', () => {
               // Simulate disconnection mid-transfer
               throw new Error('Device disconnected');
             }
-            
+
             await bleManager.writeCharacteristicWithResponseForDevice(
               mockDevice.id,
               '12345678-1234-1234-1234-123456789abc',
               '87654321-4321-4321-4321-cba987654321',
               Buffer.from(`chunk-${chunk}`).toString('base64')
             );
-            
+
             await new Promise(resolve => setTimeout(resolve, 100));
           }
-          
+
           transferCompleted = true;
-          
+
         } catch (error) {
           transferInProgress = false;
-          
+
           // Save transfer state for resume
           await AsyncStorage.setItem('transfer_state', JSON.stringify({
             deviceId: mockDevice.id,
@@ -610,11 +610,11 @@ describe('BLE Device Connection Flow Integration', () => {
             totalChunks: 10,
             timestamp: Date.now()
           }));
-          
+
           throw error;
         }
       };
-      
+
       bleManager.writeCharacteristicWithResponseForDevice
         .mockResolvedValueOnce({ value: 'chunk-0' })
         .mockResolvedValueOnce({ value: 'chunk-1' })
@@ -622,16 +622,16 @@ describe('BLE Device Connection Flow Integration', () => {
         .mockResolvedValueOnce({ value: 'chunk-3' })
         .mockResolvedValueOnce({ value: 'chunk-4' })
         .mockRejectedValueOnce(new Error('Device disconnected'));
-      
+
       await expect(transferLargeData()).rejects.toThrow('Device disconnected');
-      
+
       expect(transferInProgress).toBe(false);
       expect(transferCompleted).toBe(false);
-      
+
       // Verify transfer state was saved
       const transferState = await AsyncStorage.getItem('transfer_state');
       const parsedState = JSON.parse(transferState!);
-      
+
       expect(parsedState.lastChunk).toBe(4);
       expect(parsedState.deviceId).toBe(mockDevice.id);
     });

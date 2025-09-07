@@ -41,15 +41,15 @@ console.log(`${colors.cyan}
 function checkAssets() {
   log('bright', '\n🎨 CHECKING REQUIRED ASSETS');
   log('blue', '============================');
-  
+
   const requiredAssets = [
     { path: 'assets/images/app-icon.png', name: 'App Icon', required: true },
     { path: 'assets/images/favicon.png', name: 'Favicon', required: false },
     { path: 'assets/images/splash.png', name: 'Splash Screen', required: false }
   ];
-  
+
   let missingAssets = [];
-  
+
   requiredAssets.forEach(asset => {
     if (fs.existsSync(asset.path)) {
       log('green', `✅ ${asset.name}: Found`);
@@ -62,17 +62,17 @@ function checkAssets() {
       }
     }
   });
-  
+
   return missingAssets;
 }
 
 function generateAppStoreInfo() {
   log('bright', '\n🍎 iOS APP STORE CONNECT INFORMATION');
   log('blue', '====================================');
-  
+
   try {
     const appConfig = JSON.parse(fs.readFileSync('app.json', 'utf8')).expo;
-    
+
     const appStoreInfo = {
       appInformation: {
         name: appConfig.name,
@@ -113,19 +113,19 @@ Perfect for health-conscious individuals who want to optimize their hydration ha
         encryptionCompliance: 'No, this app does not use encryption'
       }
     };
-    
+
     log('green', '✅ App Store Information Generated:');
     log('white', `   App Name: ${appStoreInfo.appInformation.name}`);
     log('white', `   Bundle ID: ${appStoreInfo.appInformation.bundleId}`);
     log('white', `   Version: ${appStoreInfo.appInformation.version}`);
     log('white', `   Category: ${appStoreInfo.appInformation.category}`);
-    
+
     // Save to file
     fs.writeFileSync('app-store-info.json', JSON.stringify(appStoreInfo, null, 2));
     log('green', '✅ App Store info saved to app-store-info.json');
-    
+
     return appStoreInfo;
-    
+
   } catch (error) {
     log('red', '❌ Error generating App Store information');
     return null;
@@ -135,10 +135,10 @@ Perfect for health-conscious individuals who want to optimize their hydration ha
 function generatePlayStoreInfo() {
   log('bright', '\n🤖 GOOGLE PLAY STORE INFORMATION');
   log('blue', '=================================');
-  
+
   try {
     const appConfig = JSON.parse(fs.readFileSync('app.json', 'utf8')).expo;
-    
+
     const playStoreInfo = {
       appDetails: {
         title: appConfig.name,
@@ -188,18 +188,18 @@ Your data is protected with enterprise-grade Firebase security. We respect your 
         dataRetention: 'Data is retained until user requests deletion'
       }
     };
-    
+
     log('green', '✅ Play Store Information Generated:');
     log('white', `   App Title: ${playStoreInfo.appDetails.title}`);
     log('white', `   Package Name: ${playStoreInfo.appDetails.packageName}`);
     log('white', `   Category: ${playStoreInfo.appDetails.category}`);
-    
+
     // Save to file
     fs.writeFileSync('play-store-info.json', JSON.stringify(playStoreInfo, null, 2));
     log('green', '✅ Play Store info saved to play-store-info.json');
-    
+
     return playStoreInfo;
-    
+
   } catch (error) {
     log('red', '❌ Error generating Play Store information');
     return null;
@@ -209,7 +209,7 @@ Your data is protected with enterprise-grade Firebase security. We respect your 
 function generateAssetRequirements() {
   log('bright', '\n📋 ASSET REQUIREMENTS CHECKLIST');
   log('blue', '=================================');
-  
+
   const assetRequirements = {
     ios: {
       appIcon: {
@@ -250,31 +250,31 @@ function generateAssetRequirements() {
       }
     }
   };
-  
+
   log('yellow', '\n🍎 iOS Assets Required:');
   log('white', `   • App Icon: ${assetRequirements.ios.appIcon.size} ${assetRequirements.ios.appIcon.format}`);
   log('white', `   • iPhone 6.5" Screenshots: ${assetRequirements.ios.screenshots.iPhone6_5}`);
   log('white', `   • iPhone 5.5" Screenshots: ${assetRequirements.ios.screenshots.iPhone5_5}`);
   log('white', `   • iPad Screenshots: ${assetRequirements.ios.screenshots.iPad}`);
   log('white', `   • App Preview Videos (optional): ${assetRequirements.ios.appPreview.duration}`);
-  
+
   log('yellow', '\n🤖 Android Assets Required:');
   log('white', `   • App Icon: ${assetRequirements.android.appIcon.size} ${assetRequirements.android.appIcon.format}`);
   log('white', `   • Feature Graphic: ${assetRequirements.android.featureGraphic.size}`);
   log('white', `   • Phone Screenshots: ${assetRequirements.android.screenshots.phone}`);
   log('white', `   • Tablet Screenshots: ${assetRequirements.android.screenshots.tablet}`);
-  
+
   // Save requirements
   fs.writeFileSync('asset-requirements.json', JSON.stringify(assetRequirements, null, 2));
   log('green', '\n✅ Asset requirements saved to asset-requirements.json');
-  
+
   return assetRequirements;
 }
 
 async function createSubmissionChecklist() {
   log('bright', '\n📝 SUBMISSION CHECKLIST');
   log('blue', '=======================');
-  
+
   const checklist = {
     preSubmission: [
       'App thoroughly tested on physical devices',
@@ -315,27 +315,27 @@ async function createSubmissionChecklist() {
       ]
     }
   };
-  
+
   log('green', '✅ Pre-Submission Requirements:');
   checklist.preSubmission.forEach(item => {
     log('white', `   • ${item}`);
   });
-  
+
   log('green', '\n✅ Technical Requirements:');
   checklist.technicalRequirements.forEach(item => {
     log('white', `   • ${item}`);
   });
-  
+
   log('green', '\n✅ iOS Specific:');
   checklist.storeSpecific.ios.forEach(item => {
     log('white', `   • ${item}`);
   });
-  
+
   log('green', '\n✅ Android Specific:');
   checklist.storeSpecific.android.forEach(item => {
     log('white', `   • ${item}`);
   });
-  
+
   // Save checklist
   fs.writeFileSync('submission-checklist.json', JSON.stringify(checklist, null, 2));
   log('green', '\n✅ Submission checklist saved to submission-checklist.json');
@@ -344,12 +344,12 @@ async function createSubmissionChecklist() {
 async function interactiveSetup() {
   log('bright', '\n🛠️ INTERACTIVE STORE SETUP');
   log('blue', '============================');
-  
+
   const appName = await question('App Name (or press Enter for "DAMP Smart Drinkware"): ');
   const contactEmail = await question('Contact Email for stores: ');
   const websiteUrl = await question('Website URL (optional): ');
   const privacyPolicyUrl = await question('Privacy Policy URL: ');
-  
+
   const storeConfig = {
     appName: appName || 'DAMP Smart Drinkware',
     contactEmail,
@@ -357,10 +357,10 @@ async function interactiveSetup() {
     privacyPolicyUrl: privacyPolicyUrl || 'https://your-website.com/privacy-policy',
     generatedAt: new Date().toISOString()
   };
-  
+
   fs.writeFileSync('store-config.json', JSON.stringify(storeConfig, null, 2));
   log('green', '\n✅ Store configuration saved to store-config.json');
-  
+
   return storeConfig;
 }
 
@@ -368,26 +368,26 @@ async function mainStorePrep() {
   try {
     log('cyan', 'Welcome to the App Store Preparation Assistant!');
     log('white', 'This will help you prepare for iOS App Store and Google Play Store submission.\n');
-    
+
     // Check assets
     const missingAssets = checkAssets();
-    
+
     // Generate store information
     const appStoreInfo = generateAppStoreInfo();
     const playStoreInfo = generatePlayStoreInfo();
-    
+
     // Generate asset requirements
     generateAssetRequirements();
-    
+
     // Create submission checklist
     await createSubmissionChecklist();
-    
+
     // Interactive setup
     const setupInteractive = await question('\nWould you like to customize store information? (y/n): ');
     if (setupInteractive.toLowerCase() === 'y') {
       await interactiveSetup();
     }
-    
+
     log('bright', '\n🎯 PREPARATION COMPLETE!');
     log('green', '========================');
     log('white', 'Generated files:');
@@ -398,21 +398,21 @@ async function mainStorePrep() {
     if (fs.existsSync('store-config.json')) {
       log('white', '• store-config.json - Your customized configuration');
     }
-    
+
     log('bright', '\n📱 NEXT STEPS:');
     log('white', '1. Create missing assets (icons, screenshots)');
     log('white', '2. Set up developer accounts (Apple, Google)');
     log('white', '3. Build production apps: npm run ios:build:production');
     log('white', '4. Test thoroughly on physical devices');
     log('white', '5. Submit to stores: npm run ios:submit');
-    
+
     if (missingAssets.length > 0) {
       log('yellow', '\n⚠️  Missing Required Assets:');
       missingAssets.forEach(asset => {
         log('white', `   • ${asset.name} (${asset.path})`);
       });
     }
-    
+
   } catch (error) {
     log('red', `\n❌ Error during store preparation: ${error.message}`);
   } finally {
@@ -425,9 +425,9 @@ if (require.main === module) {
   mainStorePrep();
 }
 
-module.exports = { 
-  checkAssets, 
-  generateAppStoreInfo, 
-  generatePlayStoreInfo, 
-  generateAssetRequirements 
+module.exports = {
+  checkAssets,
+  generateAppStoreInfo,
+  generatePlayStoreInfo,
+  generateAssetRequirements
 };

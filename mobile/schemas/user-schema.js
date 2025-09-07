@@ -15,7 +15,7 @@ export const USER_SCHEMA = {
   photoURL: String || null, // Profile picture URL
   emailVerified: Boolean, // Email verification status
   phoneNumber: String || null, // Phone number (optional)
-  
+
   // Platform & Session Info
   platform: String, // 'web', 'ios', 'android'
   createdAt: 'serverTimestamp', // Account creation timestamp
@@ -23,7 +23,7 @@ export const USER_SCHEMA = {
   lastSignIn: 'serverTimestamp', // Last sign in timestamp
   lastSeen: 'serverTimestamp', // Last activity timestamp
   isOnline: Boolean, // Current online status
-  
+
   // User Preferences (synchronized across platforms)
   preferences: {
     // Notification Settings
@@ -36,7 +36,7 @@ export const USER_SCHEMA = {
       orderUpdates: Boolean, // Order status notifications
       votingReminders: Boolean, // Voting reminder notifications
     },
-    
+
     // App Settings
     app: {
       darkMode: Boolean, // Dark/light theme preference
@@ -45,7 +45,7 @@ export const USER_SCHEMA = {
       units: String, // Temperature units ('celsius', 'fahrenheit')
       autoSync: Boolean, // Auto-sync across devices
     },
-    
+
     // Privacy Settings
     privacy: {
       shareAnalytics: Boolean, // Share usage analytics
@@ -53,7 +53,7 @@ export const USER_SCHEMA = {
       profileVisibility: String, // 'public', 'friends', 'private'
       activityVisibility: String, // 'public', 'friends', 'private'
     },
-    
+
     // Device Settings (mobile only)
     device: {
       biometricEnabled: Boolean, // Biometric authentication
@@ -62,7 +62,7 @@ export const USER_SCHEMA = {
       soundEffects: Boolean, // Sound effects enabled
     }
   },
-  
+
   // User Statistics & Activity
   stats: {
     votesCount: Number, // Total votes cast
@@ -72,7 +72,7 @@ export const USER_SCHEMA = {
     referralsCount: Number, // Successful referrals
     streakDays: Number, // Current voting streak
     totalSpent: Number, // Total amount spent (cents)
-    
+
     // Platform-specific stats
     platformStats: {
       web: {
@@ -85,7 +85,7 @@ export const USER_SCHEMA = {
       }
     }
   },
-  
+
   // Social & Community
   social: {
     following: Array, // Array of user UIDs they follow
@@ -93,7 +93,7 @@ export const USER_SCHEMA = {
     blockedUsers: Array, // Array of blocked user UIDs
     friendRequests: Array, // Pending friend requests
   },
-  
+
   // Loyalty & Rewards
   loyalty: {
     tier: String, // 'bronze', 'silver', 'gold', 'platinum'
@@ -103,7 +103,7 @@ export const USER_SCHEMA = {
     rewards: Array, // Array of earned rewards
     redemptions: Array, // Array of redeemed rewards
   },
-  
+
   // Connected Devices (IoT integration)
   devices: Array, // Array of connected DAMP devices
   /*
@@ -121,7 +121,7 @@ export const USER_SCHEMA = {
     }
   ]
   */
-  
+
   // Subscription & Billing
   subscription: {
     plan: String || null, // 'free', 'premium', 'pro'
@@ -132,7 +132,7 @@ export const USER_SCHEMA = {
     paymentMethods: Array, // Array of payment method IDs
     billingHistory: Array, // Array of billing records
   },
-  
+
   // Address & Shipping
   addresses: Array,
   /*
@@ -150,7 +150,7 @@ export const USER_SCHEMA = {
     }
   ]
   */
-  
+
   // Authentication Methods
   authMethods: Array, // Array of enabled auth methods
   /*
@@ -158,11 +158,11 @@ export const USER_SCHEMA = {
     'email', 'google', 'apple', 'facebook', 'biometric'
   ]
   */
-  
+
   // Role & Permissions
   role: String, // 'user', 'beta_tester', 'moderator', 'admin'
   permissions: Array, // Array of special permissions
-  
+
   // Marketing & Attribution
   marketing: {
     source: String || null, // How they found us
@@ -172,14 +172,14 @@ export const USER_SCHEMA = {
     utmMedium: String || null,
     utmCampaign: String || null,
   },
-  
+
   // Beta Testing & Feature Flags
   beta: {
     isBetaTester: Boolean,
     betaFeatures: Array, // Array of enabled beta features
     feedbackCount: Number, // Number of feedback submissions
   },
-  
+
   // Security & Audit
   security: {
     lastPasswordChange: 'serverTimestamp',
@@ -296,24 +296,24 @@ export const DEFAULT_USER_DATA = {
  */
 export const validateUserData = (userData) => {
   const errors = [];
-  
+
   // Required fields
   if (!userData.uid) errors.push('UID is required');
   if (!userData.email) errors.push('Email is required');
   if (!userData.platform) errors.push('Platform is required');
-  
+
   // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (userData.email && !emailRegex.test(userData.email)) {
     errors.push('Invalid email format');
   }
-  
+
   // Platform validation
   const validPlatforms = ['web', 'ios', 'android'];
   if (userData.platform && !validPlatforms.includes(userData.platform)) {
     errors.push('Invalid platform');
   }
-  
+
   return errors.length === 0 ? null : errors;
 };
 

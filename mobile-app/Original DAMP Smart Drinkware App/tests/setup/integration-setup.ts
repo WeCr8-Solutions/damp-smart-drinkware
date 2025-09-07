@@ -281,13 +281,13 @@ export const integrationTestUtils = {
         },
         timestamp: Date.now()
       };
-      
+
       // Trigger any location watchers
       return mockLocation;
     }
   },
 
-  // Storage test utilities  
+  // Storage test utilities
   storage: {
     async clearAll() {
       await mockAsyncStorage.clear();
@@ -317,10 +317,10 @@ afterAll(async () => {
 // Custom matchers for integration tests
 expect.extend({
   toHaveBeenCalledWithBleDevice(received: jest.Mock, deviceId: string) {
-    const pass = received.mock.calls.some(call => 
+    const pass = received.mock.calls.some(call =>
       call.some((arg: any) => typeof arg === 'object' && arg?.id === deviceId)
     );
-    
+
     return {
       message: () =>
         pass
@@ -329,13 +329,13 @@ expect.extend({
       pass,
     };
   },
-  
+
   toHaveValidFirebaseDocument(received: any) {
-    const pass = received && 
-                 typeof received.id === 'string' && 
-                 received.data && 
+    const pass = received &&
+                 typeof received.id === 'string' &&
+                 received.data &&
                  typeof received.data === 'function';
-    
+
     return {
       message: () =>
         pass

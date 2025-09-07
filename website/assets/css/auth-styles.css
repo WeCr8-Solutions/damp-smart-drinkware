@@ -1,6 +1,6 @@
 /**
  * DAMP Smart Drinkware - Authentication UI Styles
- * 
+ *
  * Comprehensive styling for authentication modals, forms, and user interface
  */
 
@@ -396,20 +396,20 @@
   .modal-content {
     width: 95%;
   }
-  
+
   .auth-form {
     padding: 24px 20px 20px;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .auth-buttons {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .auth-nav-btn {
     width: 100%;
     text-align: center;
@@ -422,17 +422,17 @@
     background: #1f2937;
     color: #f9fafb;
   }
-  
+
   .auth-form h2 {
     color: #f9fafb;
   }
-  
+
   .form-group input {
     background: #374151;
     border-color: #4b5563;
     color: #f9fafb;
   }
-  
+
   .user-dropdown {
     background: #1f2937;
     border-color: #4b5563;
@@ -1107,43 +1107,43 @@
     margin: 20px;
     max-height: calc(100vh - 40px);
   }
-  
+
   .auth-form {
     padding: 32px 24px 24px;
   }
-  
+
   .auth-title {
     font-size: 24px;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  
+
   .auth-social {
     grid-template-columns: 1fr;
   }
-  
+
   .auth-buttons {
     flex-direction: column;
     gap: 8px;
     width: 100%;
   }
-  
+
   .auth-btn {
     width: 100%;
     justify-content: center;
   }
-  
+
   .user-menu {
     padding: 6px 8px;
   }
-  
+
   .user-info {
     max-width: 120px;
   }
-  
+
   .dropdown-menu {
     min-width: 180px;
   }
@@ -1153,17 +1153,17 @@
   .auth-form {
     padding: 24px 20px 20px;
   }
-  
+
   .form-group input {
     padding: 14px 18px;
     padding-left: 44px;
     font-size: 16px; /* Prevent zoom on iOS */
   }
-  
+
   .input-icon {
     left: 14px;
   }
-  
+
   .password-toggle {
     right: 14px;
   }
@@ -1175,49 +1175,49 @@
     background: #1f2937;
     color: #f9fafb;
   }
-  
+
   .auth-title {
     color: #f9fafb;
   }
-  
+
   .auth-subtitle {
     color: #d1d5db;
   }
-  
+
   .form-group input {
     background: #374151;
     border-color: #4b5563;
     color: #f9fafb;
   }
-  
+
   .form-group input:focus {
     background: #4b5563;
     border-color: var(--primary-color, #3b82f6);
   }
-  
+
   .social-btn {
     background: #374151;
     border-color: #4b5563;
     color: #f9fafb;
   }
-  
+
   .social-btn:hover {
     background: #4b5563;
   }
-  
+
   .user-menu {
     background: #374151;
   }
-  
+
   .user-menu:hover {
     background: #4b5563;
   }
-  
+
   .dropdown-menu {
     background: #1f2937;
     border-color: #4b5563;
   }
-  
+
   .dropdown-item:hover {
     background: #374151;
   }
@@ -1228,12 +1228,12 @@
   .form-group input {
     border-width: 3px;
   }
-  
+
   .auth-submit-btn {
     border: 2px solid var(--primary-color, #2563eb);
   }
-  
+
   .social-btn {
     border-width: 3px;
   }
-} 
+}

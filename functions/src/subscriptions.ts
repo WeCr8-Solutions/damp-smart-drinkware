@@ -257,7 +257,7 @@ export const manageSubscription = functions.https.onCall(async (data, context) =
         }
 
         const newPlan = SUBSCRIPTION_PLANS[newPlanId as keyof typeof SUBSCRIPTION_PLANS];
-        
+
         // Update subscription in Stripe
         await stripe.subscriptions.update(stripeSubscriptionId, {
           items: [
@@ -358,7 +358,7 @@ export const getSubscriptionStatus = functions.https.onCall(async (data, context
     if (subscription.stripeSubscriptionId) {
       try {
         const stripeSubscription = await stripe.subscriptions.retrieve(subscription.stripeSubscriptionId);
-        
+
         // Update Firestore with latest Stripe data
         const updateData = {
           'subscription.status': stripeSubscription.status,
@@ -427,11 +427,11 @@ export const handleStripeWebhook = functions.https.onRequest(async (req, res) =>
       case 'customer.subscription.deleted':
         await handleSubscriptionUpdated(event.data.object as Stripe.Subscription);
         break;
-      
+
       case 'invoice.payment_succeeded':
         await handlePaymentSucceeded(event.data.object as Stripe.Invoice);
         break;
-      
+
       case 'invoice.payment_failed':
         await handlePaymentFailed(event.data.object as Stripe.Invoice);
         break;

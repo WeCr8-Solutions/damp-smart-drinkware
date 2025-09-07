@@ -78,7 +78,7 @@ Step 6: Zone active! No alerts within this area
 - **Track up to 3 devices:** Perfect for home + office setup
 - **5 Safe Zones:** Multiple approved locations
 - **Standard Notifications:** All alert types
-- **Battery Monitoring:** Detailed battery insights  
+- **Battery Monitoring:** Detailed battery insights
 - **Priority Support:** Faster customer service
 
 **Perfect For:**
@@ -230,4 +230,4 @@ Step 6: Zone active! No alerts within this area
 
 ---
 
-**Ready to never leave your drink behind again? Start with our free tier and experience the peace of mind that comes with DAMP Smart Drinkware! 🥤✨** 
+**Ready to never leave your drink behind again? Start with our free tier and experience the peace of mind that comes with DAMP Smart Drinkware! 🥤✨**

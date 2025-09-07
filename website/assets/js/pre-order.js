@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
         checkbox.addEventListener('change', function() {
             const productId = this.value;
             const quantitySection = this.closest('.product-option').querySelector('.quantity-section');
-            
+
             if (this.checked) {
                 selectedProducts[productId] = {
                     quantity: 1,
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 delete selectedProducts[productId];
                 quantitySection.style.display = 'none';
             }
-            
+
             updateOrderSummary();
         });
     });
@@ -36,13 +36,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const productId = this.dataset.product;
             const input = this.parentElement.querySelector('.qty-input');
             const isPlus = this.classList.contains('plus');
-            
+
             if (isPlus && input.value < 10) {
                 input.value = parseInt(input.value) + 1;
             } else if (!isPlus && input.value > 1) {
                 input.value = parseInt(input.value) - 1;
             }
-            
+
             if (selectedProducts[productId]) {
                 selectedProducts[productId].quantity = parseInt(input.value);
                 updateOrderSummary();
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const orderSummary = document.getElementById('orderSummary');
         const orderItems = document.getElementById('orderItems');
         const customerInfo = document.querySelector('.customer-info');
-        
+
         if (Object.keys(selectedProducts).length === 0) {
             orderSummary.style.display = 'none';
             customerInfo.style.display = 'none';
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const product = products[productId];
             const itemTotal = product.price * details.quantity;
             const itemSavings = product.savings * details.quantity;
-            
+
             subtotal += itemTotal;
             totalSavings += itemSavings;
 
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form submission
     document.getElementById('preOrderForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const orderData = {
             products: selectedProducts,
             customer: {
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
             cart: JSON.stringify(selectedProducts),
             total: total.toFixed(2)
         })}`;
-        
+
         window.location.href = checkoutUrl;
     });
-}); 
+});

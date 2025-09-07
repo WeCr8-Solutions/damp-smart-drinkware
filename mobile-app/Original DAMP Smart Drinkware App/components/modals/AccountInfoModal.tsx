@@ -1,6 +1,6 @@
 /**
  * Account Information Modal
- * 
+ *
  * Displays detailed user account information
  */
 
@@ -70,7 +70,7 @@ export default function AccountInfoModal({
         {/* Account Details */}
         <View style={settingsStyles.detailsSection}>
           <Text style={settingsStyles.sectionTitle}>Account Details</Text>
-          
+
           <View style={settingsStyles.detailItem}>
             <Mail size={24} color="#0277BD" />
             <View style={settingsStyles.detailContent}>
@@ -113,7 +113,7 @@ export default function AccountInfoModal({
         {/* Preferences */}
         <View style={settingsStyles.detailsSection}>
           <Text style={settingsStyles.sectionTitle}>Current Preferences</Text>
-          
+
           <View style={settingsStyles.detailItem}>
             <Bell size={24} color="#0277BD" />
             <View style={settingsStyles.detailContent}>
@@ -129,8 +129,8 @@ export default function AccountInfoModal({
             <View style={settingsStyles.detailContent}>
               <Text style={settingsStyles.detailLabel}>Theme</Text>
               <Text style={settingsStyles.detailValue}>
-                {user.preferences?.theme ? 
-                  user.preferences.theme.charAt(0).toUpperCase() + user.preferences.theme.slice(1) : 
+                {user.preferences?.theme ?
+                  user.preferences.theme.charAt(0).toUpperCase() + user.preferences.theme.slice(1) :
                   'System'
                 }
               </Text>

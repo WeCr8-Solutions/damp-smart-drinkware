@@ -1,6 +1,6 @@
 /**
  * Stripe Product Configuration
- * 
+ *
  * This file contains the product definitions for DAMP Smart Drinkware subscriptions.
  * Each product includes pricing information, features, and Stripe integration details.
  */

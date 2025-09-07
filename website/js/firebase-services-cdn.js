@@ -34,7 +34,7 @@ async function initializeFirebaseServices() {
       firebaseAuth = firebase.auth();
       firebaseDb = firebase.firestore();
       firebaseStorage = firebase.storage();
-      
+
       // Initialize analytics if available
       if (typeof gtag !== 'undefined') {
         firebaseAnalytics = firebase.analytics();
@@ -91,7 +91,7 @@ class VotingService {
     ctx.textBaseline = 'top';
     ctx.font = '14px Arial';
     ctx.fillText('Browser fingerprint', 2, 2);
-    
+
     const fingerprint = [
       navigator.userAgent,
       navigator.language,
@@ -99,13 +99,13 @@ class VotingService {
       new Date().getTimezoneOffset(),
       canvas.toDataURL()
     ].join('|');
-    
+
     return 'fp_' + btoa(fingerprint).substring(0, 10);
   }
 
   async submitVote(productId, user) {
     if (!firebaseDb || !user) return false;
-    
+
     try {
       const voteData = {
         productId,
@@ -113,7 +113,7 @@ class VotingService {
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         userAgent: navigator.userAgent
       };
-      
+
       await firebaseDb.collection(this.votingCollection).doc(user.uid).set(voteData);
       console.log('✅ Vote submitted successfully');
       return true;
@@ -125,7 +125,7 @@ class VotingService {
 
   async submitPublicVote(productId, fingerprint) {
     if (!firebaseDb) return false;
-    
+
     try {
       const voteData = {
         productId,
@@ -133,7 +133,7 @@ class VotingService {
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         userAgent: navigator.userAgent
       };
-      
+
       await firebaseDb.collection(this.publicVotingCollection).doc(fingerprint).set(voteData);
       console.log('✅ Public vote submitted successfully');
       return true;
@@ -145,7 +145,7 @@ class VotingService {
 
   async getUserVote(user) {
     if (!firebaseDb || !user) return null;
-    
+
     try {
       const doc = await firebaseDb.collection(this.votingCollection).doc(user.uid).get();
       return doc.exists ? doc.data() : null;
@@ -157,7 +157,7 @@ class VotingService {
 
   async getPublicVote(fingerprint) {
     if (!firebaseDb) return null;
-    
+
     try {
       const doc = await firebaseDb.collection(this.publicVotingCollection).doc(fingerprint).get();
       return doc.exists ? doc.data() : null;
@@ -169,7 +169,7 @@ class VotingService {
 
   onVotingChange(callback) {
     if (!firebaseDb) return () => {};
-    
+
     return firebaseDb.collection(this.votingCollection).onSnapshot(snapshot => {
       const votes = {};
       snapshot.forEach(doc => {
@@ -178,7 +178,7 @@ class VotingService {
           votes[data.productId] = (votes[data.productId] || 0) + 1;
         }
       });
-      
+
       // Calculate percentages
       const total = Object.values(votes).reduce((sum, count) => sum + count, 0);
       const products = {};
@@ -188,14 +188,14 @@ class VotingService {
           percentage: total > 0 ? Math.round((votes[productId] / total) * 100) : 0
         };
       });
-      
+
       callback({ products, total });
     });
   }
 
   onPublicVotingChange(callback) {
     if (!firebaseDb) return () => {};
-    
+
     return firebaseDb.collection(this.publicVotingCollection).onSnapshot(snapshot => {
       const votes = {};
       snapshot.forEach(doc => {
@@ -204,7 +204,7 @@ class VotingService {
           votes[data.productId] = (votes[data.productId] || 0) + 1;
         }
       });
-      
+
       // Calculate percentages
       const total = Object.values(votes).reduce((sum, count) => sum + count, 0);
       const products = {};
@@ -214,7 +214,7 @@ class VotingService {
           percentage: total > 0 ? Math.round((votes[productId] / total) * 100) : 0
         };
       });
-      
+
       callback({ products, total });
     });
   }
@@ -229,7 +229,7 @@ class AuthService {
 
   async isAdmin(user) {
     if (!user || !firebaseDb) return false;
-    
+
     try {
       const adminDoc = await firebaseDb.collection('admins').doc(user.uid).get();
       return adminDoc.exists;

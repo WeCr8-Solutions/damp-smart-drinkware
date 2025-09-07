@@ -13,21 +13,21 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://dampdrink.com/pages/damp-handle-v1.0-stanley.html">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="../assets/images/logo/favicon.png">
     <link rel="apple-touch-icon" href="../assets/images/logo/icon.png">
-    
+
     <!-- Stylesheets -->
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/navigation.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
-    
+
     <!-- Theme Color -->
     <meta name="theme-color" content="#1a1a1a">
     <meta name="msapplication-navbutton-color" content="#1a1a1a">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
+
     <title>Vote: Next Stanley Product for DAMP Compatibility | DAMP Smart Drinkware</title>
 
     <!-- Voting System Styles -->
@@ -420,7 +420,7 @@
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
-    
+
     <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -428,18 +428,18 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="msapplication-TileColor" content="#1a1a2e">
     <meta name="msapplication-tap-highlight" content="no">
-    
+
     <!-- PWA Theme Colors -->
     <meta name="theme-color" content="#00d4ff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
-    
+
     <!-- PWA Icons -->
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/logo/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="48x48" href="/assets/images/logo/icon-48.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/logo/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/assets/images/logo/icon-512.png">
-    
+
     <!-- Apple Touch Icons -->
     <link rel="apple-touch-icon" sizes="57x57" href="/assets/images/logo/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/assets/images/logo/apple-icon-60x60.png">
@@ -459,7 +459,7 @@
         <div class="container">
             <h1>Vote for Next Stanley Compatibility</h1>
             <p class="subtitle">
-                Help us prioritize which Stanley products should be DAMP-compatible next. 
+                Help us prioritize which Stanley products should be DAMP-compatible next.
                 Your votes directly influence our development roadmap and ensure we build what our community wants most.
             </p>
             <div class="voting-stats">
@@ -485,7 +485,7 @@
             <div class="section-header">
                 <h2 class="section-title">Stanley Product Categories</h2>
                 <p class="section-description">
-                    Based on data from <a href="https://www.stanley1913.com" target="_blank" rel="noopener">Stanley 1913</a>, 
+                    Based on data from <a href="https://www.stanley1913.com" target="_blank" rel="noopener">Stanley 1913</a>,
                     these are the most popular and requested products for DAMP compatibility. Vote for your favorites!
                 </p>
             </div>
@@ -744,7 +744,7 @@
             <div class="leaderboard-header">
                 <h2 class="section-title">Current Vote Leaderboard</h2>
                 <p class="section-description">
-                    The most requested Stanley products based on community votes. 
+                    The most requested Stanley products based on community votes.
                     Top products will be prioritized for DAMP compatibility development.
                 </p>
             </div>
@@ -829,7 +829,7 @@
             <div class="cta-content">
                 <h2 class="cta-title">Ready to Pre-Order DAMP?</h2>
                 <p class="cta-description">
-                    While you're voting for the next Stanley compatibility, secure your DAMP Smart Cup Accessory 
+                    While you're voting for the next Stanley compatibility, secure your DAMP Smart Cup Accessory
                     and be among the first 500 to never lose your favorite drink again.
                 </p>
                 <a href="pre-sale-funnel.html" class="cta-button">Pre-Order DAMP Now</a>
@@ -904,25 +904,25 @@
 
             initializeVoting() {
                 const voteButtons = document.querySelectorAll('.vote-btn');
-                
+
                 voteButtons.forEach(button => {
                     const productId = button.dataset.product;
-                    
+
                     // Initialize vote count if not exists
                     if (!this.votes[productId]) {
                         this.votes[productId] = parseInt(button.parentElement.querySelector('.vote-number').textContent);
                     }
-                    
+
                     // Update display
                     button.parentElement.querySelector('.vote-number').textContent = this.votes[productId];
-                    
+
                     // Check if already voted
                     if (this.votedProducts.includes(productId)) {
                         button.textContent = 'Voted';
                         button.classList.add('voted');
                         button.disabled = true;
                     }
-                    
+
                     // Add click event
                     button.addEventListener('click', () => this.vote(productId, button));
                 });
@@ -941,11 +941,11 @@
                 // Update UI
                 const voteNumber = button.parentElement.querySelector('.vote-number');
                 voteNumber.textContent = this.votes[productId];
-                
+
                 // Animate button
                 button.classList.add('vote-animation');
                 setTimeout(() => button.classList.remove('vote-animation'), 300);
-                
+
                 // Update button state
                 button.textContent = 'Voted';
                 button.classList.add('voted');
@@ -954,10 +954,10 @@
                 // Save data
                 this.saveVotes();
                 this.saveVotedProducts();
-                
+
                 // Update stats
                 this.updateStats();
-                
+
                 // Update leaderboard
                 this.updateLeaderboard();
 
@@ -994,7 +994,7 @@
                         const progressFill = leaderboardItems[index].querySelector('.progress-fill');
                         const maxVotes = sortedProducts[0].votes;
                         const percentage = (product.votes / maxVotes) * 100;
-                        
+
                         voteTotal.textContent = `${product.votes} votes`;
                         progressFill.style.width = `${percentage}%`;
                     }
@@ -1038,7 +1038,7 @@
         // Initialize voting system when page loads
         document.addEventListener('DOMContentLoaded', () => {
             const votingSystem = new StanleyVotingSystem();
-            
+
             // Start simulated growth in development
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 votingSystem.simulateGrowth();
@@ -1066,7 +1066,7 @@
                 card.addEventListener('mouseenter', () => {
                     card.style.transform = 'translateY(-5px)';
                 });
-                
+
                 card.addEventListener('mouseleave', () => {
                     card.style.transform = 'translateY(0)';
                 });
@@ -1096,7 +1096,7 @@
                         updateViaCache: 'none'
                     });
                     console.log('✅ Service Worker registered:', registration.scope);
-                    
+
                     // Handle updates
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
@@ -1106,20 +1106,20 @@
                             }
                         });
                     });
-                    
+
                     window.dampPWA = { registration };
                 } catch (error) {
                     console.error('❌ Service Worker failed:', error);
                 }
             });
         }
-        
+
         function showUpdateNotification() {
             const notification = document.createElement('div');
             notification.innerHTML = '<div style="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00d4ff,#00ff88);color:#1a1a2e;padding:15px 25px;border-radius:30px;font-weight:600;z-index:10000;display:flex;align-items:center;gap:15px;"><span>🚀</span><span>New version available!</span><button onclick="refreshApp()" style="background:rgba(26,26,46,0.2);color:#1a1a2e;border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;">Update</button><button onclick="this.parentElement.parentElement.remove()" style="background:transparent;border:none;color:#1a1a2e;cursor:pointer;padding:5px;">×</button></div>';
             document.body.appendChild(notification);
         }
-        
+
         function refreshApp() {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistration().then(registration => {
@@ -1130,7 +1130,7 @@
                 });
             }
         }
-        
+
         // Load Mobile App Redirect Script
         const mobileAppScript = document.createElement('script');
         mobileAppScript.src = '/assets/js/mobile-app-redirect.js';

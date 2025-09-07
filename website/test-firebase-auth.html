@@ -87,7 +87,7 @@
 </head>
 <body>
     <h1>🔥 DAMP Firebase Authentication Test</h1>
-    
+
     <div class="test-container">
         <h2>🔧 Firebase Services Status</h2>
         <div id="firebaseStatus">
@@ -154,18 +154,18 @@
 
             async init() {
                 console.log('🔧 Initializing Firebase Auth Tester...');
-                
+
                 // Wait for Firebase services
                 await this.waitForServices();
-                
+
                 // Set up event listeners
                 this.setupEventListeners();
-                
+
                 // Update status displays
                 this.updateFirebaseStatus();
                 this.updateUserStatus();
                 this.updateDebugInfo();
-                
+
                 // Set up auth state listener
                 if (this.authService) {
                     this.authService.onAuthStateChange((user) => {
@@ -213,10 +213,10 @@
             async testSignUp() {
                 const resultDiv = document.getElementById('signUpResult');
                 const button = document.getElementById('signUpBtn');
-                
+
                 button.disabled = true;
                 button.textContent = '⏳ Testing Sign Up...';
-                
+
                 try {
                     const firstName = document.getElementById('testFirstName').value;
                     const lastName = document.getElementById('testLastName').value;
@@ -259,10 +259,10 @@
             async testSignIn() {
                 const resultDiv = document.getElementById('signInResult');
                 const button = document.getElementById('signInBtn');
-                
+
                 button.disabled = true;
                 button.textContent = '⏳ Testing Sign In...';
-                
+
                 try {
                     const email = document.getElementById('signInEmail').value;
                     const password = document.getElementById('signInPassword').value;
@@ -299,21 +299,21 @@
 
             updateFirebaseStatus() {
                 const statusDiv = document.getElementById('firebaseStatus');
-                
+
                 const services = window.firebaseServices || {};
                 const status = [];
-                
+
                 status.push(`<div><span class="status-indicator ${services.authService ? 'success' : 'error'}"></span>Auth Service: ${services.authService ? 'Available' : 'Not Available'}</div>`);
                 status.push(`<div><span class="status-indicator ${services.db ? 'success' : 'error'}"></span>Firestore: ${services.db ? 'Available' : 'Not Available'}</div>`);
                 status.push(`<div><span class="status-indicator ${services.analytics ? 'success' : 'error'}"></span>Analytics: ${services.analytics ? 'Available' : 'Not Available'}</div>`);
-                
+
                 statusDiv.innerHTML = status.join('');
             }
 
             updateUserStatus() {
                 const statusDiv = document.getElementById('userStatus');
                 const signOutBtn = document.getElementById('signOutBtn');
-                
+
                 if (this.currentUser) {
                     statusDiv.innerHTML = `
                         <div><span class="status-indicator success"></span>Signed In</div>
@@ -331,7 +331,7 @@
 
             updateDebugInfo() {
                 const debugDiv = document.getElementById('debugInfo');
-                
+
                 const info = {
                     'Window Location': window.location.href,
                     'Firebase Services': Object.keys(window.firebaseServices || {}),
@@ -340,7 +340,7 @@
                     'Browser': navigator.userAgent.split(') ')[0] + ')',
                     'Timestamp': new Date().toISOString()
                 };
-                
+
                 debugDiv.textContent = JSON.stringify(info, null, 2);
             }
         }
@@ -356,7 +356,7 @@
             console.log('Services:', window.firebaseServices);
             console.log('Auth Service:', window.firebaseServices?.authService);
             console.log('Current User:', window.firebaseServices?.authService?.currentUser);
-            
+
             if (window.firebaseFallbackLoader) {
                 console.log('Fallback Loader Status:', window.firebaseFallbackLoader.getStatus());
             }

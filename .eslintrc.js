@@ -1,7 +1,7 @@
 /**
  * DAMP Smart Drinkware - Enterprise ESLint Configuration
  * Google Engineering Standards Implementation
- * 
+ *
  * This configuration enforces:
  * - Code quality and consistency
  * - Security best practices
@@ -12,7 +12,7 @@
 
 module.exports = {
   root: true,
-  
+
   // Environment configuration
   env: {
     browser: true,
@@ -21,31 +21,31 @@ module.exports = {
     jest: true,
     serviceworker: true
   },
-  
+
   // Global variables
   globals: {
     // DAMP specific globals
     DAMP: 'readonly',
     DAMP_CONFIG: 'readonly',
     dampDebug: 'readonly',
-    
+
     // Google Analytics & tracking
     gtag: 'readonly',
     dataLayer: 'readonly',
-    
+
     // Performance monitoring
     PerformanceObserver: 'readonly',
     IntersectionObserver: 'readonly',
-    
+
     // PWA globals
     workbox: 'readonly',
-    
+
     // Testing globals
     __DEV__: 'readonly',
     __TEST__: 'readonly',
     __PROD__: 'readonly'
   },
-  
+
   // Parser configuration
   parser: '@babel/eslint-parser',
   parserOptions: {
@@ -60,7 +60,7 @@ module.exports = {
       presets: ['@babel/preset-env']
     }
   },
-  
+
   // Extended configurations
   extends: [
     'eslint:recommended',
@@ -74,7 +74,7 @@ module.exports = {
     'plugin:optimize-regex/recommended',
     'prettier' // Must be last to override conflicting rules
   ],
-  
+
   // Plugins
   plugins: [
     'security',
@@ -90,11 +90,11 @@ module.exports = {
     'json',
     'markdown'
   ],
-  
+
   // Rule configuration
   rules: {
     // === GOOGLE ENGINEERING STANDARDS ===
-    
+
     // Code Quality
     'complexity': ['error', { max: 10 }],
     'max-depth': ['error', 4],
@@ -102,12 +102,12 @@ module.exports = {
     'max-lines-per-function': ['error', { max: 50, skipBlankLines: true, skipComments: true }],
     'max-params': ['error', 4],
     'max-statements': ['error', 20],
-    'no-magic-numbers': ['error', { 
+    'no-magic-numbers': ['error', {
       ignore: [-1, 0, 1, 2, 100, 1000],
       ignoreArrayIndexes: true,
       ignoreDefaultValues: true
     }],
-    
+
     // Error Prevention
     'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
     'no-debugger': 'error',
@@ -118,7 +118,7 @@ module.exports = {
     'no-script-url': 'error',
     'no-void': 'error',
     'no-with': 'error',
-    
+
     // Modern JavaScript
     'prefer-const': 'error',
     'prefer-arrow-callback': 'error',
@@ -131,7 +131,7 @@ module.exports = {
     }],
     'object-shorthand': 'error',
     'no-var': 'error',
-    
+
     // === SECURITY RULES ===
     'security/detect-object-injection': 'error',
     'security/detect-non-literal-regexp': 'error',
@@ -145,15 +145,15 @@ module.exports = {
     'security/detect-non-literal-require': 'error',
     'security/detect-possible-timing-attacks': 'error',
     'security/detect-pseudoRandomBytes': 'error',
-    
+
     // === PERFORMANCE RULES ===
     'no-loops/no-loops': 'warn', // Encourage functional programming
     'optimize-regex/optimize-regex': 'error',
-    
+
     // === ACCESSIBILITY RULES ===
     // Custom rules for DOM manipulation
     'no-use-extend-native/no-use-extend-native': 'error',
-    
+
     // === IMPORT/EXPORT RULES ===
     'import/order': ['error', {
       groups: [
@@ -179,7 +179,7 @@ module.exports = {
     'import/no-useless-path-segments': 'error',
     'import/newline-after-import': 'error',
     'import/no-anonymous-default-export': 'error',
-    
+
     // === PROMISE RULES ===
     'promise/always-return': 'error',
     'promise/catch-or-return': 'error',
@@ -188,7 +188,7 @@ module.exports = {
     'promise/no-callback-in-promise': 'error',
     'promise/avoid-new': 'warn',
     'promise/prefer-await-to-then': 'error',
-    
+
     // === JSDOC RULES ===
     'jsdoc/require-description': 'error',
     'jsdoc/require-description-complete-sentence': 'error',
@@ -203,7 +203,7 @@ module.exports = {
     'jsdoc/check-param-names': 'error',
     'jsdoc/check-tag-names': 'error',
     'jsdoc/check-types': 'error',
-    
+
     // === SONARJS RULES ===
     'sonarjs/cognitive-complexity': ['error', 15],
     'sonarjs/no-duplicate-string': ['error', 3],
@@ -214,7 +214,7 @@ module.exports = {
     'sonarjs/prefer-immediate-return': 'error',
     'sonarjs/prefer-object-literal': 'error',
     'sonarjs/prefer-single-boolean-return': 'error',
-    
+
     // === UNICORN RULES (Modern JS patterns) ===
     'unicorn/filename-case': ['error', {
       case: 'kebabCase'
@@ -232,13 +232,13 @@ module.exports = {
     'unicorn/prefer-string-starts-ends-with': 'error',
     'unicorn/prefer-ternary': 'error',
     'unicorn/prefer-type-error': 'error',
-    
+
     // Disable some overly strict unicorn rules
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/no-null': 'off',
     'unicorn/prefer-module': 'off'
   },
-  
+
   // Environment-specific overrides
   overrides: [
     // Service Worker files
@@ -254,7 +254,7 @@ module.exports = {
         registration: 'readonly'
       }
     },
-    
+
     // Test files
     {
       files: [
@@ -287,7 +287,7 @@ module.exports = {
         'jsdoc/require-jsdoc': 'off'
       }
     },
-    
+
     // Configuration files
     {
       files: [
@@ -308,7 +308,7 @@ module.exports = {
         'import/no-extraneous-dependencies': 'off'
       }
     },
-    
+
     // Backend API files
     {
       files: ['backend/**/*.js'],
@@ -322,26 +322,26 @@ module.exports = {
         'node/no-unpublished-require': 'off'
       }
     },
-    
+
     // HTML files (for script tags)
     {
       files: ['**/*.html'],
       processor: 'html/html'
     },
-    
+
     // JSON files
     {
       files: ['**/*.json'],
       extends: ['plugin:json/recommended']
     },
-    
+
     // Markdown files
     {
       files: ['**/*.md'],
       processor: 'markdown/markdown'
     }
   ],
-  
+
   // Settings
   settings: {
     'import/resolver': {
@@ -355,7 +355,7 @@ module.exports = {
         extensions: ['.js', '.json']
       }
     },
-    
+
     jsdoc: {
       mode: 'jsdoc',
       tagNamePreference: {
@@ -364,7 +364,7 @@ module.exports = {
       }
     }
   },
-  
+
   // Ignore patterns (additional to .eslintignore)
   ignorePatterns: [
     'node_modules/',
@@ -377,4 +377,4 @@ module.exports = {
     'public/assets/js/vendor/',
     '.eslintrc.js' // Don't lint this file itself
   ]
-}; 
+};

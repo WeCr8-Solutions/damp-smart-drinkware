@@ -255,8 +255,8 @@ describe('Firebase Functions Integration', () => {
         }
       };
 
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { success: true, processed: true } 
+      mockHttpsCallable.mockResolvedValue({
+        data: { success: true, processed: true }
       });
 
   const webhookFunction = httpsCallable(mockFunctions, 'stripe-webhook') as unknown as jest.MockedFunction<any>;
@@ -288,8 +288,8 @@ describe('Firebase Functions Integration', () => {
         }
       };
 
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { success: true, subscription_created: true } 
+      mockHttpsCallable.mockResolvedValue({
+        data: { success: true, subscription_created: true }
       });
 
   const webhookFunction = httpsCallable(mockFunctions, 'stripe-webhook') as unknown as jest.MockedFunction<any>;
@@ -330,8 +330,8 @@ describe('Firebase Functions Integration', () => {
         timestamp: Date.now()
       };
 
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { success: true, data_id: 'data_123' } 
+      mockHttpsCallable.mockResolvedValue({
+        data: { success: true, data_id: 'data_123' }
       });
 
   const saveDataFunction = httpsCallable(mockFunctions, 'save-sensor-data') as unknown as jest.MockedFunction<any>;
@@ -379,8 +379,8 @@ describe('Firebase Functions Integration', () => {
         }
       ];
 
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { success: true, history: mockHistoryData } 
+      mockHttpsCallable.mockResolvedValue({
+        data: { success: true, history: mockHistoryData }
       });
 
   const getHistoryFunction = httpsCallable(mockFunctions, 'get-device-history') as unknown as jest.MockedFunction<any>;
@@ -417,8 +417,8 @@ describe('Firebase Functions Integration', () => {
         }
       };
 
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { success: true, analytics: mockAnalytics } 
+      mockHttpsCallable.mockResolvedValue({
+        data: { success: true, analytics: mockAnalytics }
       });
 
   const analyticsFunction = httpsCallable(mockFunctions, 'get-analytics') as unknown as jest.MockedFunction<any>;
@@ -445,8 +445,8 @@ describe('Firebase Functions Integration', () => {
         ]
       };
 
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { success: true, analytics: mockUserAnalytics } 
+      mockHttpsCallable.mockResolvedValue({
+        data: { success: true, analytics: mockUserAnalytics }
       });
 
   const analyticsFunction = httpsCallable(mockFunctions, 'get-analytics') as unknown as jest.MockedFunction<any>;
@@ -473,8 +473,8 @@ describe('Firebase Functions Integration', () => {
         }
       };
 
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { success: true, profile: mockUserProfile } 
+      mockHttpsCallable.mockResolvedValue({
+        data: { success: true, profile: mockUserProfile }
       });
 
   const createProfileFunction = httpsCallable(mockFunctions, 'create-user-profile') as unknown as jest.MockedFunction<any>;
@@ -495,8 +495,8 @@ describe('Firebase Functions Integration', () => {
         data_sharing: true
       };
 
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { success: true, preferences: updatedPreferences } 
+      mockHttpsCallable.mockResolvedValue({
+        data: { success: true, preferences: updatedPreferences }
       });
 
   const updatePrefsFunction = httpsCallable(mockFunctions, 'update-user-preferences') as unknown as jest.MockedFunction<any>;
@@ -510,12 +510,12 @@ describe('Firebase Functions Integration', () => {
     });
 
     it('should handle user deletion', async () => {
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { 
-          success: true, 
+      mockHttpsCallable.mockResolvedValue({
+        data: {
+          success: true,
           deleted: true,
-          cleanup_completed: true 
-        } 
+          cleanup_completed: true
+        }
       });
 
   const deleteUserFunction = httpsCallable(mockFunctions, 'delete-user-account') as unknown as jest.MockedFunction<any>;
@@ -542,12 +542,12 @@ describe('Firebase Functions Integration', () => {
         }
       };
 
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { 
-          success: true, 
+      mockHttpsCallable.mockResolvedValue({
+        data: {
+          success: true,
           notification_id: 'notif_123',
-          delivered: true 
-        } 
+          delivered: true
+        }
       });
 
   const sendNotificationFunction = httpsCallable(mockFunctions, 'send-notification') as unknown as jest.MockedFunction<any>;
@@ -567,12 +567,12 @@ describe('Firebase Functions Integration', () => {
         time_of_day: '09:00'
       };
 
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { 
-          success: true, 
+      mockHttpsCallable.mockResolvedValue({
+        data: {
+          success: true,
           schedule_id: 'schedule_123',
           next_delivery: new Date(Date.now() + 604800000).toISOString() // Next week
-        } 
+        }
       });
 
   const scheduleNotificationFunction = httpsCallable(mockFunctions, 'schedule-notification') as unknown as jest.MockedFunction<any>;
@@ -660,12 +660,12 @@ describe('Firebase Functions Integration', () => {
         }))
       };
 
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { 
-          success: true, 
+      mockHttpsCallable.mockResolvedValue({
+        data: {
+          success: true,
           processed_count: 1000,
-          processing_time_ms: 250 
-        } 
+          processing_time_ms: 250
+        }
       });
 
   const batchProcessFunction = httpsCallable(mockFunctions, 'batch-process-data') as unknown as jest.MockedFunction<any>;
@@ -679,13 +679,13 @@ describe('Firebase Functions Integration', () => {
     });
 
     it('should handle concurrent function calls', async () => {
-      mockHttpsCallable.mockResolvedValue({ 
-        data: { success: true, timestamp: Date.now() } 
+      mockHttpsCallable.mockResolvedValue({
+        data: { success: true, timestamp: Date.now() }
       });
 
   const testFunction = httpsCallable(mockFunctions, 'concurrent-test') as unknown as jest.MockedFunction<any>;
 
-      const concurrentCalls = Array.from({ length: 10 }, (_, i) => 
+      const concurrentCalls = Array.from({ length: 10 }, (_, i) =>
         testFunction({ call_id: i })
       );
 

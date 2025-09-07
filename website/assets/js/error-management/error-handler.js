@@ -1,7 +1,7 @@
 /**
  * DAMP Enterprise Error Handler
  * Google Engineering Standards Implementation
- * 
+ *
  * Features:
  * - Centralized error management
  * - Automatic error recovery
@@ -18,27 +18,27 @@ class DAMPErrorHandler {
             enableRecovery: true,
             enableUserNotifications: true,
             enableConsoleLogging: true,
-            
+
             // Retry configuration
             maxRetries: 3,
             retryDelay: 1000, // ms
             retryMultiplier: 2,
-            
+
             // Reporting configuration
             reportingEndpoint: '/api/errors',
             sampleRate: 1.0, // 100% sampling
             batchSize: 10,
             flushDelay: 5000, // ms
-            
+
             // User experience
             notificationDuration: 5000, // ms
             maxNotificationsPerSession: 3,
-            
+
             // Privacy and security
             enableStackTrace: true,
             sanitizeUrls: true,
             excludePersonalData: true,
-            
+
             ...config
         };
 
@@ -49,11 +49,11 @@ class DAMPErrorHandler {
         this.sessionErrors = new Set();
         this.isOnline = navigator.onLine;
         this.notificationCount = 0;
-        
+
         // Performance tracking
         this.startTime = performance.now();
         this.lastErrorTime = null;
-        
+
         this.init();
     }
 
@@ -64,10 +64,10 @@ class DAMPErrorHandler {
         this.setupPromiseHandlers();
         this.setupVisibilityHandlers();
         this.setupRecoveryMechanisms();
-        
+
         // Start error processing
         this.startErrorProcessor();
-        
+
         if (this.config.enableConsoleLogging) {
             console.log('✅ DAMP Error Handler initialized', {
                 reporting: this.config.enableReporting,
@@ -82,37 +82,37 @@ class DAMPErrorHandler {
     handleError(error, context = {}, options = {}) {
         try {
             const errorInfo = this.enrichError(error, context);
-            
+
             // Check if this is a duplicate error
             if (this.isDuplicateError(errorInfo)) {
                 return;
             }
-            
+
             // Increment error count
             this.errorCount++;
             this.lastErrorTime = Date.now();
-            
+
             // Log error locally
             this.logError(errorInfo);
-            
+
             // Queue for reporting
             if (this.config.enableReporting) {
                 this.queueError(errorInfo);
             }
-            
+
             // Attempt automatic recovery
             if (this.config.enableRecovery && !options.skipRecovery) {
                 this.attemptRecovery(errorInfo);
             }
-            
+
             // Show user notification
             if (this.config.enableUserNotifications && !options.silent) {
                 this.showUserNotification(errorInfo);
             }
-            
+
             // Fire custom event for application-level handling
             this.dispatchErrorEvent(errorInfo);
-            
+
         } catch (handlingError) {
             // Prevent infinite loops in error handler
             console.error('Error in error handler:', handlingError);
@@ -122,18 +122,18 @@ class DAMPErrorHandler {
     enrichError(error, context = {}) {
         const timestamp = Date.now();
         const url = this.sanitizeUrl(window.location.href);
-        
+
         return {
             // Error details
             message: error.message || 'Unknown error',
             stack: this.config.enableStackTrace ? error.stack : null,
             name: error.name || 'Error',
-            
+
             // Context information
             timestamp,
             url,
             userAgent: navigator.userAgent,
-            
+
             // Application context
             context: {
                 section: this.getCurrentSection(),
@@ -142,7 +142,7 @@ class DAMPErrorHandler {
                 sessionId: this.getSessionId(),
                 ...context
             },
-            
+
             // Technical details
             technical: {
                 isOnline: this.isOnline,
@@ -155,10 +155,10 @@ class DAMPErrorHandler {
                     height: window.innerHeight
                 }
             },
-            
+
             // Error fingerprint for deduplication
             fingerprint: this.generateFingerprint(error, context),
-            
+
             // Severity level
             severity: this.calculateSeverity(error, context)
         };
@@ -191,19 +191,19 @@ class DAMPErrorHandler {
         if (errorInfo.context.type === 'network' && errorInfo.context.url) {
             const retryKey = errorInfo.context.url;
             const currentRetries = this.retryQueue.get(retryKey) || 0;
-            
+
             if (currentRetries < this.config.maxRetries) {
                 const delay = this.config.retryDelay * Math.pow(this.config.retryMultiplier, currentRetries);
-                
+
                 setTimeout(() => {
                     this.retryQueue.set(retryKey, currentRetries + 1);
-                    
+
                     // Attempt to retry the request
                     if (errorInfo.context.retryCallback) {
                         errorInfo.context.retryCallback();
                     }
                 }, delay);
-                
+
                 return true;
             }
         }
@@ -264,10 +264,10 @@ class DAMPErrorHandler {
 
         const message = this.getUserFriendlyMessage(errorInfo);
         const notification = this.createNotificationElement(message, errorInfo.severity);
-        
+
         document.body.appendChild(notification);
         this.notificationCount++;
-        
+
         // Auto-dismiss notification
         setTimeout(() => {
             this.dismissNotification(notification);
@@ -282,7 +282,7 @@ class DAMPErrorHandler {
             resource: 'Some content failed to load. Please check your connection.',
             critical: 'A serious error occurred. Please refresh the page or contact support.'
         };
-        
+
         return messages[errorInfo.context.type] || messages.script;
     }
 
@@ -296,12 +296,12 @@ class DAMPErrorHandler {
                 <button class="damp-error-dismiss" aria-label="Dismiss">×</button>
             </div>
         `;
-        
+
         // Add dismiss handler
         notification.querySelector('.damp-error-dismiss').addEventListener('click', () => {
             this.dismissNotification(notification);
         });
-        
+
         return notification;
     }
 
@@ -325,7 +325,7 @@ class DAMPErrorHandler {
 
     queueError(errorInfo) {
         this.errorQueue.push(errorInfo);
-        
+
         if (this.errorQueue.length >= this.config.batchSize) {
             this.flushErrors();
         }
@@ -343,9 +343,9 @@ class DAMPErrorHandler {
         if (this.errorQueue.length === 0 || !this.isOnline) {
             return;
         }
-        
+
         const errors = this.errorQueue.splice(0, this.config.batchSize);
-        
+
         try {
             await this.sendErrors(errors);
         } catch (reportingError) {
@@ -365,7 +365,7 @@ class DAMPErrorHandler {
                 sessionId: this.getSessionId()
             }
         };
-        
+
         const response = await fetch(this.config.reportingEndpoint, {
             method: 'POST',
             headers: {
@@ -373,7 +373,7 @@ class DAMPErrorHandler {
             },
             body: JSON.stringify(payload)
         });
-        
+
         if (!response.ok) {
             throw new Error(`Reporting failed: ${response.status}`);
         }
@@ -411,7 +411,7 @@ class DAMPErrorHandler {
             this.isOnline = true;
             this.flushErrors(); // Flush queued errors when back online
         });
-        
+
         window.addEventListener('offline', () => {
             this.isOnline = false;
         });
@@ -478,7 +478,7 @@ class DAMPErrorHandler {
 
     getSessionId() {
         if (!window.sessionStorage) return 'no-storage';
-        
+
         let sessionId = sessionStorage.getItem('damp-session-id');
         if (!sessionId) {
             sessionId = 'sess-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
@@ -489,7 +489,7 @@ class DAMPErrorHandler {
 
     getPerformanceSnapshot() {
         if (!window.performance) return null;
-        
+
         return {
             navigation: performance.navigation?.type || null,
             timing: {
@@ -505,7 +505,7 @@ class DAMPErrorHandler {
 
     sanitizeUrl(url) {
         if (!this.config.sanitizeUrls) return url;
-        
+
         try {
             const urlObj = new URL(url);
             // Remove sensitive query parameters
@@ -519,7 +519,7 @@ class DAMPErrorHandler {
 
     sanitizeErrors(errors) {
         if (!this.config.excludePersonalData) return errors;
-        
+
         return errors.map(error => ({
             ...error,
             message: this.sanitizeMessage(error.message),
@@ -563,13 +563,13 @@ class DAMPErrorHandler {
 
     logError(errorInfo) {
         if (!this.config.enableConsoleLogging) return;
-        
+
         const style = {
             error: 'color: #ff4757; font-weight: bold;',
             warning: 'color: #ffa502; font-weight: bold;',
             info: 'color: #3742fa; font-weight: bold;'
         };
-        
+
         console.group(`%c🚨 DAMP Error [${errorInfo.severity}]`, style[errorInfo.severity] || style.error);
         console.log('Message:', errorInfo.message);
         console.log('Context:', errorInfo.context);
@@ -734,4 +734,4 @@ const errorStyles = `
 // Inject styles
 if (!document.getElementById('damp-error-styles')) {
     document.head.insertAdjacentHTML('beforeend', errorStyles);
-} 
+}

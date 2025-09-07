@@ -93,7 +93,7 @@ export const processSyncQueue = functions.https.onCall(async (data, context) => 
 
     for (const doc of queueQuery.docs) {
       const action = doc.data() as QueuedAction;
-      
+
       try {
         // Mark as processing
         batch.update(doc.ref, {
@@ -103,7 +103,7 @@ export const processSyncQueue = functions.https.onCall(async (data, context) => 
 
         // Process the action based on type
         const result = await processAction(action);
-        
+
         if (result.success) {
           // Mark as completed
           batch.update(doc.ref, {
@@ -120,8 +120,8 @@ export const processSyncQueue = functions.https.onCall(async (data, context) => 
             lastError: result.error,
             lastRetryAt: admin.firestore.FieldValue.serverTimestamp(),
           });
-          results.push({ 
-            actionId: action.id, 
+          results.push({
+            actionId: action.id,
             status: action.retryCount >= 3 ? 'failed' : 'retry',
             error: result.error,
           });
@@ -134,8 +134,8 @@ export const processSyncQueue = functions.https.onCall(async (data, context) => 
           lastError: errorMessage,
           failedAt: admin.firestore.FieldValue.serverTimestamp(),
         });
-        results.push({ 
-          actionId: action.id, 
+        results.push({
+          actionId: action.id,
           status: 'failed',
           error: errorMessage,
         });
@@ -176,16 +176,16 @@ async function processAction(action: QueuedAction): Promise<{ success: boolean; 
     switch (action.action) {
       case 'device_reading':
         return await processDeviceReading(action);
-      
+
       case 'user_preference_update':
         return await processUserPreferenceUpdate(action);
-      
+
       case 'device_status_update':
         return await processDeviceStatusUpdate(action);
-      
+
       case 'zone_update':
         return await processZoneUpdate(action);
-      
+
       case 'activity_log':
         return await processActivityLog(action);
 

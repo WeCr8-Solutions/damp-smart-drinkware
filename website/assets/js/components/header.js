@@ -23,7 +23,7 @@ class DAMPHeader extends HTMLElement {
         this.setupAccessibility();
         this.setupMobileSafeAreas();
         this.initializeDynamicUpdates();
-        
+
         // Log successful initialization
         this.securityLog('DAMP Navigation initialized successfully');
     }
@@ -33,7 +33,7 @@ class DAMPHeader extends HTMLElement {
         const pathname = this.sanitizeString(window.location.pathname);
         this.isSubPage = pathname.includes('/pages/');
         this.basePath = this.isSubPage ? '../' : '';
-        
+
         // Validate base path for security
         if (!this.isValidBasePath(this.basePath)) {
             this.securityLog('Invalid base path detected, defaulting to root', 'warn');
@@ -45,7 +45,7 @@ class DAMPHeader extends HTMLElement {
         // Secure HTML rendering with sanitized paths
         const logoSrc = this.sanitizeImagePath(`${this.basePath}assets/images/logo/icon.png`);
         const homeHref = this.sanitizeHref(`${this.basePath}index.html`);
-        
+
         this.innerHTML = `
             <nav role="navigation" aria-label="Main navigation" class="damp-nav">
                 <div class="nav-container safe-area-container">
@@ -53,7 +53,7 @@ class DAMPHeader extends HTMLElement {
                         <img src="${logoSrc}" alt="DAMP Logo" width="32" height="32" loading="eager">
                         <span class="logo-text">DAMP</span>
                     </a>
-                    
+
                     <ul class="nav-links" role="menubar">
                         <li><a href="${homeHref}" data-analytics="nav-home">Home</a></li>
                         <li><a href="${this.basePath}pages/how-it-works.html" data-analytics="nav-how-it-works">How It Works</a></li>
@@ -62,13 +62,13 @@ class DAMPHeader extends HTMLElement {
                         <li><a href="${this.basePath}pages/about.html" data-analytics="nav-about">About</a></li>
                         <li><a href="${this.basePath}pages/pre-order.html" class="nav-cta" data-analytics="nav-preorder">Pre-Order</a></li>
                     </ul>
-                    
+
                     <!-- Authentication handled in hamburger menu only -->
                     <!-- REMOVED: Desktop auth buttons moved to hamburger menu for cleaner layout -->
-                    
-                    <button class="hamburger" 
-                            aria-label="Toggle mobile menu" 
-                            aria-expanded="false" 
+
+                    <button class="hamburger"
+                            aria-label="Toggle mobile menu"
+                            aria-expanded="false"
                             aria-controls="mobile-menu"
                             data-analytics="nav-hamburger">
                         <span class="hamburger-line"></span>
@@ -78,28 +78,28 @@ class DAMPHeader extends HTMLElement {
                     </button>
                 </div>
             </nav>
-            
+
             <!-- Enhanced Mobile Menu with Complete Sitemap Navigation -->
-            <div class="mobile-menu safe-area-mobile-menu" 
-                 id="mobile-menu" 
-                 role="dialog" 
-                 aria-modal="true" 
+            <div class="mobile-menu safe-area-mobile-menu"
+                 id="mobile-menu"
+                 role="dialog"
+                 aria-modal="true"
                  aria-labelledby="mobile-menu-heading"
                  aria-hidden="true">
-                 
+
                 <div class="mobile-menu-header safe-area-top">
-                    <div class="mobile-close" 
-                         role="button" 
+                    <div class="mobile-close"
+                         role="button"
                          tabindex="0"
                          aria-label="Close mobile menu"
                          data-analytics="nav-mobile-close">
                         <span class="close-icon">&times;</span>
                     </div>
                 </div>
-                
+
                 <div class="mobile-menu-content">
                     <h2 id="mobile-menu-heading" class="sr-only">Mobile Navigation Menu</h2>
-                    
+
                     <!-- Primary Navigation -->
                     <nav class="mobile-nav" role="navigation">
                         <!-- Authentication Section -->
@@ -143,7 +143,7 @@ class DAMPHeader extends HTMLElement {
                                 </a>
                             </div>
                         </div>
-                        
+
                         <!-- Quick Actions (Most Important) -->
                         <div class="mobile-nav-section featured-section">
                             <h3 class="mobile-nav-section-title">🚀 Get Started</h3>
@@ -162,7 +162,7 @@ class DAMPHeader extends HTMLElement {
                                 </div>
                             </a>
                         </div>
-                        
+
                         <!-- Main Navigation -->
                         <div class="mobile-nav-section">
                             <h3 class="mobile-nav-section-title">📍 Navigate</h3>
@@ -183,7 +183,7 @@ class DAMPHeader extends HTMLElement {
                                 <span class="mobile-nav-text">About DAMP</span>
                             </a>
                         </div>
-                        
+
                         <!-- Smart Drinkware Products -->
                         <div class="mobile-nav-section">
                             <h3 class="mobile-nav-section-title">🥤 Smart Products</h3>
@@ -218,7 +218,7 @@ class DAMPHeader extends HTMLElement {
                             </a>
                             -->
                         </div>
-                        
+
                         <!-- TEMPORARILY DISABLED: Legal Review - Stanley Trademark Concerns
                         <div class="mobile-nav-section">
                             <h3 class="mobile-nav-section-title">⭐ Stanley Collection</h3>
@@ -245,7 +245,7 @@ class DAMPHeader extends HTMLElement {
                             </a>
                         </div>
                         -->
-                        
+
                         <!-- Shopping & Account -->
                         <div class="mobile-nav-section">
                             <h3 class="mobile-nav-section-title">🛒 Shopping</h3>
@@ -263,7 +263,7 @@ class DAMPHeader extends HTMLElement {
                                 <span class="mobile-nav-text">Subscriptions</span>
                             </a>
                         </div>
-                        
+
                         <!-- Support & Help -->
                         <div class="mobile-nav-section">
                             <h3 class="mobile-nav-section-title">💬 Support</h3>
@@ -281,7 +281,7 @@ class DAMPHeader extends HTMLElement {
                             </a>
                         </div>
                     </nav>
-                    
+
                     <!-- Quick Social Proof -->
                     <div class="mobile-nav-social-proof">
                         <div class="social-proof-item">
@@ -307,7 +307,7 @@ class DAMPHeader extends HTMLElement {
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="mobile-menu-footer safe-area-bottom">
                     <div class="mobile-legal-links">
                         <a href="${this.basePath}pages/privacy.html" data-analytics="mobile-nav-privacy">Privacy Policy</a>
@@ -322,7 +322,7 @@ class DAMPHeader extends HTMLElement {
                     </div>
                 </div>
             </div>
-            
+
             <!-- Mobile Menu Backdrop -->
             <div class="mobile-menu-backdrop" aria-hidden="true"></div>
         `;
@@ -333,7 +333,7 @@ class DAMPHeader extends HTMLElement {
         const mobileMenu = this.querySelector('.mobile-menu');
         const mobileClose = this.querySelector('.mobile-close');
         const backdrop = this.querySelector('.mobile-menu-backdrop');
-        
+
         if (!hamburger || !mobileMenu) {
             this.securityLog('Critical navigation elements missing', 'error');
             return;
@@ -361,7 +361,7 @@ class DAMPHeader extends HTMLElement {
             const touchEndX = e.changedTouches[0].clientX;
             const deltaY = Math.abs(touchEndY - this.touchStartY);
             const deltaX = Math.abs(touchEndX - this.touchStartX);
-            
+
             // Only trigger if it's a tap, not a swipe
             if (deltaY < 10 && deltaX < 10) {
                 e.preventDefault();
@@ -417,15 +417,15 @@ class DAMPHeader extends HTMLElement {
             this.addSecureEventListener(link, 'click', (e) => {
                 const href = link.getAttribute('href');
                 const analyticsAction = link.getAttribute('data-analytics');
-                
+
                 // Track the click
                 if (analyticsAction) {
-                    this.trackAnalytics('mobile_nav_click', { 
+                    this.trackAnalytics('mobile_nav_click', {
                         link: analyticsAction,
-                        href: href 
+                        href: href
                     });
                 }
-                
+
                 // Handle different link types
                 if (href.startsWith('#')) {
                     // Anchor link - prevent default and smooth scroll
@@ -477,28 +477,28 @@ class DAMPHeader extends HTMLElement {
         const hamburger = this.querySelector('.hamburger');
         const mobileMenu = this.querySelector('.mobile-menu');
         const backdrop = this.querySelector('.mobile-menu-backdrop');
-        
+
         if (!hamburger || !mobileMenu) return;
 
         this.securityLog('Opening mobile menu');
-        
+
         this.isMenuOpen = true;
-        
+
         // Update classes and attributes
         mobileMenu.classList.add('active');
         hamburger.classList.add('active');
         backdrop?.classList.add('active');
-        
+
         hamburger.setAttribute('aria-expanded', 'true');
         mobileMenu.setAttribute('aria-hidden', 'false');
-        
+
         // Prevent body scroll with safe area support
         document.body.style.overflow = 'hidden';
         document.body.classList.add('mobile-menu-open');
-        
+
         // Update safe areas
         this.updateSafeAreas();
-        
+
         // Focus management for accessibility
         const firstLink = mobileMenu.querySelector('a');
         if (firstLink) {
@@ -506,7 +506,7 @@ class DAMPHeader extends HTMLElement {
                 firstLink.focus();
             }, 300);
         }
-        
+
         // Track analytics
         this.trackAnalytics('mobile_menu_open', {
             timestamp: Date.now(),
@@ -521,25 +521,25 @@ class DAMPHeader extends HTMLElement {
         const hamburger = this.querySelector('.hamburger');
         const mobileMenu = this.querySelector('.mobile-menu');
         const backdrop = this.querySelector('.mobile-menu-backdrop');
-        
+
         if (!hamburger || !mobileMenu) return;
 
         this.securityLog('Closing mobile menu');
-        
+
         this.isMenuOpen = false;
-        
+
         // Update classes and attributes
         mobileMenu.classList.remove('active');
         hamburger.classList.remove('active');
         backdrop?.classList.remove('active');
-        
+
         hamburger.setAttribute('aria-expanded', 'false');
         mobileMenu.setAttribute('aria-hidden', 'true');
-        
+
         // Restore body scroll
         document.body.style.overflow = '';
         document.body.classList.remove('mobile-menu-open');
-        
+
         // Return focus to hamburger
         setTimeout(() => {
             hamburger.focus();
@@ -552,7 +552,7 @@ class DAMPHeader extends HTMLElement {
             this.addSecureEventListener(anchor, 'click', (e) => {
                 const href = anchor.getAttribute('href');
                 if (href.length <= 1) return;
-                
+
                 e.preventDefault();
                 this.handleAnchorNavigation(href);
             });
@@ -566,16 +566,16 @@ class DAMPHeader extends HTMLElement {
             if (this.isMenuOpen) {
                 this.closeMobileMenu();
             }
-            
+
             // Calculate proper scroll position with safe areas
             const headerHeight = this.calculateHeaderHeight();
             const targetPosition = target.offsetTop - headerHeight;
-            
+
             window.scrollTo({
                 top: Math.max(0, targetPosition),
                 behavior: 'smooth'
             });
-            
+
             // Track analytics
             this.trackAnalytics('anchor_navigation', {
                 target: href,
@@ -604,7 +604,7 @@ class DAMPHeader extends HTMLElement {
         liveRegion.className = 'sr-only';
         liveRegion.id = 'nav-live-region';
         document.body.appendChild(liveRegion);
-        
+
         // Add skip link
         if (!document.querySelector('.skip-link')) {
             const skipLink = document.createElement('a');
@@ -620,13 +620,13 @@ class DAMPHeader extends HTMLElement {
         if (window.dampSafeArea) {
             const deviceInfo = window.dampSafeArea.getDeviceInfo();
             this.securityLog(`Using DAMP SafeAreaWrapper - Device: ${deviceInfo.deviceType}, Orientation: ${deviceInfo.orientation}, Screen: ${deviceInfo.screenSize}`);
-            
+
             // Listen for safe area updates
             window.addEventListener('damp:safearea:orientationchange', (e) => {
                 this.securityLog('Safe area orientation changed:', e.detail);
                 this.updateSafeAreas();
             });
-            
+
             window.addEventListener('damp:safearea:screensize', (e) => {
                 this.securityLog('Screen size changed:', e.detail);
                 this.updateSafeAreas();
@@ -636,29 +636,29 @@ class DAMPHeader extends HTMLElement {
             this.securityLog('DAMP SafeAreaWrapper not available, using fallback');
             this.setupFallbackSafeAreas();
         }
-        
+
         // Update safe area calculations
         this.updateSafeAreas();
     }
-    
+
     setupFallbackSafeAreas() {
         // Fallback device detection (only if SafeAreaWrapper not available)
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
         const isAndroid = /Android/.test(navigator.userAgent);
         const hasNotch = window.screen.height >= 812 && window.devicePixelRatio >= 2;
-        
+
         // Add legacy device classes as fallback
         if (isIOS) document.body.classList.add('ios-device');
         if (isAndroid) document.body.classList.add('android-device');
         if (hasNotch) document.body.classList.add('has-notch');
-        
+
         this.securityLog(`Fallback setup complete - iOS: ${isIOS}, Android: ${isAndroid}, Notch: ${hasNotch}`);
     }
 
     updateSafeAreas() {
         const nav = this.querySelector('nav');
         if (!nav) return;
-        
+
         if (window.dampSafeArea) {
             // Use DAMP SafeAreaWrapper values - they're already applied globally
             const deviceInfo = window.dampSafeArea.getDeviceInfo();
@@ -668,25 +668,25 @@ class DAMPHeader extends HTMLElement {
                 bottom: window.dampSafeArea.getSafeAreaValue('bottom'),
                 left: window.dampSafeArea.getSafeAreaValue('left')
             };
-            
+
             this.securityLog('Safe areas updated via SafeAreaWrapper:', safeAreas);
-            
+
             // The SafeAreaWrapper already applies global CSS variables, so we don't need to do it here
             // But we can add any component-specific adjustments if needed
-            
+
         } else {
             // Fallback safe area calculation
             const safeAreaTop = this.getSafeAreaValue('top');
             const safeAreaBottom = this.getSafeAreaValue('bottom');
             const safeAreaLeft = this.getSafeAreaValue('left');
             const safeAreaRight = this.getSafeAreaValue('right');
-            
+
             // Apply safe area CSS custom properties as fallback
             nav.style.setProperty('--damp-safe-area-top', safeAreaTop);
             nav.style.setProperty('--damp-safe-area-bottom', safeAreaBottom);
             nav.style.setProperty('--damp-safe-area-left', safeAreaLeft);
             nav.style.setProperty('--damp-safe-area-right', safeAreaRight);
-            
+
             // Update mobile menu safe areas
             const mobileMenu = this.querySelector('.mobile-menu');
             if (mobileMenu) {
@@ -695,7 +695,7 @@ class DAMPHeader extends HTMLElement {
                 mobileMenu.style.setProperty('--damp-safe-area-left', safeAreaLeft);
                 mobileMenu.style.setProperty('--damp-safe-area-right', safeAreaRight);
             }
-            
+
             this.securityLog('Safe areas updated via fallback');
         }
     }
@@ -709,9 +709,9 @@ class DAMPHeader extends HTMLElement {
                 this.securityLog(`Event handler error: ${error.message}`, 'error');
             }
         };
-        
+
         element.addEventListener(event, secureHandler, options);
-        
+
         // Store for cleanup
         const key = `${event}_${Date.now()}_${Math.random()}`;
         this.eventListeners.set(key, { element, event, handler: secureHandler, options });
@@ -770,13 +770,13 @@ class DAMPHeader extends HTMLElement {
 
     hasAnalyticsConsent() {
         // Check for cookie consent or analytics preference
-        return localStorage.getItem('cookieAccepted') === 'true' || 
+        return localStorage.getItem('cookieAccepted') === 'true' ||
                window.dampCookieConsent?.getConsentStatus()?.canUseAnalytics;
     }
 
     trackAnalytics(event, data = {}) {
         if (!this.analyticsInitialized || !this.hasAnalyticsConsent()) return;
-        
+
         try {
             if (window.gtag) {
                 window.gtag('event', event, {
@@ -817,7 +817,7 @@ class DAMPHeader extends HTMLElement {
             cartBadge.style.display = count > 0 ? 'flex' : 'none';
         }
     }
-    
+
     // Update live statistics
     updateLiveStats(preOrders = null, rating = null) {
         const preOrderElement = this.querySelector('#mobile-preorder-live');
@@ -826,25 +826,25 @@ class DAMPHeader extends HTMLElement {
             this.animateNumberChange(preOrderElement, preOrders);
         }
     }
-    
+
     // Animate number changes for live stats
     animateNumberChange(element, newValue) {
         const currentText = element.textContent;
         const currentNumber = parseInt(currentText.replace(/[^0-9]/g, '')) || 0;
-        const targetNumber = typeof newValue === 'string' ? 
+        const targetNumber = typeof newValue === 'string' ?
             parseInt(newValue.replace(/[^0-9]/g, '')) || 0 : newValue;
-        
+
         if (currentNumber === targetNumber) return;
-        
+
         const duration = 1000; // 1 second
         const steps = 30;
         const increment = (targetNumber - currentNumber) / steps;
         let step = 0;
-        
+
         const timer = setInterval(() => {
             step++;
             const currentValue = Math.round(currentNumber + (increment * step));
-            
+
             if (step >= steps) {
                 element.textContent = this.formatStatNumber(targetNumber);
                 clearInterval(timer);
@@ -853,7 +853,7 @@ class DAMPHeader extends HTMLElement {
             }
         }, duration / steps);
     }
-    
+
     // Format statistics numbers
     formatStatNumber(num) {
         if (num >= 1000) {
@@ -861,28 +861,28 @@ class DAMPHeader extends HTMLElement {
         }
         return num + '+';
     }
-    
+
     // Initialize dynamic updates
     initializeDynamicUpdates() {
         // Simulate live updates (in real app, this would come from API)
         setTimeout(() => {
             this.updateLiveStats('5,289'); // Increase pre-orders
         }, 30000); // After 30 seconds
-        
+
         // Listen for cart updates from other components
         window.addEventListener('cart:updated', (e) => {
             this.updateCartBadge(e.detail.count);
         });
-        
+
         // Listen for stats updates
         window.addEventListener('stats:updated', (e) => {
             this.updateLiveStats(e.detail.preOrders, e.detail.rating);
         });
-        
+
         // Initialize authentication integration
         this.initializeAuthentication();
     }
-    
+
     // Initialize authentication integration
     initializeAuthentication() {
         // Wait for auth service to be available
@@ -894,10 +894,10 @@ class DAMPHeader extends HTMLElement {
                 setTimeout(checkAuthService, 500);
             }
         };
-        
+
         setTimeout(checkAuthService, 1000);
     }
-    
+
     // Setup authentication state listener
     setupAuthStateListener() {
         const authService = window.firebaseServices.authService;
@@ -907,16 +907,16 @@ class DAMPHeader extends HTMLElement {
             });
         }
     }
-    
+
     // Setup authentication event handlers
     setupAuthEventHandlers() {
         // Set up auth button event delegation
         this.addEventListener('click', (e) => {
             const authAction = e.target.closest('[data-auth]')?.getAttribute('data-auth');
-            
+
             if (authAction && window.dampAuth) {
                 e.preventDefault();
-                
+
                 switch (authAction) {
                     case 'signin':
                         window.dampAuth.showSignIn();
@@ -932,17 +932,17 @@ class DAMPHeader extends HTMLElement {
                 }
             }
         });
-        
+
         // Desktop user profile dropdown removed - auth handled in mobile menu only
     }
-    
+
     // Handle sign out
     async handleSignOut() {
         try {
             if (window.firebaseServices?.authService) {
                 await window.firebaseServices.authService.signOut();
                 this.trackAnalytics('nav_signout_success');
-                
+
                 // Optionally redirect to home page
                 if (window.location.pathname.includes('/profile') || window.location.pathname.includes('/orders')) {
                     window.location.href = this.basePath + 'index.html';
@@ -953,36 +953,36 @@ class DAMPHeader extends HTMLElement {
             this.trackAnalytics('nav_signout_error');
         }
     }
-    
+
     // Update authentication UI based on user state
     updateAuthUI(user) {
         // Desktop auth buttons removed - only update mobile auth UI
         const mobileAuthButtons = this.querySelector('#mobileAuthButtons');
         const mobileUserInfo = this.querySelector('#mobileUserInfo');
-        
+
         if (!mobileAuthButtons || !mobileUserInfo) {
             return; // Elements not found
         }
-        
+
         if (user) {
             // User is signed in
             const displayName = user.displayName || user.email?.split('@')[0] || 'User';
             const email = user.email || '';
-            
+
             // Update mobile UI only
             mobileAuthButtons.style.display = 'none';
             mobileUserInfo.style.display = 'block';
-            
+
             const mobileUserName = this.querySelector('#mobileUserName');
             const mobileUserEmail = this.querySelector('#mobileUserEmail');
-            
+
             if (mobileUserName) {
                 mobileUserName.textContent = displayName;
             }
             if (mobileUserEmail) {
                 mobileUserEmail.textContent = email;
             }
-            
+
         } else {
             // User is signed out
             // Update mobile UI only
@@ -1036,7 +1036,7 @@ window.updateCartBadge = function(count) {
     if (header) {
         header.updateCartBadge(count);
     }
-    
+
     // Dispatch event for other components that might need to know
     window.dispatchEvent(new CustomEvent('cart:updated', {
         detail: { count }
@@ -1048,7 +1048,7 @@ window.updateLiveStats = function(preOrders, rating) {
     if (header) {
         header.updateLiveStats(preOrders, rating);
     }
-    
+
     // Dispatch event for other components
     window.dispatchEvent(new CustomEvent('stats:updated', {
         detail: { preOrders, rating }
@@ -1068,4 +1068,4 @@ window.addEventListener('error', (e) => {
     if (e.filename && e.filename.includes('header.js')) {
         console.error('[DAMP Navigation] Critical error:', e.error);
     }
-}); 
+});

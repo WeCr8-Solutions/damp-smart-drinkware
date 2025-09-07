@@ -58,7 +58,7 @@ class ProductSpecParser {
         try {
             const content = fs.readFileSync(filePath, 'utf8');
             const parsed = matter(content);
-            
+
             if (!parsed.data || !parsed.data.product_id) {
                 console.warn(`⚠️  Skipping ${filePath}: No product_id found`);
                 return;
@@ -66,7 +66,7 @@ class ProductSpecParser {
 
             const product = this.transformProductData(parsed.data, category);
             this.products.push(product);
-            
+
             console.log(`✓ Parsed: ${product.name} (${product.product_id})`);
         } catch (error) {
             console.error(`❌ Error parsing ${filePath}:`, error.message);
@@ -85,7 +85,7 @@ class ProductSpecParser {
             variant: data.variant || null,
             status: data.status || 'unknown',
             priority: data.priority || 1,
-            
+
             // Compatibility information
             compatibility: {
                 type: data.compatibility?.type || 'universal',
@@ -94,23 +94,23 @@ class ProductSpecParser {
                 models: data.compatibility?.models || [],
                 size_range: data.compatibility?.size_range || null
             },
-            
+
             // Pricing information
             pricing: {
                 current: data.pricing?.current || 0,
                 original: data.pricing?.original || 0,
                 currency: data.pricing?.currency || 'USD',
-                discount_percent: data.pricing?.original ? 
+                discount_percent: data.pricing?.original ?
                     Math.round((1 - (data.pricing.current / data.pricing.original)) * 100) : 0
             },
-            
+
             // Inventory and delivery
             inventory: data.inventory || 0,
             delivery: {
                 preorder: data.delivery?.preorder || null,
                 standard: data.delivery?.standard || null
             },
-            
+
             // Technical specifications
             specifications: {
                 battery_life: data.specifications?.battery_life || null,
@@ -120,13 +120,13 @@ class ProductSpecParser {
                 weight: data.specifications?.weight || null,
                 installation: data.specifications?.installation || null
             },
-            
+
             // Images
             images: {
                 primary: data.images?.primary || null,
                 gallery: data.images?.gallery || []
             },
-            
+
             // Metadata
             last_updated: new Date().toISOString(),
             available_for_preorder: data.status === 'development' || data.status === 'preorder',
@@ -164,4 +164,4 @@ if (require.main === module) {
     parser.run();
 }
 
-module.exports = ProductSpecParser; 
+module.exports = ProductSpecParser;

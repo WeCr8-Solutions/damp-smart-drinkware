@@ -2,13 +2,13 @@
 
 /**
  * DAMP Smart Drinkware - Firebase Database Initialization Script
- * 
+ *
  * This script initializes your Firestore database with all required collections,
  * documents, and sample data needed for the DAMP Smart Drinkware platform.
- * 
+ *
  * Usage:
  *   node scripts/firebase-init.js
- *   
+ *
  * Requirements:
  *   - Firebase Admin SDK
  *   - Firebase project configured
@@ -38,7 +38,7 @@ function initializeFirebase() {
   try {
     // Try to use service account key if available
     const serviceAccountPath = path.join(__dirname, '..', 'firebase-service-account.json');
-    
+
     try {
       const serviceAccount = require(serviceAccountPath);
       admin.initializeApp({
@@ -53,7 +53,7 @@ function initializeFirebase() {
       });
       log('✅ Firebase Admin initialized with default credentials', 'green');
     }
-    
+
   } catch (error) {
     log('❌ Failed to initialize Firebase Admin:', 'red');
     log(error.message, 'red');
@@ -67,7 +67,7 @@ const db = admin.firestore();
 // Database initialization functions
 async function initializeGlobalStats() {
   log('📊 Initializing global stats...', 'blue');
-  
+
   const statsRef = db.doc('stats/global');
   const statsData = {
     preOrders: 5247,
@@ -88,14 +88,14 @@ async function initializeGlobalStats() {
       version: '1.0.0'
     }
   };
-  
+
   await statsRef.set(statsData);
   log('✅ Global stats initialized', 'green');
 }
 
 async function initializeVotingCollections() {
   log('🗳️ Initializing voting collections...', 'blue');
-  
+
   // Customer voting data
   const customerVotingRef = db.doc('voting/products');
   const customerVotingData = {
@@ -136,7 +136,7 @@ async function initializeVotingCollections() {
       initializedAt: admin.firestore.FieldValue.serverTimestamp()
     }
   };
-  
+
   // Public voting data
   const publicVotingRef = db.doc('voting/public');
   const publicVotingData = {
@@ -177,23 +177,23 @@ async function initializeVotingCollections() {
       initializedAt: admin.firestore.FieldValue.serverTimestamp()
     }
   };
-  
+
   await Promise.all([
     customerVotingRef.set(customerVotingData),
     publicVotingRef.set(publicVotingData)
   ]);
-  
+
   log('✅ Voting collections initialized', 'green');
 }
 
 async function createAdminUser() {
   log('👤 Creating admin user...', 'blue');
-  
+
   try {
     // Create admin user in Firebase Auth
     const adminEmail = 'admin@dampdrink.com';
     const adminPassword = 'DampAdmin123!'; // Change this in production!
-    
+
     let adminUser;
     try {
       adminUser = await admin.auth().createUser({
@@ -211,7 +211,7 @@ async function createAdminUser() {
         throw error;
       }
     }
-    
+
     // Create admin user document in Firestore
     const adminUserRef = db.doc(`users/${adminUser.uid}`);
     const adminUserData = {
@@ -237,12 +237,12 @@ async function createAdminUser() {
         initializedAt: admin.firestore.FieldValue.serverTimestamp()
       }
     };
-    
+
     await adminUserRef.set(adminUserData);
     log('✅ Admin user document created in Firestore', 'green');
     log(`🔑 Admin credentials: ${adminEmail} / ${adminPassword}`, 'yellow');
     log('⚠️ IMPORTANT: Change the admin password immediately!', 'red');
-    
+
   } catch (error) {
     log('❌ Failed to create admin user:', 'red');
     log(error.message, 'red');
@@ -251,7 +251,7 @@ async function createAdminUser() {
 
 async function initializeSampleNewsletterSubscribers() {
   log('📧 Creating sample newsletter subscribers...', 'blue');
-  
+
   const sampleSubscribers = [
     {
       email: 'beta.tester@example.com',
@@ -303,21 +303,21 @@ async function initializeSampleNewsletterSubscribers() {
       votedProduct: 'handle'
     }
   ];
-  
+
   const batch = db.batch();
-  
+
   sampleSubscribers.forEach((subscriber, index) => {
     const subscriberRef = db.collection('newsletter_subscribers').doc();
     batch.set(subscriberRef, subscriber);
   });
-  
+
   await batch.commit();
   log(`✅ Created ${sampleSubscribers.length} sample newsletter subscribers`, 'green');
 }
 
 async function initializeProductsCollection() {
   log('🛍️ Initializing products collection...', 'blue');
-  
+
   const products = [
     {
       id: 'handle',
@@ -437,14 +437,14 @@ async function initializeProductsCollection() {
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     }
   ];
-  
+
   const batch = db.batch();
-  
+
   products.forEach(product => {
     const productRef = db.collection('products').doc(product.id);
     batch.set(productRef, product);
   });
-  
+
   await batch.commit();
   log(`✅ Created ${products.length} products in collection`, 'green');
 }
@@ -458,12 +458,12 @@ async function createCollectionIndexes() {
 async function initializeDatabase() {
   log('🚀 Starting DAMP Smart Drinkware database initialization...', 'cyan');
   log('', 'reset');
-  
+
   try {
     // Initialize Firebase
     initializeFirebase();
     log('', 'reset');
-    
+
     // Run all initialization functions
     await initializeGlobalStats();
     await initializeVotingCollections();
@@ -471,7 +471,7 @@ async function initializeDatabase() {
     await initializeSampleNewsletterSubscribers();
     await initializeProductsCollection();
     await createCollectionIndexes();
-    
+
     log('', 'reset');
     log('🎉 Database initialization completed successfully!', 'green');
     log('', 'reset');
@@ -484,7 +484,7 @@ async function initializeDatabase() {
     log('', 'reset');
     log('⚠️ Don\'t forget to change the admin password!', 'red');
     log('', 'reset');
-    
+
   } catch (error) {
     log('❌ Database initialization failed:', 'red');
     log(error.message, 'red');
@@ -513,4 +513,4 @@ module.exports = {
   createAdminUser,
   initializeSampleNewsletterSubscribers,
   initializeProductsCollection
-}; 
+};

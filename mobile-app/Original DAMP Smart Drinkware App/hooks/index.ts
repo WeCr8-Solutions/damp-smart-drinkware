@@ -14,17 +14,17 @@ export const hookConnections = {
     'useBLE': ['@/lib/supabase', '@/utils/deviceManager', '@/types/global'],
     'useFrameworkReady': ['@/contexts/AuthContext'],
   },
-  
+
   // Components that use these hooks
   consumers: {
     'useBLE': ['@/components/BLEManager', '@/components/BLEProvider'],
     'useFrameworkReady': ['@/app/_layout'],
   },
-  
+
   // Cross-hook dependencies
   crossReferences: {
     'useBLE': ['useFrameworkReady'], // useBLE might depend on framework being ready
-    'useFrameworkReady': [], 
+    'useFrameworkReady': [],
   }
 };
 
@@ -68,7 +68,7 @@ export function validateHookConnectivity(): {
   const hookDependencies = hookConnections.dependencies;
   const circularDependencies: string[] = [];
   const unresolvedDependencies: string[] = [];
-  
+
   // Check for circular dependencies
   Object.entries(hookConnections.crossReferences).forEach(([hook, refs]) => {
     refs.forEach(ref => {
@@ -77,7 +77,7 @@ export function validateHookConnectivity(): {
       }
     });
   });
-  
+
   // Check for unresolved dependencies
   Object.entries(hookDependencies).forEach(([hook, deps]) => {
     deps.forEach(dep => {
@@ -85,7 +85,7 @@ export function validateHookConnectivity(): {
       // Implementation depends on module resolution strategy
     });
   });
-  
+
   return {
     availableHooks,
     hookDependencies,
@@ -98,7 +98,7 @@ export function validateHookConnectivity(): {
 export function useAppState() {
   const ble = useBLE();
   const framework = useFrameworkReady();
-  
+
   return {
     ble,
     framework,

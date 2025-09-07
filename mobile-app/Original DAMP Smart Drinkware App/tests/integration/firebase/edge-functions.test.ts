@@ -14,7 +14,7 @@ describe('Firebase Edge Functions Integration', () => {
 
   beforeAll(async () => {
     supabase = integrationTestUtils.firebase.testApp; // Use test client
-    
+
     // Create test user for authenticated requests
     testUser = {
       id: 'test-user-123',
@@ -673,7 +673,7 @@ describe('Firebase Edge Functions Integration', () => {
         invalid_json: '{ this is not valid json',
         circular_reference: {}
       };
-      
+
       // Create circular reference
       (malformedRequest.circular_reference as any).self = malformedRequest.circular_reference;
 
@@ -707,7 +707,7 @@ describe('Firebase Edge Functions Integration', () => {
       let rateLimitHit = false;
       const mockInvoke = jest.fn().mockImplementation((functionName, options) => {
         const requestNumber = JSON.parse(options.body).request_id;
-        
+
         if (requestNumber > 10) {
           rateLimitHit = true;
           return Promise.resolve({
@@ -719,7 +719,7 @@ describe('Firebase Edge Functions Integration', () => {
             }
           });
         }
-        
+
         return Promise.resolve({
           data: { success: true, request_id: requestNumber },
           error: null
@@ -740,11 +740,11 @@ describe('Firebase Edge Functions Integration', () => {
       );
 
       expect(rateLimitHit).toBe(true);
-      
-      const successful = results.filter(r => 
+
+      const successful = results.filter(r =>
         r.status === 'fulfilled' && !r.value.error
       );
-      const rateLimited = results.filter(r => 
+      const rateLimited = results.filter(r =>
         r.status === 'fulfilled' && r.value.error?.status === 429
       );
 
@@ -778,7 +778,7 @@ describe('Firebase Edge Functions Integration', () => {
       supabase.functions = { invoke: mockInvoke };
 
       const startTime = performance.now();
-      
+
       const results = await Promise.all(
         concurrentRequests.map(request =>
           supabase.functions.invoke('concurrent-test', {
@@ -795,10 +795,10 @@ describe('Firebase Edge Functions Integration', () => {
 
       // All requests should succeed
       expect(results.every(r => r.data.success)).toBe(true);
-      
+
       // Concurrent execution should be faster than sequential
       expect(totalTime).toBeLessThan(1000); // Under 1 second for 20 concurrent requests
-      
+
       // All requests should have unique request IDs
       const requestIds = results.map(r => r.data.request_id);
       const uniqueIds = new Set(requestIds);
@@ -841,7 +841,7 @@ describe('Firebase Edge Functions Integration', () => {
 
       expect(error).toBeNull();
       expect(data.cold_start).toBe(true);
-      
+
       // Cold start should complete within reasonable time
       expect(endTime - startTime).toBeLessThan(2000); // Under 2 seconds
       expect(data.memory_used_mb).toBeLessThan(128); // Under 128MB

@@ -10,10 +10,10 @@ class DAMPProductShowcase {
         this.comparisonList = [];
         this.wishlist = JSON.parse(localStorage.getItem('damp-wishlist') || '[]');
         this.expandedCategories = new Set();
-        
+
         this.init();
     }
-    
+
     init() {
         this.setupProductCards();
         this.setupFeatureToggles();
@@ -21,16 +21,16 @@ class DAMPProductShowcase {
         this.setupImageZoom();
         this.setupAnalytics();
         this.loadStoredStates();
-        
+
         console.log('✅ DAMP Product Showcase initialized');
     }
-    
+
     setupProductCards() {
         const productCards = document.querySelectorAll('.product-card');
-        
+
         productCards.forEach(card => {
             const productId = card.dataset.product;
-            
+
             // Store product data
             this.products.set(productId, {
                 element: card,
@@ -40,15 +40,15 @@ class DAMPProductShowcase {
                 rating: card.querySelector('.stars')?.textContent?.length || 5,
                 features: this.extractFeatures(card)
             });
-            
+
             // Add hover effects
             this.setupCardHoverEffects(card);
-            
+
             // Setup ripple effects for Material Design
             this.setupRippleEffect(card);
         });
     }
-    
+
     setupFeatureToggles() {
         // Main feature category toggles
         document.querySelectorAll('.feature-category-header').forEach(header => {
@@ -57,7 +57,7 @@ class DAMPProductShowcase {
                 this.toggleFeatureCategory(header);
             });
         });
-        
+
         // View more features buttons
         document.querySelectorAll('.view-more-features').forEach(button => {
             button.addEventListener('click', (e) => {
@@ -66,7 +66,7 @@ class DAMPProductShowcase {
             });
         });
     }
-    
+
     toggleFeatureCategory(header) {
         const category = header.dataset.category;
         const productCard = header.closest('.product-card');
@@ -74,9 +74,9 @@ class DAMPProductShowcase {
         const content = header.nextElementSibling;
         const expandIcon = header.querySelector('.expand-icon');
         const categoryKey = `${productId}-${category}`;
-        
+
         const isExpanded = this.expandedCategories.has(categoryKey);
-        
+
         if (isExpanded) {
             // Collapse
             content.style.maxHeight = '0';
@@ -92,7 +92,7 @@ class DAMPProductShowcase {
             expandIcon.style.transform = 'rotate(45deg)';
             this.expandedCategories.add(categoryKey);
         }
-        
+
         // Analytics
         if (window.gtag) {
             gtag('event', 'feature_category_toggle', {
@@ -101,25 +101,25 @@ class DAMPProductShowcase {
                 value: isExpanded ? 0 : 1
             });
         }
-        
+
         // Save state
         this.saveExpandedStates();
     }
-    
+
     showAllFeatures(button) {
         const productCard = button.closest('.product-card');
         const productId = productCard.dataset.product;
         const previewContainer = button.closest('.product-features-preview');
-        
+
         // Create full features display
         const fullFeaturesHtml = this.generateFullFeaturesHtml(productId);
-        
+
         // Replace preview with full features
         previewContainer.innerHTML = fullFeaturesHtml;
-        
+
         // Setup new toggle functionality
         this.setupFeatureToggles();
-        
+
         // Analytics
         if (window.gtag) {
             gtag('event', 'view_all_features', {
@@ -129,7 +129,7 @@ class DAMPProductShowcase {
             });
         }
     }
-    
+
     setupActions() {
         // Compare buttons
         document.querySelectorAll('.compare-btn').forEach(btn => {
@@ -138,7 +138,7 @@ class DAMPProductShowcase {
                 this.toggleComparison(btn.dataset.product);
             });
         });
-        
+
         // Wishlist buttons
         document.querySelectorAll('.wishlist-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -146,7 +146,7 @@ class DAMPProductShowcase {
                 this.toggleWishlist(btn.dataset.product);
             });
         });
-        
+
         // Share buttons
         document.querySelectorAll('.share-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -154,7 +154,7 @@ class DAMPProductShowcase {
                 this.shareProduct(btn.dataset.product);
             });
         });
-        
+
         // Image zoom buttons
         document.querySelectorAll('.image-zoom-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -163,11 +163,11 @@ class DAMPProductShowcase {
             });
         });
     }
-    
+
     toggleComparison(productId) {
         const btn = document.querySelector(`.compare-btn[data-product="${productId}"]`);
         const isInComparison = this.comparisonList.includes(productId);
-        
+
         if (isInComparison) {
             // Remove from comparison
             this.comparisonList = this.comparisonList.filter(id => id !== productId);
@@ -180,15 +180,15 @@ class DAMPProductShowcase {
                 this.showNotification('Maximum 3 products can be compared at once', 'warning');
                 return;
             }
-            
+
             this.comparisonList.push(productId);
             btn.classList.add('active');
             btn.setAttribute('aria-pressed', 'true');
             this.showNotification(`Added ${this.products.get(productId).name} to comparison`, 'success');
         }
-        
+
         this.updateComparisonUI();
-        
+
         // Analytics
         if (window.gtag) {
             gtag('event', 'product_comparison', {
@@ -198,11 +198,11 @@ class DAMPProductShowcase {
             });
         }
     }
-    
+
     toggleWishlist(productId) {
         const btn = document.querySelector(`.wishlist-btn[data-product="${productId}"]`);
         const isInWishlist = this.wishlist.includes(productId);
-        
+
         if (isInWishlist) {
             // Remove from wishlist
             this.wishlist = this.wishlist.filter(id => id !== productId);
@@ -216,9 +216,9 @@ class DAMPProductShowcase {
             btn.setAttribute('aria-pressed', 'true');
             this.showNotification(`Added ${this.products.get(productId).name} to wishlist`, 'success');
         }
-        
+
         this.saveWishlist();
-        
+
         // Analytics
         if (window.gtag) {
             gtag('event', 'wishlist_toggle', {
@@ -228,17 +228,17 @@ class DAMPProductShowcase {
             });
         }
     }
-    
+
     async shareProduct(productId) {
         const product = this.products.get(productId);
         const productUrl = `${window.location.origin}/pages/${productId}-v1.0.html`;
-        
+
         const shareData = {
             title: `DAMP ${product.name}`,
             text: `Check out the ${product.name} - Never leave your drink behind!`,
             url: productUrl
         };
-        
+
         try {
             if (navigator.share) {
                 // Use native share API
@@ -249,7 +249,7 @@ class DAMPProductShowcase {
                 await navigator.clipboard.writeText(productUrl);
                 this.showNotification('Product link copied to clipboard!', 'success');
             }
-            
+
             // Analytics
             if (window.gtag) {
                 gtag('event', 'product_share', {
@@ -263,26 +263,26 @@ class DAMPProductShowcase {
             this.showNotification('Share failed. Please try again.', 'error');
         }
     }
-    
+
     setupImageZoom() {
         // Create modal for image zoom
         this.createImageModal();
     }
-    
+
     openImageModal(btn) {
         const productCard = btn.closest('.product-card');
         const productImage = productCard.querySelector('.product-image');
         const modal = document.getElementById('imageZoomModal');
         const modalImage = modal.querySelector('.modal-image');
         const productName = productCard.querySelector('.product-title').textContent;
-        
+
         modalImage.src = productImage.src || productImage.dataset.src;
         modalImage.alt = `${productName} - Detailed View`;
         modal.querySelector('.modal-title').textContent = productName;
-        
+
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
-        
+
         // Analytics
         if (window.gtag) {
             gtag('event', 'image_zoom', {
@@ -292,7 +292,7 @@ class DAMPProductShowcase {
             });
         }
     }
-    
+
     createImageModal() {
         const modal = document.createElement('div');
         modal.id = 'imageZoomModal';
@@ -314,9 +314,9 @@ class DAMPProductShowcase {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(modal);
-        
+
         // Close on escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal.classList.contains('active')) {
@@ -324,13 +324,13 @@ class DAMPProductShowcase {
             }
         });
     }
-    
+
     closeImageModal() {
         const modal = document.getElementById('imageZoomModal');
         modal.classList.remove('active');
         document.body.style.overflow = '';
     }
-    
+
     setupCardHoverEffects(card) {
         card.addEventListener('mouseenter', () => {
             // Preload higher quality images if needed
@@ -340,10 +340,10 @@ class DAMPProductShowcase {
             }
         });
     }
-    
+
     setupRippleEffect(card) {
         const materialBtns = card.querySelectorAll('.btn-material');
-        
+
         materialBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const ripple = btn.querySelector('.btn-ripple') || btn.querySelector(':before');
@@ -352,7 +352,7 @@ class DAMPProductShowcase {
                     const size = Math.max(rect.width, rect.height);
                     const x = e.clientX - rect.left - size / 2;
                     const y = e.clientY - rect.top - size / 2;
-                    
+
                     // Create ripple effect
                     btn.style.setProperty('--ripple-x', x + 'px');
                     btn.style.setProperty('--ripple-y', y + 'px');
@@ -361,7 +361,7 @@ class DAMPProductShowcase {
             });
         });
     }
-    
+
     setupAnalytics() {
         // Track product card visibility
         const observer = new IntersectionObserver((entries) => {
@@ -379,16 +379,16 @@ class DAMPProductShowcase {
                 }
             });
         }, { threshold: 0.5 });
-        
+
         document.querySelectorAll('.product-card').forEach(card => {
             observer.observe(card);
         });
     }
-    
+
     updateComparisonUI() {
         // Show/hide comparison bar
         let comparisonBar = document.getElementById('comparisonBar');
-        
+
         if (this.comparisonList.length > 0) {
             if (!comparisonBar) {
                 comparisonBar = this.createComparisonBar();
@@ -399,7 +399,7 @@ class DAMPProductShowcase {
             comparisonBar.classList.remove('active');
         }
     }
-    
+
     createComparisonBar() {
         const bar = document.createElement('div');
         bar.id = 'comparisonBar';
@@ -421,11 +421,11 @@ class DAMPProductShowcase {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(bar);
         return bar;
     }
-    
+
     updateComparisonBar(bar) {
         const productsContainer = bar.querySelector('.comparison-products');
         productsContainer.innerHTML = this.comparisonList.map(productId => {
@@ -438,12 +438,12 @@ class DAMPProductShowcase {
             `;
         }).join('');
     }
-    
+
     openComparison() {
         // Open comparison modal or navigate to comparison page
         const comparisonUrl = `/pages/products.html?compare=${this.comparisonList.join(',')}`;
         window.open(comparisonUrl, '_blank');
-        
+
         // Analytics
         if (window.gtag) {
             gtag('event', 'comparison_open', {
@@ -453,7 +453,7 @@ class DAMPProductShowcase {
             });
         }
     }
-    
+
     clearComparison() {
         this.comparisonList = [];
         document.querySelectorAll('.compare-btn.active').forEach(btn => {
@@ -463,18 +463,18 @@ class DAMPProductShowcase {
         this.updateComparisonUI();
         this.showNotification('Comparison list cleared', 'info');
     }
-    
+
     showNotification(message, type = 'info') {
         // Create or update notification system
         let notificationContainer = document.getElementById('notificationContainer');
-        
+
         if (!notificationContainer) {
             notificationContainer = document.createElement('div');
             notificationContainer.id = 'notificationContainer';
             notificationContainer.className = 'notification-container';
             document.body.appendChild(notificationContainer);
         }
-        
+
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.innerHTML = `
@@ -484,22 +484,22 @@ class DAMPProductShowcase {
             </div>
             <button class="notification-close" onclick="this.parentElement.remove()" aria-label="Close notification">×</button>
         `;
-        
+
         notificationContainer.appendChild(notification);
-        
+
         // Auto-remove after 4 seconds
         setTimeout(() => {
             if (notification.parentElement) {
                 notification.remove();
             }
         }, 4000);
-        
+
         // Add entrance animation
         setTimeout(() => {
             notification.classList.add('active');
         }, 100);
     }
-    
+
     getNotificationIcon(type) {
         const icons = {
             success: '✅',
@@ -509,7 +509,7 @@ class DAMPProductShowcase {
         };
         return icons[type] || icons.info;
     }
-    
+
     extractFeatures(card) {
         const features = [];
         card.querySelectorAll('.feature-item').forEach(item => {
@@ -519,11 +519,11 @@ class DAMPProductShowcase {
         });
         return features;
     }
-    
+
     generateFullFeaturesHtml(productId) {
         // This would typically come from a data source
         const fullFeatures = this.getFullProductFeatures(productId);
-        
+
         return fullFeatures.map(category => `
             <div class="feature-category">
                 <button class="feature-category-header" data-category="${category.id}">
@@ -544,7 +544,7 @@ class DAMPProductShowcase {
             </div>
         `).join('');
     }
-    
+
     getFullProductFeatures(productId) {
         // Mock data - in production this would come from API/database
         const features = {
@@ -574,18 +574,18 @@ class DAMPProductShowcase {
             ],
             // Add other products...
         };
-        
+
         return features[productId] || [];
     }
-    
+
     saveWishlist() {
         localStorage.setItem('damp-wishlist', JSON.stringify(this.wishlist));
     }
-    
+
     saveExpandedStates() {
         localStorage.setItem('damp-expanded-categories', JSON.stringify([...this.expandedCategories]));
     }
-    
+
     loadStoredStates() {
         // Load wishlist states
         this.wishlist.forEach(productId => {
@@ -595,7 +595,7 @@ class DAMPProductShowcase {
                 btn.setAttribute('aria-pressed', 'true');
             }
         });
-        
+
         // Load expanded categories
         const expandedStates = JSON.parse(localStorage.getItem('damp-expanded-categories') || '[]');
         expandedStates.forEach(categoryKey => {
@@ -620,21 +620,21 @@ class DAMPMobileAppShowcase {
         this.currentScreen = 'dashboard';
         this.screenshots = ['dashboard', 'alerts', 'settings', 'analytics'];
         this.autoRotateInterval = null;
-        
+
         this.init();
     }
-    
+
     init() {
         this.setupScreenNavigation();
         this.setupAutoRotation();
         this.setupAppStoreTracking();
-        
+
         console.log('✅ DAMP Mobile App Showcase initialized');
     }
-    
+
     setupScreenNavigation() {
         const navDots = document.querySelectorAll('.nav-dot');
-        
+
         navDots.forEach(dot => {
             dot.addEventListener('click', () => {
                 const screen = dot.dataset.screen;
@@ -643,27 +643,27 @@ class DAMPMobileAppShowcase {
             });
         });
     }
-    
+
     showScreen(screenId) {
         // Hide current screen
         document.querySelectorAll('.app-screenshot').forEach(screen => {
             screen.classList.remove('active');
         });
-        
+
         // Show new screen
         const newScreen = document.querySelector(`.app-screenshot[data-screen="${screenId}"]`);
         if (newScreen) {
             newScreen.classList.add('active');
         }
-        
+
         // Update navigation
         document.querySelectorAll('.nav-dot').forEach(dot => {
             dot.classList.remove('active');
         });
         document.querySelector(`.nav-dot[data-screen="${screenId}"]`)?.classList.add('active');
-        
+
         this.currentScreen = screenId;
-        
+
         // Analytics
         if (window.gtag) {
             gtag('event', 'app_screen_view', {
@@ -673,26 +673,26 @@ class DAMPMobileAppShowcase {
             });
         }
     }
-    
+
     setupAutoRotation() {
         const appMockup = document.querySelector('.app-mockup');
-        
+
         if (appMockup) {
             // Start auto-rotation
             this.startAutoRotation();
-            
+
             // Pause on hover
             appMockup.addEventListener('mouseenter', () => {
                 this.pauseAutoRotation();
             });
-            
+
             // Resume on leave
             appMockup.addEventListener('mouseleave', () => {
                 this.startAutoRotation();
             });
         }
     }
-    
+
     startAutoRotation() {
         this.autoRotateInterval = setInterval(() => {
             const currentIndex = this.screenshots.indexOf(this.currentScreen);
@@ -700,19 +700,19 @@ class DAMPMobileAppShowcase {
             this.showScreen(this.screenshots[nextIndex]);
         }, 4000);
     }
-    
+
     pauseAutoRotation() {
         if (this.autoRotateInterval) {
             clearInterval(this.autoRotateInterval);
             this.autoRotateInterval = null;
         }
     }
-    
+
     setupAppStoreTracking() {
         document.querySelectorAll('.store-badge').forEach(badge => {
             badge.addEventListener('click', () => {
                 const store = badge.classList.contains('apple-store') ? 'ios' : 'android';
-                
+
                 if (window.gtag) {
                     gtag('event', 'app_store_click', {
                         event_category: 'mobile_app_interaction',
@@ -722,11 +722,11 @@ class DAMPMobileAppShowcase {
                 }
             });
         });
-        
+
         document.querySelectorAll('.download-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const platform = btn.classList.contains('ios-download') ? 'ios' : 'android';
-                
+
                 if (window.gtag) {
                     gtag('event', 'app_download_click', {
                         event_category: 'mobile_app_interaction',
@@ -743,7 +743,7 @@ class DAMPMobileAppShowcase {
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize product showcase
     window.dampProductShowcase = new DAMPProductShowcase();
-    
+
     // Initialize mobile app showcase if section exists
     if (document.querySelector('.mobile-app-section')) {
         window.dampMobileAppShowcase = new DAMPMobileAppShowcase();
@@ -753,4 +753,4 @@ document.addEventListener('DOMContentLoaded', () => {
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { DAMPProductShowcase, DAMPMobileAppShowcase };
-} 
+}

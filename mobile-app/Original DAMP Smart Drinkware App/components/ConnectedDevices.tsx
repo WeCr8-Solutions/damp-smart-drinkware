@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  FlatList, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
   ActivityIndicator,
   Image
 } from 'react-native';
-import { 
-  Bluetooth, 
-  Battery, 
-  Wifi, 
-  WifiOff, 
-  MapPin, 
-  Clock, 
-  Coffee, 
-  Baby, 
+import {
+  Bluetooth,
+  Battery,
+  Wifi,
+  WifiOff,
+  MapPin,
+  Clock,
+  Coffee,
+  Baby,
   Droplets,
   Info
 } from 'lucide-react-native';
@@ -56,13 +56,13 @@ export default function ConnectedDevices({
     try {
       // Get devices based on filter
       let userDevices: Device[] = [];
-      
+
       if (filterByStatus === 'all') {
         userDevices = getAllDevices();
       } else {
         userDevices = getDevicesByStatus(filterByStatus);
       }
-      
+
       // Filter out template/demo devices for signed-in users
       // Keep template devices for onboarding or when no user is signed in
       if (user) {
@@ -72,17 +72,17 @@ export default function ConnectedDevices({
           // Check if device belongs to current user
           const isTemplateDevice = device.metadata?.isTemplate === true;
           const isUserDevice = device.metadata?.userId === user.id;
-          
+
           // Keep user's devices and template devices during onboarding
           return isUserDevice || (isTemplateDevice && devices.length === 0);
         });
       }
-      
+
       // Limit number of devices if maxDevices is specified
       if (maxDevices && userDevices.length > maxDevices) {
         userDevices = userDevices.slice(0, maxDevices);
       }
-      
+
       setDevices(userDevices);
     } catch (error) {
       console.error('Error loading devices:', error);
@@ -114,7 +114,7 @@ export default function ConnectedDevices({
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / 60000);
-    
+
     if (minutes < 1) return 'Just now';
     if (minutes < 60) return `${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
@@ -194,7 +194,7 @@ export default function ConnectedDevices({
 
   const renderEmptyState = () => {
     if (!showEmptyState) return null;
-    
+
     return (
       <View style={styles.emptyState}>
         <Bluetooth size={48} color="#64B5F6" />
@@ -211,8 +211,8 @@ export default function ConnectedDevices({
       {showTitle && (
         <View style={styles.header}>
           <Text style={styles.title}>
-            {filterByStatus === 'connected' ? 'Connected Devices' : 
-             filterByStatus === 'disconnected' ? 'Disconnected Devices' : 
+            {filterByStatus === 'connected' ? 'Connected Devices' :
+             filterByStatus === 'disconnected' ? 'Disconnected Devices' :
              'Your Devices'}
           </Text>
           {devices.length > 0 && (

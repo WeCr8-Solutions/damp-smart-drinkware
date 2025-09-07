@@ -268,12 +268,12 @@
             .test-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .controls {
                 flex-direction: column;
                 align-items: stretch;
             }
-            
+
             .summary-stats {
                 flex-direction: column;
                 gap: 20px;
@@ -283,7 +283,7 @@
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
-    
+
     <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -291,18 +291,18 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="msapplication-TileColor" content="#1a1a2e">
     <meta name="msapplication-tap-highlight" content="no">
-    
+
     <!-- PWA Theme Colors -->
     <meta name="theme-color" content="#00d4ff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
-    
+
     <!-- PWA Icons -->
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/logo/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="48x48" href="/assets/images/logo/icon-48.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/logo/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/assets/images/logo/icon-512.png">
-    
+
     <!-- Apple Touch Icons -->
     <link rel="apple-touch-icon" sizes="57x57" href="/assets/images/logo/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/assets/images/logo/apple-icon-60x60.png">
@@ -516,8 +516,8 @@
             card.className = 'test-card';
             card.id = `test-card-${index}`;
 
-            const criticalBadge = page.critical ? 
-                '<span class="test-status status-pending">CRITICAL</span>' : 
+            const criticalBadge = page.critical ?
+                '<span class="test-status status-pending">CRITICAL</span>' :
                 '<span class="test-status status-pending">OPTIONAL</span>';
 
             card.innerHTML = `
@@ -547,7 +547,7 @@
         // Start all tests
         async function startTests() {
             updateStatus('🚀 Starting comprehensive page tests...');
-            
+
             for (let i = 0; i < pagesToTest.length; i++) {
                 await testSinglePage(i);
                 await sleep(1000); // Small delay between tests
@@ -559,7 +559,7 @@
         // Test critical pages only
         async function testCriticalPages() {
             updateStatus('⭐ Testing critical pages...');
-            
+
             const criticalPages = pagesToTest
                 .map((page, index) => ({ page, index }))
                 .filter(item => item.page.critical);
@@ -576,7 +576,7 @@
         async function testSinglePage(index) {
             const page = pagesToTest[index];
             const card = document.getElementById(`test-card-${index}`);
-            
+
             updateCardStatus(card, 'testing');
             updateStatus(`🧪 Testing ${page.name}...`);
 
@@ -713,7 +713,7 @@
         function updateCardStatus(card, status) {
             const statusElement = card.querySelector('.test-status');
             statusElement.className = `test-status status-${status}`;
-            
+
             switch (status) {
                 case 'testing':
                     statusElement.textContent = 'TESTING...';
@@ -733,7 +733,7 @@
         function updateCardResults(card, results, page) {
             const checkIcons = card.querySelectorAll('.check-icon');
             const isSuccess = results.passed === results.total;
-            
+
             updateCardStatus(card, isSuccess ? 'success' : 'error');
 
             // Update individual test indicators
@@ -771,7 +771,7 @@
         // Test analytics specifically
         function testAnalytics() {
             updateStatus('📊 Testing Google Analytics integration...');
-            
+
             // Check if gtag is available globally
             if (typeof gtag !== 'undefined') {
                 updateStatus('✅ Google Analytics gtag function is available globally');
@@ -808,7 +808,7 @@
                         updateViaCache: 'none'
                     });
                     console.log('✅ Service Worker registered:', registration.scope);
-                    
+
                     // Handle updates
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
@@ -818,20 +818,20 @@
                             }
                         });
                     });
-                    
+
                     window.dampPWA = { registration };
                 } catch (error) {
                     console.error('❌ Service Worker failed:', error);
                 }
             });
         }
-        
+
         function showUpdateNotification() {
             const notification = document.createElement('div');
             notification.innerHTML = '<div style="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00d4ff,#00ff88);color:#1a1a2e;padding:15px 25px;border-radius:30px;font-weight:600;z-index:10000;display:flex;align-items:center;gap:15px;"><span>🚀</span><span>New version available!</span><button onclick="refreshApp()" style="background:rgba(26,26,46,0.2);color:#1a1a2e;border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;">Update</button><button onclick="this.parentElement.parentElement.remove()" style="background:transparent;border:none;color:#1a1a2e;cursor:pointer;padding:5px;">×</button></div>';
             document.body.appendChild(notification);
         }
-        
+
         function refreshApp() {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistration().then(registration => {
@@ -842,7 +842,7 @@
                 });
             }
         }
-        
+
         // PWA Install Prompt
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -850,7 +850,7 @@
             deferredPrompt = e;
             setTimeout(showInstallPrompt, 3000);
         });
-        
+
         function showInstallPrompt() {
             if (!deferredPrompt) return;
             const installBtn = document.createElement('button');
@@ -868,10 +868,10 @@
             };
             document.body.appendChild(installBtn);
         }
-        
+
         // PWA Styles
         const pwaStyles = document.createElement('style');
         pwaStyles.textContent = '@keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } } @media (display-mode: standalone) { body { padding-top: env(safe-area-inset-top); } }';
         document.head.appendChild(pwaStyles);
     </script></body>
-</html> 
+</html>

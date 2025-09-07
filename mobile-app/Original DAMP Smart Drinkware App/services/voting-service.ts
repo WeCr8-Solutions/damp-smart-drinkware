@@ -171,7 +171,7 @@ class VotingService {
     try {
       const collection = type === 'authenticated' ? 'products' : 'public';
       const votingDoc = await getDoc(doc(db, 'voting', collection));
-      
+
       if (votingDoc.exists()) {
         return votingDoc.data() as VotingData;
       }
@@ -211,7 +211,7 @@ class VotingService {
       }
 
       const votingData = (await getDoc(doc(db, 'voting', 'products'))).data() as VotingData;
-      
+
       if (!votingData.products[productId]) {
         return { success: false, error: 'Invalid product ID' };
       }
@@ -219,7 +219,7 @@ class VotingService {
       // Update vote count
       const updatedProducts = { ...votingData.products };
       updatedProducts[productId].votes += 1;
-      
+
       // Recalculate percentages
       const totalVotes = votingData.totalVotes + 1;
       Object.keys(updatedProducts).forEach(key => {
@@ -283,7 +283,7 @@ class VotingService {
       }
 
       const votingData = (await getDoc(doc(db, 'voting', 'public'))).data() as VotingData;
-      
+
       if (!votingData.products[productId]) {
         return { success: false, error: 'Invalid product ID' };
       }
@@ -291,7 +291,7 @@ class VotingService {
       // Update vote count
       const updatedProducts = { ...votingData.products };
       updatedProducts[productId].votes += 1;
-      
+
       // Recalculate percentages
       const totalVotes = votingData.totalVotes + 1;
       Object.keys(updatedProducts).forEach(key => {

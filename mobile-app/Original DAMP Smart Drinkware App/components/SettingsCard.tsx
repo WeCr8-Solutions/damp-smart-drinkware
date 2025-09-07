@@ -53,7 +53,7 @@ export function SettingsCard({
             <Icon size={20} color={disabled ? '#CCC' : iconColor} />
           </View>
         )}
-        
+
         <View style={styles.textContainer}>
           <View style={styles.titleRow}>
             <Text style={[styles.title, disabled && styles.disabledText]}>

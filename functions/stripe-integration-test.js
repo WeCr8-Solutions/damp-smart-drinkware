@@ -27,7 +27,7 @@ const TEST_SUBSCRIPTION_ID = 'sub_test123';
 
 async function testStripeCustomerCreation() {
   console.log('🔍 Testing Stripe Customer Creation...');
-  
+
   try {
     // Simulate user with Stripe customer ID
     const userData = {
@@ -54,7 +54,7 @@ async function testStripeCustomerCreation() {
 
     await db.collection('stripe_customers').doc(TEST_CUSTOMER_ID).set(customerData);
     console.log('✅ Stripe customer record created');
-    
+
   } catch (error) {
     console.error('❌ Stripe customer creation failed:', error.message);
   }
@@ -62,7 +62,7 @@ async function testStripeCustomerCreation() {
 
 async function testSubscriptionCreation() {
   console.log('🔍 Testing Subscription Creation...');
-  
+
   try {
     const subscriptionData = {
       userId: TEST_USER_ID,
@@ -89,7 +89,7 @@ async function testSubscriptionCreation() {
       'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
     });
     console.log('✅ User subscription status updated');
-    
+
   } catch (error) {
     console.error('❌ Subscription creation test failed:', error.message);
   }
@@ -97,7 +97,7 @@ async function testSubscriptionCreation() {
 
 async function testWebhookEventLogging() {
   console.log('🔍 Testing Webhook Event Logging...');
-  
+
   try {
     const webhookEvents = [
       {
@@ -126,10 +126,10 @@ async function testWebhookEventLogging() {
       const ref = db.collection('webhook_logs').doc(`test_${index}`);
       batch.set(ref, event);
     });
-    
+
     await batch.commit();
     console.log('✅ Webhook event logs created successfully');
-    
+
   } catch (error) {
     console.error('❌ Webhook event logging test failed:', error.message);
   }
@@ -137,7 +137,7 @@ async function testWebhookEventLogging() {
 
 async function testSubscriptionEvents() {
   console.log('🔍 Testing Subscription Events...');
-  
+
   try {
     const subscriptionEvents = [
       {
@@ -166,9 +166,9 @@ async function testSubscriptionEvents() {
     for (const event of subscriptionEvents) {
       await db.collection('subscription_events').add(event);
     }
-    
+
     console.log('✅ Subscription events logged successfully');
-    
+
   } catch (error) {
     console.error('❌ Subscription events test failed:', error.message);
   }
@@ -176,7 +176,7 @@ async function testSubscriptionEvents() {
 
 async function testBillingHistory() {
   console.log('🔍 Testing Billing History...');
-  
+
   try {
     const billingRecord = {
       invoiceId: 'in_test123',
@@ -191,9 +191,9 @@ async function testBillingHistory() {
       'subscription.lastPaymentDate': billingRecord.paidAt,
       'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
     });
-    
+
     console.log('✅ Billing history updated successfully');
-    
+
   } catch (error) {
     console.error('❌ Billing history test failed:', error.message);
   }
@@ -201,7 +201,7 @@ async function testBillingHistory() {
 
 async function testPaymentMethodStorage() {
   console.log('🔍 Testing Payment Method Storage...');
-  
+
   try {
     const paymentMethodInfo = {
       id: 'pm_test123',
@@ -216,9 +216,9 @@ async function testPaymentMethodStorage() {
       'subscription.paymentMethod': paymentMethodInfo,
       'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
     });
-    
+
     console.log('✅ Payment method info stored successfully');
-    
+
   } catch (error) {
     console.error('❌ Payment method storage test failed:', error.message);
   }
@@ -226,7 +226,7 @@ async function testPaymentMethodStorage() {
 
 async function testSubscriptionQueries() {
   console.log('🔍 Testing Subscription Queries...');
-  
+
   try {
     // Query user's subscription
     const userDoc = await db.collection('users').doc(TEST_USER_ID).get();
@@ -252,7 +252,7 @@ async function testSubscriptionQueries() {
       .where('status', '==', 'active')
       .get();
     console.log('✅ Active subscriptions query:', activeSubsQuery.size, 'subscriptions');
-    
+
   } catch (error) {
     console.error('❌ Subscription queries test failed:', error.message);
   }
@@ -260,7 +260,7 @@ async function testSubscriptionQueries() {
 
 async function testStripeIntegrationEndpoints() {
   console.log('🔍 Testing Stripe Integration Endpoints...');
-  
+
   try {
     // Test data for functions (would normally call Firebase Functions)
     const subscriptionPlans = {
@@ -291,7 +291,7 @@ async function testStripeIntegrationEndpoints() {
     console.log('  - manageSubscription');
     console.log('  - getSubscriptionStatus');
     console.log('  - handleStripeWebhook');
-    
+
   } catch (error) {
     console.error('❌ Stripe integration endpoints test failed:', error.message);
   }
@@ -299,24 +299,24 @@ async function testStripeIntegrationEndpoints() {
 
 async function cleanupStripeTestData() {
   console.log('🧹 Cleaning up Stripe test data...');
-  
+
   try {
     const batch = db.batch();
-    
+
     // Clean up user document
     batch.delete(db.collection('users').doc(TEST_USER_ID));
-    
+
     // Clean up subscription
     batch.delete(db.collection('subscriptions').doc(TEST_SUBSCRIPTION_ID));
-    
+
     // Clean up Stripe customer
     batch.delete(db.collection('stripe_customers').doc(TEST_CUSTOMER_ID));
-    
+
     await batch.commit();
-    
+
     // Clean up collections with auto-generated IDs
     const collections = ['subscription_events', 'webhook_logs'];
-    
+
     for (const collectionName of collections) {
       const query = await db.collection(collectionName).where('userId', '==', TEST_USER_ID).get();
       const deleteBatch = db.batch();
@@ -332,9 +332,9 @@ async function cleanupStripeTestData() {
     for (let i = 0; i < 3; i++) {
       await db.collection('webhook_logs').doc(`test_${i}`).delete().catch(() => {});
     }
-    
+
     console.log('✅ Stripe test data cleaned up successfully');
-    
+
   } catch (error) {
     console.error('❌ Stripe test data cleanup failed:', error.message);
   }
@@ -346,35 +346,35 @@ async function cleanupStripeTestData() {
 async function runStripeIntegrationTests() {
   console.log('🚀 Starting Stripe Integration Tests for DAMP Smart Drinkware');
   console.log('============================================================\n');
-  
+
   try {
     await testStripeCustomerCreation();
     console.log();
-    
+
     await testSubscriptionCreation();
     console.log();
-    
+
     await testWebhookEventLogging();
     console.log();
-    
+
     await testSubscriptionEvents();
     console.log();
-    
+
     await testBillingHistory();
     console.log();
-    
+
     await testPaymentMethodStorage();
     console.log();
-    
+
     await testSubscriptionQueries();
     console.log();
-    
+
     await testStripeIntegrationEndpoints();
     console.log();
-    
+
     console.log('🎉 All Stripe integration tests completed!');
     console.log('✅ Firebase + Stripe integration is ready for production');
-    
+
   } catch (error) {
     console.error('💥 Stripe integration test suite failed:', error);
   } finally {

@@ -1,15 +1,15 @@
 /**
  * DAMP Smart Drinkware - Modern Firebase Setup
- * 
+ *
  * Modern Firebase v10+ setup using ES6 modules from CDN
  * Compatible with mobile app via shared Firebase project
  */
 
 // Import Firebase v10 modules from CDN with proper module syntax
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { 
-  getAuth, 
-  GoogleAuthProvider, 
+import {
+  getAuth,
+  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -19,7 +19,7 @@ import {
   sendEmailVerification,
   updateProfile
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { 
+import {
   getFirestore,
   doc,
   setDoc,
@@ -28,14 +28,14 @@ import {
   collection,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { 
-  getAnalytics, 
-  isSupported as analyticsSupported, 
-  logEvent 
+import {
+  getAnalytics,
+  isSupported as analyticsSupported,
+  logEvent
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-import { 
-  getMessaging, 
-  onMessage 
+import {
+  getMessaging,
+  onMessage
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
 
 // Firebase configuration
@@ -57,13 +57,13 @@ let app, auth, db, analytics, messaging;
 try {
   app = initializeApp(firebaseConfig);
   console.log('✅ Firebase app initialized');
-  
+
   auth = getAuth(app);
   console.log('✅ Firebase Auth initialized');
-  
+
   db = getFirestore(app);
   console.log('✅ Firebase Firestore initialized');
-  
+
   // Initialize Analytics (only if supported and not localhost)
   if (window.location.hostname !== 'localhost') {
     try {
@@ -78,7 +78,7 @@ try {
       console.log('ℹ️ Firebase Analytics support check failed:', error.message);
     }
   }
-  
+
   // Initialize Messaging (if supported)
   if ('serviceWorker' in navigator) {
     try {
@@ -88,7 +88,7 @@ try {
       console.log('ℹ️ Firebase Messaging not available:', error.message);
     }
   }
-  
+
   console.log('✅ Modern Firebase initialization complete');
 } catch (error) {
   console.error('❌ Firebase initialization failed:', error);
@@ -99,7 +99,7 @@ class ModernFirebaseAuthService {
   constructor() {
     this.currentUser = null;
     this.listeners = [];
-    
+
     // Set up auth state listener
     if (auth) {
       onAuthStateChanged(auth, (user) => {
@@ -113,33 +113,33 @@ class ModernFirebaseAuthService {
   async signUpWithEmail(email, password, userData = {}) {
     try {
       console.log('🔄 Starting modern sign up process...', { email, userData });
-      
+
       // Enhanced initialization checks
       if (!auth) {
         console.error('❌ Firebase Auth not initialized');
         throw new Error('Firebase Auth not initialized');
       }
-      
+
       if (!app) {
         console.error('❌ Firebase App not initialized');
         throw new Error('Firebase App not initialized');
       }
-      
+
       // Validate input parameters
       if (!email || !password) {
         throw new Error('Email and password are required');
       }
-      
+
       if (password.length < 6) {
         throw new Error('Password must be at least 6 characters');
       }
-      
+
       console.log('✅ Pre-checks passed, creating user...');
-      
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       console.log('✅ User created successfully:', user.uid);
-      
+
       // Update user profile
       if (userData.displayName) {
         await updateProfile(user, {
@@ -147,7 +147,7 @@ class ModernFirebaseAuthService {
         });
         console.log('✅ User profile updated');
       }
-      
+
       // Save additional user data to Firestore
       if (db) {
         const userDocRef = doc(db, 'users', user.uid);
@@ -163,11 +163,11 @@ class ModernFirebaseAuthService {
         });
         console.log('✅ User data saved to Firestore');
       }
-      
+
       // Send verification email
       await sendEmailVerification(user);
       console.log('✅ Verification email sent');
-      
+
       // Log analytics event
       if (analytics) {
         logEvent(analytics, 'sign_up', {
@@ -175,7 +175,7 @@ class ModernFirebaseAuthService {
           source: userData.source || 'website'
         });
       }
-      
+
       return {
         success: true,
         user: user,
@@ -187,10 +187,10 @@ class ModernFirebaseAuthService {
       console.error('❌ Error message:', error.message);
       console.error('❌ Error stack:', error.stack);
       console.error('❌ Full error object:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
-      
+
       // Enhanced error handling
       let errorMessage = this.getErrorMessage(error.code);
-      
+
       // If it's the generic message, provide more details
       if (errorMessage === 'An error occurred. Please try again.') {
         if (error.message) {
@@ -201,7 +201,7 @@ class ModernFirebaseAuthService {
         }
         console.error('❌ Unhandled error code:', error.code);
       }
-      
+
       return {
         success: false,
         message: errorMessage
@@ -213,15 +213,15 @@ class ModernFirebaseAuthService {
   async signInWithEmail(email, password) {
     try {
       console.log('🔄 Starting sign in process...', { email });
-      
+
       if (!auth) {
         throw new Error('Firebase Auth not initialized');
       }
-      
+
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       console.log('✅ User signed in successfully:', user.uid);
-      
+
       // Update last login time
       if (db) {
         const userDocRef = doc(db, 'users', user.uid);
@@ -230,14 +230,14 @@ class ModernFirebaseAuthService {
         });
         console.log('✅ Last login time updated');
       }
-      
+
       // Log analytics event
       if (analytics) {
         logEvent(analytics, 'login', {
           method: 'email'
         });
       }
-      
+
       return {
         success: true,
         user: user,
@@ -256,19 +256,19 @@ class ModernFirebaseAuthService {
   async signInWithGoogle() {
     try {
       console.log('🔄 Starting Google sign in...');
-      
+
       if (!auth) {
         throw new Error('Firebase Auth not initialized');
       }
-      
+
       const provider = new GoogleAuthProvider();
       provider.addScope('email');
       provider.addScope('profile');
-      
+
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       console.log('✅ Google sign in successful:', user.uid);
-      
+
       // Save user data to Firestore
       if (db) {
         const userDocRef = doc(db, 'users', user.uid);
@@ -284,14 +284,14 @@ class ModernFirebaseAuthService {
         }, { merge: true });
         console.log('✅ Google user data saved to Firestore');
       }
-      
+
       // Log analytics event
       if (analytics) {
         logEvent(analytics, 'login', {
           method: 'google'
         });
       }
-      
+
       return {
         success: true,
         user: user,
@@ -310,14 +310,14 @@ class ModernFirebaseAuthService {
   async sendPasswordReset(email) {
     try {
       console.log('🔄 Sending password reset email...', { email });
-      
+
       if (!auth) {
         throw new Error('Firebase Auth not initialized');
       }
-      
+
       await sendPasswordResetEmail(auth, email);
       console.log('✅ Password reset email sent');
-      
+
       return {
         success: true,
         message: 'Password reset email sent! Check your inbox.'
@@ -335,14 +335,14 @@ class ModernFirebaseAuthService {
   async signOut() {
     try {
       console.log('🔄 Signing out...');
-      
+
       if (!auth) {
         throw new Error('Firebase Auth not initialized');
       }
-      
+
       await signOut(auth);
       console.log('✅ User signed out');
-      
+
       return {
         success: true,
         message: 'Signed out successfully'
@@ -361,7 +361,7 @@ class ModernFirebaseAuthService {
     this.listeners.push(callback);
     // Call immediately with current user
     callback(this.currentUser);
-    
+
     // Return unsubscribe function
     return () => {
       const index = this.listeners.indexOf(callback);
@@ -438,7 +438,7 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(error => {
     console.log('ℹ️ Service Worker registration failed:', error);
   });
-  
+
   navigator.serviceWorker.register('/firebase-messaging-sw.js').catch(error => {
     console.log('ℹ️ Firebase Messaging SW registration failed:', error);
   });

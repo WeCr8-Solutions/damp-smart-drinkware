@@ -12,13 +12,13 @@ import {
 import Dimensions from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  ShoppingCart, 
-  Plus, 
-  Minus, 
-  Star, 
-  Truck, 
-  Shield, 
+import {
+  ShoppingCart,
+  Plus,
+  Minus,
+  Star,
+  Truck,
+  Shield,
   CreditCard,
   X,
   Package,
@@ -192,8 +192,8 @@ export default function StoreModal({ visible, onClose }: StoreModalProps) {
     { id: 'accessories', name: 'Accessories', icon: <Zap size={16} color="#0277BD" /> },
   ];
 
-  const filteredProducts = selectedCategory === 'all' 
-    ? products 
+  const filteredProducts = selectedCategory === 'all'
+    ? products
     : products.filter(p => p.category === selectedCategory);
 
   const addToCart = (product: Product) => {
@@ -241,7 +241,7 @@ export default function StoreModal({ visible, onClose }: StoreModalProps) {
     setCheckoutLoading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (!session?.access_token) {
         Alert.alert('Authentication Required', 'Please log in to complete your purchase.');
         return;
@@ -375,9 +375,9 @@ export default function StoreModal({ visible, onClose }: StoreModalProps) {
 
         {/* Product Image */}
         <View style={styles.imageContainer}>
-          <Image 
-            source={{ uri: product.images[0] }} 
-            style={styles.productImage} 
+          <Image
+            source={{ uri: product.images[0] }}
+            style={styles.productImage}
             testID="product-image"
           />
           {!product.inStock && (

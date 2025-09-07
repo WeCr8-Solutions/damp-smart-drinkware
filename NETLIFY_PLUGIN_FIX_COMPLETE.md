@@ -204,7 +204,7 @@ Successfully disabled the conflicting `@netlify/plugin-nextjs` plugin via netlif
 
 ---
 
-*Plugin fix completed via CLI*  
-*Website status: Live and operational*  
-*Domain: https://dampdrink.com*  
+*Plugin fix completed via CLI*
+*Website status: Live and operational*
+*Domain: https://dampdrink.com*
 *Performance: Optimized and fast*

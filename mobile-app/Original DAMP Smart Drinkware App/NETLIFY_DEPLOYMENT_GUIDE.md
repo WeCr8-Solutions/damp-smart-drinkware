@@ -21,7 +21,7 @@ node deploy-to-netlify.js
 Make sure you have these installed:
 ```bash
 # Check if you have them
-node --version    # Should show v18+ 
+node --version    # Should show v18+
 npm --version     # Should show 8+
 firebase --version # If missing: npm install -g firebase-tools
 netlify --version  # If missing: npm install -g netlify-cli
@@ -34,7 +34,7 @@ node deploy-to-netlify.js
 
 The script will guide you through:
 - Firebase login (opens browser)
-- Netlify login (opens browser) 
+- Netlify login (opens browser)
 - Selecting your Firebase project
 - Automatically fetching all Firebase config
 - Setting up Netlify site
@@ -50,7 +50,7 @@ Your app will be live with a Netlify URL like: `https://your-app-name.netlify.ap
 # Login to Firebase
 firebase login
 
-# List your projects  
+# List your projects
 firebase projects:list
 
 # Get config for a specific project
@@ -100,7 +100,7 @@ DAMP Smart Drinkware/
 Automatically configured from Firebase:
 ```bash
 EXPO_PUBLIC_FIREBASE_API_KEY         # From Firebase Console
-EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN     # From Firebase Console  
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN     # From Firebase Console
 EXPO_PUBLIC_FIREBASE_PROJECT_ID      # From Firebase Console
 EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET  # From Firebase Console
 EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID  # From Firebase Console
@@ -123,7 +123,7 @@ npm run netlify:preview    # 📋 Preview deployment
 ```bash
 npm run netlify:status     # 📊 Check site status
 npm run netlify:env        # 🔍 List environment variables
-npm run netlify:logs       # 📜 View deployment logs  
+npm run netlify:logs       # 📜 View deployment logs
 npm run netlify:help       # 🆘 Show help
 ```
 
@@ -267,14 +267,14 @@ npm run netlify:logs
 
 ## 🎉 **Success Checklist**
 
-✅ **Prerequisites installed** (Node, npm, Firebase CLI, Netlify CLI)  
-✅ **Firebase project created** with web app configured  
-✅ **Netlify account** created and logged in  
-✅ **One-command deployment** completed successfully  
-✅ **App is live** at your Netlify URL  
-✅ **Firebase services** working (auth, database, etc.)  
-✅ **Environment variables** set correctly  
-✅ **Build process** completing without errors  
+✅ **Prerequisites installed** (Node, npm, Firebase CLI, Netlify CLI)
+✅ **Firebase project created** with web app configured
+✅ **Netlify account** created and logged in
+✅ **One-command deployment** completed successfully
+✅ **App is live** at your Netlify URL
+✅ **Firebase services** working (auth, database, etc.)
+✅ **Environment variables** set correctly
+✅ **Build process** completing without errors
 
 ## 🚀 **Going Live in Production**
 
@@ -309,8 +309,8 @@ Your DAMP Smart Drinkware app will be live in minutes! 🎉
 
 ---
 
-**Questions?** 
-- Check `npm run netlify:help`  
+**Questions?**
+- Check `npm run netlify:help`
 - View deployment logs: `npm run netlify:logs`
 - Status check: `npm run netlify:status`
 

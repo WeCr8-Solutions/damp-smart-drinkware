@@ -28,11 +28,11 @@ const DeviceList = ({ devices, onDevicePress, refreshing, onRefresh }: any) => {
 
   const loadMore = React.useCallback(async () => {
     if (loading || visibleDevices.length >= devices.length) return;
-    
+
     setLoading(true);
     // Simulate loading delay
     await new Promise(resolve => setTimeout(resolve, 100));
-    
+
     const nextBatch = devices.slice(visibleDevices.length, visibleDevices.length + 20);
     setVisibleDevices(prev => [...prev, ...nextBatch]);
     setLoading(false);
@@ -41,7 +41,7 @@ const DeviceList = ({ devices, onDevicePress, refreshing, onRefresh }: any) => {
   return (
     <div data-testid="device-list">
       {refreshing && <div data-testid="loading-indicator">Loading...</div>}
-      
+
       {visibleDevices.map((device: any) => (
         <DeviceCard
           key={device.id}
@@ -49,9 +49,9 @@ const DeviceList = ({ devices, onDevicePress, refreshing, onRefresh }: any) => {
           onPress={onDevicePress}
         />
       ))}
-      
+
       {visibleDevices.length < devices.length && (
-        <button 
+        <button
           data-testid="load-more"
           onClick={loadMore}
           disabled={loading}
@@ -102,7 +102,7 @@ describe('Device List Performance Tests', () => {
       const onDevicePress = jest.fn();
 
       const startTime = performance.now();
-      
+
       render(
         <DeviceList
           devices={devices}
@@ -125,9 +125,9 @@ describe('Device List Performance Tests', () => {
       const onDevicePress = jest.fn();
 
       const memoryBefore = performanceTestUtils.measureMemoryUsage();
-      
+
       const startTime = performance.now();
-      
+
       const { getByTestId } = render(
         <DeviceList
           devices={devices}
@@ -147,7 +147,7 @@ describe('Device List Performance Tests', () => {
       // Memory usage should not grow excessively
       const memoryAfter = performanceTestUtils.measureMemoryUsage();
       const memoryGrowth = memoryAfter.used - memoryBefore.used;
-      
+
       expect(memoryGrowth).toHaveReasonableMemoryUsage(
         memoryBefore.used,
         2 // Should not use more than 2x baseline memory
@@ -179,9 +179,9 @@ describe('Device List Performance Tests', () => {
       // Measure load times for multiple batches
       for (let batch = 0; batch < 5; batch++) {
         const startTime = performance.now();
-        
+
         loadMoreButton.click();
-        
+
         await waitFor(() => {
           expect(screen.getAllByTestId(/^device-/).length).toBe((batch + 2) * 20);
         });
@@ -216,7 +216,7 @@ describe('Device List Performance Tests', () => {
       );
 
       const memoryDuringRender = performanceTestUtils.measureMemoryUsage();
-      
+
       unmount();
 
       // Force garbage collection if available
@@ -347,7 +347,7 @@ describe('Device List Performance Tests', () => {
 
       // End refresh with same data
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       rerender(
         <OptimizedDeviceList
           devices={devices}
@@ -366,7 +366,7 @@ describe('Device List Performance Tests', () => {
 
   describe('Network Performance Integration', () => {
     it('should handle device data fetching efficiently', async () => {
-      const mockFetchDevices = jest.fn(() => 
+      const mockFetchDevices = jest.fn(() =>
         Promise.resolve(Array.from({ length: 50 }, (_, i) => createMockDevice(i)))
       );
 
@@ -380,18 +380,18 @@ describe('Device List Performance Tests', () => {
 
     it('should batch device status updates for optimal performance', async () => {
       const devices = Array.from({ length: 100 }, (_, i) => createMockDevice(i));
-      
+
       // Mock batch update function
       const batchUpdateDevices = async (updates: any[]) => {
         const startTime = performance.now();
-        
+
         // Simulate processing updates in batches
         const batchSize = 10;
         for (let i = 0; i < updates.length; i += batchSize) {
           const batch = updates.slice(i, i + batchSize);
           await new Promise(resolve => setTimeout(resolve, 50)); // Simulate API call
         }
-        
+
         const endTime = performance.now();
         return { success: true, duration: endTime - startTime, processed: updates.length };
       };
@@ -406,7 +406,7 @@ describe('Device List Performance Tests', () => {
 
       expect(result.success).toBe(true);
       expect(result.processed).toBe(100);
-      
+
       // Batch processing should be more efficient than individual updates
       const expectedIndividualTime = statusUpdates.length * 50; // 50ms per update
       expect(result.duration).toBeLessThan(expectedIndividualTime * 0.7); // 30% improvement
@@ -464,7 +464,7 @@ describe('Device List Performance Tests', () => {
       // Rapid updates for 5 seconds
       const updateInterval = setInterval(() => {
         const startTime = performance.now();
-        
+
         const updatedDevices = devices.map(device => ({
           ...device,
           batteryLevel: Math.floor(Math.random() * 100),

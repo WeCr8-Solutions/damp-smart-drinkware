@@ -105,7 +105,7 @@ const initializeFirebaseForWeb = async () => {
     db = getFirestore(app);
     functions = getFunctions(app);
     storage = getStorage(app);
-    
+
     console.info('Firebase initialized successfully');
   } catch (error) {
     console.warn('Firebase initialization failed - using mocks:', error);
@@ -134,12 +134,12 @@ export const firebaseFunctions = functions;
 export const firebaseStorage = storage;
 
 // Also export with original names for compatibility
-export { 
-  firebaseApp as app, 
-  firebaseAuth as auth, 
-  firebaseDb as db, 
-  firebaseFunctions as functions, 
-  firebaseStorage as storage 
+export {
+  firebaseApp as app,
+  firebaseAuth as auth,
+  firebaseDb as db,
+  firebaseFunctions as functions,
+  firebaseStorage as storage
 };
 
 // Default export for convenience

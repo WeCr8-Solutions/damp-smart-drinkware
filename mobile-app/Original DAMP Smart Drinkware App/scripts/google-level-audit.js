@@ -40,7 +40,7 @@ class GoogleLevelAuditor {
   async runFullAudit() {
     console.log('🚀 Starting Google-Level Engineering Audit for DAMP Smart Drinkware');
     console.log('=' .repeat(70));
-    
+
     try {
       await this.auditCodeQuality();
       await this.auditSecurity();
@@ -48,7 +48,7 @@ class GoogleLevelAuditor {
       await this.auditTesting();
       await this.auditArchitecture();
       await this.auditAccessibility();
-      
+
       this.generateReport();
     } catch (error) {
       console.error('❌ Audit failed:', error.message);
@@ -91,7 +91,7 @@ class GoogleLevelAuditor {
     try {
       const depCheckResult = execSync('npx depcheck --json', { encoding: 'utf8' });
       const depCheck = JSON.parse(depCheckResult);
-      
+
       if (depCheck.dependencies.length === 0 && depCheck.devDependencies.length === 0) {
         this.recordResult('✅ Dependencies', 'passed', 'All dependencies are used');
       } else {
@@ -121,14 +121,14 @@ class GoogleLevelAuditor {
     try {
       const files = this.findFiles(['.ts', '.tsx', '.js', '.jsx']);
       let secretsFound = 0;
-      
+
       for (const file of files) {
         const content = fs.readFileSync(file, 'utf8');
         if (this.containsHardcodedSecrets(content)) {
           secretsFound++;
         }
       }
-      
+
       if (secretsFound === 0) {
         this.recordResult('✅ Secret Scan', 'passed', 'No hardcoded secrets found');
       } else {
@@ -141,7 +141,7 @@ class GoogleLevelAuditor {
     // Environment security check
     const envFiles = ['.env', '.env.local', '.env.example'];
     let exposedSecrets = 0;
-    
+
     for (const envFile of envFiles) {
       if (fs.existsSync(envFile)) {
         const content = fs.readFileSync(envFile, 'utf8');
@@ -150,7 +150,7 @@ class GoogleLevelAuditor {
         }
       }
     }
-    
+
     if (exposedSecrets === 0) {
       this.recordResult('✅ Env Security', 'passed', 'No production secrets in env files');
     } else {
@@ -168,7 +168,7 @@ class GoogleLevelAuditor {
     // Bundle size check
     try {
       const bundleInfo = this.analyzeBundleSize();
-      
+
       if (bundleInfo.size < AUDIT_CONFIG.performance.bundleSizeLimit) {
         this.recordResult('✅ Bundle Size', 'passed', `${(bundleInfo.size / 1024 / 1024).toFixed(1)}MB (under limit)`);
       } else {
@@ -206,7 +206,7 @@ class GoogleLevelAuditor {
     try {
       const coverageResult = execSync('npm run test:coverage', { encoding: 'utf8', stdio: 'pipe' });
       const coverage = this.parseCoverageFromOutput(coverageResult);
-      
+
       if (coverage.lines >= AUDIT_CONFIG.quality.testCoverageMinimum) {
         this.recordResult('✅ Test Coverage', 'passed', `${coverage.lines}% line coverage`);
       } else {
@@ -296,15 +296,15 @@ class GoogleLevelAuditor {
   /**
    * Helper methods
    */
-  
+
   recordResult(check, status, message) {
     const result = { check, status, message };
     this.results.details.push(result);
-    
+
     if (status === 'passed') this.results.passed++;
     else if (status === 'failed') this.results.failed++;
     else if (status === 'warning') this.results.warnings++;
-    
+
     console.log(`${result.check}: ${result.message}`);
   }
 
@@ -321,7 +321,7 @@ class GoogleLevelAuditor {
         }
       }
     };
-    
+
     traverse('.');
     return files;
   }
@@ -334,7 +334,7 @@ class GoogleLevelAuditor {
       /[0-9]+-[0-9A-Za-z_]{32}\\.apps\\.googleusercontent\\.com/,
       /[a-f0-9]{40}/, // Generic 40-char hex (GitHub token)
     ];
-    
+
     return secretPatterns.some(pattern => pattern.test(content));
   }
 
@@ -343,7 +343,7 @@ class GoogleLevelAuditor {
     const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
     const nodeModulesSize = this.getDirectorySize('node_modules');
     const srcSize = this.getDirectorySize('src') || this.getDirectorySize('app');
-    
+
     return {
       size: nodeModulesSize * 0.1 + srcSize, // Rough estimate
       dependencies: Object.keys(packageJson.dependencies || {}).length
@@ -352,7 +352,7 @@ class GoogleLevelAuditor {
 
   getDirectorySize(dirPath) {
     if (!fs.existsSync(dirPath)) return 0;
-    
+
     let totalSize = 0;
     const traverse = (dir) => {
       try {
@@ -370,7 +370,7 @@ class GoogleLevelAuditor {
         // Skip inaccessible directories
       }
     };
-    
+
     traverse(dirPath);
     return totalSize;
   }
@@ -391,7 +391,7 @@ class GoogleLevelAuditor {
   analyzeComponentStructure() {
     const componentFiles = this.findFiles(['.tsx', '.jsx']);
     const issues = [];
-    
+
     // Check for components without proper exports
     let componentsWithIssues = 0;
     for (const file of componentFiles.slice(0, 10)) { // Sample first 10
@@ -400,11 +400,11 @@ class GoogleLevelAuditor {
         componentsWithIssues++;
       }
     }
-    
+
     if (componentsWithIssues > 0) {
       issues.push(`${componentsWithIssues} components without proper exports`);
     }
-    
+
     return {
       isValid: issues.length === 0,
       issues
@@ -414,14 +414,14 @@ class GoogleLevelAuditor {
   countErrorBoundaries() {
     const files = this.findFiles(['.ts', '.tsx', '.js', '.jsx']);
     let count = 0;
-    
+
     for (const file of files) {
       const content = fs.readFileSync(file, 'utf8');
       if (content.includes('ErrorBoundary') || content.includes('componentDidCatch')) {
         count++;
       }
     }
-    
+
     return count;
   }
 
@@ -429,21 +429,21 @@ class GoogleLevelAuditor {
     const componentFiles = this.findFiles(['.tsx', '.jsx']);
     let compliantComponents = 0;
     let nonCompliantComponents = 0;
-    
+
     for (const file of componentFiles.slice(0, 20)) { // Sample first 20
       const content = fs.readFileSync(file, 'utf8');
-      
-      if (content.includes('accessibilityLabel') || 
-          content.includes('accessibilityHint') || 
+
+      if (content.includes('accessibilityLabel') ||
+          content.includes('accessibilityHint') ||
           content.includes('accessibilityRole')) {
         compliantComponents++;
-      } else if (content.includes('<TouchableOpacity') || 
-                 content.includes('<Button') || 
+      } else if (content.includes('<TouchableOpacity') ||
+                 content.includes('<Button') ||
                  content.includes('<TextInput')) {
         nonCompliantComponents++;
       }
     }
-    
+
     return {
       compliant: nonCompliantComponents === 0,
       compliantComponents,
@@ -455,15 +455,15 @@ class GoogleLevelAuditor {
     console.log('\n' + '='.repeat(70));
     console.log('📊 GOOGLE-LEVEL ENGINEERING AUDIT REPORT');
     console.log('='.repeat(70));
-    
+
     const total = this.results.passed + this.results.failed + this.results.warnings;
     const score = ((this.results.passed + this.results.warnings * 0.5) / total * 100).toFixed(1);
-    
+
     console.log(`\n🎯 Overall Score: ${score}%`);
     console.log(`✅ Passed: ${this.results.passed}`);
     console.log(`❌ Failed: ${this.results.failed}`);
     console.log(`⚠️  Warnings: ${this.results.warnings}`);
-    
+
     console.log('\n📋 Grade Assessment:');
     if (score >= 95) {
       console.log('🏆 EXCELLENT - Google L5+ Standards');
@@ -482,7 +482,7 @@ class GoogleLevelAuditor {
     console.log('2. Address warning items (⚠️)');
     console.log('3. Run audit regularly in CI/CD');
     console.log('4. Aim for 95+ score for Google-level excellence');
-    
+
     // Save detailed report
     const report = {
       timestamp: new Date().toISOString(),
@@ -495,10 +495,10 @@ class GoogleLevelAuditor {
       },
       details: this.results.details
     };
-    
+
     fs.writeFileSync('google-audit-report.json', JSON.stringify(report, null, 2));
     console.log('\n📄 Detailed report saved to: google-audit-report.json');
-    
+
     // Exit with error code if critical issues found
     if (this.results.failed > 0) {
       process.exit(1);

@@ -17,7 +17,7 @@ class DAMPPerformanceOptimizer {
             cacheHitRatio: 0,
             memoryUsage: 0
         };
-        
+
         this.init();
     }
 
@@ -29,7 +29,7 @@ class DAMPPerformanceOptimizer {
         this.setupCriticalResourceLoading();
         this.setupPerformanceMonitoring();
         this.setupMemoryManagement();
-        
+
         console.log('🚀 DAMP Performance Optimizer initialized');
     }
 
@@ -40,12 +40,12 @@ class DAMPPerformanceOptimizer {
     setupResourceHints() {
         // Preload critical fonts
         this.preloadResource('/assets/fonts/system-ui.woff2', 'font', 'font/woff2');
-        
+
         // DNS prefetch for external resources
         this.addDNSPrefetch('https://www.gstatic.com');
         this.addDNSPrefetch('https://firebaseapp.com');
         this.addDNSPrefetch('https://googleapis.com');
-        
+
         // Preconnect to critical origins
         this.preconnect('https://www.gstatic.com', true);
         this.preconnect('https://js.stripe.com', true);
@@ -53,20 +53,20 @@ class DAMPPerformanceOptimizer {
 
     preloadResource(href, as, type = null, crossorigin = null) {
         if (document.querySelector(`link[href="${href}"]`)) return;
-        
+
         const link = document.createElement('link');
         link.rel = 'preload';
         link.href = href;
         link.as = as;
         if (type) link.type = type;
         if (crossorigin) link.crossOrigin = crossorigin;
-        
+
         document.head.appendChild(link);
     }
 
     addDNSPrefetch(href) {
         if (document.querySelector(`link[href="${href}"][rel="dns-prefetch"]`)) return;
-        
+
         const link = document.createElement('link');
         link.rel = 'dns-prefetch';
         link.href = href;
@@ -75,7 +75,7 @@ class DAMPPerformanceOptimizer {
 
     preconnect(href, crossorigin = false) {
         if (document.querySelector(`link[href="${href}"][rel="preconnect"]`)) return;
-        
+
         const link = document.createElement('link');
         link.rel = 'preconnect';
         link.href = href;
@@ -124,7 +124,7 @@ class DAMPPerformanceOptimizer {
         }
 
         const startTime = performance.now();
-        
+
         try {
             const chunk = this.chunkRegistry[chunkName];
             if (!chunk) {
@@ -133,7 +133,7 @@ class DAMPPerformanceOptimizer {
 
             const promises = chunk.map(script => this.loadScript(script));
             const results = await Promise.all(promises);
-            
+
             const loadTime = performance.now() - startTime;
             this.performanceMetrics.chunkLoadTimes.push({
                 chunk: chunkName,
@@ -143,7 +143,7 @@ class DAMPPerformanceOptimizer {
 
             this.chunkCache.set(chunkName, results);
             console.log(`✅ Chunk '${chunkName}' loaded in ${loadTime.toFixed(2)}ms`);
-            
+
             return results;
         } catch (error) {
             console.error(`❌ Failed to load chunk '${chunkName}':`, error);
@@ -163,10 +163,10 @@ class DAMPPerformanceOptimizer {
             script.src = src;
             script.async = true;
             script.defer = true;
-            
+
             script.onload = () => resolve();
             script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
-            
+
             document.head.appendChild(script);
         });
     }
@@ -197,10 +197,10 @@ class DAMPPerformanceOptimizer {
 
             const blob = await response.blob();
             const optimizedBlob = await this.optimizeBlob(blob, type);
-            
+
             // Create object URL for optimized blob
             const objectURL = URL.createObjectURL(optimizedBlob);
-            
+
             this.blobCache.set(url, {
                 blob: optimizedBlob,
                 objectURL,
@@ -222,7 +222,7 @@ class DAMPPerformanceOptimizer {
         if (type === 'image' && blob.type.startsWith('image/')) {
             return this.compressImage(blob);
         }
-        
+
         // For other types, return as-is for now
         return blob;
     }
@@ -247,7 +247,7 @@ class DAMPPerformanceOptimizer {
 
                 canvas.width = width;
                 canvas.height = height;
-                
+
                 // Draw and compress
                 ctx.drawImage(img, 0, 0, width, height);
                 canvas.toBlob(resolve, blob.type, quality);
@@ -309,7 +309,7 @@ class DAMPPerformanceOptimizer {
 
         // Track page visits
         this.userBehavior.visitedPages.add(window.location.pathname);
-        
+
         // Predict next likely pages and prefetch
         setTimeout(() => {
             this.predictAndPrefetch();
@@ -319,7 +319,7 @@ class DAMPPerformanceOptimizer {
     predictAndPrefetch() {
         const currentPath = window.location.pathname;
         const predictions = this.getPredictedPages(currentPath);
-        
+
         predictions.forEach(url => {
             if (!this.prefetchQueue.has(url)) {
                 this.prefetchResource(url);
@@ -329,7 +329,7 @@ class DAMPPerformanceOptimizer {
 
     getPredictedPages(currentPath) {
         const predictions = [];
-        
+
         // Common navigation patterns
         if (currentPath.includes('index.html') || currentPath === '/') {
             predictions.push('/pages/how-it-works.html', '/pages/products.html', '/pages/pre-order.html');
@@ -338,15 +338,15 @@ class DAMPPerformanceOptimizer {
         } else if (currentPath.includes('product-voting')) {
             predictions.push('/pages/profile.html', '/pages/pre-order.html');
         }
-        
+
         return predictions;
     }
 
     prefetchResource(url) {
         if (this.prefetchQueue.has(url)) return;
-        
+
         this.prefetchQueue.add(url);
-        
+
         const link = document.createElement('link');
         link.rel = 'prefetch';
         link.href = url;
@@ -356,7 +356,7 @@ class DAMPPerformanceOptimizer {
         link.onerror = () => {
             console.warn(`⚠️ Prefetch failed: ${url}`);
         };
-        
+
         document.head.appendChild(link);
     }
 
@@ -389,7 +389,7 @@ class DAMPPerformanceOptimizer {
         try {
             await Promise.all(promises);
             console.log('✅ Critical resources loaded');
-            
+
             // Signal that critical resources are ready
             document.dispatchEvent(new CustomEvent('critical-resources-loaded'));
         } catch (error) {
@@ -409,7 +409,7 @@ class DAMPPerformanceOptimizer {
             link.href = href;
             link.onload = resolve;
             link.onerror = reject;
-            
+
             document.head.appendChild(link);
         });
     }
@@ -421,13 +421,13 @@ class DAMPPerformanceOptimizer {
     setupPerformanceMonitoring() {
         // Monitor Core Web Vitals
         this.monitorWebVitals();
-        
+
         // Monitor memory usage
         this.monitorMemoryUsage();
-        
+
         // Monitor cache performance
         this.monitorCachePerformance();
-        
+
         // Report performance metrics
         setInterval(() => {
             this.reportPerformanceMetrics();
@@ -480,7 +480,7 @@ class DAMPPerformanceOptimizer {
     monitorCachePerformance() {
         const totalRequests = this.chunkCache.size + this.blobCache.size + this.prefetchQueue.size;
         const cacheHits = this.chunkCache.size + this.blobCache.size;
-        
+
         this.performanceMetrics.cacheHitRatio = totalRequests > 0 ? cacheHits / totalRequests : 0;
     }
 
@@ -496,7 +496,7 @@ class DAMPPerformanceOptimizer {
         };
 
         console.log('📈 Performance Metrics:', metrics);
-        
+
         // Send to analytics if available
         if (window.gtag) {
             window.gtag('event', 'performance_metrics', {
@@ -550,12 +550,12 @@ class DAMPPerformanceOptimizer {
         for (const [, data] of this.blobCache.entries()) {
             URL.revokeObjectURL(data.objectURL);
         }
-        
+
         // Clear caches
         this.chunkCache.clear();
         this.blobCache.clear();
         this.prefetchQueue.clear();
-        
+
         console.log('🧹 Performance optimizer cleanup completed');
     }
 

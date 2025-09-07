@@ -45,12 +45,12 @@ class ResponsiveImageFixed extends HTMLElement {
         const src = this.getAttribute('src');
         const alt = this.getAttribute('alt') || '';
         const loading = this.getAttribute('loading') || 'lazy';
-        
+
         if (!src) return;
-        
+
         // Check if optimized versions exist
         const productMatch = src.match(/products\/([^\/]+)\//);
-        
+
         if (productMatch && this.imageManifest) {
             // Use optimized images if available
             this.generateOptimizedPicture(src, alt, loading);
@@ -66,14 +66,14 @@ class ResponsiveImageFixed extends HTMLElement {
         const sizes = this.getAttribute('sizes') || '100vw';
 
         const picture = document.createElement('picture');
-        
+
         // WebP source
         const webpSource = document.createElement('source');
         webpSource.type = 'image/webp';
         webpSource.srcset = this.generateSrcSet(basePath, 'webp');
         webpSource.sizes = sizes;
         picture.appendChild(webpSource);
-        
+
         // PNG fallback
         const img = document.createElement('img');
         img.src = `${basePath}-medium.png`;
@@ -82,7 +82,7 @@ class ResponsiveImageFixed extends HTMLElement {
         img.alt = alt;
         img.loading = loading;
         img.style.cssText = 'width: 100%; height: 250px; object-fit: cover; border-radius: 8px;';
-        
+
         picture.appendChild(img);
         this.appendChild(picture);
     }
@@ -93,13 +93,13 @@ class ResponsiveImageFixed extends HTMLElement {
         img.alt = alt;
         img.loading = loading;
         img.style.cssText = 'width: 100%; height: 250px; object-fit: cover; border-radius: 8px;';
-        
+
         // Add error handling
         img.onerror = () => {
             img.src = '/assets/images/logo/icon.png'; // Fallback to logo
             img.alt = 'Product image coming soon';
         };
-        
+
         this.appendChild(img);
     }
 
@@ -125,4 +125,4 @@ class ResponsiveImageFixed extends HTMLElement {
     }
 }
 
-customElements.define('responsive-image-fixed', ResponsiveImageFixed); 
+customElements.define('responsive-image-fixed', ResponsiveImageFixed);

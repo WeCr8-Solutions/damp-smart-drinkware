@@ -358,7 +358,7 @@
                 <span>📊</span>
                 <span>Pricing Overview</span>
             </div>
-            
+
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-value" id="total-products">4</div>
@@ -483,7 +483,7 @@
                 <span>🛍️</span>
                 <span>Product Management</span>
             </div>
-            
+
             <div class="pricing-card">
                 <h3>Edit Product Pricing</h3>
                 <div class="form-group">
@@ -496,7 +496,7 @@
                         <option value="baby-bottle">DAMP Baby Bottle</option>
                     </select>
                 </div>
-                
+
                 <div id="product-form" style="display: none;">
                     <div class="form-row">
                         <div class="form-group">
@@ -539,7 +539,7 @@
                 <span>🎫</span>
                 <span>Promotion Management</span>
             </div>
-            
+
             <div class="pricing-card">
                 <h3>Create New Promotion</h3>
                 <div class="form-row">
@@ -619,7 +619,7 @@
                 <span>📅</span>
                 <span>Pricing Phases</span>
             </div>
-            
+
             <div class="pricing-card">
                 <h3>Current Pricing Phase</h3>
                 <div class="form-row">
@@ -671,7 +671,7 @@
                 <span>⚙️</span>
                 <span>Global Settings</span>
             </div>
-            
+
             <div class="pricing-card">
                 <h3>Shipping & Tax</h3>
                 <div class="form-row">
@@ -729,7 +729,7 @@
                 <span>🔧</span>
                 <span>Raw Configuration</span>
             </div>
-            
+
             <div class="pricing-card">
                 <h3>JSON Configuration Editor</h3>
                 <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 20px;">
@@ -805,7 +805,7 @@
         // Get current pricing phase name
         function getCurrentPhaseName() {
             if (!currentConfig) return 'Unknown';
-            
+
             const phases = currentConfig.pricing_phases;
             for (const [name, phase] of Object.entries(phases)) {
                 if (phase.active) {
@@ -825,10 +825,10 @@
             Object.entries(currentConfig.promotions).forEach(([code, promo]) => {
                 const promoCard = document.createElement('div');
                 promoCard.className = `promo-card ${promo.active ? '' : 'inactive'}`;
-                
+
                 const statusClass = promo.active ? 'status-active' : 'status-inactive';
                 const typeText = promo.type === 'percentage' ? `${promo.value}%` : `$${(promo.value / 100).toFixed(2)}`;
-                
+
                 promoCard.innerHTML = `
                     <div class="promo-code">${code}</div>
                     <div class="promo-description">${promo.description}</div>
@@ -843,7 +843,7 @@
                         </span>
                     </div>
                 `;
-                
+
                 promotionsContainer.appendChild(promoCard);
             });
         }
@@ -852,7 +852,7 @@
         document.getElementById('product-select').addEventListener('change', function() {
             const productId = this.value;
             const formContainer = document.getElementById('product-form');
-            
+
             if (productId && currentConfig) {
                 const product = currentConfig.products[productId];
                 if (product) {
@@ -862,7 +862,7 @@
                     document.getElementById('inventory').value = product.inventory;
                     document.getElementById('pre-order-delivery').value = product.delivery.pre_order_delivery;
                     document.getElementById('standard-delivery').value = product.delivery.standard_delivery;
-                    
+
                     formContainer.style.display = 'block';
                 }
             } else {
@@ -1029,20 +1029,20 @@
             try {
                 const configText = document.getElementById('config-editor').value;
                 const newConfig = JSON.parse(configText);
-                
+
                 // Basic validation
                 if (!newConfig.products || !newConfig.promotions || !newConfig.settings) {
                     throw new Error('Invalid configuration structure');
                 }
-                
+
                 currentConfig = newConfig;
-                
+
                 // Update the pricing system
                 if (window.DAMPPricing) {
                     window.DAMPPricing.config = currentConfig;
                     window.DAMPPricing.updateAllPrices();
                 }
-                
+
                 showToast('Configuration saved successfully!', 'success');
                 updateOverview();
                 updatePromotionsList();
@@ -1056,7 +1056,7 @@
             const configText = JSON.stringify(currentConfig, null, 2);
             const blob = new Blob([configText], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
-            
+
             const a = document.createElement('a');
             a.href = url;
             a.download = 'damp-pricing-config.json';
@@ -1064,7 +1064,7 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            
+
             showToast('Configuration exported successfully!', 'success');
         }
 
@@ -1073,13 +1073,13 @@
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
             toast.textContent = message;
-            
+
             document.body.appendChild(toast);
-            
+
             setTimeout(() => {
                 toast.classList.add('show');
             }, 100);
-            
+
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => {
@@ -1089,4 +1089,4 @@
         }
     </script>
 </body>
-</html> 
+</html>

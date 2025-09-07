@@ -83,7 +83,7 @@
 </head>
 <body>
     <h1>🧪 DAMP Presale Funnel - Cart Flow Test</h1>
-    
+
     <div class="test-section">
         <h2>📋 Automated Test Results</h2>
         <div id="automated-results">
@@ -100,7 +100,7 @@
     <div class="test-section">
         <h2>🎯 Manual Testing Interface</h2>
         <p>Use the checklist below to manually verify each step of the cart flow:</p>
-        
+
         <div class="manual-test-checklist">
             <h3>Manual Test Checklist:</h3>
             <div class="checklist-item" onclick="toggleCheck(this)">
@@ -164,12 +164,12 @@
                 Verify product images load correctly
             </div>
         </div>
-        
+
         <div style="margin-top: 20px;">
             <button class="test-button" onclick="resetChecklist()">🔄 Reset Checklist</button>
             <button class="test-button" onclick="showProgress()">📊 Show Progress</button>
         </div>
-        
+
         <div id="progress-display" style="margin-top: 15px; font-size: 1.2rem;"></div>
     </div>
 
@@ -179,7 +179,7 @@
         <div class="iframe-container">
             <iframe src="pages/pre-sale-funnel.html" title="DAMP Presale Funnel"></iframe>
         </div>
-        
+
         <div style="text-align: center; margin-top: 15px;">
             <button class="test-button" onclick="reloadIframe()">🔄 Reload Funnel</button>
             <button class="test-button" onclick="openInNewTab()">🔗 Open in New Tab</button>
@@ -228,7 +228,7 @@
             const total = document.querySelectorAll('.status-indicator').length;
             const completed = document.querySelectorAll('.status-indicator.completed').length;
             const percentage = Math.round((completed / total) * 100);
-            
+
             const progressDisplay = document.getElementById('progress-display');
             progressDisplay.innerHTML = `Progress: ${completed}/${total} (${percentage}%) ${percentage === 100 ? '🎉' : ''}`;
         }

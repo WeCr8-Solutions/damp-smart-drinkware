@@ -40,7 +40,7 @@ const TEST_CUSTOMER_ID = 'cus_live_test_' + Date.now();
 
 async function testFirebaseConnection() {
   console.log('🔍 Testing Firebase Connection...');
-  
+
   try {
     // Test Firestore connection by reading a collection
     const testRef = db.collection('_test_connection');
@@ -48,15 +48,15 @@ async function testFirebaseConnection() {
       test: true,
       timestamp: admin.firestore.FieldValue.serverTimestamp()
     });
-    
+
     console.log('✅ Firebase Firestore connection successful');
-    
+
     // Clean up test document
     const testDocs = await testRef.where('test', '==', true).get();
     testDocs.forEach(async (doc) => {
       await doc.ref.delete();
     });
-    
+
   } catch (error) {
     console.error('❌ Firebase connection failed:', error.message);
     throw error;
@@ -65,7 +65,7 @@ async function testFirebaseConnection() {
 
 async function testUserAuthentication() {
   console.log('🔍 Testing User Authentication System...');
-  
+
   try {
     // Test user profile creation
     const userData = {
@@ -74,7 +74,7 @@ async function testUserAuthentication() {
       displayName: 'Live Test User',
       photoURL: null,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      
+
       // Authentication preferences
       preferences: {
         notifications: {
@@ -94,7 +94,7 @@ async function testUserAuthentication() {
           profileVisibility: 'public',
         }
       },
-      
+
       // User stats and activity
       stats: {
         votesCount: 0,
@@ -102,14 +102,14 @@ async function testUserAuthentication() {
         loyaltyPoints: 100,
         totalSpent: 0,
       },
-      
+
       // Subscription info
       subscription: {
         plan: 'free',
         status: 'active',
         stripeCustomerId: null,
       },
-      
+
       // Security settings
       security: {
         lastPasswordChange: admin.firestore.FieldValue.serverTimestamp(),
@@ -121,7 +121,7 @@ async function testUserAuthentication() {
 
     await db.collection('users').doc(TEST_USER_ID).set(userData);
     console.log('✅ User profile created successfully');
-    
+
     // Verify data was written
     const userDoc = await db.collection('users').doc(TEST_USER_ID).get();
     if (userDoc.exists) {
@@ -131,7 +131,7 @@ async function testUserAuthentication() {
     } else {
       throw new Error('User document was not created');
     }
-    
+
   } catch (error) {
     console.error('❌ User authentication test failed:', error.message);
     throw error;
@@ -140,7 +140,7 @@ async function testUserAuthentication() {
 
 async function testStripeIntegration() {
   console.log('🔍 Testing Stripe Integration...');
-  
+
   try {
     // Test subscription data structure
     const subscriptionData = {
@@ -197,7 +197,7 @@ async function testStripeIntegration() {
       'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
     });
     console.log('✅ User subscription status updated successfully');
-    
+
   } catch (error) {
     console.error('❌ Stripe integration test failed:', error.message);
     throw error;
@@ -206,7 +206,7 @@ async function testStripeIntegration() {
 
 async function testDeviceManagement() {
   console.log('🔍 Testing Device Management...');
-  
+
   try {
     const deviceData = {
       deviceId: TEST_DEVICE_ID,
@@ -256,7 +256,7 @@ async function testDeviceManagement() {
       }
     });
     console.log('✅ Device status updated successfully');
-    
+
   } catch (error) {
     console.error('❌ Device management test failed:', error.message);
     throw error;
@@ -265,7 +265,7 @@ async function testDeviceManagement() {
 
 async function testVotingSystem() {
   console.log('🔍 Testing Voting System...');
-  
+
   try {
     const voteData = {
       voteId: `damp-handle-v3_${TEST_USER_ID}_${Date.now()}`,
@@ -286,7 +286,7 @@ async function testVotingSystem() {
       'stats.loyaltyPoints': admin.firestore.FieldValue.increment(10),
     });
     console.log('✅ User stats updated for vote');
-    
+
   } catch (error) {
     console.error('❌ Voting system test failed:', error.message);
     throw error;
@@ -295,7 +295,7 @@ async function testVotingSystem() {
 
 async function testNotificationSystem() {
   console.log('🔍 Testing Notification System...');
-  
+
   try {
     // Test FCM token storage (simulated)
     const fcmTokenData = {
@@ -324,7 +324,7 @@ async function testNotificationSystem() {
 
     await db.collection('notifications').add(notificationData);
     console.log('✅ Notification created successfully');
-    
+
   } catch (error) {
     console.error('❌ Notification system test failed:', error.message);
     throw error;
@@ -333,7 +333,7 @@ async function testNotificationSystem() {
 
 async function testDataQueries() {
   console.log('🔍 Testing Data Queries...');
-  
+
   try {
     // Test user data query
     const userDoc = await db.collection('users').doc(TEST_USER_ID).get();
@@ -365,7 +365,7 @@ async function testDataQueries() {
       .limit(10)
       .get();
     console.log('✅ Webhook logs query:', webhookLogsQuery.size, 'logs');
-    
+
   } catch (error) {
     console.error('❌ Data queries test failed:', error.message);
     throw error;
@@ -374,26 +374,26 @@ async function testDataQueries() {
 
 async function cleanupTestData() {
   console.log('🧹 Cleaning up test data...');
-  
+
   try {
     const batch = db.batch();
-    
+
     // Clean up main documents
     batch.delete(db.collection('users').doc(TEST_USER_ID));
     batch.delete(db.collection('devices').doc(TEST_DEVICE_ID));
-    
+
     await batch.commit();
-    
+
     // Clean up collections with auto-generated IDs
     const collections = [
       'subscriptions',
-      'subscription_events', 
+      'subscription_events',
       'webhook_logs',
       'userVotes',
       'fcmTokens',
       'notifications'
     ];
-    
+
     for (const collectionName of collections) {
       let query;
       if (collectionName === 'subscriptions') {
@@ -403,7 +403,7 @@ async function cleanupTestData() {
       } else {
         query = await db.collection(collectionName).where('userId', '==', TEST_USER_ID).get();
       }
-      
+
       if (!query.empty) {
         const deleteBatch = db.batch();
         query.forEach(doc => {
@@ -412,9 +412,9 @@ async function cleanupTestData() {
         await deleteBatch.commit();
       }
     }
-    
+
     console.log('✅ Test data cleaned up successfully');
-    
+
   } catch (error) {
     console.error('❌ Cleanup failed:', error.message);
   }
@@ -427,29 +427,29 @@ async function runLiveTests() {
   try {
     await testFirebaseConnection();
     console.log();
-    
+
     await testUserAuthentication();
     console.log();
-    
+
     await testStripeIntegration();
     console.log();
-    
+
     await testDeviceManagement();
     console.log();
-    
+
     await testVotingSystem();
     console.log();
-    
+
     await testNotificationSystem();
     console.log();
-    
+
     await testDataQueries();
     console.log();
-    
+
     console.log('🎉 All live Firebase tests completed successfully!');
     console.log('✅ Authentication and Stripe functions are working perfectly');
     console.log('🚀 Your Firebase project is ready for production use');
-    
+
   } catch (error) {
     console.error('💥 Live test suite failed:', error);
     process.exit(1);

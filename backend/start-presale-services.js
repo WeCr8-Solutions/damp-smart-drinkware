@@ -37,7 +37,7 @@ function checkRequiredFiles() {
         'api/presale-tracker.js',
         'api/stripe-checkout.js'
     ];
-    
+
     for (const file of requiredFiles) {
         const filePath = path.join(__dirname, file);
         if (!fs.existsSync(filePath)) {
@@ -45,7 +45,7 @@ function checkRequiredFiles() {
             process.exit(1);
         }
     }
-    
+
     console.log('✅ All required files found');
 }
 
@@ -55,9 +55,9 @@ function checkEnvironment() {
         'STRIPE_SECRET_KEY',
         'STRIPE_WEBHOOK_SECRET'
     ];
-    
+
     const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-    
+
     if (missingVars.length > 0) {
         console.warn('⚠️  Missing environment variables:', missingVars.join(', '));
         console.warn('⚠️  Some features may not work properly');
@@ -71,43 +71,43 @@ function checkEnvironment() {
 function startService(service) {
     return new Promise((resolve, reject) => {
         console.log(`${service.emoji} Starting ${service.name} on port ${service.port}...`);
-        
+
         const child = spawn('node', [service.script], {
             cwd: __dirname,
             stdio: ['pipe', 'pipe', 'pipe'],
             env: { ...process.env }
         });
-        
+
         child.stdout.on('data', (data) => {
             const output = data.toString().trim();
             console.log(`${service.emoji} [${service.name}] ${output}`);
         });
-        
+
         child.stderr.on('data', (data) => {
             const error = data.toString().trim();
             console.error(`${service.emoji} [${service.name}] ERROR: ${error}`);
         });
-        
+
         child.on('close', (code) => {
             console.log(`${service.emoji} ${service.name} exited with code ${code}`);
-            
+
             if (code !== 0) {
                 reject(new Error(`${service.name} failed to start`));
             }
         });
-        
+
         child.on('error', (error) => {
             console.error(`${service.emoji} Failed to start ${service.name}:`, error);
             reject(error);
         });
-        
+
         // Store process reference
         processes.push({
             name: service.name,
             process: child,
             emoji: service.emoji
         });
-        
+
         // Give the service time to start
         setTimeout(() => {
             resolve(child);
@@ -138,27 +138,27 @@ async function startServices() {
         // Pre-flight checks
         checkRequiredFiles();
         checkEnvironment();
-        
+
         console.log('\n🔄 Starting services...\n');
-        
+
         // Start all services
         for (const service of services) {
             await startService(service);
         }
-        
+
         console.log('\n⏳ Waiting for services to initialize...\n');
         await new Promise(resolve => setTimeout(resolve, 3000));
-        
+
         // Health checks
         console.log('🔍 Performing health checks...\n');
-        
+
         const healthChecks = await Promise.all([
             checkServiceHealth(3001, 'Pre-Sale Tracker'),
             checkServiceHealth(3002, 'Stripe Checkout')
         ]);
-        
+
         const healthyServices = healthChecks.filter(Boolean).length;
-        
+
         console.log('\n' + '='.repeat(60));
         console.log('🎉 DAMP Pre-Sale Services Status');
         console.log('='.repeat(60));
@@ -167,7 +167,7 @@ async function startServices() {
         console.log(`🌐 Frontend Server: http://localhost:8000`);
         console.log('='.repeat(60));
         console.log(`✅ ${healthyServices}/${services.length} services healthy`);
-        
+
         if (healthyServices === services.length) {
             console.log('🚀 All services are running successfully!');
             console.log('\n💡 Tips:');
@@ -178,7 +178,7 @@ async function startServices() {
             console.log('⚠️  Some services may not be fully operational');
         }
         console.log('='.repeat(60) + '\n');
-        
+
     } catch (error) {
         console.error('❌ Failed to start services:', error.message);
         process.exit(1);
@@ -189,12 +189,12 @@ async function startServices() {
 function setupGracefulShutdown() {
     const shutdown = (signal) => {
         console.log(`\n🛑 Received ${signal}, shutting down services gracefully...`);
-        
+
         processes.forEach(({ name, process, emoji }) => {
             console.log(`${emoji} Stopping ${name}...`);
             process.kill('SIGTERM');
         });
-        
+
         // Force exit after 5 seconds
         setTimeout(() => {
             console.log('🔥 Force stopping remaining processes...');
@@ -204,7 +204,7 @@ function setupGracefulShutdown() {
             process.exit(0);
         }, 5000);
     };
-    
+
     process.on('SIGINT', () => shutdown('SIGINT'));
     process.on('SIGTERM', () => shutdown('SIGTERM'));
 }
@@ -246,4 +246,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = { startServices, checkServiceHealth }; 
+module.exports = { startServices, checkServiceHealth };

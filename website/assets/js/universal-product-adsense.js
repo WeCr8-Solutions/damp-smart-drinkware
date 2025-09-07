@@ -40,7 +40,7 @@
             script.async = true;
             script.crossOrigin = 'anonymous';
             script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`;
-            
+
             script.onload = () => {
                 // Add meta tag
                 if (!document.querySelector('meta[name="google-adsense-account"]')) {
@@ -51,7 +51,7 @@
                 }
                 resolve();
             };
-            
+
             script.onerror = () => reject(new Error('Failed to load AdSense'));
             document.head.appendChild(script);
         });
@@ -104,7 +104,7 @@
         adUnit.dataset.adClient = ADSENSE_CLIENT_ID;
         adUnit.dataset.adFormat = format === 'responsive' ? 'auto' : '300x250';
         adUnit.dataset.fullWidthResponsive = 'true';
-        
+
         if (format === 'banner') {
             adUnit.dataset.adFormat = '728x90';
             adUnit.style.width = '728px';
@@ -166,7 +166,7 @@
         if (targetSection) {
             const format = window.innerWidth < 768 ? 'mobile' : 'rectangle';
             const productAd = createProductAd(format, 'damp-ad-after-specifications');
-            
+
             // Insert after the target section
             if (targetSection.nextSibling) {
                 targetSection.parentNode.insertBefore(productAd, targetSection.nextSibling);
@@ -195,20 +195,20 @@
 
         try {
             console.log('🔄 Initializing product page AdSense...');
-            
+
             // Load resources
             loadAdSenseStyles();
             await loadAdSenseScript();
-            
+
             // Wait for DOM to be fully ready
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', placeProductAds);
             } else {
                 setTimeout(placeProductAds, 500);
             }
-            
+
             console.log('✅ Product page AdSense initialized');
-            
+
         } catch (error) {
             console.error('❌ Product page AdSense failed:', error);
         }

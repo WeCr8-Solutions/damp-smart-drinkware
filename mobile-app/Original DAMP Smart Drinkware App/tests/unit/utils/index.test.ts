@@ -137,10 +137,10 @@ describe('Utils Index - Circular Connectivity System', () => {
     test('should track utility performance', () => {
       const testFunction = jest.fn(() => 'test result');
       const result = utilityPerformanceTracker.track('test-function', testFunction);
-      
+
       expect(result).toBe('test result');
       expect(testFunction).toHaveBeenCalled();
-      
+
       const metrics = utilityPerformanceTracker.getMetrics();
       expect(metrics).toBeDefined();
       expect(Array.isArray(metrics)).toBe(true);
@@ -150,11 +150,11 @@ describe('Utils Index - Circular Connectivity System', () => {
       const errorFunction = jest.fn(() => {
         throw new Error('Test error');
       });
-      
+
       expect(() => {
         utilityPerformanceTracker.track('error-function', errorFunction);
       }).toThrow('Test error');
-      
+
       const metrics = utilityPerformanceTracker.getMetrics();
       expect(metrics.some(m => m.functionName === 'error-function')).toBe(true);
     });
@@ -163,7 +163,7 @@ describe('Utils Index - Circular Connectivity System', () => {
   describe('Utility Connectivity Validation', () => {
     test('should validate utility connectivity', () => {
       const validation = validateUtilityConnectivity();
-      
+
       expect(validation).toBeDefined();
       expect(validation.availableUtils).toBeDefined();
       expect(Array.isArray(validation.availableUtils)).toBe(true);
@@ -176,14 +176,14 @@ describe('Utils Index - Circular Connectivity System', () => {
 
     test('should report available utilities', () => {
       const validation = validateUtilityConnectivity();
-      
+
       expect(validation.availableUtils).toContain('performance');
       expect(validation.availableUtils).toContain('security');
     });
 
     test('should calculate function coverage', () => {
       const validation = validateUtilityConnectivity();
-      
+
       expect(validation.functionCoverage).toBeGreaterThanOrEqual(0);
       expect(validation.functionCoverage).toBeLessThanOrEqual(100);
     });
@@ -212,7 +212,7 @@ describe('Utils Index - Circular Connectivity System', () => {
   describe('Circular System Integration', () => {
     test('should create PerformanceMonitor instance', () => {
       const monitor = PerformanceMonitor.getInstance();
-      
+
       expect(monitor).toBeDefined();
       expect(typeof monitor.startTiming).toBe('function');
       expect(typeof monitor.endTiming).toBe('function');
@@ -227,7 +227,7 @@ describe('Utils Index - Circular Connectivity System', () => {
 
     test('should work with performance decorator', () => {
       expect(typeof performanceMonitor).toBe('function');
-      
+
       // Test that it's callable (decorator function)
       const result = performanceMonitor('test-label');
       expect(result).toBeDefined();
@@ -235,7 +235,7 @@ describe('Utils Index - Circular Connectivity System', () => {
 
     test('should work with security monitoring hook', () => {
       expect(typeof useSecurityMonitoring).toBe('function');
-      
+
       // The hook should be callable
       expect(() => useSecurityMonitoring()).not.toThrow();
     });
@@ -249,7 +249,7 @@ describe('Utils Index - Circular Connectivity System', () => {
         ...Object.keys(utilityConnections.consumers),
         ...Object.keys(utilityConnections.crossReferences),
       ]);
-      
+
       availableUtils.forEach(util => {
         expect(referencedUtils.has(util)).toBe(true);
       });
@@ -259,7 +259,7 @@ describe('Utils Index - Circular Connectivity System', () => {
       // Performance utilities
       expect(() => PerformanceMonitor.getInstance()).not.toThrow();
       expect(() => BundleAnalyzer.logBundleInfo()).not.toThrow();
-      
+
       // Security utilities
       expect(() => SecurityUtils.sanitizeInput('test')).not.toThrow();
       expect(() => SecurityUtils.generateSecureRandom(16)).not.toThrow();

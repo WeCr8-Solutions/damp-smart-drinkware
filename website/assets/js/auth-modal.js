@@ -1,6 +1,6 @@
 /**
  * DAMP Smart Drinkware - Simple Authentication Modal
- * 
+ *
  * Provides sign in/sign up functionality with Firebase integration
  */
 
@@ -9,14 +9,14 @@ class DAMPAuthModal {
     this.authService = null;
     this.isOpen = false;
     this.currentForm = 'signin';
-    
+
     this.init();
   }
 
   async init() {
     // Wait for Firebase services to be available
     await this.waitForAuthService();
-    
+
     this.createModal();
     this.setupEventListeners();
     this.setupAuthStateListener();
@@ -42,12 +42,12 @@ class DAMPAuthModal {
         <div class="modal-overlay" onclick="dampAuth.close()"></div>
         <div class="modal-content">
           <button class="modal-close" onclick="dampAuth.close()">&times;</button>
-          
+
           <!-- Sign In Form -->
           <div id="signinForm" class="auth-form active">
             <h2>Welcome Back</h2>
             <p>Sign in to your DAMP account</p>
-            
+
             <form id="signinFormEl">
               <div class="form-group">
                 <input type="email" id="signinEmail" placeholder="Email" required>
@@ -60,28 +60,28 @@ class DAMPAuthModal {
                 <span class="btn-loader" style="display: none;">⏳</span>
               </button>
             </form>
-            
+
             <div class="auth-divider">or</div>
-            
+
             <div class="social-auth">
               <button type="button" class="auth-btn social google" onclick="dampAuth.signInWithGoogle()">
                 🌐 Continue with Google
               </button>
             </div>
-            
+
             <div class="auth-footer">
-              <p>Don't have an account? 
+              <p>Don't have an account?
                 <button type="button" class="link-btn" onclick="dampAuth.showSignUp()">Sign up</button>
               </p>
               <button type="button" class="link-btn" onclick="dampAuth.showForgotPassword()">Forgot password?</button>
             </div>
           </div>
-          
+
           <!-- Sign Up Form -->
           <div id="signupForm" class="auth-form">
             <h2>Create Account</h2>
             <p>Join DAMP and never lose your drink again</p>
-            
+
             <form id="signupFormEl">
               <div class="form-row">
                 <div class="form-group">
@@ -116,27 +116,27 @@ class DAMPAuthModal {
                 <span class="btn-loader" style="display: none;">⏳</span>
               </button>
             </form>
-            
+
             <div class="auth-divider">or</div>
-            
+
             <div class="social-auth">
               <button type="button" class="auth-btn social google" onclick="dampAuth.signUpWithGoogle()">
                 🌐 Continue with Google
               </button>
             </div>
-            
+
             <div class="auth-footer">
-              <p>Already have an account? 
+              <p>Already have an account?
                 <button type="button" class="link-btn" onclick="dampAuth.showSignIn()">Sign in</button>
               </p>
             </div>
           </div>
-          
+
           <!-- Forgot Password Form -->
           <div id="forgotForm" class="auth-form">
             <h2>Reset Password</h2>
             <p>Enter your email to receive reset instructions</p>
-            
+
             <form id="forgotFormEl">
               <div class="form-group">
                 <input type="email" id="forgotEmail" placeholder="Email" required>
@@ -146,12 +146,12 @@ class DAMPAuthModal {
                 <span class="btn-loader" style="display: none;">⏳</span>
               </button>
             </form>
-            
+
             <div class="auth-footer">
               <button type="button" class="link-btn" onclick="dampAuth.showSignIn()">← Back to Sign In</button>
             </div>
           </div>
-          
+
           <!-- Message Display -->
           <div id="authMessage" class="auth-message" style="display: none;">
             <div class="message-icon"></div>
@@ -161,7 +161,7 @@ class DAMPAuthModal {
         </div>
       </div>
     `;
-    
+
     document.body.insertAdjacentHTML('beforeend', modalHTML);
   }
 
@@ -170,7 +170,7 @@ class DAMPAuthModal {
     document.getElementById('signinFormEl').addEventListener('submit', (e) => this.handleSignIn(e));
     document.getElementById('signupFormEl').addEventListener('submit', (e) => this.handleSignUp(e));
     document.getElementById('forgotFormEl').addEventListener('submit', (e) => this.handleForgotPassword(e));
-    
+
     // Auth buttons in header
     document.addEventListener('click', (e) => {
       if (e.target.matches('[data-auth="signin"]') || e.target.closest('[data-auth="signin"]')) {
@@ -186,7 +186,7 @@ class DAMPAuthModal {
         this.signOut();
       }
     });
-    
+
     // Close on escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && this.isOpen) {
@@ -211,10 +211,10 @@ class DAMPAuthModal {
     if (!document.querySelector('.auth-nav')) {
       this.createAuthNav();
     }
-    
+
     const authButtons = document.querySelector('.auth-buttons');
     const userMenu = document.querySelector('.user-menu');
-    
+
     if (user) {
       if (authButtons) authButtons.style.display = 'none';
       if (userMenu) {
@@ -230,7 +230,7 @@ class DAMPAuthModal {
   createAuthNav() {
     const header = document.querySelector('header, nav, .header');
     if (!header) return;
-    
+
     const authNavHTML = `
       <div class="auth-nav">
         <div class="auth-buttons">
@@ -253,14 +253,14 @@ class DAMPAuthModal {
         </div>
       </div>
     `;
-    
+
     header.insertAdjacentHTML('beforeend', authNavHTML);
   }
 
   updateUserMenu(user) {
     const userName = document.querySelector('.user-name');
     const userEmail = document.querySelector('.user-email');
-    
+
     if (userName) userName.textContent = user.displayName || 'DAMP User';
     if (userEmail) userEmail.textContent = user.email;
   }
@@ -285,20 +285,20 @@ class DAMPAuthModal {
     const modal = document.getElementById('authModal');
     const forms = modal.querySelectorAll('.auth-form');
     const message = document.getElementById('authMessage');
-    
+
     // Hide all forms and message
     forms.forEach(form => form.classList.remove('active'));
     message.style.display = 'none';
-    
+
     // Show target form
     const targetForm = document.getElementById(`${this.currentForm}Form`);
     if (targetForm) targetForm.classList.add('active');
-    
+
     // Show modal
     modal.style.display = 'flex';
     this.isOpen = true;
     document.body.style.overflow = 'hidden';
-    
+
     // Focus first input
     setTimeout(() => {
       const firstInput = targetForm.querySelector('input');
@@ -317,20 +317,20 @@ class DAMPAuthModal {
   // Authentication handlers
   async handleSignIn(e) {
     e.preventDefault();
-    
+
     const email = document.getElementById('signinEmail').value;
     const password = document.getElementById('signinPassword').value;
-    
+
     if (!this.validateEmail(email)) {
       this.showError('Please enter a valid email address');
       return;
     }
-    
+
     this.setLoading('signin', true);
-    
+
     try {
       const result = await this.authService.signInWithEmail(email, password);
-      
+
       if (result.success) {
         this.showMessage('success', 'Welcome back!', result.message);
         setTimeout(() => this.close(), 1500);
@@ -346,34 +346,34 @@ class DAMPAuthModal {
 
   async handleSignUp(e) {
     e.preventDefault();
-    
+
     console.log('🔄 Sign up form submitted');
-    
+
     const firstName = document.getElementById('signupFirstName').value;
     const lastName = document.getElementById('signupLastName').value;
     const email = document.getElementById('signupEmail').value;
     const password = document.getElementById('signupPassword').value;
     const newsletter = document.getElementById('signupNewsletter').checked;
     const terms = document.getElementById('signupTerms').checked;
-    
+
     console.log('📝 Form data:', { firstName, lastName, email, newsletter, terms });
-    
+
     if (!this.validateSignUp(firstName, lastName, email, password, terms)) {
       console.log('❌ Form validation failed');
       return;
     }
-    
+
     console.log('✅ Form validation passed');
-    
+
     if (!this.authService) {
       console.error('❌ Auth service not available');
       this.showMessage('error', 'Service Error', 'Authentication service is not available. Please refresh the page.');
       return;
     }
-    
+
     console.log('✅ Auth service available');
     this.setLoading('signup', true);
-    
+
     try {
       console.log('🔄 Calling authService.signUpWithEmail...');
       const result = await this.authService.signUpWithEmail(email, password, {
@@ -383,9 +383,9 @@ class DAMPAuthModal {
         newsletter,
         source: 'website'
       });
-      
+
       console.log('📋 Sign up result:', result);
-      
+
       if (result.success) {
         this.showMessage('success', 'Account Created!', result.message);
         setTimeout(() => this.close(), 3000);
@@ -402,19 +402,19 @@ class DAMPAuthModal {
 
   async handleForgotPassword(e) {
     e.preventDefault();
-    
+
     const email = document.getElementById('forgotEmail').value;
-    
+
     if (!this.validateEmail(email)) {
       this.showError('Please enter a valid email address');
       return;
     }
-    
+
     this.setLoading('forgot', true);
-    
+
     try {
       const result = await this.authService.sendPasswordReset(email);
-      
+
       if (result.success) {
         this.showMessage('success', 'Email Sent!', result.message);
       } else {
@@ -431,7 +431,7 @@ class DAMPAuthModal {
     try {
       this.setModalLoading(true);
       const result = await this.authService.signInWithGoogle();
-      
+
       if (result.success) {
         this.showMessage('success', 'Welcome!', result.message);
         setTimeout(() => this.close(), 1500);
@@ -490,7 +490,7 @@ class DAMPAuthModal {
     const submitBtn = document.querySelector(`#${form}FormEl .auth-btn.primary`);
     const btnText = submitBtn.querySelector('.btn-text');
     const btnLoader = submitBtn.querySelector('.btn-loader');
-    
+
     if (loading) {
       submitBtn.disabled = true;
       btnText.style.display = 'none';
@@ -517,13 +517,13 @@ class DAMPAuthModal {
     const icon = message.querySelector('.message-icon');
     const titleEl = message.querySelector('.message-title');
     const textEl = message.querySelector('.message-text');
-    
+
     forms.forEach(form => form.classList.remove('active'));
-    
+
     icon.textContent = type === 'success' ? '✅' : '❌';
     titleEl.textContent = title;
     textEl.textContent = text;
-    
+
     message.className = `auth-message ${type}`;
     message.style.display = 'block';
   }
@@ -553,4 +553,4 @@ document.addEventListener('DOMContentLoaded', () => {
 // Export for module usage (when used as module)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DAMPAuthModal;
-} 
+}

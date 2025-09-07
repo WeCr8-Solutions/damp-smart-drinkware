@@ -18,27 +18,27 @@ class DAMPSecurityManager {
     async init() {
         try {
             console.log('🛡️ DAMP Security: Initializing security manager...');
-            
+
             // Setup security policies
             this.setupContentSecurityPolicy();
             this.setupSecurityHeaders();
             this.enableXSSProtection();
             this.setupClickjackingProtection();
             this.enableSecureCommunication();
-            
+
             // Initialize monitoring
             this.initThreatMonitoring();
             this.initSecurityLogging();
-            
+
             // Setup input validation
             this.initInputValidation();
-            
+
             // Enable rate limiting
             this.initRateLimiting();
-            
+
             this.initialized = true;
             this.log('Security manager initialized successfully', 'info');
-            
+
         } catch (error) {
             console.error('🚨 DAMP Security: Failed to initialize security manager:', error);
             this.log('Security initialization failed: ' + error.message, 'error');
@@ -52,7 +52,7 @@ class DAMPSecurityManager {
         try {
             // Dynamic CSP for development vs production
             const isProduction = window.DAMP.Config?.get('app.environment') === 'production';
-            
+
             const csp = {
                 'default-src': ["'self'"],
                 'script-src': [
@@ -151,10 +151,10 @@ class DAMPSecurityManager {
         try {
             // Sanitize all user inputs
             this.sanitizeInputs();
-            
+
             // Monitor for XSS attempts
             this.monitorXSSAttempts();
-            
+
             this.log('XSS protection enabled', 'info');
 
         } catch (error) {
@@ -195,7 +195,7 @@ class DAMPSecurityManager {
     enableSecureCommunication() {
         try {
             // Force HTTPS in production
-            if (window.DAMP.Config?.get('app.environment') === 'production' && 
+            if (window.DAMP.Config?.get('app.environment') === 'production' &&
                 window.location.protocol !== 'https:') {
                 window.location.replace(window.location.href.replace('http:', 'https:'));
                 return;
@@ -203,7 +203,7 @@ class DAMPSecurityManager {
 
             // Secure cookie settings
             this.setSecureCookieDefaults();
-            
+
             this.log('Secure communication enabled', 'info');
 
         } catch (error) {
@@ -218,13 +218,13 @@ class DAMPSecurityManager {
         try {
             // Monitor for suspicious activity
             this.monitorSuspiciousActivity();
-            
+
             // Monitor network requests
             this.monitorNetworkRequests();
-            
+
             // Monitor DOM manipulation
             this.monitorDOMManipulation();
-            
+
             this.log('Threat monitoring initialized', 'info');
 
         } catch (error) {
@@ -384,13 +384,13 @@ class DAMPSecurityManager {
         window.fetch = async (...args) => {
             const url = args[0];
             this.log(`Network request: ${url}`, 'info');
-            
+
             // Check for suspicious URLs
             if (this.isSuspiciousURL(url)) {
                 this.log(`Suspicious network request blocked: ${url}`, 'warning');
                 throw new Error('Request blocked by security policy');
             }
-            
+
             return originalFetch.apply(window, args);
         };
     }
@@ -423,7 +423,7 @@ class DAMPSecurityManager {
     validateInput(input) {
         const value = input.value;
         const type = input.type;
-        
+
         // Email validation
         if (type === 'email' && value) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -432,7 +432,7 @@ class DAMPSecurityManager {
                 return false;
             }
         }
-        
+
         // Phone validation
         if (input.name === 'phone' && value) {
             const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
@@ -441,7 +441,7 @@ class DAMPSecurityManager {
                 return false;
             }
         }
-        
+
         input.setCustomValidity('');
         return true;
     }
@@ -452,13 +452,13 @@ class DAMPSecurityManager {
     validateForm(form) {
         const inputs = form.querySelectorAll('input, textarea, select');
         let isValid = true;
-        
+
         inputs.forEach(input => {
             if (!this.validateInput(input)) {
                 isValid = false;
             }
         });
-        
+
         return isValid;
     }
 
@@ -470,20 +470,20 @@ class DAMPSecurityManager {
         if (element.tagName === 'SCRIPT') {
             const src = element.src;
             const content = element.textContent;
-            
+
             if (src && this.isSuspiciousURL(src)) {
                 this.log(`Suspicious script blocked: ${src}`, 'warning');
                 element.remove();
                 return false;
             }
-            
+
             if (content && this.containsSuspiciousCode(content)) {
                 this.log(`Suspicious inline script blocked`, 'warning');
                 element.remove();
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -496,10 +496,10 @@ class DAMPSecurityManager {
             'malware.com',
             'phishing.com'
         ];
-        
+
         try {
             const urlObj = new URL(url);
-            return suspiciousDomains.some(domain => 
+            return suspiciousDomains.some(domain =>
                 urlObj.hostname.includes(domain)
             );
         } catch {
@@ -518,7 +518,7 @@ class DAMPSecurityManager {
             /innerHTML\s*=/,
             /outerHTML\s*=/
         ];
-        
+
         return suspiciousPatterns.some(pattern => pattern.test(code));
     }
 
@@ -542,16 +542,16 @@ class DAMPSecurityManager {
     checkRateLimit(action) {
         const config = this.rateLimits.get(action);
         if (!config) return true;
-        
+
         const now = Date.now();
         const key = `${action}_${Math.floor(now / config.windowMs)}`;
-        
+
         const currentCount = this.requestCounts.get(key) || 0;
         if (currentCount >= config.limit) {
             this.log(`Rate limit exceeded for ${action}`, 'warning');
             return false;
         }
-        
+
         this.requestCounts.set(key, currentCount + 1);
         return true;
     }
@@ -567,7 +567,7 @@ class DAMPSecurityManager {
             userAgent: navigator.userAgent,
             url: window.location.href
         };
-        
+
         this.threats.set(Date.now(), threat);
         this.log(`Threat recorded: ${type}`, 'warning');
     }
@@ -582,14 +582,14 @@ class DAMPSecurityManager {
             message,
             url: window.location.href
         };
-        
+
         this.securityLog.push(logEntry);
-        
+
         // Keep only last 1000 entries
         if (this.securityLog.length > 1000) {
             this.securityLog.shift();
         }
-        
+
         // Send to monitoring service in production
         if (window.DAMP.Config?.get('app.environment') === 'production' && level === 'error') {
             this.sendToMonitoring(logEntry);
@@ -625,4 +625,4 @@ class DAMPSecurityManager {
 window.DAMP = window.DAMP || {};
 window.DAMP.Security = new DAMPSecurityManager();
 
-export default window.DAMP.Security; 
+export default window.DAMP.Security;

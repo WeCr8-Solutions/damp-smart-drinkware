@@ -152,10 +152,10 @@ export default function Settings() {
               <SettingsCard
                 icon={<CreditCard size={24} color="#0277BD" />}
                 title="Subscription"
-                description={subscriptionLoading 
-                  ? 'Loading subscription status...' 
-                  : subscriptionStatus === 'active' 
-                    ? 'DAMP+ Active' 
+                description={subscriptionLoading
+                  ? 'Loading subscription status...'
+                  : subscriptionStatus === 'active'
+                    ? 'DAMP+ Active'
                     : 'Manage your DAMP+ subscription'}
                 onPress={() => setSubscriptionModalVisible(true)}
               />

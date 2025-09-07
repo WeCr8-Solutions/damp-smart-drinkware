@@ -91,7 +91,7 @@ function displayKeys(keys, environment) {
 function saveToFile(keys, environment) {
   const filename = `.env.${environment}.generated`;
   const filepath = path.join(process.cwd(), filename);
-  
+
   let content = `# 🔐 GENERATED SECURE KEYS FOR ${environment.toUpperCase()} ENVIRONMENT\n`;
   content += `# Generated on: ${new Date().toISOString()}\n`;
   content += `# ⚠️ NEVER commit this file to version control!\n\n`;
@@ -105,7 +105,7 @@ function saveToFile(keys, environment) {
   content += '# 2. Delete this generated file after copying\n';
   content += '# 3. Use different keys for each environment\n';
   content += '# 4. Store production keys in secure CI/CD variables\n';
-  
+
   try {
     fs.writeFileSync(filepath, content);
     console.log(`${colors.green}✅ Keys saved to: ${colors.bold}${filename}${colors.reset}`);
@@ -124,7 +124,7 @@ function displayUsageInstructions() {
   console.log(`${colors.cyan}4.${colors.reset} Generate separate keys for staging and production`);
   console.log(`${colors.cyan}5.${colors.reset} Store production keys in your deployment platform's environment variables`);
   console.log('');
-  
+
   console.log(`${colors.bold}${colors.blue}🚀 For Production Deployment:${colors.reset}`);
   console.log('');
   console.log(`${colors.magenta}GitHub Actions:${colors.reset}`);

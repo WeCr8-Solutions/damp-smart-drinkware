@@ -26,7 +26,7 @@ export const libraryConnections = {
   dependencies: {
     'firebase': ['@/types/global', '@/config/feature-flags'],
   },
-  
+
   // Components and hooks that use these libraries
   consumers: {
     'firebase': [
@@ -39,7 +39,7 @@ export const libraryConnections = {
       '@/services/purchasing-service'
     ],
   },
-  
+
   // Cross-library dependencies
   crossReferences: {
     'firebase': [], // Could reference notifications, analytics, etc.
@@ -49,10 +49,10 @@ export const libraryConnections = {
 // Library registry for dynamic access
 export const libraryRegistry = {
   firebase: { auth, db, functions, storage },
-  services: { 
-    voting: VotingService, 
-    purchasing: PurchasingService, 
-    stripe: FirebaseStripeService 
+  services: {
+    voting: VotingService,
+    purchasing: PurchasingService,
+    stripe: FirebaseStripeService
   },
 };
 
@@ -125,7 +125,7 @@ export function validateLibraryConnectivity(): {
 } {
   const availableLibraries = Object.keys(libraryRegistry);
   const libraryDependencies = libraryConnections.dependencies;
-  
+
   // Check initialization status
   const initializationStatus: Record<string, boolean> = {};
   availableLibraries.forEach(lib => {
@@ -163,7 +163,7 @@ export interface ServiceHealthCheck {
 
 export async function performHealthCheck(): Promise<ServiceHealthCheck[]> {
   const checks: ServiceHealthCheck[] = [];
-  
+
   // Firebase health check
   try {
     const start = Date.now();
@@ -189,8 +189,8 @@ export async function performHealthCheck(): Promise<ServiceHealthCheck[]> {
 }
 
 // Export types for circular connectivity
-export type { 
-  AppDatabase, 
+export type {
+  AppDatabase,
   AppUser
 } from '@/types/global';
 

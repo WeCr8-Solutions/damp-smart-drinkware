@@ -408,23 +408,23 @@
         min-width: auto;
         max-width: none;
     }
-    
+
     .promo-code-input-group {
         flex-direction: column;
     }
-    
+
     .promo-code-apply {
         width: 100%;
     }
-    
+
     .quantity-discount-tiers {
         grid-template-columns: 1fr;
     }
-    
+
     .bundle-items {
         flex-direction: column;
     }
-    
+
     .bundle-pricing {
         flex-direction: column;
         gap: 10px;
@@ -436,27 +436,27 @@
     .price-current {
         font-size: 2rem;
     }
-    
+
     .price-original {
         font-size: 1.2rem;
     }
-    
+
     .bundle-title {
         font-size: 1.3rem;
     }
-    
+
     .bundle-sale-price {
         font-size: 1.8rem;
     }
-    
+
     .cart-pricing-summary {
         padding: 20px;
     }
-    
+
     .cart-pricing-line {
         font-size: 0.9rem;
     }
-    
+
     .cart-pricing-line.total {
         font-size: 1.1rem;
     }
@@ -467,15 +467,15 @@
     .pricing-notification {
         animation: none;
     }
-    
+
     .seasonal-pricing-alert {
         animation: none;
     }
-    
+
     .promo-code-apply:hover:not(:disabled) {
         transform: none;
     }
-    
+
     .promo-code-suggestion:hover {
         transform: none;
     }
@@ -486,13 +486,13 @@
     .pricing-notification {
         display: none;
     }
-    
+
     .promo-code-section {
         background: white;
         color: black;
         border: 1px solid #ccc;
     }
-    
+
     .bundle-pricing-display {
         background: white;
         color: black;
@@ -563,4 +563,4 @@
 .pricing-success::before {
     content: '✅';
     margin-right: 10px;
-} 
+}

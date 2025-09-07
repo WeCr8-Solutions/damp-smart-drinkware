@@ -19,7 +19,7 @@ class DAMPEnvironmentConfig {
         try {
             // Detect environment
             this.devMode = this.isDevEnvironment();
-            
+
             // Load from environment variables (Vite/build time)
             this.config = {
                 // Analytics & Tracking
@@ -100,17 +100,17 @@ class DAMPEnvironmentConfig {
             if (typeof import !== 'undefined' && import.meta && import.meta.env) {
                 return import.meta.env[key] || fallback;
             }
-            
+
             // Try process.env (Node.js environments)
             if (typeof process !== 'undefined' && process.env) {
                 return process.env[key] || fallback;
             }
-            
+
             // Try window environment (runtime configuration)
             if (typeof window !== 'undefined' && window.DAMP_CONFIG) {
                 return window.DAMP_CONFIG[key] || fallback;
             }
-            
+
             return fallback;
         } catch (error) {
             console.warn(`🔧 DAMP Config: Could not read environment variable ${key}:`, error);
@@ -144,7 +144,7 @@ class DAMPEnvironmentConfig {
      */
     loadFallbackConfiguration() {
         console.warn('🔄 DAMP Config: Loading fallback configuration');
-        
+
         this.config = {
             analytics: {
                 googleAnalyticsId: this.devMode ? '' : 'G-YW2BN4SVPQ',
@@ -180,7 +180,7 @@ class DAMPEnvironmentConfig {
                 debugMode: this.devMode
             }
         };
-        
+
         this.initialized = true;
     }
 
@@ -205,7 +205,7 @@ class DAMPEnvironmentConfig {
         try {
             const keys = path.split('.');
             let value = this.config;
-            
+
             for (const key of keys) {
                 if (value && typeof value === 'object' && key in value) {
                     value = value[key];
@@ -213,7 +213,7 @@ class DAMPEnvironmentConfig {
                     return fallback;
                 }
             }
-            
+
             return value;
         } catch (error) {
             console.warn(`🔧 DAMP Config: Could not get configuration value for ${path}:`, error);
@@ -261,28 +261,28 @@ class DAMPEnvironmentConfig {
      */
     validate() {
         const issues = [];
-        
+
         // Check required analytics configuration
         if (this.config.analytics.enableAnalytics && !this.config.analytics.googleAnalyticsId) {
             issues.push('Google Analytics ID is required when analytics is enabled');
         }
-        
+
         // Check Stripe configuration for production
         if (this.config.app.environment === 'production' && !this.config.stripe.publishableKey) {
             issues.push('Stripe publishable key is required for production');
         }
-        
+
         // Check Firebase configuration
         if (!this.config.firebase.apiKey && !this.devMode) {
             issues.push('Firebase API key is required');
         }
-        
+
         if (issues.length > 0) {
             console.group('⚠️ DAMP Config: Configuration Issues');
             issues.forEach(issue => console.warn(issue));
             console.groupEnd();
         }
-        
+
         return issues.length === 0;
     }
 }
@@ -298,4 +298,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-export default window.DAMP.Config; 
+export default window.DAMP.Config;

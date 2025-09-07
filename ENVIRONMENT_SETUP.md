@@ -8,7 +8,7 @@ Your current `.env` files contain **REAL SENSITIVE DATA** that could compromise 
 
 ### ❌ **Immediate Issues Found:**
 1. **Firebase API Key Exposed** - Real API key found in `.env` file
-2. **JWT Secrets in Version Control** - Sensitive security keys detected  
+2. **JWT Secrets in Version Control** - Sensitive security keys detected
 3. **Production Secrets at Risk** - `.env.production` contains production configuration
 4. **Multiple Unsecured `.env` Files** - Found in various project directories
 
@@ -21,7 +21,7 @@ Your current `.env` files contain **REAL SENSITIVE DATA** that could compromise 
 ### **Root Directory**
 ```
 .env                    # ❌ NEVER COMMIT - Local development
-.env.local             # ❌ NEVER COMMIT - Local overrides  
+.env.local             # ❌ NEVER COMMIT - Local overrides
 .env.development       # ❌ NEVER COMMIT - Development environment
 .env.staging           # ❌ NEVER COMMIT - Staging environment
 .env.production        # ❌ NEVER COMMIT - Production environment
@@ -205,20 +205,20 @@ Create `scripts/validate-env.js`:
 ```javascript
 const requiredVars = [
   'FIREBASE_API_KEY',
-  'STRIPE_SECRET_KEY', 
+  'STRIPE_SECRET_KEY',
   'JWT_SECRET',
   'ADMIN_KEY'
 ];
 
 function validateEnvironment() {
   const missing = requiredVars.filter(key => !process.env[key]);
-  
+
   if (missing.length > 0) {
     console.error('❌ Missing required environment variables:');
     missing.forEach(key => console.error(`  - ${key}`));
     process.exit(1);
   }
-  
+
   console.log('✅ All required environment variables are set');
 }
 

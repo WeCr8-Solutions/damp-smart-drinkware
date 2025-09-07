@@ -25,4 +25,4 @@ delivery:
   standard: "Q1 2026"
 specifications:
   battery_life: "6 months"
-  connectivity: "BLE 5.0" 
+  connectivity: "BLE 5.0"

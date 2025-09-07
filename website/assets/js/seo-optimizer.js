@@ -17,7 +17,7 @@ class DAMPSEOOptimizer {
         this.structuredData = [];
         this.metaTags = new Map();
         this.breadcrumbs = [];
-        
+
         this.init();
     }
 
@@ -32,14 +32,14 @@ class DAMPSEOOptimizer {
     // Setup Page Metadata
     setupPageMetadata() {
         const pageData = this.getPageData();
-        
+
         // Basic meta tags
         this.setMetaTag('description', pageData.description);
         this.setMetaTag('keywords', pageData.keywords);
         this.setMetaTag('robots', 'index, follow');
         this.setMetaTag('author', 'DAMP Smart Drinkware');
         this.setMetaTag('viewport', 'width=device-width, initial-scale=1.0');
-        
+
         // Open Graph tags
         if (this.options.enableOpenGraph) {
             this.setMetaTag('og:title', pageData.title, 'property');
@@ -49,7 +49,7 @@ class DAMPSEOOptimizer {
             this.setMetaTag('og:type', pageData.type, 'property');
             this.setMetaTag('og:site_name', 'DAMP Smart Drinkware', 'property');
         }
-        
+
         // Twitter Cards
         if (this.options.enableTwitterCards) {
             this.setMetaTag('twitter:card', 'summary_large_image', 'name');
@@ -57,7 +57,7 @@ class DAMPSEOOptimizer {
             this.setMetaTag('twitter:description', pageData.description, 'name');
             this.setMetaTag('twitter:image', pageData.image, 'name');
         }
-        
+
         // Canonical URL
         this.setCanonicalUrl(pageData.url);
     }
@@ -83,7 +83,7 @@ class DAMPSEOOptimizer {
                 keywords: 'smart bottle, smart cup, temperature control, health monitoring, leak protection, baby bottle'
             };
         }
-        
+
         if (path.includes('about')) {
             return {
                 ...baseData,
@@ -92,7 +92,7 @@ class DAMPSEOOptimizer {
                 type: 'article'
             };
         }
-        
+
         if (path.includes('support')) {
             return {
                 ...baseData,
@@ -101,22 +101,22 @@ class DAMPSEOOptimizer {
                 type: 'article'
             };
         }
-        
+
         return baseData;
     }
 
     // Set Meta Tag
     setMetaTag(name, content, attribute = 'name') {
         if (!content) return;
-        
+
         let meta = document.querySelector(`meta[${attribute}="${name}"]`);
-        
+
         if (!meta) {
             meta = document.createElement('meta');
             meta.setAttribute(attribute, name);
             document.head.appendChild(meta);
         }
-        
+
         meta.setAttribute('content', content);
         this.metaTags.set(name, content);
     }
@@ -124,37 +124,37 @@ class DAMPSEOOptimizer {
     // Set Canonical URL
     setCanonicalUrl(url) {
         let canonical = document.querySelector('link[rel="canonical"]');
-        
+
         if (!canonical) {
             canonical = document.createElement('link');
             canonical.rel = 'canonical';
             document.head.appendChild(canonical);
         }
-        
+
         canonical.href = url;
     }
 
     // Generate Structured Data
     generateStructuredData() {
         if (!this.options.enableStructuredData) return;
-        
+
         const path = window.location.pathname;
-        
+
         // Organization Schema
         this.addStructuredData(this.getOrganizationSchema());
-        
+
         // Website Schema
         this.addStructuredData(this.getWebsiteSchema());
-        
+
         // Page-specific schemas
         if (path.includes('product') || path.includes('baby-bottle') || path.includes('cup-sleeve')) {
             this.addStructuredData(this.getProductSchema());
         }
-        
+
         if (path.includes('about')) {
             this.addStructuredData(this.getAboutPageSchema());
         }
-        
+
         // FAQ Schema if FAQ content exists
         if (document.querySelector('.faq-section')) {
             this.addStructuredData(this.getFAQSchema());
@@ -283,11 +283,11 @@ class DAMPSEOOptimizer {
     getFAQSchema() {
         const faqItems = [];
         const faqElements = document.querySelectorAll('.faq-item');
-        
+
         faqElements.forEach(item => {
             const question = item.querySelector('.faq-question')?.textContent;
             const answer = item.querySelector('.faq-answer')?.textContent;
-            
+
             if (question && answer) {
                 faqItems.push({
                     "@type": "Question",
@@ -313,14 +313,14 @@ class DAMPSEOOptimizer {
         script.type = 'application/ld+json';
         script.textContent = JSON.stringify(schema);
         document.head.appendChild(script);
-        
+
         this.structuredData.push(schema);
     }
 
     // Setup Breadcrumbs
     setupBreadcrumbs() {
         if (!this.options.enableBreadcrumbs) return;
-        
+
         const breadcrumbs = this.generateBreadcrumbs();
         this.addBreadcrumbsToDOM(breadcrumbs);
         this.addBreadcrumbsSchema(breadcrumbs);
@@ -330,66 +330,66 @@ class DAMPSEOOptimizer {
     generateBreadcrumbs() {
         const path = window.location.pathname;
         const segments = path.split('/').filter(segment => segment);
-        
+
         const breadcrumbs = [
             { name: 'Home', url: '/' }
         ];
-        
+
         let currentPath = '';
-        
+
         segments.forEach(segment => {
             currentPath += `/${segment}`;
-            
+
             let name = segment.replace(/[-_]/g, ' ');
             name = name.charAt(0).toUpperCase() + name.slice(1);
-            
+
             // Custom names for known pages
             if (segment === 'baby-bottle-v1.0') name = 'Baby Bottle v1.0';
             if (segment === 'cup-sleeve-v1.0') name = 'Cup Sleeve v1.0';
             if (segment === 'damp-handle-v1.0') name = 'DAMP Handle v1.0';
             if (segment === 'silicone-bottom-v1.0') name = 'Silicone Bottom v1.0';
-            
+
             breadcrumbs.push({
                 name: name,
                 url: currentPath
             });
         });
-        
+
         return breadcrumbs;
     }
 
     // Add Breadcrumbs to DOM
     addBreadcrumbsToDOM(breadcrumbs) {
         let breadcrumbContainer = document.querySelector('.breadcrumbs');
-        
+
         if (!breadcrumbContainer) {
             breadcrumbContainer = document.createElement('nav');
             breadcrumbContainer.className = 'breadcrumbs';
             breadcrumbContainer.setAttribute('aria-label', 'Breadcrumb navigation');
-            
+
             // Insert after header or at beginning of main content
             const header = document.querySelector('header');
             const main = document.querySelector('main');
-            
+
             if (header && header.nextSibling) {
                 header.parentNode.insertBefore(breadcrumbContainer, header.nextSibling);
             } else if (main) {
                 main.insertBefore(breadcrumbContainer, main.firstChild);
             }
         }
-        
+
         const breadcrumbHTML = breadcrumbs.map((item, index) => {
             const isLast = index === breadcrumbs.length - 1;
-            
+
             if (isLast) {
                 return `<span class="breadcrumb-current" aria-current="page">${item.name}</span>`;
             } else {
                 return `<a href="${item.url}" class="breadcrumb-link">${item.name}</a>`;
             }
         }).join(' <span class="breadcrumb-separator">/</span> ');
-        
+
         breadcrumbContainer.innerHTML = breadcrumbHTML;
-        
+
         // Add CSS if not present
         if (!document.querySelector('#breadcrumb-styles')) {
             const style = document.createElement('style');
@@ -400,28 +400,28 @@ class DAMPSEOOptimizer {
                     font-size: 0.9rem;
                     color: #666;
                 }
-                
+
                 .breadcrumb-link {
                     color: #667eea;
                     text-decoration: none;
                     transition: color 0.3s ease;
                 }
-                
+
                 .breadcrumb-link:hover {
                     color: #764ba2;
                     text-decoration: underline;
                 }
-                
+
                 .breadcrumb-separator {
                     margin: 0 0.5rem;
                     color: #999;
                 }
-                
+
                 .breadcrumb-current {
                     color: #333;
                     font-weight: 500;
                 }
-                
+
                 @media (max-width: 768px) {
                     .breadcrumbs {
                         font-size: 0.8rem;
@@ -441,13 +441,13 @@ class DAMPSEOOptimizer {
             "name": item.name,
             "item": `${this.options.baseUrl}${item.url}`
         }));
-        
+
         const schema = {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             "itemListElement": breadcrumbList
         };
-        
+
         this.addStructuredData(schema);
     }
 
@@ -461,10 +461,10 @@ class DAMPSEOOptimizer {
                 img.setAttribute('alt', altText);
             }
         });
-        
+
         // Add heading hierarchy
         this.optimizeHeadings();
-        
+
         // Add semantic HTML
         this.addSemanticHTML();
     }
@@ -473,11 +473,11 @@ class DAMPSEOOptimizer {
     generateAltText(img) {
         const src = img.src;
         const fileName = src.split('/').pop().split('.')[0];
-        
+
         // Convert filename to readable text
         let altText = fileName.replace(/[-_]/g, ' ');
         altText = altText.replace(/\b\w/g, l => l.toUpperCase());
-        
+
         // Add context based on page
         const path = window.location.pathname;
         if (path.includes('baby-bottle')) {
@@ -489,7 +489,7 @@ class DAMPSEOOptimizer {
         } else if (path.includes('silicone-bottom')) {
             altText = `${altText} - Silicone Bottom`;
         }
-        
+
         return altText;
     }
 
@@ -497,17 +497,17 @@ class DAMPSEOOptimizer {
     optimizeHeadings() {
         const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
         let currentLevel = 0;
-        
+
         headings.forEach(heading => {
             const level = parseInt(heading.tagName.charAt(1));
-            
+
             // Ensure proper heading hierarchy
             if (level > currentLevel + 1) {
                 console.warn(`Heading hierarchy issue: ${heading.tagName} after h${currentLevel}`);
             }
-            
+
             currentLevel = level;
-            
+
             // Add ID for linking
             if (!heading.id) {
                 const id = heading.textContent.toLowerCase()
@@ -529,7 +529,7 @@ class DAMPSEOOptimizer {
                 wrapper.appendChild(nav);
             }
         });
-        
+
         // Add main element if missing
         if (!document.querySelector('main')) {
             const content = document.querySelector('.content, .main-content, #content');
@@ -563,7 +563,7 @@ class DAMPSEOOptimizer {
     // Get Content Group
     getContentGroup() {
         const path = window.location.pathname;
-        
+
         if (path.includes('product') || path.includes('baby-bottle') || path.includes('cup-sleeve')) {
             return 'Products';
         } else if (path.includes('about')) {
@@ -581,13 +581,13 @@ class DAMPSEOOptimizer {
     trackUserEngagement() {
         // Scroll depth tracking
         let maxScrollDepth = 0;
-        
+
         const trackScroll = () => {
             const scrollDepth = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-            
+
             if (scrollDepth > maxScrollDepth) {
                 maxScrollDepth = scrollDepth;
-                
+
                 // Track milestones
                 if (scrollDepth >= 25 && scrollDepth < 50) {
                     this.trackEvent('scroll_depth', { depth: 25 });
@@ -600,7 +600,7 @@ class DAMPSEOOptimizer {
                 }
             }
         };
-        
+
         let scrollTimeout;
         window.addEventListener('scroll', () => {
             clearTimeout(scrollTimeout);
@@ -613,18 +613,18 @@ class DAMPSEOOptimizer {
         // Form submissions
         document.addEventListener('submit', (event) => {
             const form = event.target;
-            
+
             this.trackEvent('form_submit', {
                 form_id: form.id,
                 form_name: form.name,
                 page_location: window.location.href
             });
         });
-        
+
         // Product interactions
         document.addEventListener('click', (event) => {
             const target = event.target;
-            
+
             if (target.classList.contains('add-to-cart')) {
                 this.trackEvent('add_to_cart', {
                     item_name: target.dataset.product,
@@ -632,7 +632,7 @@ class DAMPSEOOptimizer {
                     currency: 'USD'
                 });
             }
-            
+
             if (target.classList.contains('product-link')) {
                 this.trackEvent('view_item', {
                     item_name: target.dataset.product,
@@ -688,4 +688,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = DAMPSEOOptimizer;
 }
 
-console.log('DAMP SEO Optimizer initialized'); 
+console.log('DAMP SEO Optimizer initialized');

@@ -86,7 +86,7 @@ describe('BLE Functionality Integration Tests', () => {
       const { result } = renderHook(() => useBLE());
 
       expect(result.current.isReady).toBe(false);
-      
+
       await waitFor(() => {
         expect(mockBleManager.onStateChange).toHaveBeenCalled();
       });
@@ -321,7 +321,7 @@ describe('BLE Functionality Integration Tests', () => {
     });
 
     it('should handle connection timeout', async () => {
-      mockBleManager.connectToDevice = jest.fn().mockImplementation(() => 
+      mockBleManager.connectToDevice = jest.fn().mockImplementation(() =>
         new Promise((resolve) => {
           // Never resolve to simulate timeout
         })
@@ -489,7 +489,7 @@ describe('BLE Functionality Integration Tests', () => {
       });
 
       expect(mockBleManager.cancelDeviceConnection).toHaveBeenCalledWith('test-device-123');
-      
+
       await waitFor(() => {
         expect(result.current.connectedDevice).toBeNull();
       });

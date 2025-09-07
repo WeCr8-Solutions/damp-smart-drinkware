@@ -13,13 +13,13 @@ class DAMPCriticalPathOptimizer {
         this.preloadCache = new Map();
         this.resourceHints = new Map();
         this.loadingStrategy = 'adaptive';
-        
+
         this.init();
     }
 
     async init() {
         console.log('[DAMP Critical Path] Initializing Google-level critical path optimization...');
-        
+
         try {
             await this.analyzeDeviceCapabilities();
             await this.detectNetworkConditions();
@@ -27,7 +27,7 @@ class DAMPCriticalPathOptimizer {
             await this.setupIntelligentPreloading();
             await this.initializeResourceHints();
             await this.optimizeCriticalPath();
-            
+
             console.log('[DAMP Critical Path] Advanced optimization system active');
         } catch (error) {
             console.error('[DAMP Critical Path] Initialization failed:', error);
@@ -39,27 +39,27 @@ class DAMPCriticalPathOptimizer {
         this.deviceCapabilities = {
             // Memory
             memory: navigator.deviceMemory || 4, // GB, fallback to 4GB
-            
+
             // CPU cores
             cores: navigator.hardwareConcurrency || 4,
-            
+
             // Connection
             connectionType: navigator.connection ? navigator.connection.effectiveType : '4g',
-            
+
             // Screen
             screenSize: {
                 width: screen.width,
                 height: screen.height,
                 pixelRatio: window.devicePixelRatio || 1
             },
-            
+
             // Browser capabilities
             supportsWebP: await this.checkWebPSupport(),
             supportsAVIF: await this.checkAVIFSupport(),
             supportsModuleScript: 'noModule' in HTMLScriptElement.prototype,
             supportsIntersectionObserver: 'IntersectionObserver' in window,
             supportsServiceWorker: 'serviceWorker' in navigator,
-            
+
             // Performance tier (based on memory and cores)
             performanceTier: this.calculatePerformanceTier()
         };
@@ -70,7 +70,7 @@ class DAMPCriticalPathOptimizer {
     calculatePerformanceTier() {
         const memory = this.deviceCapabilities?.memory || navigator.deviceMemory || 4;
         const cores = this.deviceCapabilities?.cores || navigator.hardwareConcurrency || 4;
-        
+
         if (memory >= 8 && cores >= 8) return 'high';
         if (memory >= 4 && cores >= 4) return 'medium';
         return 'low';
@@ -101,29 +101,29 @@ class DAMPCriticalPathOptimizer {
                     rtt: connection.rtt,
                     saveData: connection.saveData
                 };
-                
+
                 this.adaptToNetworkChange();
             });
         }
 
         // Determine loading strategy based on network
         this.loadingStrategy = this.determineLoadingStrategy();
-        
+
         console.log('[DAMP Critical Path] Network conditions detected:', this.networkState);
     }
 
     determineLoadingStrategy() {
         const { effectiveType, saveData } = this.networkState;
         const { performanceTier } = this.deviceCapabilities;
-        
+
         if (saveData || effectiveType === 'slow-2g' || effectiveType === '2g') {
             return 'conservative';
         }
-        
+
         if (performanceTier === 'high' && (effectiveType === '4g' || effectiveType === '5g')) {
             return 'aggressive';
         }
-        
+
         return 'adaptive';
     }
 
@@ -149,33 +149,33 @@ class DAMPCriticalPathOptimizer {
 
         // Add core application resources
         this.addCoreResources();
-        
+
         console.log('[DAMP Critical Path] Critical resources identified:', Array.from(this.criticalResources));
     }
 
     analyzeCriticalElement(element) {
         const tagName = element.tagName.toLowerCase();
-        
+
         switch (tagName) {
             case 'img':
                 if (element.src) {
                     this.addCriticalResource(element.src, 'image', 'high');
                 }
                 break;
-                
+
             case 'link':
                 if (element.rel === 'stylesheet') {
                     this.addCriticalResource(element.href, 'stylesheet', 'critical');
                 }
                 break;
-                
+
             case 'script':
                 if (element.src) {
                     const priority = element.dataset.critical === 'true' ? 'critical' : 'high';
                     this.addCriticalResource(element.src, 'script', priority);
                 }
                 break;
-                
+
             case 'video':
                 if (element.poster) {
                     this.addCriticalResource(element.poster, 'image', 'medium');
@@ -211,7 +211,7 @@ class DAMPCriticalPathOptimizer {
     addCriticalResource(url, type, priority) {
         // Convert relative URLs to absolute
         const absoluteUrl = new URL(url, window.location.origin).href;
-        
+
         this.criticalResources.add(absoluteUrl);
         this.resourcePriorities.set(absoluteUrl, {
             type: type,
@@ -224,15 +224,15 @@ class DAMPCriticalPathOptimizer {
     async setupIntelligentPreloading() {
         // Preload critical resources immediately
         await this.preloadCriticalResources();
-        
+
         // Setup intersection observer for lazy loading
         if ('IntersectionObserver' in window) {
             this.setupIntersectionObserver();
         }
-        
+
         // Setup predictive preloading
         this.setupPredictivePreloading();
-        
+
         // Setup hover-based preloading
         this.setupHoverPreloading();
     }
@@ -250,14 +250,14 @@ class DAMPCriticalPathOptimizer {
 
         // Batch preload based on loading strategy
         const batchSize = this.getBatchSize();
-        
+
         for (let i = 0; i < criticalResourcesArray.length; i += batchSize) {
             const batch = criticalResourcesArray.slice(i, i + batchSize);
-            
+
             await Promise.allSettled(
                 batch.map(resource => this.preloadResource(resource))
             );
-            
+
             // Add delay between batches for conservative strategy
             if (this.loadingStrategy === 'conservative' && i + batchSize < criticalResourcesArray.length) {
                 await this.delay(100);
@@ -277,7 +277,7 @@ class DAMPCriticalPathOptimizer {
     async preloadResource(resource) {
         try {
             const { url, type, priority } = resource;
-            
+
             // Check if already preloaded
             if (this.preloadCache.has(url)) {
                 return this.preloadCache.get(url);
@@ -286,11 +286,11 @@ class DAMPCriticalPathOptimizer {
             // Create preload element
             const preloadPromise = this.createPreloadElement(url, type, priority);
             this.preloadCache.set(url, preloadPromise);
-            
+
             await preloadPromise;
-            
+
             console.log(`[DAMP Critical Path] Preloaded ${type}: ${url} (${priority} priority)`);
-            
+
         } catch (error) {
             console.warn(`[DAMP Critical Path] Failed to preload resource:`, resource, error);
         }
@@ -300,7 +300,7 @@ class DAMPCriticalPathOptimizer {
         return new Promise((resolve, reject) => {
             const link = document.createElement('link');
             link.rel = 'preload';
-            
+
             // Set appropriate attributes based on type
             switch (type) {
                 case 'stylesheet':
@@ -329,11 +329,11 @@ class DAMPCriticalPathOptimizer {
                     link.as = 'fetch';
                     link.crossOrigin = 'anonymous';
             }
-            
+
             if (type !== 'image') {
                 link.href = url;
             }
-            
+
             // Set priority hint if supported
             if ('importance' in link) {
                 const importanceMap = {
@@ -344,10 +344,10 @@ class DAMPCriticalPathOptimizer {
                 };
                 link.importance = importanceMap[priority] || 'auto';
             }
-            
+
             link.onload = () => resolve(link);
             link.onerror = () => reject(new Error(`Failed to preload: ${url}`));
-            
+
             document.head.appendChild(link);
         });
     }
@@ -378,7 +378,7 @@ class DAMPCriticalPathOptimizer {
 
     handleElementIntersection(element) {
         const tagName = element.tagName.toLowerCase();
-        
+
         if (tagName === 'img' && element.dataset.src) {
             this.lazyLoadImage(element);
         } else if (tagName === 'iframe' && element.dataset.src) {
@@ -390,7 +390,7 @@ class DAMPCriticalPathOptimizer {
 
     lazyLoadImage(img) {
         const src = img.dataset.src;
-        
+
         // Choose optimal format
         let optimizedSrc = src;
         if (this.deviceCapabilities.supportsAVIF && src.match(/\.(jpg|jpeg|png)$/)) {
@@ -398,7 +398,7 @@ class DAMPCriticalPathOptimizer {
         } else if (this.deviceCapabilities.supportsWebP && src.match(/\.(jpg|jpeg|png)$/)) {
             optimizedSrc = src.replace(/\.(jpg|jpeg|png)$/, '.webp');
         }
-        
+
         // Create a new image to test if optimized format exists
         const testImg = new Image();
         testImg.onload = () => {
@@ -456,10 +456,10 @@ class DAMPCriticalPathOptimizer {
     predictNextResource(currentHref) {
         // Simple prediction based on common patterns
         const currentPath = new URL(currentHref).pathname;
-        
+
         // Predict related pages
         const predictions = this.generatePredictions(currentPath);
-        
+
         predictions.forEach(prediction => {
             this.prefetchResource(prediction.url, prediction.confidence);
         });
@@ -467,7 +467,7 @@ class DAMPCriticalPathOptimizer {
 
     generatePredictions(currentPath) {
         const predictions = [];
-        
+
         // Navigation patterns
         if (currentPath.includes('/products/')) {
             predictions.push({
@@ -479,21 +479,21 @@ class DAMPCriticalPathOptimizer {
                 confidence: 0.6
             });
         }
-        
+
         if (currentPath.includes('/pages/')) {
             predictions.push({
                 url: '/',
                 confidence: 0.5
             });
         }
-        
+
         return predictions.filter(p => p.confidence > 0.5);
     }
 
     // === HOVER-BASED PRELOADING ===
     setupHoverPreloading() {
         let hoverTimeout;
-        
+
         document.addEventListener('mouseover', (e) => {
             const target = e.target.closest('a');
             if (target && target.href) {
@@ -502,7 +502,7 @@ class DAMPCriticalPathOptimizer {
                 }, 200); // Wait 200ms to avoid accidental hovers
             }
         });
-        
+
         document.addEventListener('mouseout', (e) => {
             if (hoverTimeout) {
                 clearTimeout(hoverTimeout);
@@ -513,21 +513,21 @@ class DAMPCriticalPathOptimizer {
     async prefetchResource(url, confidence) {
         // Only prefetch if confidence is high enough
         if (confidence < 0.6) return;
-        
+
         // Don't prefetch if already cached
         if (this.preloadCache.has(url)) return;
-        
+
         // Don't prefetch on slow connections
         if (this.networkState.saveData || this.networkState.effectiveType === '2g') return;
-        
+
         try {
             const link = document.createElement('link');
             link.rel = 'prefetch';
             link.href = url;
             document.head.appendChild(link);
-            
+
             console.log(`[DAMP Critical Path] Prefetching: ${url} (confidence: ${confidence})`);
-            
+
         } catch (error) {
             console.warn('[DAMP Critical Path] Prefetch failed:', url, error);
         }
@@ -547,7 +547,7 @@ class DAMPCriticalPathOptimizer {
             'https://fonts.gstatic.com',
             'https://www.google-analytics.com'
         ];
-        
+
         criticalOrigins.forEach(origin => {
             this.addPreconnect(origin);
         });
@@ -556,7 +556,7 @@ class DAMPCriticalPathOptimizer {
     extractExternalDomains() {
         const domains = new Set();
         const links = document.querySelectorAll('a[href^="http"], img[src^="http"], script[src^="http"], link[href^="http"]');
-        
+
         links.forEach(element => {
             const url = element.href || element.src;
             try {
@@ -568,7 +568,7 @@ class DAMPCriticalPathOptimizer {
                 // Invalid URL, skip
             }
         });
-        
+
         return Array.from(domains);
     }
 
@@ -591,13 +591,13 @@ class DAMPCriticalPathOptimizer {
     async optimizeCriticalPath() {
         // Inline critical CSS
         await this.inlineCriticalCSS();
-        
+
         // Defer non-critical resources
         this.deferNonCriticalResources();
-        
+
         // Optimize font loading
         this.optimizeFontLoading();
-        
+
         // Setup resource cleanup
         this.setupResourceCleanup();
     }
@@ -610,7 +610,7 @@ class DAMPCriticalPathOptimizer {
                 style.textContent = criticalCSS;
                 style.id = 'critical-css';
                 document.head.insertBefore(style, document.head.firstChild);
-                
+
                 console.log('[DAMP Critical Path] Critical CSS inlined');
             }
         } catch (error) {
@@ -623,12 +623,12 @@ class DAMPCriticalPathOptimizer {
         // For runtime, we can extract computed styles of above-the-fold elements
         const criticalElements = document.querySelectorAll('header, nav, .hero, .above-fold');
         const criticalRules = new Set();
-        
+
         criticalElements.forEach(element => {
             const computedStyle = window.getComputedStyle(element);
             // This is a simplified version - production would use more sophisticated extraction
             const relevantProps = ['display', 'position', 'width', 'height', 'margin', 'padding', 'color', 'background'];
-            
+
             relevantProps.forEach(prop => {
                 const value = computedStyle.getPropertyValue(prop);
                 if (value && value !== 'initial') {
@@ -636,7 +636,7 @@ class DAMPCriticalPathOptimizer {
                 }
             });
         });
-        
+
         return Array.from(criticalRules).join('\n');
     }
 
@@ -700,10 +700,10 @@ class DAMPCriticalPathOptimizer {
 
     adaptToNetworkChange() {
         console.log('[DAMP Critical Path] Network changed, adapting strategy...');
-        
+
         // Update loading strategy
         this.loadingStrategy = this.determineLoadingStrategy();
-        
+
         // Cancel non-critical preloads on slow connections
         if (this.networkState.saveData || this.networkState.effectiveType === '2g') {
             this.cancelNonCriticalPreloads();
@@ -734,11 +734,11 @@ class DAMPCriticalPathOptimizer {
     // Manual optimization trigger
     async optimizeNow() {
         console.log('[DAMP Critical Path] Manual optimization triggered...');
-        
+
         await this.identifyCriticalResources();
         await this.preloadCriticalResources();
         await this.optimizeCriticalPath();
-        
+
         console.log('[DAMP Critical Path] Manual optimization complete');
     }
 }
@@ -753,4 +753,4 @@ window.dampCriticalPath = dampCriticalPath;
 window.getDampOptimizationStats = () => dampCriticalPath.getOptimizationStats();
 window.optimizeDampCriticalPath = () => dampCriticalPath.optimizeNow();
 
-console.log('[DAMP Critical Path] Google-level critical path optimizer initialized'); 
+console.log('[DAMP Critical Path] Google-level critical path optimizer initialized');

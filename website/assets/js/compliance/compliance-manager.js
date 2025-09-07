@@ -43,13 +43,13 @@ class DAMPComplianceManager {
 
     init() {
         console.log('🛡️ Initializing DAMP Compliance Manager...');
-        
+
         this.loadComplianceData();
         this.detectUserRegion();
         this.setupComplianceChecks();
         this.integrateWithAnalytics();
         this.setupUserRightsHandlers();
-        
+
         console.log('✅ Compliance Manager initialized');
     }
 
@@ -57,19 +57,19 @@ class DAMPComplianceManager {
         // Enhanced region detection for compliance
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const language = navigator.language || navigator.userLanguage;
-        
+
         // EU/EEA detection
         const euCountries = [
-            'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 
-            'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 
+            'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR',
+            'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK',
             'SI', 'ES', 'SE', 'IS', 'LI', 'NO', 'GB', 'CH'
         ];
-        
+
         // California detection for CCPA
-        const isCaliforniaUser = timezone.includes('Los_Angeles') || 
+        const isCaliforniaUser = timezone.includes('Los_Angeles') ||
                                 timezone.includes('America/Los_Angeles') ||
                                 language.includes('en-US');
-        
+
         this.complianceData.region = {
             requiresGDPR: this.isEUUser(timezone, language),
             requiresCCPA: isCaliforniaUser,
@@ -85,11 +85,11 @@ class DAMPComplianceManager {
                 const parsed = JSON.parse(stored);
                 if (parsed.consentVersion === this.complianceData.gdpr.consentVersion) {
                     this.complianceData = { ...this.complianceData, ...parsed };
-                    
+
                     // Check if consent is still valid (1 year max)
                     const consentAge = Date.now() - this.complianceData.gdpr.consentTimestamp;
                     const maxAge = 365 * 24 * 60 * 60 * 1000; // 1 year
-                    
+
                     if (consentAge > maxAge) {
                         this.resetConsent('expired');
                     }
@@ -128,7 +128,7 @@ class DAMPComplianceManager {
         this.complianceData.cookies = { ...this.complianceData.cookies, ...consentData };
         this.complianceData.gdpr.consentGiven = consentData.analytics || consentData.marketing;
         this.complianceData.gdpr.consentTimestamp = Date.now();
-        
+
         this.saveComplianceData();
         this.notifyComplianceChange();
     }
@@ -214,7 +214,7 @@ class DAMPComplianceManager {
     isEUUser(timezone, language) {
         const euTimezones = ['Europe/', 'GMT', 'UTC'];
         const euLanguages = ['de', 'fr', 'es', 'it', 'nl', 'pl', 'sv', 'da', 'no', 'fi'];
-        
+
         return euTimezones.some(tz => timezone.includes(tz)) ||
                euLanguages.some(lang => language.includes(lang));
     }
@@ -252,10 +252,10 @@ class DAMPComplianceManager {
             marketing: false,
             functional: false
         };
-        
+
         this.saveComplianceData();
         this.notifyComplianceChange();
-        
+
         console.log(`🔄 Consent reset due to: ${reason}`);
     }
 
@@ -263,8 +263,8 @@ class DAMPComplianceManager {
         return {
             isCompliant: this.complianceData.gdpr.consentGiven || !this.complianceData.region?.requiresGDPR,
             hasValidConsent: this.complianceData.gdpr.consentGiven && this.complianceData.gdpr.consentTimestamp,
-            consentAge: this.complianceData.gdpr.consentTimestamp 
-                ? Date.now() - this.complianceData.gdpr.consentTimestamp 
+            consentAge: this.complianceData.gdpr.consentTimestamp
+                ? Date.now() - this.complianceData.gdpr.consentTimestamp
                 : null,
             region: this.complianceData.region
         };
@@ -274,4 +274,4 @@ class DAMPComplianceManager {
 // Initialize compliance manager
 window.dampCompliance = new DAMPComplianceManager();
 
-export default DAMPComplianceManager; 
+export default DAMPComplianceManager;

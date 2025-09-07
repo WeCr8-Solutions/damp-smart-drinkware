@@ -305,7 +305,7 @@ class AdminAPIManager {
 
     async updateAppFeature(featureId, status) {
         this.mobileAppConfig.features[featureId] = status;
-        
+
         return {
             success: true,
             message: `Feature ${featureId} updated to ${status}`,
@@ -771,4 +771,4 @@ router.get('/activity', async (req, res) => {
 });
 
 // Export router
-module.exports = router; 
+module.exports = router;

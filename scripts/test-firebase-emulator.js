@@ -2,7 +2,7 @@
 
 /**
  * DAMP Smart Drinkware - Firebase Connection Test (Emulator Version)
- * 
+ *
  * This script tests the Firebase emulator connection and basic functionality
  * to ensure everything is set up correctly.
  */
@@ -31,7 +31,7 @@ function initializeFirebase() {
       admin.initializeApp({
         projectId: 'damp-smart-drinkware'
       });
-      
+
       // Connect to Firestore emulator
       const db = admin.firestore();
       db.settings({
@@ -51,14 +51,14 @@ function initializeFirebase() {
 // Test Firestore connection
 async function testFirestoreConnection() {
   log('🔄 Testing Firestore emulator connection...', 'blue');
-  
+
   try {
     const db = admin.firestore();
-    
+
     // Try to read the global stats document
     const statsRef = db.doc('stats/global');
     const statsSnap = await statsRef.get();
-    
+
     if (statsSnap.exists) {
       const data = statsSnap.data();
       log('✅ Firestore emulator connection successful', 'green');
@@ -79,22 +79,22 @@ async function testFirestoreConnection() {
 // Test voting collections
 async function testVotingCollections() {
   log('🔄 Testing voting collections...', 'blue');
-  
+
   try {
     const db = admin.firestore();
-    
+
     // Test customer voting
     const customerVotingRef = db.doc('voting/products');
     const customerVotingSnap = await customerVotingRef.get();
-    
+
     // Test public voting
     const publicVotingRef = db.doc('voting/public');
     const publicVotingSnap = await publicVotingRef.get();
-    
+
     if (customerVotingSnap.exists && publicVotingSnap.exists) {
       const customerData = customerVotingSnap.data();
       const publicData = publicVotingSnap.data();
-      
+
       log('✅ Voting collections found', 'green');
       log(`🗳️ Customer votes: ${customerData.totalVotes}`, 'cyan');
       log(`🌍 Public votes: ${publicData.totalVotes}`, 'cyan');
@@ -113,23 +113,23 @@ async function testVotingCollections() {
 // Test newsletter subscribers collection
 async function testNewsletterCollection() {
   log('🔄 Testing newsletter subscribers collection...', 'blue');
-  
+
   try {
     const db = admin.firestore();
-    
+
     // Try to read newsletter subscribers
     const subscribersRef = db.collection('newsletter_subscribers');
     const subscribersSnap = await subscribersRef.limit(5).get();
-    
+
     log('✅ Newsletter collection accessible', 'green');
     log(`📧 Sample subscribers found: ${subscribersSnap.size}`, 'cyan');
-    
+
     // Log some sample emails (for testing only)
     subscribersSnap.docs.forEach(doc => {
       const data = doc.data();
       log(`   - ${data.email} (${data.source})`, 'cyan');
     });
-    
+
     return true;
   } catch (error) {
     log('❌ Newsletter collection test failed:', 'red');
@@ -141,17 +141,17 @@ async function testNewsletterCollection() {
 // Test products collection
 async function testProductsCollection() {
   log('🔄 Testing products collection...', 'blue');
-  
+
   try {
     const db = admin.firestore();
-    
+
     const productsRef = db.collection('products');
     const productsSnap = await productsRef.get();
-    
+
     if (productsSnap.size > 0) {
       log('✅ Products collection found', 'green');
       log(`🛍️ Products available: ${productsSnap.size}`, 'cyan');
-      
+
       // List product names
       const productNames = productsSnap.docs.map(doc => doc.data().name);
       log(`   Products: ${productNames.join(', ')}`, 'cyan');
@@ -170,7 +170,7 @@ async function testProductsCollection() {
 // Test if emulator is running
 async function testEmulatorStatus() {
   log('🔄 Testing emulator status...', 'blue');
-  
+
   try {
     const response = await fetch('http://localhost:4000');
     if (response.ok) {
@@ -191,22 +191,22 @@ async function testEmulatorStatus() {
 // Test sample data write (to verify write permissions)
 async function testDataWrite() {
   log('🔄 Testing data write capabilities...', 'blue');
-  
+
   try {
     const db = admin.firestore();
-    
+
     // Try to write a test document
     const testRef = db.collection('test_collection').doc('test_doc');
     await testRef.set({
       message: 'Test write successful',
       timestamp: admin.firestore.FieldValue.serverTimestamp()
     });
-    
+
     // Try to read it back
     const testSnap = await testRef.get();
     if (testSnap.exists) {
       log('✅ Data write/read successful', 'green');
-      
+
       // Clean up test document
       await testRef.delete();
       log('   Test document cleaned up', 'cyan');
@@ -227,18 +227,18 @@ async function runTests() {
   log('🧪 DAMP Smart Drinkware - Firebase Emulator Test', 'cyan');
   log('===============================================', 'cyan');
   log('', 'reset');
-  
+
   const results = [];
-  
+
   // Initialize Firebase
   const firebaseInit = initializeFirebase();
   if (!firebaseInit) {
     log('❌ Cannot proceed without Firebase initialization', 'red');
     process.exit(1);
   }
-  
+
   log('', 'reset');
-  
+
   // Run all tests
   results.push({ name: 'Emulator Status', result: await testEmulatorStatus() });
   results.push({ name: 'Firestore Connection', result: await testFirestoreConnection() });
@@ -246,14 +246,14 @@ async function runTests() {
   results.push({ name: 'Voting Collections', result: await testVotingCollections() });
   results.push({ name: 'Newsletter Collection', result: await testNewsletterCollection() });
   results.push({ name: 'Products Collection', result: await testProductsCollection() });
-  
+
   log('', 'reset');
   log('📋 Test Results Summary:', 'cyan');
   log('========================', 'cyan');
-  
+
   let passed = 0;
   let failed = 0;
-  
+
   results.forEach(test => {
     if (test.result) {
       log(`✅ ${test.name}`, 'green');
@@ -263,10 +263,10 @@ async function runTests() {
       failed++;
     }
   });
-  
+
   log('', 'reset');
   log(`📊 Results: ${passed} passed, ${failed} failed`, passed === results.length ? 'green' : 'yellow');
-  
+
   if (passed === results.length) {
     log('', 'reset');
     log('🎉 All tests passed! Your Firebase emulator setup is working correctly.', 'green');
@@ -287,7 +287,7 @@ async function runTests() {
     log('   - Make sure emulators are running: firebase emulators:start', 'blue');
     log('   - Re-run initialization: node scripts/firebase-init-emulator.js', 'blue');
   }
-  
+
   log('', 'reset');
 }
 
@@ -302,4 +302,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { runTests }; 
+module.exports = { runTests };

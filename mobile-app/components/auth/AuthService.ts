@@ -1,6 +1,6 @@
 /**
  * DAMP Smart Drinkware - React Native Authentication Service
- * 
+ *
  * Cross-platform authentication service for mobile app
  */
 
@@ -134,14 +134,14 @@ class MobileAuthService {
   private setupAuthStateListener() {
     onAuthStateChanged(auth, async (user) => {
       this.currentUser = user;
-      
+
       if (user) {
         await this.handleUserSignIn(user);
         await this.loadUserProfile();
       } else {
         await this.handleUserSignOut();
       }
-      
+
       // Notify listeners
       this.authStateListeners.forEach(callback => callback(user));
     });
@@ -151,7 +151,7 @@ class MobileAuthService {
     try {
       const userRef = doc(db, 'users', user.uid);
       const userSnap = await getDoc(userRef);
-      
+
       if (!userSnap.exists()) {
         await this.createUserProfile(user);
       } else {
@@ -166,7 +166,7 @@ class MobileAuthService {
           }
         });
       }
-      
+
       // Store auth state locally
       await AsyncStorage.setItem('dampAuth', JSON.stringify({
         isAuthenticated: true,
@@ -174,7 +174,7 @@ class MobileAuthService {
         email: user.email,
         lastSignIn: new Date().toISOString()
       }));
-      
+
     } catch (error) {
       console.error('Error handling user sign in:', error);
     }
@@ -192,7 +192,7 @@ class MobileAuthService {
         console.error('Error updating user status on sign out:', error);
       }
     }
-    
+
     // Clear local storage
     await AsyncStorage.removeItem('dampAuth');
     this.userProfile = null;
@@ -205,7 +205,7 @@ class MobileAuthService {
       displayName: user.displayName || additionalData.displayName || '',
       photoURL: user.photoURL || null,
       emailVerified: user.emailVerified,
-      
+
       profile: {
         firstName: additionalData.firstName || '',
         lastName: additionalData.lastName || '',
@@ -218,7 +218,7 @@ class MobileAuthService {
           zipCode: additionalData.zipCode || ''
         }
       },
-      
+
       preferences: {
         newsletter: true,
         productUpdates: true,
@@ -229,7 +229,7 @@ class MobileAuthService {
         language: 'en',
         theme: 'auto'
       },
-      
+
       damp: {
         devices: [],
         totalDevices: 0,
@@ -242,14 +242,14 @@ class MobileAuthService {
         safeZones: [],
         referralCode: this.generateReferralCode(user.uid)
       },
-      
+
       orders: {
         totalOrders: 0,
         totalSpent: 0,
         favoriteCategories: []
       }
     };
-    
+
     const userRef = doc(db, 'users', user.uid);
     await setDoc(userRef, {
       ...userProfile,
@@ -276,7 +276,7 @@ class MobileAuthService {
         lastPasswordChange: serverTimestamp()
       }
     });
-    
+
     this.userProfile = userProfile;
     return userProfile;
   }
@@ -286,24 +286,24 @@ class MobileAuthService {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      
+
       if (additionalData.displayName) {
         await updateProfile(user, {
           displayName: additionalData.displayName
         });
       }
-      
+
       await this.createUserProfile(user, {
         ...additionalData,
         signInMethod: 'email'
       });
-      
+
       return {
         success: true,
         user: user,
         message: 'Account created successfully!'
       };
-      
+
     } catch (error: any) {
       return {
         success: false,
@@ -316,13 +316,13 @@ class MobileAuthService {
   async signInWithEmail(email: string, password: string): Promise<AuthResult> {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
+
       return {
         success: true,
         user: userCredential.user,
         message: 'Signed in successfully!'
       };
-      
+
     } catch (error: any) {
       return {
         success: false,
@@ -336,16 +336,16 @@ class MobileAuthService {
     try {
       await GoogleSignin.hasPlayServices();
       const { idToken } = await GoogleSignin.signIn();
-      
+
       const googleCredential = GoogleAuthProvider.credential(idToken);
       const userCredential = await signInWithCredential(auth, googleCredential);
-      
+
       return {
         success: true,
         user: userCredential.user,
         message: 'Signed in with Google successfully!'
       };
-      
+
     } catch (error: any) {
       return {
         success: false,
@@ -359,12 +359,12 @@ class MobileAuthService {
     try {
       await GoogleSignin.signOut();
       await firebaseSignOut(auth);
-      
+
       return {
         success: true,
         message: 'Signed out successfully!'
       };
-      
+
     } catch (error: any) {
       return {
         success: false,
@@ -402,16 +402,16 @@ class MobileAuthService {
       // Re-authenticate user first
       const credential = EmailAuthProvider.credential(this.currentUser.email, currentPassword);
       await reauthenticateWithCredential(this.currentUser, credential);
-      
+
       // Update password
       await updatePassword(this.currentUser, newPassword);
-      
+
       // Update profile
       const userRef = doc(db, 'users', this.currentUser.uid);
       await updateDoc(userRef, {
         'account.lastPasswordChange': serverTimestamp()
       });
-      
+
       return {
         success: true,
         message: 'Password updated successfully!'
@@ -428,24 +428,24 @@ class MobileAuthService {
   // Profile management
   async loadUserProfile(): Promise<UserProfile | null> {
     if (!this.currentUser) return null;
-    
+
     try {
       const userRef = doc(db, 'users', this.currentUser.uid);
       const userSnap = await getDoc(userRef);
-      
+
       if (userSnap.exists()) {
         this.userProfile = userSnap.data() as UserProfile;
-        
+
         // Cache profile locally
         await AsyncStorage.setItem('dampUserProfile', JSON.stringify(this.userProfile));
-        
+
         return this.userProfile;
       }
       return null;
-      
+
     } catch (error) {
       console.error('Error loading user profile:', error);
-      
+
       // Try to load from cache
       try {
         const cachedProfile = await AsyncStorage.getItem('dampUserProfile');
@@ -456,7 +456,7 @@ class MobileAuthService {
       } catch (cacheError) {
         console.error('Error loading cached profile:', cacheError);
       }
-      
+
       return null;
     }
   }
@@ -468,35 +468,35 @@ class MobileAuthService {
         message: 'No user signed in'
       };
     }
-    
+
     try {
       const userRef = doc(db, 'users', this.currentUser.uid);
-      
+
       await updateDoc(userRef, {
         ...updates,
         lastUpdated: serverTimestamp()
       });
-      
+
       // Update local cache
       if (this.userProfile) {
         this.userProfile = { ...this.userProfile, ...updates };
         await AsyncStorage.setItem('dampUserProfile', JSON.stringify(this.userProfile));
       }
-      
+
       // Update Firebase Auth profile if needed
       const authUpdates: any = {};
       if (updates.displayName) authUpdates.displayName = updates.displayName;
       if (updates.photoURL) authUpdates.photoURL = updates.photoURL;
-      
+
       if (Object.keys(authUpdates).length > 0) {
         await updateProfile(this.currentUser, authUpdates);
       }
-      
+
       return {
         success: true,
         message: 'Profile updated successfully!'
       };
-      
+
     } catch (error: any) {
       return {
         success: false,
@@ -519,7 +519,7 @@ class MobileAuthService {
         message: 'No user signed in'
       };
     }
-    
+
     try {
       const device = {
         id: this.generateDeviceId(),
@@ -533,9 +533,9 @@ class MobileAuthService {
         batteryLevel: 100,
         lastSeen: new Date().toISOString()
       };
-      
+
       const updatedDevices = [...(this.userProfile.damp.devices || []), device];
-      
+
       await this.updateUserProfile({
         damp: {
           ...this.userProfile.damp,
@@ -543,12 +543,12 @@ class MobileAuthService {
           totalDevices: updatedDevices.length
         }
       });
-      
+
       return {
         success: true,
         message: 'Device added successfully!'
       };
-      
+
     } catch (error: any) {
       return {
         success: false,
@@ -565,10 +565,10 @@ class MobileAuthService {
         message: 'No user signed in'
       };
     }
-    
+
     try {
       const updatedDevices = this.userProfile.damp.devices.filter(device => device.id !== deviceId);
-      
+
       await this.updateUserProfile({
         damp: {
           ...this.userProfile.damp,
@@ -576,12 +576,12 @@ class MobileAuthService {
           totalDevices: updatedDevices.length
         }
       });
-      
+
       return {
         success: true,
         message: 'Device removed successfully!'
       };
-      
+
     } catch (error: any) {
       return {
         success: false,
@@ -598,24 +598,24 @@ class MobileAuthService {
         message: 'No user signed in'
       };
     }
-    
+
     try {
-      const updatedDevices = this.userProfile.damp.devices.map(device => 
+      const updatedDevices = this.userProfile.damp.devices.map(device =>
         device.id === deviceId ? { ...device, ...updates } : device
       );
-      
+
       await this.updateUserProfile({
         damp: {
           ...this.userProfile.damp,
           devices: updatedDevices
         }
       });
-      
+
       return {
         success: true,
         message: 'Device updated successfully!'
       };
-      
+
     } catch (error: any) {
       return {
         success: false,
@@ -638,7 +638,7 @@ class MobileAuthService {
         message: 'No user signed in'
       };
     }
-    
+
     try {
       const safeZone = {
         id: this.generateSafeZoneId(),
@@ -649,21 +649,21 @@ class MobileAuthService {
         active: true,
         createdAt: new Date().toISOString()
       };
-      
+
       const updatedSafeZones = [...(this.userProfile.damp.safeZones || []), safeZone];
-      
+
       await this.updateUserProfile({
         damp: {
           ...this.userProfile.damp,
           safeZones: updatedSafeZones
         }
       });
-      
+
       return {
         success: true,
         message: 'Safe zone added successfully!'
       };
-      
+
     } catch (error: any) {
       return {
         success: false,
@@ -686,7 +686,7 @@ class MobileAuthService {
         message: 'No user signed in'
       };
     }
-    
+
     try {
       await this.updateUserProfile({
         preferences: {
@@ -694,16 +694,16 @@ class MobileAuthService {
           ...preferences
         }
       });
-      
+
       // Update newsletter subscription in the newsletter_subscribers collection
       if (preferences.newsletter !== undefined) {
         const newsletterQuery = query(
           collection(db, 'newsletter_subscribers'),
           where('email', '==', this.currentUser.email)
         );
-        
+
         const querySnapshot = await getDocs(newsletterQuery);
-        
+
         if (!querySnapshot.empty) {
           const doc = querySnapshot.docs[0];
           await updateDoc(doc.ref, {
@@ -714,12 +714,12 @@ class MobileAuthService {
           });
         }
       }
-      
+
       return {
         success: true,
         message: 'Preferences updated successfully!'
       };
-      
+
     } catch (error: any) {
       return {
         success: false,
@@ -737,16 +737,16 @@ class MobileAuthService {
         message: 'No user signed in'
       };
     }
-    
+
     try {
       const vote = {
         productId,
         votedAt: new Date().toISOString(),
         platform: Platform.OS
       };
-      
+
       const updatedVotingHistory = [...(this.userProfile.damp.votingHistory || []), vote];
-      
+
       await this.updateUserProfile({
         damp: {
           ...this.userProfile.damp,
@@ -754,12 +754,12 @@ class MobileAuthService {
           totalVotes: updatedVotingHistory.length
         }
       });
-      
+
       return {
         success: true,
         message: 'Vote submitted successfully!'
       };
-      
+
     } catch (error: any) {
       return {
         success: false,
@@ -785,7 +785,7 @@ class MobileAuthService {
   // Auth state listener
   onAuthStateChange(callback: (user: User | null) => void): () => void {
     this.authStateListeners.push(callback);
-    
+
     return () => {
       const index = this.authStateListeners.indexOf(callback);
       if (index > -1) {
@@ -819,9 +819,9 @@ class MobileAuthService {
       'auth/requires-recent-login': 'Please sign in again to perform this action.',
       'auth/network-request-failed': 'Network error. Please check your connection.',
     };
-    
+
     return errorMessages[errorCode] || 'An unexpected error occurred. Please try again.';
   }
 }
 
-export default new MobileAuthService(); 
+export default new MobileAuthService();

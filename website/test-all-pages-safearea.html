@@ -14,7 +14,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
         }
-        
+
         .test-section {
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
@@ -23,14 +23,14 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
         }
-        
+
         .page-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
-        
+
         .page-item {
             background: rgba(0, 212, 255, 0.1);
             padding: 15px;
@@ -40,34 +40,34 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .page-name {
             font-weight: 600;
             color: #00d4ff;
         }
-        
+
         .page-status {
             padding: 4px 8px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: bold;
         }
-        
+
         .status-pass {
             background: #00ff88;
             color: #000;
         }
-        
+
         .status-fail {
             background: #ff4757;
             color: #fff;
         }
-        
+
         .status-unknown {
             background: #ffa502;
             color: #000;
         }
-        
+
         .test-button {
             background: linear-gradient(45deg, #00d4ff, #0099cc);
             color: white;
@@ -79,12 +79,12 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         .test-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
         }
-        
+
         .test-results {
             background: rgba(0, 0, 0, 0.3);
             padding: 15px;
@@ -95,14 +95,14 @@
             max-height: 400px;
             overflow-y: auto;
         }
-        
+
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
-        
+
         .stat-card {
             background: rgba(0, 255, 136, 0.1);
             padding: 15px;
@@ -110,13 +110,13 @@
             text-align: center;
             border: 1px solid rgba(0, 255, 136, 0.3);
         }
-        
+
         .stat-number {
             font-size: 2rem;
             font-weight: bold;
             color: #00ff88;
         }
-        
+
         .stat-label {
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.8);
@@ -125,7 +125,7 @@
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
-    
+
     <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -133,18 +133,18 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="msapplication-TileColor" content="#1a1a2e">
     <meta name="msapplication-tap-highlight" content="no">
-    
+
     <!-- PWA Theme Colors -->
     <meta name="theme-color" content="#00d4ff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
-    
+
     <!-- PWA Icons -->
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/logo/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="48x48" href="/assets/images/logo/icon-48.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/logo/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/assets/images/logo/icon-512.png">
-    
+
     <!-- Apple Touch Icons -->
     <link rel="apple-touch-icon" sizes="57x57" href="/assets/images/logo/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/assets/images/logo/apple-icon-60x60.png">
@@ -157,10 +157,10 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/logo/apple-icon-180x180.png"></head>
 <body>
     <h1>🛡️ DAMP SafeAreaWrapper - All Pages Implementation Test</h1>
-    
+
     <!-- Navigation Header -->
     <damp-header></damp-header>
-    
+
     <!-- Test Overview -->
     <div class="test-section">
         <h2>Test Overview</h2>
@@ -184,7 +184,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Controls -->
     <div class="test-section">
         <h2>Test Controls</h2>
@@ -193,7 +193,7 @@
         <button class="test-button" onclick="clearResults()">Clear Results</button>
         <button class="test-button" onclick="exportResults()">Export Results</button>
     </div>
-    
+
     <!-- Page List -->
     <div class="test-section">
         <h2>Pages Status</h2>
@@ -201,7 +201,7 @@
             <!-- Pages will be populated by JavaScript -->
         </div>
     </div>
-    
+
     <!-- Test Results -->
     <div class="test-section">
         <h2>Test Results</h2>
@@ -209,11 +209,11 @@
             Ready to run tests...
         </div>
     </div>
-    
+
     <!-- Scripts -->
     <script src="assets/js/components/safe-area-wrapper.js"></script>
     <script src="assets/js/components/header.js"></script>
-    
+
     <script>
         // List of all pages that should have SafeAreaWrapper
         const pages = [
@@ -223,34 +223,34 @@
             { name: 'cup-sleeve-v1.0.html', category: 'Product', path: 'pages/cup-sleeve-v1.0.html' },
             { name: 'damp-handle-v1.0.html', category: 'Product', path: 'pages/damp-handle-v1.0.html' },
             { name: 'silicone-bottom-v1.0.html', category: 'Product', path: 'pages/silicone-bottom-v1.0.html' },
-            
+
             // Stanley Variants
             { name: 'damp-handle-v1.0-stanley.html', category: 'Stanley', path: 'pages/damp-handle-v1.0-stanley.html' },
             { name: 'damp-handle-v1.0-stanley-IceFlow.html', category: 'Stanley', path: 'pages/damp-handle-v1.0-stanley-IceFlow.html' },
             { name: 'damp-handle-v1.0-stanley-Quencher-H2.0.html', category: 'Stanley', path: 'pages/damp-handle-v1.0-stanley-Quencher-H2.0.html' },
-            
+
             // Support Pages
             { name: 'about.html', category: 'Support', path: 'pages/about.html' },
             { name: 'support.html', category: 'Support', path: 'pages/support.html' },
             { name: 'privacy.html', category: 'Support', path: 'pages/privacy.html' },
             { name: 'cookie-policy.html', category: 'Support', path: 'pages/cookie-policy.html' },
-            
+
             // Commerce Pages
             { name: 'cart.html', category: 'Commerce', path: 'pages/cart.html' },
             { name: 'pre-order.html', category: 'Commerce', path: 'pages/pre-order.html' },
             { name: 'stripe-checkout.html', category: 'Commerce', path: 'pages/stripe-checkout.html' },
             { name: 'success.html', category: 'Commerce', path: 'pages/success.html' },
-            
+
             // Marketing Pages
             { name: 'pre-sale-funnel.html', category: 'Marketing', path: 'pages/pre-sale-funnel.html' },
             { name: 'waitlist.html', category: 'Marketing', path: 'pages/waitlist.html' },
-            
+
             // Redirect Pages
             { name: 'silicone-bottom.html', category: 'Redirect', path: 'pages/silicone-bottom.html' }
         ];
-        
+
         let testResults = {};
-        
+
         function log(message) {
             const timestamp = new Date().toLocaleTimeString();
             const resultsDiv = document.getElementById('testResults');
@@ -258,37 +258,37 @@
             resultsDiv.scrollTop = resultsDiv.scrollHeight;
             console.log(`SafeArea Test: ${message}`);
         }
-        
+
         function clearResults() {
             document.getElementById('testResults').textContent = 'Results cleared.\n';
             testResults = {};
             updateStats();
         }
-        
+
         function updateStats() {
             const total = pages.length;
             const passed = Object.values(testResults).filter(r => r.status === 'pass').length;
             const failed = Object.values(testResults).filter(r => r.status === 'fail').length;
             const unknown = total - passed - failed;
-            
+
             document.getElementById('totalPages').textContent = total;
             document.getElementById('passedPages').textContent = passed;
             document.getElementById('failedPages').textContent = failed;
             document.getElementById('unknownPages').textContent = unknown;
         }
-        
+
         function renderPageList() {
             const pageList = document.getElementById('pageList');
             pageList.innerHTML = '';
-            
+
             pages.forEach(page => {
                 const pageItem = document.createElement('div');
                 pageItem.className = 'page-item';
-                
+
                 const result = testResults[page.name];
                 let statusClass = 'status-unknown';
                 let statusText = 'Not Tested';
-                
+
                 if (result) {
                     if (result.status === 'pass') {
                         statusClass = 'status-pass';
@@ -298,7 +298,7 @@
                         statusText = 'FAIL';
                     }
                 }
-                
+
                 pageItem.innerHTML = `
                     <div>
                         <div class="page-name">${page.name}</div>
@@ -306,47 +306,47 @@
                     </div>
                     <div class="page-status ${statusClass}">${statusText}</div>
                 `;
-                
+
                 pageList.appendChild(pageItem);
             });
         }
-        
+
         async function testPage(page) {
             try {
                 log(`Testing ${page.name}...`);
-                
+
                 // Create iframe to test the page
                 const iframe = document.createElement('iframe');
                 iframe.style.display = 'none';
                 iframe.src = page.path;
-                
+
                 return new Promise((resolve) => {
                     iframe.onload = () => {
                         try {
                             const iframeWindow = iframe.contentWindow;
                             const iframeDocument = iframe.contentDocument;
-                            
+
                             // Check for SafeAreaWrapper
                             const hasSafeAreaWrapper = !!iframeWindow.dampSafeArea;
-                            
+
                             // Check for SafeAreaWrapper script
                             const scripts = Array.from(iframeDocument.querySelectorAll('script'));
-                            const hasSafeAreaScript = scripts.some(script => 
+                            const hasSafeAreaScript = scripts.some(script =>
                                 script.src && script.src.includes('safe-area-wrapper.js')
                             );
-                            
+
                             // Check for DAMP header
                             const hasDampHeader = !!iframeDocument.querySelector('damp-header');
-                            
+
                             // Check for viewport-fit=cover
                             const viewportMeta = iframeDocument.querySelector('meta[name="viewport"]');
                             const hasViewportFit = viewportMeta && viewportMeta.content.includes('viewport-fit=cover');
-                            
+
                             // Check for old navigation.js (should not be present)
-                            const hasOldNavigation = scripts.some(script => 
+                            const hasOldNavigation = scripts.some(script =>
                                 script.src && script.src.includes('navigation.js')
                             );
-                            
+
                             const result = {
                                 status: 'pass',
                                 details: {
@@ -357,7 +357,7 @@
                                     hasOldNavigation: !hasOldNavigation // Inverted because we don't want this
                                 }
                             };
-                            
+
                             // Determine if test passes
                             if (!hasSafeAreaScript && hasDampHeader) {
                                 result.status = 'fail';
@@ -375,10 +375,10 @@
                             } else {
                                 log(`✅ ${page.name}: Configuration OK`);
                             }
-                            
+
                             testResults[page.name] = result;
                             resolve(result);
-                            
+
                         } catch (error) {
                             log(`❌ ${page.name}: Error testing - ${error.message}`);
                             testResults[page.name] = { status: 'fail', error: error.message };
@@ -387,16 +387,16 @@
                             document.body.removeChild(iframe);
                         }
                     };
-                    
+
                     iframe.onerror = () => {
                         log(`❌ ${page.name}: Failed to load`);
                         testResults[page.name] = { status: 'fail', error: 'Failed to load' };
                         document.body.removeChild(iframe);
                         resolve({ status: 'fail', error: 'Failed to load' });
                     };
-                    
+
                     document.body.appendChild(iframe);
-                    
+
                     // Timeout after 10 seconds
                     setTimeout(() => {
                         if (document.body.contains(iframe)) {
@@ -407,42 +407,42 @@
                         }
                     }, 10000);
                 });
-                
+
             } catch (error) {
                 log(`❌ ${page.name}: Exception - ${error.message}`);
                 testResults[page.name] = { status: 'fail', error: error.message };
                 return { status: 'fail', error: error.message };
             }
         }
-        
+
         async function runAllTests() {
             log('🚀 Starting comprehensive SafeAreaWrapper test...');
             testResults = {};
-            
+
             for (const page of pages) {
                 await testPage(page);
                 updateStats();
                 renderPageList();
-                
+
                 // Small delay to prevent overwhelming the browser
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
-            
+
             const summary = `
 📊 TEST SUMMARY:
 Total Pages: ${pages.length}
 Passed: ${Object.values(testResults).filter(r => r.status === 'pass').length}
 Failed: ${Object.values(testResults).filter(r => r.status === 'fail').length}
             `;
-            
+
             log(summary);
             log('✅ All tests completed!');
         }
-        
+
         function testIndividualPage() {
             const pageName = prompt('Enter page name (e.g., products.html):');
             const page = pages.find(p => p.name === pageName);
-            
+
             if (page) {
                 testPage(page).then(() => {
                     updateStats();
@@ -452,7 +452,7 @@ Failed: ${Object.values(testResults).filter(r => r.status === 'fail').length}
                 log(`❌ Page "${pageName}" not found in test list`);
             }
         }
-        
+
         function exportResults() {
             const data = {
                 timestamp: new Date().toISOString(),
@@ -463,7 +463,7 @@ Failed: ${Object.values(testResults).filter(r => r.status === 'fail').length}
                     failed: Object.values(testResults).filter(r => r.status === 'fail').length
                 }
             };
-            
+
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -471,16 +471,16 @@ Failed: ${Object.values(testResults).filter(r => r.status === 'fail').length}
             a.download = `safearea-test-results-${Date.now()}.json`;
             a.click();
             URL.revokeObjectURL(url);
-            
+
             log('📁 Results exported to JSON file');
         }
-        
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             log('🛡️ SafeAreaWrapper test page loaded');
             updateStats();
             renderPageList();
-            
+
             // Auto-run tests if requested
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('autorun') === 'true') {
@@ -500,7 +500,7 @@ Failed: ${Object.values(testResults).filter(r => r.status === 'fail').length}
                         updateViaCache: 'none'
                     });
                     console.log('✅ Service Worker registered:', registration.scope);
-                    
+
                     // Handle updates
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
@@ -510,20 +510,20 @@ Failed: ${Object.values(testResults).filter(r => r.status === 'fail').length}
                             }
                         });
                     });
-                    
+
                     window.dampPWA = { registration };
                 } catch (error) {
                     console.error('❌ Service Worker failed:', error);
                 }
             });
         }
-        
+
         function showUpdateNotification() {
             const notification = document.createElement('div');
             notification.innerHTML = '<div style="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00d4ff,#00ff88);color:#1a1a2e;padding:15px 25px;border-radius:30px;font-weight:600;z-index:10000;display:flex;align-items:center;gap:15px;"><span>🚀</span><span>New version available!</span><button onclick="refreshApp()" style="background:rgba(26,26,46,0.2);color:#1a1a2e;border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;">Update</button><button onclick="this.parentElement.parentElement.remove()" style="background:transparent;border:none;color:#1a1a2e;cursor:pointer;padding:5px;">×</button></div>';
             document.body.appendChild(notification);
         }
-        
+
         function refreshApp() {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistration().then(registration => {
@@ -534,7 +534,7 @@ Failed: ${Object.values(testResults).filter(r => r.status === 'fail').length}
                 });
             }
         }
-        
+
         // PWA Install Prompt
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -542,7 +542,7 @@ Failed: ${Object.values(testResults).filter(r => r.status === 'fail').length}
             deferredPrompt = e;
             setTimeout(showInstallPrompt, 3000);
         });
-        
+
         function showInstallPrompt() {
             if (!deferredPrompt) return;
             const installBtn = document.createElement('button');
@@ -560,10 +560,10 @@ Failed: ${Object.values(testResults).filter(r => r.status === 'fail').length}
             };
             document.body.appendChild(installBtn);
         }
-        
+
         // PWA Styles
         const pwaStyles = document.createElement('style');
         pwaStyles.textContent = '@keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } } @media (display-mode: standalone) { body { padding-top: env(safe-area-inset-top); } }';
         document.head.appendChild(pwaStyles);
     </script></body>
-</html> 
+</html>

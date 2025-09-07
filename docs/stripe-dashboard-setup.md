@@ -189,4 +189,4 @@ const stripe = Stripe('pk_test_51ABC...your_actual_key_here');
 
 ---
 
-**You're all set!** Your DAMP pre-order system is now properly configured with Stripe lookup keys for flexible pricing management. 🚀 
+**You're all set!** Your DAMP pre-order system is now properly configured with Stripe lookup keys for flexible pricing management. 🚀

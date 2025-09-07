@@ -2,7 +2,7 @@
  * DAMP Analytics Service
  * Google Engineering Standards Implementation
  * Global Analytics Service for Easy Integration
- * 
+ *
  * @fileoverview Global analytics service for tracking across all pages
  * @author WeCr8 Solutions LLC
  * @version 2.0.0
@@ -20,11 +20,11 @@ class DAMPAnalyticsService {
     #logger = null;
     #initialized = false;
     #pageLoadTime = null;
-    
+
     constructor() {
         this.#logger = new Logger('AnalyticsService');
         this.#pageLoadTime = Date.now();
-        
+
         // Auto-initialize when DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.#autoInitialize());
@@ -32,7 +32,7 @@ class DAMPAnalyticsService {
             setTimeout(() => this.#autoInitialize(), 0);
         }
     }
-    
+
     /**
      * Initialize analytics service
      * @param {Object} store - Global store instance (optional)
@@ -42,38 +42,38 @@ class DAMPAnalyticsService {
     async initialize(store = null, config = {}) {
         try {
             this.#logger.info('Initializing DAMP Analytics Service');
-            
+
             // Create analytics module
             this.#analytics = new AnalyticsModule(store, {
                 debug: config.debug || this.#isDebugMode(),
                 ...config
             });
-            
+
             // Initialize the module
             await this.#analytics.initialize();
-            
+
             // Track initial page view
             this.trackPageView();
-            
+
             // Set up automatic event tracking
             this.#setupAutomaticTracking();
-            
+
             this.#initialized = true;
             this.#logger.info('DAMP Analytics Service initialized successfully');
-            
+
         } catch (error) {
             this.#logger.error('Analytics service initialization failed', error);
             // Don't throw - analytics should not break the app
         }
     }
-    
+
     /**
      * Track page view with enhanced data
      * @param {Object} pageData - Page-specific data
      */
     trackPageView(pageData = {}) {
         if (!this.#analytics) return;
-        
+
         const enhancedPageData = {
             title: pageData.title || document.title,
             url: pageData.url || window.location.href,
@@ -83,11 +83,11 @@ class DAMPAnalyticsService {
             loadTime: Date.now() - this.#pageLoadTime,
             ...pageData
         };
-        
+
         this.#analytics.trackPageView(enhancedPageData);
         this.#logger.debug('Page view tracked', { url: enhancedPageData.url });
     }
-    
+
     /**
      * Track user interactions (clicks, form submissions, etc.)
      * @param {string} element - Element that was interacted with
@@ -96,7 +96,7 @@ class DAMPAnalyticsService {
      */
     trackInteraction(element, action, data = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.trackCustomEvent('user_interaction', {
             category: 'engagement',
             label: `${element}_${action}`,
@@ -108,7 +108,7 @@ class DAMPAnalyticsService {
             }
         });
     }
-    
+
     /**
      * Track button clicks with context
      * @param {string} buttonName - Button identifier
@@ -116,7 +116,7 @@ class DAMPAnalyticsService {
      */
     trackButtonClick(buttonName, context = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.trackCustomEvent('button_click', {
             category: 'engagement',
             label: buttonName,
@@ -128,10 +128,10 @@ class DAMPAnalyticsService {
                 ...context
             }
         });
-        
+
         this.#logger.debug('Button click tracked', { button: buttonName });
     }
-    
+
     /**
      * Track form interactions
      * @param {string} formName - Form identifier
@@ -140,9 +140,9 @@ class DAMPAnalyticsService {
      */
     trackForm(formName, action, formData = {}) {
         if (!this.#analytics) return;
-        
+
         const eventName = `form_${action}`;
-        
+
         this.#analytics.trackCustomEvent(eventName, {
             category: 'forms',
             label: formName,
@@ -156,7 +156,7 @@ class DAMPAnalyticsService {
             }
         });
     }
-    
+
     /**
      * Track navigation events
      * @param {string} from - Source page/section
@@ -165,7 +165,7 @@ class DAMPAnalyticsService {
      */
     trackNavigation(from, to, method = 'click') {
         if (!this.#analytics) return;
-        
+
         this.#analytics.trackCustomEvent('navigation', {
             category: 'navigation',
             label: `${from}_to_${to}`,
@@ -177,7 +177,7 @@ class DAMPAnalyticsService {
             }
         });
     }
-    
+
     /**
      * Track search events
      * @param {string} query - Search query
@@ -185,7 +185,7 @@ class DAMPAnalyticsService {
      */
     trackSearch(query, results = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.trackCustomEvent('search', {
             category: 'search',
             label: query,
@@ -199,7 +199,7 @@ class DAMPAnalyticsService {
             }
         });
     }
-    
+
     /**
      * Track video/media interactions
      * @param {string} mediaId - Media identifier
@@ -208,7 +208,7 @@ class DAMPAnalyticsService {
      */
     trackMedia(mediaId, action, mediaData = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.trackCustomEvent(`video_${action}`, {
             category: 'media',
             label: mediaId,
@@ -223,7 +223,7 @@ class DAMPAnalyticsService {
             }
         });
     }
-    
+
     /**
      * Track e-commerce events
      * @param {string} eventType - E-commerce event type
@@ -231,11 +231,11 @@ class DAMPAnalyticsService {
      */
     trackEcommerce(eventType, ecommerceData = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.trackEcommerce(eventType, ecommerceData);
         this.#logger.info('E-commerce event tracked', { type: eventType });
     }
-    
+
     /**
      * Track authentication events
      * @param {string} method - Auth method (signup, login, logout)
@@ -243,11 +243,11 @@ class DAMPAnalyticsService {
      */
     trackAuth(method, userData = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.trackAuthentication(method, userData);
         this.#logger.info('Auth event tracked', { method });
     }
-    
+
     /**
      * Track DAMP device events
      * @param {string} eventType - Device event type
@@ -255,11 +255,11 @@ class DAMPAnalyticsService {
      */
     trackDevice(eventType, deviceData = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.trackDeviceEvent(eventType, deviceData);
         this.#logger.info('Device event tracked', { type: eventType });
     }
-    
+
     /**
      * Track subscription events
      * @param {string} eventType - Subscription event type
@@ -267,21 +267,21 @@ class DAMPAnalyticsService {
      */
     trackSubscription(eventType, subscriptionData = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.trackSubscription(eventType, subscriptionData);
         this.#logger.info('Subscription event tracked', { type: eventType });
     }
-    
+
     /**
      * Track performance metrics
      * @param {Object} performanceData - Performance data
      */
     trackPerformance(performanceData = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.trackPerformance(performanceData);
     }
-    
+
     /**
      * Track errors
      * @param {Error} error - Error object
@@ -289,7 +289,7 @@ class DAMPAnalyticsService {
      */
     trackError(error, context = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.trackError(error, {
             page: window.location.pathname,
             userAgent: navigator.userAgent,
@@ -297,50 +297,50 @@ class DAMPAnalyticsService {
             ...context
         });
     }
-    
+
     /**
      * Set user properties
      * @param {Object} properties - User properties
      */
     setUserProperties(properties = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.setUserProperties(properties);
     }
-    
+
     /**
      * Set user ID
      * @param {string} userId - User ID
      */
     setUserId(userId) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.setUserId(userId);
     }
-    
+
     /**
      * Update consent settings
      * @param {Object} consentSettings - Consent settings
      */
     updateConsent(consentSettings = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.updateConsent(consentSettings);
         this.#logger.info('Analytics consent updated', consentSettings);
     }
-    
+
     /**
      * Get analytics metrics
      * @returns {Object} Analytics metrics
      */
     getMetrics() {
         if (!this.#analytics) return null;
-        
+
         return this.#analytics.getMetrics();
     }
-    
+
     // Private methods
-    
+
     /**
      * @private
      */
@@ -351,17 +351,17 @@ class DAMPAnalyticsService {
             if (window.dampStore) {
                 store = window.dampStore;
             }
-            
+
             // Initialize with default configuration
             await this.initialize(store, {
                 debug: this.#isDebugMode()
             });
-            
+
         } catch (error) {
             this.#logger.warn('Auto-initialization failed', error);
         }
     }
-    
+
     /**
      * @private
      */
@@ -372,7 +372,7 @@ class DAMPAnalyticsService {
             if (element) {
                 const analyticsData = element.dataset.analytics;
                 const elementType = element.tagName.toLowerCase();
-                
+
                 this.trackInteraction(elementType, 'click', {
                     analytics_data: analyticsData,
                     element_id: element.id,
@@ -381,14 +381,14 @@ class DAMPAnalyticsService {
                 });
             }
         });
-        
+
         // Track form submissions
         document.addEventListener('submit', (event) => {
             const form = event.target;
             if (form.tagName === 'FORM') {
                 const formName = form.name || form.id || 'unnamed_form';
                 const fieldCount = form.querySelectorAll('input, textarea, select').length;
-                
+
                 this.trackForm(formName, 'submit', {
                     fieldCount,
                     action: form.action,
@@ -396,7 +396,7 @@ class DAMPAnalyticsService {
                 });
             }
         });
-        
+
         // Track outbound links
         document.addEventListener('click', (event) => {
             const link = event.target.closest('a');
@@ -414,7 +414,7 @@ class DAMPAnalyticsService {
                 }
             }
         });
-        
+
         // Track file downloads
         document.addEventListener('click', (event) => {
             const link = event.target.closest('a');
@@ -432,29 +432,29 @@ class DAMPAnalyticsService {
                 }
             }
         });
-        
+
         // Track scroll depth automatically
         this.#setupScrollTracking();
-        
+
         // Track page performance
         this.#setupPerformanceTracking();
     }
-    
+
     /**
      * @private
      */
     #setupScrollTracking() {
         let maxScroll = 0;
         const scrollMilestones = [25, 50, 75, 90];
-        
+
         const trackScroll = () => {
             const scrollPercent = Math.round(
                 (window.scrollY + window.innerHeight) / document.body.scrollHeight * 100
             );
-            
+
             if (scrollPercent > maxScroll) {
                 maxScroll = scrollPercent;
-                
+
                 scrollMilestones.forEach(milestone => {
                     if (scrollPercent >= milestone && maxScroll < milestone + 5) {
                         this.trackCustomEvent('scroll_depth', {
@@ -471,14 +471,14 @@ class DAMPAnalyticsService {
                 });
             }
         };
-        
+
         let scrollTimeout;
         window.addEventListener('scroll', () => {
             clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(trackScroll, 1000);
         });
     }
-    
+
     /**
      * @private
      */
@@ -499,15 +499,15 @@ class DAMPAnalyticsService {
             });
         }
     }
-    
+
     /**
      * @private
      */
     #isDebugMode() {
-        return localStorage.getItem('dampDebug') === 'true' || 
+        return localStorage.getItem('dampDebug') === 'true' ||
                new URLSearchParams(window.location.search).get('debug') === 'true';
     }
-    
+
     /**
      * @private
      */
@@ -520,7 +520,7 @@ class DAMPAnalyticsService {
         }
         return 'unknown';
     }
-    
+
     /**
      * @private
      */
@@ -528,7 +528,7 @@ class DAMPAnalyticsService {
         const hash = window.location.hash;
         return hash ? hash.substring(1) : null;
     }
-    
+
     /**
      * @private
      */
@@ -541,7 +541,7 @@ class DAMPAnalyticsService {
             return null;
         }
     }
-    
+
     /**
      * @private
      */
@@ -556,7 +556,7 @@ class DAMPAnalyticsService {
             return null;
         }
     }
-    
+
     /**
      * Expose custom event tracking method
      * @param {string} eventName - Event name
@@ -564,10 +564,10 @@ class DAMPAnalyticsService {
      */
     trackCustomEvent(eventName, eventData = {}) {
         if (!this.#analytics) return;
-        
+
         this.#analytics.trackCustomEvent(eventName, eventData);
     }
-    
+
     /**
      * Check if analytics is initialized
      * @returns {boolean} Initialization status
@@ -575,7 +575,7 @@ class DAMPAnalyticsService {
     get initialized() {
         return this.#initialized && this.#analytics?.initialized;
     }
-    
+
     /**
      * Get analytics instance (for advanced usage)
      * @returns {AnalyticsModule} Analytics module instance
@@ -610,4 +610,4 @@ export const trackSubscription = (type, data) => dampAnalytics.trackSubscription
 export const trackError = (error, context) => dampAnalytics.trackError(error, context);
 export const setUserProperties = (properties) => dampAnalytics.setUserProperties(properties);
 export const setUserId = (userId) => dampAnalytics.setUserId(userId);
-export const updateConsent = (settings) => dampAnalytics.updateConsent(settings); 
+export const updateConsent = (settings) => dampAnalytics.updateConsent(settings);

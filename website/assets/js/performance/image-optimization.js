@@ -13,7 +13,7 @@ class DAMPImageOptimizer {
         this.imageCache = new Map();
         this.loadingImages = new Map();
         this.observer = null;
-        
+
         this.init();
     }
 
@@ -22,7 +22,7 @@ class DAMPImageOptimizer {
         this.processExistingImages();
         this.setupDynamicImageHandling();
         this.setupResponsiveImages();
-        
+
         console.log('🖼️ DAMP Image Optimizer initialized', {
             webpSupport: this.webpSupport,
             avifSupport: this.avifSupport
@@ -104,7 +104,7 @@ class DAMPImageOptimizer {
 
         // Add loading class
         img.classList.add('lazy-loading');
-        
+
         // Observe for intersection
         if (this.observer) {
             this.observer.observe(img);
@@ -124,7 +124,7 @@ class DAMPImageOptimizer {
         try {
             const originalSrc = img.dataset.src || img.src;
             const optimizedSrc = await this.getOptimizedImageSrc(originalSrc);
-            
+
             // Preload the image
             const preloadImg = new Image();
             preloadImg.onload = () => {
@@ -132,13 +132,13 @@ class DAMPImageOptimizer {
                 img.src = optimizedSrc;
                 img.classList.remove('lazy-loading');
                 img.classList.add('lazy-loaded');
-                
+
                 // Remove data-src to prevent reprocessing
                 delete img.dataset.src;
-                
+
                 // Apply fade-in effect
                 this.applyFadeInEffect(img);
-                
+
                 this.lazyImages.add(img);
                 this.loadingImages.delete(img);
             };
@@ -181,7 +181,7 @@ class DAMPImageOptimizer {
 
         // Cache the result
         this.imageCache.set(src, optimizedSrc);
-        
+
         return optimizedSrc;
     }
 
@@ -209,7 +209,7 @@ class DAMPImageOptimizer {
         // Add responsive sizing parameters if supported
         const devicePixelRatio = window.devicePixelRatio || 1;
         const viewportWidth = window.innerWidth;
-        
+
         // Calculate optimal image width
         let targetWidth = Math.min(viewportWidth * devicePixelRatio, 1920);
         targetWidth = Math.ceil(targetWidth / 100) * 100; // Round to nearest 100
@@ -229,7 +229,7 @@ class DAMPImageOptimizer {
     generatePlaceholder(img) {
         const width = img.getAttribute('width') || 400;
         const height = img.getAttribute('height') || 300;
-        
+
         // Generate a simple SVG placeholder
         const svg = `
             <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
@@ -245,7 +245,7 @@ class DAMPImageOptimizer {
                 </text>
             </svg>
         `;
-        
+
         return `data:image/svg+xml;base64,${btoa(svg)}`;
     }
 
@@ -256,7 +256,7 @@ class DAMPImageOptimizer {
     applyFadeInEffect(img) {
         img.style.opacity = '0';
         img.style.transition = 'opacity 0.3s ease-in-out';
-        
+
         // Trigger fade-in
         requestAnimationFrame(() => {
             img.style.opacity = '1';
@@ -285,7 +285,7 @@ class DAMPImageOptimizer {
             if (!img.dataset.originalSrc) {
                 img.dataset.originalSrc = img.src;
             }
-            
+
             const optimizedSrc = this.addResponsiveSizing(img.dataset.originalSrc);
             if (optimizedSrc !== img.src) {
                 img.src = optimizedSrc;
@@ -320,7 +320,7 @@ class DAMPImageOptimizer {
     processDynamicImages(element) {
         // Process images in the new element
         const images = element.tagName === 'IMG' ? [element] : element.querySelectorAll('img');
-        
+
         images.forEach(img => {
             if (img.dataset.src && !this.lazyImages.has(img)) {
                 this.setupLazyImage(img);
@@ -332,9 +332,9 @@ class DAMPImageOptimizer {
 
     optimizeImage(img) {
         if (img.dataset.optimized) return;
-        
+
         img.dataset.optimized = 'true';
-        
+
         // Add responsive attribute if not present
         if (!img.dataset.responsive) {
             img.dataset.responsive = 'true';

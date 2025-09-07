@@ -64,21 +64,21 @@ class FirebaseFallbackLoader {
         }
 
         // Dynamic import with timeout
-        const timeout = new Promise((_, reject) => 
+        const timeout = new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Module load timeout')), 10000)
         );
 
         const moduleLoad = import('/assets/js/firebase-modern-setup.js');
-        
+
         await Promise.race([moduleLoad, timeout]);
-        
+
         // Wait a bit for initialization
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         if (!window.firebaseServices) {
             throw new Error('Firebase services not initialized after module load');
         }
-        
+
         return window.firebaseServices;
     }
 
@@ -220,25 +220,25 @@ class FirebaseFallbackLoader {
 
     createMockServices() {
         console.log('🔄 Creating mock Firebase services');
-        
+
         const mockAuthService = {
             currentUser: null,
             listeners: [],
-            
+
             async signUpWithEmail(email, password, userData = {}) {
                 console.log('Mock signup:', { email, userData });
                 return { success: false, message: 'Firebase services are currently unavailable. Please try again later.' };
             },
-            
+
             async signInWithEmail(email, password) {
                 console.log('Mock signin:', { email });
                 return { success: false, message: 'Firebase services are currently unavailable. Please try again later.' };
             },
-            
+
             async signOut() {
                 return { success: true, message: 'Signed out (mock).' };
             },
-            
+
             onAuthStateChange(callback) {
                 this.listeners.push(callback);
                 setTimeout(() => callback(null), 0);

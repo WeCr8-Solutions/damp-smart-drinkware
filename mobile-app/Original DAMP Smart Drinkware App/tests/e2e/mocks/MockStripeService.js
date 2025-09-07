@@ -1,13 +1,13 @@
 /**
  * Mock Stripe Service
- * 
+ *
  * Provides mock implementation of Stripe checkout for testing
  */
 
 export class MockStripeService {
   constructor(page) {
     this.page = page;
-    
+
     // Selectors
     this.checkoutModalSelector = '[data-testid="stripe-checkout-modal"]';
     this.cardNumberInputSelector = '[data-testid="card-number-input"]';
@@ -104,11 +104,11 @@ export class MockStripeService {
                     window.location.href = '/store/success';
                   }
                 });
-                
+
                 document.querySelector('[data-testid="cancel-button"]').addEventListener('click', function() {
                   window.location.href = '/store';
                 });
-                
+
                 document.querySelector('[data-testid="retry-button"]').addEventListener('click', function() {
                   document.querySelector('[data-testid="payment-error"]').style.display = 'none';
                   document.querySelector('[data-testid="retry-button"]').style.display = 'none';
@@ -167,7 +167,7 @@ export class MockStripeService {
     await this.page.fill(this.cardExpiryInputSelector, expiry);
     await this.page.fill(this.cardCvcInputSelector, cvc);
     await this.page.fill(this.cardNameInputSelector, name);
-    
+
     if (email) {
       await this.page.fill(this.emailInputSelector, email);
     }

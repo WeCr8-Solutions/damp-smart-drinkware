@@ -1,6 +1,6 @@
 /**
  * DAMP Smart Drinkware - Store Authentication Integration
- * 
+ *
  * Handles authentication flow for e-commerce, checkout, and order management
  */
 
@@ -9,14 +9,14 @@ class DAMPStoreAuth {
     this.authService = null;
     this.currentUser = null;
     this.guestCheckoutData = null;
-    
+
     this.init();
   }
 
   async init() {
     // Wait for Firebase services
     await this.waitForAuthService();
-    
+
     this.setupAuthStateListener();
     this.setupStoreEventListeners();
     this.updateStoreUI();
@@ -41,7 +41,7 @@ class DAMPStoreAuth {
       this.authService.onAuthStateChange((user) => {
         this.currentUser = user;
         this.updateStoreUI();
-        
+
         // If user signs in during checkout, merge guest data
         if (user && this.guestCheckoutData) {
           this.mergeGuestCheckoutData();
@@ -101,7 +101,7 @@ class DAMPStoreAuth {
 
   updateProductPages() {
     const user = this.currentUser;
-    
+
     // Update pre-order buttons based on auth state
     const preorderBtns = document.querySelectorAll('.preorder-btn');
     preorderBtns.forEach(btn => {
@@ -133,11 +133,11 @@ class DAMPStoreAuth {
     if (!checkoutForm) return;
 
     const user = this.currentUser;
-    
+
     if (user) {
       // Pre-fill user data
       this.prefillCheckoutForm(user);
-      
+
       // Show account benefits
       this.showCheckoutAccountBenefits();
     } else {
@@ -151,7 +151,7 @@ class DAMPStoreAuth {
     if (!cartSummary) return;
 
     const user = this.currentUser;
-    
+
     if (user) {
       // Show saved items, wishlists, etc.
       this.addAccountCartFeatures(cartSummary);
@@ -163,7 +163,7 @@ class DAMPStoreAuth {
     if (!orderHistory) return;
 
     const user = this.currentUser;
-    
+
     if (user) {
       this.loadUserOrders();
     } else {
@@ -221,7 +221,7 @@ class DAMPStoreAuth {
 
   async handleCheckout(button) {
     const cartItems = this.getCartItems();
-    
+
     if (cartItems.length === 0) {
       this.showError('Your cart is empty');
       return;
@@ -243,7 +243,7 @@ class DAMPStoreAuth {
         <div class="modal-overlay"></div>
         <div class="modal-content preorder-context">
           <button class="modal-close" onclick="this.closest('.auth-modal').remove()">&times;</button>
-          
+
           <div class="preorder-header">
             <div class="product-preview">
               <img src="/assets/images/products/${productId}/${productId}.png" alt="${productName}" class="product-image">
@@ -253,7 +253,7 @@ class DAMPStoreAuth {
               </div>
             </div>
           </div>
-          
+
           <div class="auth-benefits">
             <h3>Sign in to pre-order</h3>
             <div class="benefits-list">
@@ -275,7 +275,7 @@ class DAMPStoreAuth {
               </div>
             </div>
           </div>
-          
+
           <div class="auth-actions">
             <button class="auth-btn primary" onclick="dampAuth.showSignIn(); this.closest('.auth-modal').remove();">
               Sign In & Pre-Order
@@ -290,19 +290,19 @@ class DAMPStoreAuth {
         </div>
       </div>
     `;
-    
+
     document.body.insertAdjacentHTML('beforeend', modalHTML);
   }
 
   showCheckoutAuthPrompt(cartItems) {
     const totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    
+
     const modalHTML = `
       <div id="checkoutAuthModal" class="auth-modal">
         <div class="modal-overlay"></div>
         <div class="modal-content checkout-context">
           <button class="modal-close" onclick="this.closest('.auth-modal').remove()">&times;</button>
-          
+
           <div class="checkout-header">
             <h3>Ready to checkout?</h3>
             <div class="order-summary">
@@ -310,7 +310,7 @@ class DAMPStoreAuth {
               <p class="total-amount">$${totalAmount.toFixed(2)}</p>
             </div>
           </div>
-          
+
           <div class="checkout-options">
             <div class="option-card recommended">
               <div class="option-header">
@@ -327,7 +327,7 @@ class DAMPStoreAuth {
                 Create Account & Checkout
               </button>
             </div>
-            
+
             <div class="option-card">
               <div class="option-header">
                 <h4>Sign In</h4>
@@ -337,7 +337,7 @@ class DAMPStoreAuth {
                 Sign In & Checkout
               </button>
             </div>
-            
+
             <div class="option-card guest">
               <div class="option-header">
                 <h4>Guest Checkout</h4>
@@ -351,7 +351,7 @@ class DAMPStoreAuth {
         </div>
       </div>
     `;
-    
+
     document.body.insertAdjacentHTML('beforeend', modalHTML);
   }
 
@@ -417,7 +417,7 @@ class DAMPStoreAuth {
 
   async processGuestCheckout() {
     const cartItems = this.getCartItems();
-    
+
     // Store guest checkout data
     this.guestCheckoutData = {
       type: 'checkout',
@@ -482,7 +482,7 @@ class DAMPStoreAuth {
       if (this.currentUser) {
         const userProfile = await this.authService.getUserProfile();
         checkoutData.customer_email = this.currentUser.email;
-        
+
         if (userProfile?.profile) {
           checkoutData.shipping = {
             name: `${userProfile.profile.firstName} ${userProfile.profile.lastName}`,
@@ -501,7 +501,7 @@ class DAMPStoreAuth {
       });
 
       const { sessionId } = await response.json();
-      
+
       // Redirect to Stripe Checkout
       const stripe = window.Stripe(this.getStripePublicKey());
       await stripe.redirectToCheckout({ sessionId });
@@ -517,7 +517,7 @@ class DAMPStoreAuth {
 
     try {
       const guestData = this.guestCheckoutData;
-      
+
       if (guestData.type === 'preorder') {
         // Convert guest pre-order to authenticated pre-order
         await this.processPreOrder(guestData.productId, guestData.productName, guestData.price);
@@ -530,7 +530,7 @@ class DAMPStoreAuth {
 
       // Clear guest data
       this.guestCheckoutData = null;
-      
+
       this.showMessage('success', 'Account Linked!', 'Your previous items have been saved to your account.');
 
     } catch (error) {
@@ -541,7 +541,7 @@ class DAMPStoreAuth {
   async prefillCheckoutForm(user) {
     try {
       const userProfile = await this.authService.getUserProfile();
-      
+
       if (!userProfile?.profile) return;
 
       const form = document.querySelector('#checkoutForm');
@@ -579,7 +579,7 @@ class DAMPStoreAuth {
 
       // Create recommendations based on user data
       const recommendations = this.generateRecommendations(votingHistory, orderHistory);
-      
+
       const recommendationsContainer = document.querySelector('#personalizedRecommendations');
       if (recommendationsContainer && recommendations.length > 0) {
         recommendationsContainer.innerHTML = `
@@ -611,7 +611,7 @@ class DAMPStoreAuth {
     try {
       const orders = await this.authService.getUserOrders();
       const orderHistory = document.querySelector('#orderHistory');
-      
+
       if (!orderHistory) return;
 
       if (orders.length === 0) {
@@ -670,20 +670,20 @@ class DAMPStoreAuth {
   async addItemToCart(item) {
     const cart = this.getCartItems();
     const existingItem = cart.find(cartItem => cartItem.id === item.id);
-    
+
     if (existingItem) {
       existingItem.quantity += item.quantity;
     } else {
       cart.push(item);
     }
-    
+
     localStorage.setItem('dampCart', JSON.stringify(cart));
     this.updateCartUI();
   }
 
   async saveCartToAccount() {
     if (!this.currentUser) return;
-    
+
     const cart = this.getCartItems();
     // Save cart to user's Firestore document for cross-device sync
     await this.authService.updateUserProfile({
@@ -696,13 +696,13 @@ class DAMPStoreAuth {
     const cart = this.getCartItems();
     const cartCount = document.querySelector('.cart-count');
     const cartItems = document.querySelector('.cart-items');
-    
+
     if (cartCount) {
       const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
       cartCount.textContent = totalItems;
       cartCount.style.display = totalItems > 0 ? 'block' : 'none';
     }
-    
+
     if (cartItems) {
       // Update cart display
       this.renderCartItems(cart);
@@ -717,7 +717,7 @@ class DAMPStoreAuth {
       'cupSleeve': '2024-07-01',
       'babyBottle': '2024-08-01'
     };
-    
+
     return deliveryTimes[productId] || '2024-07-01';
   }
 
@@ -729,9 +729,9 @@ class DAMPStoreAuth {
       { id: 'cupSleeve', name: 'Cup Sleeve', price: 39.99, category: 'sleeve' },
       { id: 'babyBottle', name: 'Baby Bottle', price: 79.99, category: 'baby' }
     ];
-    
+
     const recommendations = [];
-    
+
     // Recommend based on voting history
     votingHistory.forEach(vote => {
       const product = products.find(p => p.id === vote.productId);
@@ -742,7 +742,7 @@ class DAMPStoreAuth {
         });
       }
     });
-    
+
     // Add complementary products
     if (recommendations.length < 3) {
       products.forEach(product => {
@@ -754,7 +754,7 @@ class DAMPStoreAuth {
         }
       });
     }
-    
+
     return recommendations.slice(0, 3);
   }
 
@@ -787,7 +787,7 @@ class DAMPStoreAuth {
     if (typeof gtag !== 'undefined') {
       gtag('event', eventName, parameters);
     }
-    
+
     if (window.firebaseServices?.analyticsService) {
       window.firebaseServices.analyticsService.trackEvent(eventName, parameters);
     }
@@ -803,12 +803,12 @@ class DAMPStoreAuth {
   }
 
   showPreOrderSuccess(productName) {
-    this.showMessage('success', 'Pre-Order Confirmed!', 
+    this.showMessage('success', 'Pre-Order Confirmed!',
       `Thank you for pre-ordering ${productName}. You'll receive updates as we prepare your order.`);
   }
 
   showAddToCartSuccess(productName) {
-    this.showMessage('success', 'Added to Cart!', 
+    this.showMessage('success', 'Added to Cart!',
       `${productName} has been added to your cart.`);
   }
 
@@ -822,13 +822,13 @@ class DAMPStoreAuth {
     try {
       const orders = await this.authService.getUserOrders();
       const order = orders.find(o => o.id === orderId);
-      
+
       if (order && order.items) {
         // Add all items from the order back to cart
         for (const item of order.items) {
           await this.addItemToCart(item);
         }
-        
+
         this.showMessage('success', 'Items Added!', 'Previous order items have been added to your cart.');
         window.location.href = '/pages/cart.html';
       }
@@ -845,4 +845,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Export for module usage
-export default DAMPStoreAuth; 
+export default DAMPStoreAuth;

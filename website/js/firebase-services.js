@@ -1,15 +1,15 @@
 // Firebase services for DAMP Smart Drinkware
-import { 
-  collection, 
-  doc, 
-  getDocs, 
-  getDoc, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  orderBy,
   limit,
   onSnapshot,
   serverTimestamp,
@@ -17,19 +17,19 @@ import {
   setDoc,
   writeBatch
 } from 'firebase/firestore';
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut, 
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
   updateProfile
 } from 'firebase/auth';
-import { 
-  ref, 
-  uploadBytes, 
-  getDownloadURL, 
-  deleteObject 
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject
 } from 'firebase/storage';
 import { auth, db, storage, analytics } from './firebase-config.js';
 import { logEvent } from 'firebase/analytics';
@@ -47,7 +47,7 @@ const firebaseServices = {
   analytics,
   functions,
   storage,
-  
+
   // Services will be added below after they are defined
   authService,
   initializeFirebaseServices
@@ -100,8 +100,8 @@ export const statsService = {
         ...updates,
         lastUpdated: serverTimestamp()
       });
-      
-      logEvent(analytics, 'admin_stats_update', { 
+
+      logEvent(analytics, 'admin_stats_update', {
         admin_uid: user.uid,
         updates: Object.keys(updates)
       });
@@ -256,7 +256,7 @@ export const votingService = {
         });
       });
     });
-    
+
     return authenticatedUnsubscribe; // Return function to unsubscribe from both
   },
 
@@ -302,7 +302,7 @@ export const votingService = {
       // Recalculate percentages
       await this.recalculatePercentages();
 
-      logEvent(analytics, 'authenticated_vote_submitted', { 
+      logEvent(analytics, 'authenticated_vote_submitted', {
         product: productId,
         user_id: user.uid
       });
@@ -318,7 +318,7 @@ export const votingService = {
     try {
       // Create unique session identifier
       const sessionId = browserFingerprint || this.generateBrowserFingerprint();
-      
+
       // Check if this browser/session has already voted
       const publicVoteDoc = await getDoc(doc(db, 'publicVotes', sessionId));
       if (publicVoteDoc.exists() && publicVoteDoc.data().hasVoted) {
@@ -351,7 +351,7 @@ export const votingService = {
       // Recalculate public percentages
       await this.recalculatePublicPercentages();
 
-      logEvent(analytics, 'public_vote_submitted', { 
+      logEvent(analytics, 'public_vote_submitted', {
         product: productId,
         session_id: sessionId
       });
@@ -376,7 +376,7 @@ export const votingService = {
     ctx.textBaseline = 'top';
     ctx.font = '14px Arial';
     ctx.fillText('DAMP Browser Fingerprint', 2, 2);
-    
+
     const fingerprint = [
       navigator.userAgent,
       navigator.language,
@@ -384,7 +384,7 @@ export const votingService = {
       new Date().getTimezoneOffset(),
       canvas.toDataURL()
     ].join('|');
-    
+
     // Create hash of fingerprint
     let hash = 0;
     for (let i = 0; i < fingerprint.length; i++) {
@@ -392,14 +392,14 @@ export const votingService = {
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
-    
+
     return 'pub_' + Math.abs(hash).toString(36);
   },
 
   // Check if user has voted (authenticated)
   async hasUserVoted(user) {
     if (!user) return false;
-    
+
     try {
       const userVoteDoc = await getDoc(doc(db, 'userVotes', user.uid));
       return userVoteDoc.exists() && userVoteDoc.data().hasVoted;
@@ -412,7 +412,7 @@ export const votingService = {
   // Get user's vote (authenticated)
   async getUserVote(user) {
     if (!user) return null;
-    
+
     try {
       const userVoteDoc = await getDoc(doc(db, 'userVotes', user.uid));
       return userVoteDoc.exists() ? userVoteDoc.data() : null;
@@ -426,7 +426,7 @@ export const votingService = {
   async hasPublicVoted(browserFingerprint) {
     try {
       const sessionId = browserFingerprint || this.generateBrowserFingerprint();
-      
+
       // Check localStorage first for immediate feedback
       const localVote = localStorage.getItem('damp_public_vote');
       if (localVote) {
@@ -440,7 +440,7 @@ export const votingService = {
           localStorage.removeItem('damp_public_vote');
         }
       }
-      
+
       // Check Firebase
       const publicVoteDoc = await getDoc(doc(db, 'publicVotes', sessionId));
       return publicVoteDoc.exists() && publicVoteDoc.data().hasVoted;
@@ -454,7 +454,7 @@ export const votingService = {
   async getPublicVote(browserFingerprint) {
     try {
       const sessionId = browserFingerprint || this.generateBrowserFingerprint();
-      
+
       // Check localStorage first
       const localVote = localStorage.getItem('damp_public_vote');
       if (localVote) {
@@ -467,7 +467,7 @@ export const votingService = {
           localStorage.removeItem('damp_public_vote');
         }
       }
-      
+
       // Check Firebase
       const publicVoteDoc = await getDoc(doc(db, 'publicVotes', sessionId));
       return publicVoteDoc.exists() ? { ...publicVoteDoc.data(), source: 'firebase' } : null;
@@ -485,7 +485,7 @@ export const votingService = {
 
       const data = votingDoc.data();
       const totalVotes = data.totalVotes || 0;
-      
+
       if (totalVotes === 0) return;
 
       const updates = {};
@@ -513,7 +513,7 @@ export const votingService = {
 
       const data = publicVotingDoc.data();
       const totalVotes = data.totalVotes || 0;
-      
+
       if (totalVotes === 0) return;
 
       const updates = {};
@@ -554,7 +554,7 @@ export const votingService = {
       // Clear all authenticated user votes
       const userVotesQuery = query(collection(db, 'userVotes'));
       const userVotesSnapshot = await getDocs(userVotesQuery);
-      
+
       const batch = writeBatch(db);
       userVotesSnapshot.docs.forEach(doc => {
         batch.delete(doc.ref);
@@ -563,7 +563,7 @@ export const votingService = {
 
       await this.recalculatePercentages();
 
-      logEvent(analytics, 'admin_authenticated_voting_reset', { 
+      logEvent(analytics, 'admin_authenticated_voting_reset', {
         admin_uid: user.uid,
         vote_type: 'authenticated'
       });
@@ -595,7 +595,7 @@ export const votingService = {
       // Clear all public votes
       const publicVotesQuery = query(collection(db, 'publicVotes'));
       const publicVotesSnapshot = await getDocs(publicVotesQuery);
-      
+
       const batch = writeBatch(db);
       publicVotesSnapshot.docs.forEach(doc => {
         batch.delete(doc.ref);
@@ -604,7 +604,7 @@ export const votingService = {
 
       await this.recalculatePublicPercentages();
 
-      logEvent(analytics, 'admin_public_voting_reset', { 
+      logEvent(analytics, 'admin_public_voting_reset', {
         admin_uid: user.uid,
         vote_type: 'public'
       });
@@ -628,7 +628,7 @@ export const votingService = {
         this.resetPublicVoting(user)
       ]);
 
-      logEvent(analytics, 'admin_all_voting_reset', { 
+      logEvent(analytics, 'admin_all_voting_reset', {
         admin_uid: user.uid,
         vote_type: 'both'
       });
@@ -655,7 +655,7 @@ export const votingService = {
         lastUpdated: serverTimestamp()
       });
 
-      logEvent(analytics, 'admin_authenticated_voting_toggle', { 
+      logEvent(analytics, 'admin_authenticated_voting_toggle', {
         admin_uid: user.uid,
         new_status: !currentStatus,
         vote_type: 'authenticated'
@@ -685,7 +685,7 @@ export const votingService = {
         lastUpdated: serverTimestamp()
       });
 
-      logEvent(analytics, 'admin_public_voting_toggle', { 
+      logEvent(analytics, 'admin_public_voting_toggle', {
         admin_uid: user.uid,
         new_status: !currentStatus,
         vote_type: 'public'
@@ -718,7 +718,7 @@ export const votingService = {
         })
       ]);
 
-      logEvent(analytics, 'admin_all_voting_toggle', { 
+      logEvent(analytics, 'admin_all_voting_toggle', {
         admin_uid: user.uid,
         new_status: newStatus,
         vote_type: 'both'
@@ -778,7 +778,7 @@ export const adminService = {
         roleUpdatedBy: user.uid
       });
 
-      logEvent(analytics, 'admin_role_update', { 
+      logEvent(analytics, 'admin_role_update', {
         admin_uid: user.uid,
         target_user: targetUserId,
         new_role: newRole
@@ -817,7 +817,7 @@ export const deviceService = {
         lastSeen: serverTimestamp(),
         status: 'active'
       });
-      
+
       logEvent(analytics, 'device_added', { device_type: deviceData.type });
       return docRef.id;
     } catch (error) {
@@ -834,7 +834,7 @@ export const deviceService = {
         where('ownerId', '==', auth.currentUser.uid),
         orderBy('lastSeen', 'desc')
       );
-      
+
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
@@ -851,7 +851,7 @@ export const deviceService = {
         ...updateData,
         lastUpdated: serverTimestamp()
       });
-      
+
       logEvent(analytics, 'device_updated');
     } catch (error) {
       console.error('Update device error:', error);
@@ -862,12 +862,12 @@ export const deviceService = {
   // Listen to device changes
   onDeviceChanges(callback) {
     if (!auth.currentUser) return;
-    
+
     const q = query(
       collection(db, 'devices'),
       where('ownerId', '==', auth.currentUser.uid)
     );
-    
+
     return onSnapshot(q, callback);
   }
 };
@@ -883,13 +883,13 @@ export const preOrderService = {
         createdAt: serverTimestamp(),
         status: 'pending'
       });
-      
+
       logEvent(analytics, 'purchase', {
         transaction_id: docRef.id,
         value: orderData.total,
         currency: 'USD'
       });
-      
+
       return docRef.id;
     } catch (error) {
       console.error('Create pre-order error:', error);
@@ -901,13 +901,13 @@ export const preOrderService = {
   async getUserPreOrders() {
     try {
       if (!auth.currentUser) return [];
-      
+
       const q = query(
         collection(db, 'preorders'),
         where('userId', '==', auth.currentUser.uid),
         orderBy('createdAt', 'desc')
       );
-      
+
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
@@ -936,7 +936,7 @@ export const productService = {
     try {
       const docRef = doc(db, 'products', productId);
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists()) {
         return { id: docSnap.id, ...docSnap.data() };
       } else {
@@ -978,10 +978,10 @@ export const subscriptionService = {
   async getUserSubscription() {
     try {
       if (!auth.currentUser) return null;
-      
+
       const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
       const userData = userDoc.data();
-      
+
       return {
         tier: userData?.subscription?.tier || 'free',
         status: userData?.subscription?.status || 'active',
@@ -1000,7 +1000,7 @@ export const subscriptionService = {
   async updateSubscription(subscriptionData) {
     try {
       if (!auth.currentUser) throw new Error('User not authenticated');
-      
+
       await updateDoc(doc(db, 'users', auth.currentUser.uid), {
         'subscription.tier': subscriptionData.tier,
         'subscription.status': subscriptionData.status,
@@ -1008,7 +1008,7 @@ export const subscriptionService = {
         'subscription.expiresAt': subscriptionData.expiresAt,
         'subscription.updatedAt': serverTimestamp()
       });
-      
+
       logEvent(analytics, 'subscription_updated', {
         tier: subscriptionData.tier,
         status: subscriptionData.status
@@ -1024,7 +1024,7 @@ export const subscriptionService = {
     try {
       const subscription = await this.getUserSubscription();
       const { canPerformAction } = await import('./subscription-config.js');
-      
+
       return canPerformAction(subscription.tier, action, currentCount);
     } catch (error) {
       console.error('Can perform action error:', error);
@@ -1037,7 +1037,7 @@ export const subscriptionService = {
     try {
       const subscription = await this.getUserSubscription();
       const { getUpgradeSuggestion } = await import('./subscription-config.js');
-      
+
       return getUpgradeSuggestion(
         subscription.tier,
         subscription.deviceCount,
@@ -1056,30 +1056,30 @@ export const safeZoneService = {
   async addSafeZone(zoneData) {
     try {
       if (!auth.currentUser) throw new Error('User not authenticated');
-      
+
       // Check if user can add more zones
       const canAdd = await subscriptionService.canPerformAction('add_safe_zone', zoneData.currentZoneCount || 0);
       if (!canAdd) {
         throw new Error('Zone limit reached for current subscription tier');
       }
-      
+
       const docRef = await addDoc(collection(db, 'safe_zones'), {
         ...zoneData,
         userId: auth.currentUser.uid,
         createdAt: serverTimestamp(),
         active: true
       });
-      
+
       // Update user stats
       await updateDoc(doc(db, 'users', auth.currentUser.uid), {
         'stats.safeZonesCreated': increment(1)
       });
-      
+
       logEvent(analytics, 'safe_zone_added', {
         zone_type: zoneData.type,
         zone_name: zoneData.name
       });
-      
+
       return docRef.id;
     } catch (error) {
       console.error('Add safe zone error:', error);
@@ -1091,14 +1091,14 @@ export const safeZoneService = {
   async getUserSafeZones() {
     try {
       if (!auth.currentUser) return [];
-      
+
       const q = query(
         collection(db, 'safe_zones'),
         where('userId', '==', auth.currentUser.uid),
         where('active', '==', true),
         orderBy('createdAt', 'desc')
       );
-      
+
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
@@ -1115,7 +1115,7 @@ export const safeZoneService = {
         ...updateData,
         updatedAt: serverTimestamp()
       });
-      
+
       logEvent(analytics, 'safe_zone_updated');
     } catch (error) {
       console.error('Update safe zone error:', error);
@@ -1130,12 +1130,12 @@ export const safeZoneService = {
         active: false,
         deletedAt: serverTimestamp()
       });
-      
+
       // Update user stats
       await updateDoc(doc(db, 'users', auth.currentUser.uid), {
         'stats.safeZonesCreated': increment(-1)
       });
-      
+
       logEvent(analytics, 'safe_zone_deleted');
     } catch (error) {
       console.error('Delete safe zone error:', error);
@@ -1193,41 +1193,41 @@ export const emailService = {
           resubscribedAt: serverTimestamp(),
           previousUnsubscribeReason: existingSubscription.unsubscribeReason || null
         });
-        
+
         logEvent(analytics, 'newsletter_resubscribe', {
           email_domain: email.split('@')[1],
           source: preferences.source || 'homepage'
         });
-        
+
         return { id: existingSubscription.id, action: 'resubscribed' };
       } else {
         // Create new subscription
         const docRef = await addDoc(collection(db, 'newsletter_subscribers'), subscriptionData);
-        
+
         // Update global stats
         await updateDoc(doc(db, 'stats', 'global'), {
           newsletterSubscribers: increment(1),
           lastUpdated: serverTimestamp()
         });
-        
+
         logEvent(analytics, 'newsletter_subscribe', {
           email_domain: email.split('@')[1],
           source: preferences.source || 'homepage',
           product_updates: subscriptionData.preferences.productUpdates,
           launch_alerts: subscriptionData.preferences.launchAlerts
         });
-        
+
         return { id: docRef.id, action: 'subscribed' };
       }
     } catch (error) {
       console.error('Newsletter subscription error:', error);
-      
+
       // Log error for analytics
       logEvent(analytics, 'newsletter_subscribe_error', {
         error_message: error.message,
         source: preferences.source || 'homepage'
       });
-      
+
       throw error;
     }
   },
@@ -1240,14 +1240,14 @@ export const emailService = {
         where('email', '==', email.toLowerCase().trim()),
         limit(1)
       );
-      
+
       const querySnapshot = await getDocs(q);
-      
+
       if (!querySnapshot.empty) {
         const doc = querySnapshot.docs[0];
         return { id: doc.id, ...doc.data() };
       }
-      
+
       return null;
     } catch (error) {
       console.error('Get subscriber by email error:', error);
@@ -1259,33 +1259,33 @@ export const emailService = {
   async unsubscribeFromNewsletter(email, reason = 'user_request') {
     try {
       const subscriber = await this.getSubscriberByEmail(email);
-      
+
       if (!subscriber) {
         throw new Error('Email address not found in our newsletter list');
       }
-      
+
       if (subscriber.status === 'unsubscribed') {
         throw new Error('This email is already unsubscribed');
       }
-      
+
       await updateDoc(doc(db, 'newsletter_subscribers', subscriber.id), {
         status: 'unsubscribed',
         unsubscribedAt: serverTimestamp(),
         unsubscribeReason: reason,
         lastUpdated: serverTimestamp()
       });
-      
+
       // Update global stats
       await updateDoc(doc(db, 'stats', 'global'), {
         newsletterSubscribers: increment(-1),
         lastUpdated: serverTimestamp()
       });
-      
+
       logEvent(analytics, 'newsletter_unsubscribe', {
         email_domain: email.split('@')[1],
         reason: reason
       });
-      
+
       return { success: true, message: 'Successfully unsubscribed from newsletter' };
     } catch (error) {
       console.error('Newsletter unsubscribe error:', error);
@@ -1297,11 +1297,11 @@ export const emailService = {
   async updateSubscriberPreferences(email, newPreferences) {
     try {
       const subscriber = await this.getSubscriberByEmail(email);
-      
+
       if (!subscriber) {
         throw new Error('Email address not found in our newsletter list');
       }
-      
+
       await updateDoc(doc(db, 'newsletter_subscribers', subscriber.id), {
         preferences: {
           ...subscriber.preferences,
@@ -1309,12 +1309,12 @@ export const emailService = {
         },
         lastUpdated: serverTimestamp()
       });
-      
+
       logEvent(analytics, 'newsletter_preferences_update', {
         email_domain: email.split('@')[1],
         preferences_updated: Object.keys(newPreferences)
       });
-      
+
       return { success: true, message: 'Preferences updated successfully' };
     } catch (error) {
       console.error('Update subscriber preferences error:', error);
@@ -1391,10 +1391,10 @@ export const emailService = {
       };
 
       const campaignRef = await addDoc(collection(db, 'email_campaigns'), campaignData);
-      
+
       // In a real implementation, this would trigger a cloud function
       // to actually send the emails via a service like SendGrid, Mailgun, etc.
-      
+
       logEvent(analytics, 'bulk_email_campaign_created', {
         campaign_id: campaignRef.id,
         target_segment: targetSegment,
@@ -1423,7 +1423,7 @@ export const emailService = {
   async isDisposableEmail(email) {
     const domain = email.split('@')[1];
     const disposableDomains = [
-      'tempmail.org', '10minutemail.com', 'guerrillamail.com', 
+      'tempmail.org', '10minutemail.com', 'guerrillamail.com',
       'mailinator.com', 'yopmail.com', 'throwaway.email'
     ];
     return disposableDomains.includes(domain);
@@ -1469,7 +1469,7 @@ export const emailService = {
         where('status', '==', 'active'),
         orderBy('subscribedAt', 'desc')
       );
-      
+
       const subscribersSnapshot = await getDocs(subscribersQuery);
       const subscribers = subscribersSnapshot.docs.map(doc => ({
         id: doc.id,
@@ -1514,7 +1514,7 @@ export const contactService = {
       };
 
       const docRef = await addDoc(collection(db, 'contact_submissions'), contactData);
-      
+
       logEvent(analytics, 'contact_form_submit', {
         source: formData.source || 'contact_form',
         subject_category: formData.category || 'general'
@@ -1540,7 +1540,7 @@ export const contactService = {
         orderBy('submittedAt', 'desc'),
         limit(100)
       );
-      
+
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
@@ -1591,4 +1591,4 @@ firebaseServices.storageService = storageService;
 window.firebaseServices = firebaseServices;
 
 // Also export for module usage
-export default firebaseServices; 
+export default firebaseServices;

@@ -1,6 +1,6 @@
 /**
  * Test Data Factory
- * 
+ *
  * Utility for creating test data for E2E tests
  */
 
@@ -24,7 +24,7 @@ export class TestDataFactory {
     // In a real implementation, this would call an API to create the user
     // For now, we'll just simulate it
     console.log(`Creating test user: ${userData.email}`);
-    
+
     // Return simulated user data
     return {
       id: `user-${Date.now()}`,
@@ -60,9 +60,9 @@ export class TestDataFactory {
         firmware: '1.3.2',
       },
     };
-    
+
     const baseDevice = deviceTypes[type] || deviceTypes.cup;
-    
+
     return {
       id: `device-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
       type,
@@ -81,7 +81,7 @@ export class TestDataFactory {
   static async createPairedDevice(userId, device) {
     // In a real implementation, this would call an API to create the device
     console.log(`Creating paired device for user ${userId}: ${device.name}`);
-    
+
     // Return simulated device data
     return {
       ...device,
@@ -96,7 +96,7 @@ export class TestDataFactory {
   static async createSubscription(userId, plan) {
     // In a real implementation, this would call an API to create the subscription
     console.log(`Creating ${plan} subscription for user ${userId}`);
-    
+
     const plans = {
       free: {
         priceId: null,
@@ -107,9 +107,9 @@ export class TestDataFactory {
         status: 'active',
       },
     };
-    
+
     const planData = plans[plan] || plans.free;
-    
+
     // Return simulated subscription data
     return {
       userId,
@@ -126,7 +126,7 @@ export class TestDataFactory {
   static async updateSubscription(userId, updates) {
     // In a real implementation, this would call an API to update the subscription
     console.log(`Updating subscription for user ${userId}:`, updates);
-    
+
     // Return simulated updated subscription
     return {
       userId,
@@ -141,7 +141,7 @@ export class TestDataFactory {
   static async createInvoices(userId, invoices) {
     // In a real implementation, this would call an API to create invoices
     console.log(`Creating ${invoices.length} invoices for user ${userId}`);
-    
+
     // Return simulated invoices
     return invoices.map((invoice, index) => ({
       id: `invoice-${Date.now()}-${index}`,
@@ -157,7 +157,7 @@ export class TestDataFactory {
   static async createZone(userId, zoneData) {
     // In a real implementation, this would call an API to create a zone
     console.log(`Creating zone for user ${userId}: ${zoneData.name}`);
-    
+
     // Return simulated zone data
     return {
       id: `zone-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,

@@ -126,7 +126,7 @@ export default function ProfileAvatar({
       // Create form data
       const formData = new FormData();
   const filename = `avatar-${(user as any)?.id || 'anon'}-${Date.now()}.jpg`;
-      
+
       formData.append('file', {
         uri,
         type: 'image/jpeg',
@@ -176,11 +176,11 @@ export default function ProfileAvatar({
 
   const name = (user && (user as any).user_metadata?.full_name) || user?.email || 'User';
     const parts = name.split(' ');
-    
+
     if (parts.length >= 2) {
       return (parts[0][0] + parts[1][0]).toUpperCase();
     }
-    
+
     return name[0].toUpperCase();
   };
 
@@ -212,8 +212,8 @@ export default function ProfileAvatar({
         )}
 
         {editable && (
-          <View style={[styles.editBadge, { 
-            width: config.width * 0.3, 
+          <View style={[styles.editBadge, {
+            width: config.width * 0.3,
             height: config.width * 0.3,
             borderRadius: (config.width * 0.3) / 2,
           }]}>

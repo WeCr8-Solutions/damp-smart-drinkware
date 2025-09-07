@@ -150,7 +150,7 @@ describe('deviceManager Utility', () => {
       await deviceManager.updateConnectionStatus(mockDevice.id, true);
 
       expect(mockedAsyncStorage.setItem).toHaveBeenCalled();
-      
+
       // Verify the device was updated with new connection status
       const setItemCall = mockedAsyncStorage.setItem.mock.calls[0];
       const updatedDevice = JSON.parse(setItemCall[1]);
@@ -308,7 +308,7 @@ describe('deviceManager Utility', () => {
   describe('Data Synchronization', () => {
     it('should sync device data to cloud', async () => {
       const syncResult = await deviceManager.syncDeviceToCloud(mockDevice);
-      
+
       expect(syncResult.success).toBe(true);
       expect(syncResult.syncedAt).toBeInstanceOf(Date);
     });
@@ -316,9 +316,9 @@ describe('deviceManager Utility', () => {
     it('should handle sync failures gracefully', async () => {
       // Mock network failure
       const deviceWithSyncError = { ...mockDevice, id: 'sync-error-device' };
-      
+
       const syncResult = await deviceManager.syncDeviceToCloud(deviceWithSyncError);
-      
+
       expect(syncResult.success).toBeDefined();
     });
 
@@ -330,7 +330,7 @@ describe('deviceManager Utility', () => {
       ];
 
       const results = await deviceManager.batchSyncDevices(devices);
-      
+
       expect(results).toHaveLength(3);
       expect(results.every(result => typeof result.success === 'boolean')).toBe(true);
     });
@@ -463,7 +463,7 @@ describe('deviceManager Utility', () => {
 
       // First access
       await deviceManager.getDevice(mockDevice.id);
-      
+
       // Second access should use cache
       await deviceManager.getDevice(mockDevice.id);
 

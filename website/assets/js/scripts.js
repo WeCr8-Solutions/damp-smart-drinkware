@@ -32,7 +32,7 @@ function setupNavigation() {
             if (target) {
                 const headerHeight = 80; // Account for fixed header
                 const targetPosition = target.offsetTop - headerHeight;
-                
+
                 window.scrollTo({
                     top: targetPosition,
                     behavior: 'smooth'
@@ -60,9 +60,9 @@ function setupMobileMenu() {
     document.addEventListener('click', function(event) {
         const mobileMenu = document.getElementById('mobileMenu');
         const hamburger = document.querySelector('.hamburger');
-        
-        if (mobileMenu && hamburger && 
-            !mobileMenu.contains(event.target) && 
+
+        if (mobileMenu && hamburger &&
+            !mobileMenu.contains(event.target) &&
             !hamburger.contains(event.target)) {
             mobileMenu.classList.remove('active');
             hamburger.classList.remove('active');
@@ -74,7 +74,7 @@ function setupMobileMenu() {
         if (event.key === 'Escape') {
             const mobileMenu = document.getElementById('mobileMenu');
             const hamburger = document.querySelector('.hamburger');
-            
+
             if (mobileMenu && hamburger) {
                 mobileMenu.classList.remove('active');
                 hamburger.classList.remove('active');
@@ -89,7 +89,7 @@ function setupMobileMenu() {
 function toggleMobileMenu() {
     const mobileMenu = document.getElementById('mobileMenu');
     const hamburger = document.querySelector('.hamburger');
-    
+
     if (mobileMenu && hamburger) {
         mobileMenu.classList.toggle('active');
         hamburger.classList.toggle('active');
@@ -165,9 +165,9 @@ function setupFloatingParticles() {
         particle.style.pointerEvents = 'none';
         particle.style.animation = `floatUp ${Math.random() * 10 + 10}s linear forwards`;
         particle.style.zIndex = '1';
-        
+
         document.body.appendChild(particle);
-        
+
         // Remove particle after animation
         setTimeout(() => {
             if (particle && particle.parentNode) {
@@ -187,13 +187,13 @@ function preOrderProduct(productId) {
     // Map product IDs to names for better UX
     const productNames = {
         'damp-handle': 'DAMP Handle v1.0',
-        'silicone-bottom': 'DAMP Silicone Bottom', 
+        'silicone-bottom': 'DAMP Silicone Bottom',
         'cup-sleeve': 'DAMP Silicone Cup Sleeve',
         'baby-bottle': 'DAMP Baby Bottle'
     };
-    
+
     const productName = productNames[productId] || productId;
-    
+
     // Show pre-order confirmation
     if (confirm(`Ready to pre-order the ${productName}?\n\nBy pre-ordering, you're helping fund the development of this innovative product. You'll receive:\n\n✅ Early bird pricing\n✅ Development updates\n✅ Priority delivery\n✅ Exclusive access to beta features\n\nContinue to checkout?`)) {
         // Track pre-order attempt (for analytics)
@@ -201,13 +201,13 @@ function preOrderProduct(productId) {
             product_id: productId,
             product_name: productName
         });
-        
+
         // Show success message
         alert(`Thank you for supporting DAMP development! 🚀\n\nYour pre-order for ${productName} helps us bring this product to market.\n\nYou'll be redirected to secure checkout...`);
-        
+
         // In a real implementation, redirect to checkout
         // window.location.href = `https://checkout.dampdrink.com/preorder/${productId}`;
-        
+
         // For now, show implementation note
         console.log(`Pre-order initiated for: ${productName} (${productId})`);
         console.log('To implement: Connect to payment processor (Stripe, PayPal, etc.)');
@@ -219,18 +219,18 @@ function preOrderProduct(productId) {
  */
 function joinWaitlist(platform) {
     const platformName = platform === 'ios' ? 'iOS' : 'Android';
-    
+
     if (confirm(`Join the DAMP ${platformName} App waitlist?\n\nYou'll be notified when:\n✅ Beta version is ready\n✅ App launches in store\n✅ New features are available\n\nPre-order customers get priority access!`)) {
         // Track waitlist signup
         trackEvent('app_waitlist_signup', {
             platform: platform
         });
-        
+
         alert(`Thanks for joining the ${platformName} waitlist! 📱\n\nWe'll email you as soon as the app is ready for testing.`);
-        
+
         // In a real implementation, collect email and platform preference
         // window.location.href = `https://dampdrink.com/waitlist?platform=${platform}`;
-        
+
         console.log(`Waitlist signup for: ${platformName}`);
         console.log('To implement: Email collection form and database storage');
     }
@@ -253,7 +253,7 @@ function downloadApp(platform) {
 function trackEvent(eventName, properties = {}) {
     // Basic console logging for development
     console.log(`Event: ${eventName}`, properties);
-    
+
     // In production, implement with Google Analytics, Mixpanel, etc.
     // Example:
     // gtag('event', eventName, properties);
@@ -304,7 +304,7 @@ window.addEventListener('load', function() {
     if (window.performance && window.performance.timing) {
         const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
         console.log(`Page load time: ${loadTime}ms`);
-        
+
         // Track loading performance
         trackEvent('page_load_time', {
             load_time: loadTime,
@@ -323,14 +323,14 @@ function checkBrowserSupport() {
         intersection_observer: 'IntersectionObserver' in window,
         local_storage: 'localStorage' in window
     };
-    
+
     console.log('Browser feature support:', features);
-    
+
     // Warn about unsupported features
     if (!features.css_grid) {
         console.warn('CSS Grid not supported - layout may be affected');
     }
-    
+
     return features;
 }
 
@@ -343,12 +343,12 @@ window.trackEvent = function(eventName, parameters = {}) {
     if (typeof gtag !== 'undefined') {
         gtag('event', eventName, parameters);
     }
-    
+
     // Console logging for development
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         console.log('Track Event:', eventName, parameters);
     }
-    
+
     // Custom analytics if needed
     if (window.analytics && typeof window.analytics.track === 'function') {
         window.analytics.track(eventName, parameters);

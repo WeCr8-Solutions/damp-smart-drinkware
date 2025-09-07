@@ -1,20 +1,20 @@
 /**
  * Device Management Utilities for DAMP Smart Drinkware
- * 
+ *
  * This module provides standardized functions for managing devices across the application.
  * It includes validation, error handling, logging, and consistent response formats.
- * 
+ *
  * @example
  * ```typescript
  * import { addDevice, updateDevice, removeDevice } from '@/utils/deviceManager';
- * 
+ *
  * // Add a single device
  * const result = await addDevice({
  *   name: 'Coffee Cup Handle',
  *   type: 'cup',
  *   batteryLevel: 85
  * });
- * 
+ *
  * // Add multiple devices
  * const batchResult = await addDeviceBatch([device1, device2, device3]);
  * ```
@@ -208,9 +208,9 @@ function log(level: 'info' | 'warn' | 'error', operation: string, message: strin
     message,
     data
   };
-  
+
   console[level](`[DeviceManager] ${timestamp} [${level.toUpperCase()}] ${operation}: ${message}`, data || '');
-  
+
   // In production, you might want to send logs to a logging service
   // logService.send(logEntry);
 }
@@ -251,7 +251,7 @@ function notifyListeners(event: string, device: Device): void {
  * Validates device input parameters
  * @param input - Device input to validate
  * @returns Validation result with errors and warnings
- * 
+ *
  * @example
  * ```typescript
  * const validation = validateDeviceInput({
@@ -259,7 +259,7 @@ function notifyListeners(event: string, device: Device): void {
  *   type: 'cup',
  *   batteryLevel: 85
  * });
- * 
+ *
  * if (!validation.isValid) {
  *   console.error('Validation errors:', validation.errors);
  * }
@@ -332,8 +332,8 @@ export function validateDeviceInput(input: DeviceInput): ValidationResult {
  */
 export function isDeviceNameUnique(name: string, excludeId?: string): boolean {
   const devices = Array.from(deviceStorage.values());
-  return !devices.some(device => 
-    device.name.toLowerCase() === name.toLowerCase() && 
+  return !devices.some(device =>
+    device.name.toLowerCase() === name.toLowerCase() &&
     device.id !== excludeId
   );
 }
@@ -347,7 +347,7 @@ export function isDeviceNameUnique(name: string, excludeId?: string): boolean {
  * @param input - Device input parameters
  * @param options - Operation options
  * @returns Promise resolving to operation result
- * 
+ *
  * @example
  * ```typescript
  * const result = await addDevice({
@@ -356,7 +356,7 @@ export function isDeviceNameUnique(name: string, excludeId?: string): boolean {
  *   batteryLevel: 85,
  *   status: 'connected'
  * });
- * 
+ *
  * if (result.success) {
  *   console.log('Device added:', result.data);
  * } else {
@@ -365,7 +365,7 @@ export function isDeviceNameUnique(name: string, excludeId?: string): boolean {
  * ```
  */
 export async function addDevice(
-  input: DeviceInput, 
+  input: DeviceInput,
   options: DeviceOperationOptions = {}
 ): Promise<DeviceOperationResult<Device>> {
   const startTime = Date.now();
@@ -377,12 +377,12 @@ export async function addDevice(
 
     // Create timeout promise
     const timeoutPromise = createTimeoutPromise(timeout);
-    
+
     // Main operation promise
     const operationPromise = (async (): Promise<DeviceOperationResult<Device>> => {
       // Get current user
       const user = auth.currentUser;
-      
+
       if (!user) {
         const error = 'User not authenticated';
         log('error', operation, error);
@@ -492,7 +492,7 @@ export async function addDevice(
   } catch (error) {
     const duration = Date.now() - startTime;
     log('error', operation, `Operation failed after ${duration}ms`, error);
-    
+
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -509,7 +509,7 @@ export async function addDevice(
  * @param updates - Partial device updates
  * @param options - Operation options
  * @returns Promise resolving to operation result
- * 
+ *
  * @example
  * ```typescript
  * const result = await updateDevice('device-123', {
@@ -531,11 +531,11 @@ export async function updateDevice(
     log('info', operation, 'Starting device update', { deviceId, updates, options });
 
     const timeoutPromise = createTimeoutPromise(timeout);
-    
+
     const operationPromise = (async (): Promise<DeviceOperationResult<Device>> => {
       // Get current user
       const user = auth.currentUser;
-      
+
       if (!user) {
         const error = 'User not authenticated';
         log('error', operation, error);
@@ -659,7 +659,7 @@ export async function updateDevice(
   } catch (error) {
     const duration = Date.now() - startTime;
     log('error', operation, `Operation failed after ${duration}ms`, error);
-    
+
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -675,7 +675,7 @@ export async function updateDevice(
  * @param deviceId - Device ID to remove
  * @param options - Operation options
  * @returns Promise resolving to operation result
- * 
+ *
  * @example
  * ```typescript
  * const result = await removeDevice('device-123');
@@ -696,11 +696,11 @@ export async function removeDevice(
     log('info', operation, 'Starting device removal', { deviceId, options });
 
     const timeoutPromise = createTimeoutPromise(timeout);
-    
+
     const operationPromise = (async (): Promise<DeviceOperationResult<Device>> => {
       // Get current user
       const user = auth.currentUser;
-      
+
       if (!user) {
         const error = 'User not authenticated';
         log('error', operation, error);
@@ -780,7 +780,7 @@ export async function removeDevice(
   } catch (error) {
     const duration = Date.now() - startTime;
     log('error', operation, `Operation failed after ${duration}ms`, error);
-    
+
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -800,7 +800,7 @@ export async function removeDevice(
  * @param inputs - Array of device inputs
  * @param options - Operation options
  * @returns Promise resolving to batch operation result
- * 
+ *
  * @example
  * ```typescript
  * const devices = [
@@ -808,7 +808,7 @@ export async function removeDevice(
  *   { name: 'Cup 2', type: 'cup' },
  *   { name: 'Bottle 1', type: 'bottle' }
  * ];
- * 
+ *
  * const result = await addDeviceBatch(devices);
  * console.log(`Added ${result.successful.length} devices, ${result.failed.length} failed`);
  * ```
@@ -917,7 +917,7 @@ export async function addDeviceBatch(
  * Retrieves a device by ID
  * @param deviceId - Device ID to retrieve
  * @returns Device object or null if not found
- * 
+ *
  * @example
  * ```typescript
  * const device = getDevice('device-123');
@@ -933,7 +933,7 @@ export function getDevice(deviceId: string): Device | null {
 /**
  * Retrieves all devices
  * @returns Array of all devices
- * 
+ *
  * @example
  * ```typescript
  * const allDevices = getAllDevices();
@@ -948,7 +948,7 @@ export function getAllDevices(): Device[] {
  * Retrieves devices by type
  * @param type - Device type to filter by
  * @returns Array of devices of the specified type
- * 
+ *
  * @example
  * ```typescript
  * const cups = getDevicesByType('cup');
@@ -963,7 +963,7 @@ export function getDevicesByType(type: DeviceType): Device[] {
  * Retrieves devices by status
  * @param status - Device status to filter by
  * @returns Array of devices with the specified status
- * 
+ *
  * @example
  * ```typescript
  * const connectedDevices = getDevicesByStatus('connected');
@@ -980,11 +980,11 @@ export function getDevicesByStatus(status: DeviceStatus): Device[] {
 export async function getCurrentUserDevices(): Promise<Device[]> {
   try {
     const user = auth.currentUser;
-    
+
     if (!user) {
       return [];
     }
-    
+
     return getAllDevices().filter(device => device.userId === user.id);
   } catch (error) {
     console.error('Error getting current user devices:', error);
@@ -996,7 +996,7 @@ export async function getCurrentUserDevices(): Promise<Device[]> {
  * Searches devices by name (case-insensitive partial match)
  * @param query - Search query
  * @returns Array of matching devices
- * 
+ *
  * @example
  * ```typescript
  * const results = searchDevices('coffee');
@@ -1004,7 +1004,7 @@ export async function getCurrentUserDevices(): Promise<Device[]> {
  */
 export function searchDevices(query: string): Device[] {
   const lowerQuery = query.toLowerCase();
-  return getAllDevices().filter(device => 
+  return getAllDevices().filter(device =>
     device.name.toLowerCase().includes(lowerQuery)
   );
 }
@@ -1017,13 +1017,13 @@ export function searchDevices(query: string): Device[] {
  * Adds a device event listener
  * @param listener - Event listener function
  * @returns Function to remove the listener
- * 
+ *
  * @example
  * ```typescript
  * const removeListener = addDeviceListener((event, device) => {
  *   console.log(`Device ${event}:`, device.name);
  * });
- * 
+ *
  * // Later, remove the listener
  * removeListener();
  * ```
@@ -1032,7 +1032,7 @@ export function addDeviceListener(
   listener: (event: string, device: Device) => void
 ): () => void {
   deviceListeners.push(listener);
-  
+
   return () => {
     const index = deviceListeners.indexOf(listener);
     if (index > -1) {
@@ -1048,7 +1048,7 @@ export function addDeviceListener(
 /**
  * Gets device statistics
  * @returns Object with device statistics
- * 
+ *
  * @example
  * ```typescript
  * const stats = getDeviceStats();
@@ -1077,7 +1077,7 @@ export function getDeviceStats() {
  * Clears all devices (use with caution)
  * @param confirm - Confirmation string to prevent accidental clearing
  * @returns Whether the operation was successful
- * 
+ *
  * @example
  * ```typescript
  * const cleared = clearAllDevices('CONFIRM_CLEAR_ALL');
@@ -1091,7 +1091,7 @@ export function clearAllDevices(confirm: string): boolean {
 
   const deviceCount = deviceStorage.size;
   deviceStorage.clear();
-  
+
   log('info', 'clearAllDevices', `Cleared ${deviceCount} devices`);
   return true;
 }
@@ -1099,7 +1099,7 @@ export function clearAllDevices(confirm: string): boolean {
 /**
  * Exports device data for backup or transfer
  * @returns Serializable device data
- * 
+ *
  * @example
  * ```typescript
  * const backup = exportDeviceData();
@@ -1120,7 +1120,7 @@ export function exportDeviceData() {
  * @param data - Device data to import
  * @param options - Import options
  * @returns Import result
- * 
+ *
  * @example
  * ```typescript
  * const backup = JSON.parse(localStorage.getItem('deviceBackup') || '{}');
@@ -1132,7 +1132,7 @@ export async function importDeviceData(
   options: { overwrite?: boolean; skipValidation?: boolean } = {}
 ): Promise<BatchOperationResult> {
   const operation = 'importDeviceData';
-  
+
   if (!data || !Array.isArray(data.devices)) {
     log('error', operation, 'Invalid import data format');
     return {
@@ -1185,12 +1185,12 @@ export async function initializeDeviceManager(includeSampleData: boolean = false
     try {
       // Get current user
       const user = auth.currentUser;
-      
+
       if (!user) {
         log('warn', 'initializeDeviceManager', 'No authenticated user for sample data');
         return;
       }
-      
+
       const sampleDevices: DeviceInput[] = [
         {
           name: 'Coffee Cup Handle',

@@ -101,49 +101,49 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null || isValidPublicVote();
     }
-    
+
     // Public read access to global stats
     match /stats/global {
       allow read: if true;
       allow write: if isAdmin();
     }
-    
+
     // Newsletter subscribers - protected
     match /newsletter_subscribers/{document} {
       allow read, write: if isAdmin();
       allow create: if isValidEmailSubscription();
     }
-    
+
     // User votes - protected
     match /userVotes/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
       allow read: if isAdmin();
     }
-    
+
     // Public votes - browser fingerprint based
     match /publicVotes/{sessionId} {
       allow read, write: if true; // Controlled by client-side logic
     }
-    
+
     // User profiles
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
       allow read: if isAdmin();
     }
-    
+
     // Admin functions
     function isAdmin() {
-      return request.auth != null && 
+      return request.auth != null &&
              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
-    
+
     // Validate email subscription
     function isValidEmailSubscription() {
       return request.resource.data.keys().hasAll(['email', 'subscribedAt', 'status']) &&
              request.resource.data.email is string &&
              request.resource.data.email.matches('.*@.*\\..*');
     }
-    
+
     // Validate public vote
     function isValidPublicVote() {
       return request.resource.data.keys().hasAll(['productId', 'hasVoted', 'votedAt']);
@@ -217,10 +217,10 @@ exports.sendWelcomeEmail = functions.firestore
   .document('newsletter_subscribers/{subscriberId}')
   .onCreate(async (snap, context) => {
     const subscriber = snap.data();
-    
+
     // Here you would integrate with your email service (SendGrid, Mailgun, etc.)
     console.log(`Welcome email would be sent to: ${subscriber.email}`);
-    
+
     // Update subscriber with welcome email sent status
     return snap.ref.update({
       welcomeEmailSent: true,
@@ -234,7 +234,7 @@ exports.updateVotingStats = functions.firestore
   .onUpdate(async (change, context) => {
     const newData = change.after.data();
     const globalStatsRef = admin.firestore().doc('stats/global');
-    
+
     return globalStatsRef.update({
       totalVotes: newData.totalVotes || 0,
       lastUpdated: admin.firestore.FieldValue.serverTimestamp()
@@ -430,4 +430,4 @@ If you encounter issues:
 3. Test with Firebase emulators first
 4. Check Firestore security rules
 
-Your DAMP Smart Drinkware Firebase backend is now ready! 🎉 
+Your DAMP Smart Drinkware Firebase backend is now ready! 🎉

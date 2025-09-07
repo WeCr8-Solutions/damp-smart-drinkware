@@ -484,38 +484,38 @@ footer {
         padding-top: 70px; /* Slightly less padding on mobile */
         padding-top: calc(70px + var(--safe-area-top)); /* Enhanced for safe areas */
     }
-    
+
     .hero-section {
         min-height: calc(100vh - 70px);
         min-height: calc(100vh - 70px - var(--safe-area-top)); /* Enhanced for safe areas */
     }
-    
+
     .hero h1 {
         font-size: 2.5rem;
     }
-    
+
     .hero-buttons {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .product-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .app-buttons {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .section-title {
         font-size: 2rem;
     }
-    
+
     .hero .subtitle {
         font-size: 1.1rem;
     }
-    
+
     .container {
         padding: 0 15px;
         padding-left: max(15px, var(--safe-area-left));
@@ -530,25 +530,25 @@ footer {
     .hero h1 {
         font-size: 2rem;
     }
-    
+
     .hero .subtitle {
         font-size: 1rem;
     }
-    
+
     .btn {
         padding: 12px 24px;
         font-size: 1rem;
     }
-    
+
     .btn-xl {
         padding: 15px 30px;
         font-size: 1.1rem;
     }
-    
+
     .feature-card {
         padding: 30px 20px;
     }
-    
+
     .product-card {
         padding: 30px 20px;
     }
@@ -605,7 +605,7 @@ footer {
     body {
         background: #000000;
     }
-    
+
     .feature-card,
     .product-card {
         border: 2px solid #ffffff;
@@ -619,7 +619,7 @@ footer {
         color: black;
         padding-top: 0;
     }
-    
+
     .floating-elements,
     .hero-buttons,
     .app-buttons {

@@ -78,7 +78,7 @@ class DAMPServiceWorker {
 
     async handleInstall(event) {
         console.log('[DAMP SW] Installing advanced service worker v' + CACHE_STRATEGY_VERSION);
-        
+
         event.waitUntil(
             this.preloadCriticalResources()
                 .then(() => {
@@ -95,7 +95,7 @@ class DAMPServiceWorker {
 
     async handleActivate(event) {
         console.log('[DAMP SW] Activating advanced service worker');
-        
+
         event.waitUntil(
             Promise.all([
                 this.cleanupOldCaches(),
@@ -111,10 +111,10 @@ class DAMPServiceWorker {
     async handleFetch(event) {
         const { request } = event;
         const url = new URL(request.url);
-        
+
         // Skip non-HTTP requests
         if (!url.protocol.startsWith('http')) return;
-        
+
         // Skip Hot Module Replacement requests
         if (this.isHMRRequest(request)) {
             return this.handleHMRRequest(event);
@@ -122,7 +122,7 @@ class DAMPServiceWorker {
 
         // Route to appropriate caching strategy
         const strategy = this.getCachingStrategy(request);
-        
+
         event.respondWith(
             this.executeStrategy(request, strategy)
                 .then(response => {
@@ -138,7 +138,7 @@ class DAMPServiceWorker {
 
     async handleMessage(event) {
         const { type, payload } = event.data || {};
-        
+
         switch (type) {
             case 'HMR_ENABLE':
                 this.enableHMR(event.source);
@@ -163,7 +163,7 @@ class DAMPServiceWorker {
 
     async handleBackgroundSync(event) {
         console.log('[DAMP SW] Background sync triggered:', event.tag);
-        
+
         switch (event.tag) {
             case 'analytics-sync':
                 event.waitUntil(this.syncAnalytics());
@@ -199,37 +199,37 @@ class DAMPServiceWorker {
     getCachingStrategy(request) {
         const url = new URL(request.url);
         const pathname = url.pathname;
-        
+
         // Critical resources (HTML, critical CSS/JS)
-        if (pathname.endsWith('.html') || 
-            pathname.includes('critical') || 
+        if (pathname.endsWith('.html') ||
+            pathname.includes('critical') ||
             pathname.includes('main.css') ||
             pathname.includes('header.js')) {
             return CACHE_STRATEGIES.CRITICAL;
         }
-        
+
         // Static assets (images, fonts, etc.)
         if (pathname.match(/\.(png|jpg|jpeg|gif|svg|webp|woff|woff2|ttf|otf)$/)) {
             return CACHE_STRATEGIES.STATIC;
         }
-        
+
         // API calls
         if (pathname.includes('/api/') || url.hostname !== location.hostname) {
             return CACHE_STRATEGIES.API;
         }
-        
+
         // Dynamic content
         if (pathname.includes('/pages/') || request.method === 'POST') {
             return CACHE_STRATEGIES.DYNAMIC;
         }
-        
+
         // Default to critical for unknown resources
         return CACHE_STRATEGIES.CRITICAL;
     }
 
     async executeStrategy(request, strategyName) {
         const config = CACHE_CONFIGS[strategyName];
-        
+
         switch (config.strategy) {
             case 'NetworkFirst':
                 return this.networkFirst(request, strategyName);
@@ -247,40 +247,40 @@ class DAMPServiceWorker {
     async networkFirst(request, cacheName) {
         try {
             const networkResponse = await fetch(request);
-            
+
             if (networkResponse.ok) {
                 const cache = await caches.open(cacheName);
                 cache.put(request, networkResponse.clone());
             }
-            
+
             return networkResponse;
         } catch (error) {
             const cachedResponse = await caches.match(request);
             if (cachedResponse) {
                 return cachedResponse;
             }
-            
+
             return this.getOfflineFallback(request);
         }
     }
 
     async cacheFirst(request, cacheName) {
         const cachedResponse = await caches.match(request);
-        
+
         if (cachedResponse) {
             // Optionally refresh cache in background
             this.refreshCacheInBackground(request, cacheName);
             return cachedResponse;
         }
-        
+
         try {
             const networkResponse = await fetch(request);
-            
+
             if (networkResponse.ok) {
                 const cache = await caches.open(cacheName);
                 cache.put(request, networkResponse.clone());
             }
-            
+
             return networkResponse;
         } catch (error) {
             return this.getOfflineFallback(request);
@@ -289,7 +289,7 @@ class DAMPServiceWorker {
 
     async staleWhileRevalidate(request, cacheName) {
         const cachedResponse = await caches.match(request);
-        
+
         // Always try to refresh from network
         const networkPromise = fetch(request).then(networkResponse => {
             if (networkResponse.ok) {
@@ -298,12 +298,12 @@ class DAMPServiceWorker {
             }
             return networkResponse;
         }).catch(() => null);
-        
+
         // Return cached version immediately if available
         if (cachedResponse) {
             return cachedResponse;
         }
-        
+
         // Otherwise wait for network
         const networkResponse = await networkPromise;
         return networkResponse || this.getOfflineFallback(request);
@@ -324,7 +324,7 @@ class DAMPServiceWorker {
         ];
 
         const cache = await caches.open(CACHE_STRATEGIES.CRITICAL);
-        
+
         const promises = criticalResources.map(async (url) => {
             try {
                 const response = await fetch(url);
@@ -341,7 +341,7 @@ class DAMPServiceWorker {
 
     async cleanupOldCaches() {
         const cacheNames = await caches.keys();
-        const oldCaches = cacheNames.filter(name => 
+        const oldCaches = cacheNames.filter(name =>
             name.startsWith('damp-') && name !== CACHE_NAME
         );
 
@@ -367,7 +367,7 @@ class DAMPServiceWorker {
     async handleHMRRequest(event) {
         // Handle hot reload requests
         performanceMetrics.hotReloads++;
-        
+
         event.respondWith(
             fetch(event.request).then(response => {
                 if (response.ok) {
@@ -415,7 +415,7 @@ class DAMPServiceWorker {
 
     trackPerformance(type, url) {
         performanceMetrics[type]++;
-        
+
         // Sample detailed tracking (10% of requests)
         if (Math.random() < 0.1) {
             this.reportDetailedMetric(type, url);
@@ -479,17 +479,17 @@ class DAMPServiceWorker {
     // Utility methods
     async getOfflineFallback(request) {
         const url = new URL(request.url);
-        
+
         if (request.destination === 'document') {
-            return caches.match('/offline.html') || 
+            return caches.match('/offline.html') ||
                    new Response('Offline', { status: 503 });
         }
-        
+
         if (url.pathname.includes('images/')) {
             return caches.match('/assets/images/offline-placeholder.png') ||
                    new Response('', { status: 503 });
         }
-        
+
         return new Response('Service Unavailable', { status: 503 });
     }
 
@@ -564,4 +564,4 @@ self.addEventListener('unhandledrejection', (event) => {
     performanceMetrics.failedRequests++;
 });
 
-console.log('[DAMP SW] Advanced Service Worker loaded successfully'); 
+console.log('[DAMP SW] Advanced Service Worker loaded successfully');

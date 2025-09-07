@@ -4,12 +4,12 @@ funnel fix# 🚀 Testing Lighthouse CI Workflow
 
 ### ✅ Local Testing Results:
 - **Build Optimization**: ✅ 47.5% size reduction achieved
-- **Server Setup**: ✅ CI server running successfully  
+- **Server Setup**: ✅ CI server running successfully
 - **Lighthouse Collection**: ✅ Successfully collected performance data
 - **Token Configuration**: ✅ Token configured in both local and CI configs
 
 ### 🔧 Configuration Summary:
-- **LHCI Token**: `im9Q4dcfP4CKT:84738926:BGAC6B7SHiI`
+- **LHCI Token**: `rC9ONokd8Gifyl:84787798:fURYEOcJXI`
 - **Server URL**: `https://lhci.canary.dev`
 - **Target URLs**: `http://localhost:3000` (main page)
 - **Runs per URL**: 3 for reliability

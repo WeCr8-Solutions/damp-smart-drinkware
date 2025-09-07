@@ -1,6 +1,6 @@
 /**
  * DAMP Smart Drinkware Subscription Configuration
- * 
+ *
  * This file contains the subscription tier definitions with Stripe integration
  * for DAMP Smart Drinkware. Updated with proper TypeScript support and
  * Firebase integration.
@@ -29,9 +29,9 @@ export const TIER_LIMITS = {
     maxDevices: 10,
     maxSafeZones: -1, // Unlimited
     features: [
-      'basic_notifications', 
-      'battery_monitoring', 
-      'mobile_app', 
+      'basic_notifications',
+      'battery_monitoring',
+      'mobile_app',
       'priority_support',
       'custom_notifications',
       'shared_alerts',
@@ -134,7 +134,7 @@ export function getProductByTier(tier) {
  */
 export function formatPrice(price, currency = 'usd') {
   if (price === 0) return 'Free';
-  
+
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency.toUpperCase(),
@@ -188,7 +188,7 @@ export function canPerformAction(userTier, action, currentCount) {
  */
 export function getUpgradeSuggestion(currentTier, deviceCount, zoneCount) {
   const currentLimits = TIER_LIMITS[currentTier];
-  
+
   // Check if user is hitting device limits
   if (deviceCount >= currentLimits.maxDevices && currentTier === SubscriptionTier.FREE) {
     return {
@@ -197,7 +197,7 @@ export function getUpgradeSuggestion(currentTier, deviceCount, zoneCount) {
       message: 'Upgrade to DAMP+ to connect up to 3 devices'
     };
   }
-  
+
   // Check if user is hitting zone limits
   if (zoneCount >= currentLimits.maxSafeZones && currentTier !== SubscriptionTier.DAMP_FAMILY) {
     if (currentTier === SubscriptionTier.FREE) {
@@ -214,7 +214,7 @@ export function getUpgradeSuggestion(currentTier, deviceCount, zoneCount) {
       };
     }
   }
-  
+
   // Suggest family plan for power users
   if (deviceCount >= 3 && zoneCount >= 3 && currentTier === SubscriptionTier.DAMP_PLUS) {
     return {
@@ -223,7 +223,7 @@ export function getUpgradeSuggestion(currentTier, deviceCount, zoneCount) {
       message: 'Upgrade to DAMP Family for unlimited devices and zones'
     };
   }
-  
+
   return null;
 }
 
@@ -294,4 +294,4 @@ export default {
   getUpgradeSuggestion,
   calculateAnnualSavings,
   getFeatureComparison
-}; 
+};

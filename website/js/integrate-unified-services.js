@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     button.addEventListener('click', async (e) => {
       e.preventDefault();
       const planId = button.dataset.planId;
-      
+
       if (!dampServices.auth.currentUser) {
         // Redirect to login if not authenticated
         window.location.href = '/pages/auth.html?redirect=' + encodeURIComponent(window.location.href);
@@ -57,9 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         button.disabled = true;
         button.textContent = 'Processing...';
-        
+
         const result = await dampServices.subscriptions.createCheckout(planId);
-        
+
         if (result.url) {
           window.location.href = result.url;
         } else {
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     button.addEventListener('click', async (e) => {
       e.preventDefault();
       const productId = button.dataset.voteProduct;
-      
+
       if (!dampServices.auth.currentUser) {
         alert('Please log in to vote for products');
         return;
@@ -91,19 +91,19 @@ document.addEventListener('DOMContentLoaded', () => {
         button.disabled = true;
         const originalText = button.textContent;
         button.textContent = 'Voting...';
-        
+
         const result = await dampServices.voting.submitAuthenticatedVote(productId);
-        
+
         if (result.success) {
           button.textContent = 'Voted!';
           button.disabled = true;
-          
+
           // Show success message
           const successMsg = document.createElement('div');
           successMsg.textContent = 'Thank you for voting!';
           successMsg.style.cssText = 'color: green; font-size: 12px; margin-top: 5px;';
           button.parentNode.appendChild(successMsg);
-          
+
           setTimeout(() => {
             if (successMsg.parentNode) {
               successMsg.parentNode.removeChild(successMsg);
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (checkoutButton) {
     checkoutButton.addEventListener('click', async (e) => {
       e.preventDefault();
-      
+
       const cart = dampServices.ecommerce.getCart();
       if (cart.length === 0) {
         alert('Your cart is empty');
@@ -155,9 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         checkoutButton.disabled = true;
         checkoutButton.textContent = 'Processing...';
-        
+
         const result = await dampServices.ecommerce.createCheckout(shippingAddress);
-        
+
         if (result.success && result.url) {
           window.location.href = result.url;
         } else {
@@ -178,17 +178,17 @@ document.addEventListener('DOMContentLoaded', () => {
   if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       const email = loginForm.querySelector('[name="email"]').value;
       const password = loginForm.querySelector('[name="password"]').value;
-      
+
       try {
         const submitButton = loginForm.querySelector('[type="submit"]');
         submitButton.disabled = true;
         submitButton.textContent = 'Signing in...';
-        
+
         const result = await dampServices.auth.signIn(email, password);
-        
+
         if (result.user) {
           // Redirect to dashboard or original page
           const urlParams = new URLSearchParams(window.location.search);
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (error) {
         console.error('Login error:', error);
         alert('Login failed: ' + error.message);
-        
+
         const submitButton = loginForm.querySelector('[type="submit"]');
         submitButton.disabled = false;
         submitButton.textContent = 'Sign In';
@@ -212,18 +212,18 @@ document.addEventListener('DOMContentLoaded', () => {
   if (signupForm) {
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       const email = signupForm.querySelector('[name="email"]').value;
       const password = signupForm.querySelector('[name="password"]').value;
       const displayName = signupForm.querySelector('[name="displayName"]')?.value;
-      
+
       try {
         const submitButton = signupForm.querySelector('[type="submit"]');
         submitButton.disabled = true;
         submitButton.textContent = 'Creating account...';
-        
+
         const result = await dampServices.auth.signUp(email, password, { displayName });
-        
+
         if (result.user) {
           // Redirect to welcome page or dashboard
           window.location.href = '/pages/welcome.html';
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (error) {
         console.error('Signup error:', error);
         alert('Signup failed: ' + error.message);
-        
+
         const submitButton = signupForm.querySelector('[type="submit"]');
         submitButton.disabled = false;
         submitButton.textContent = 'Create Account';

@@ -13,12 +13,12 @@ export const contextConnections = {
   dependencies: {
     'AuthContext': ['@/lib/supabase', '@/firebase/auth', '@/types/global'],
   },
-  
+
   // Contexts that provide to components
   providers: {
     'AuthContext': ['@/components/BLEManager', '@/app/_layout'],
   },
-  
+
   // Cross-context dependencies
   crossReferences: {
     'AuthContext': [], // Add other contexts that depend on Auth
@@ -52,14 +52,14 @@ export function validateContextConnectivity(): {
   const activeContexts = Object.keys(contextRegistry);
   const providerChain = Object.keys(contextConnections.providers);
   const missingProviders: string[] = [];
-  
+
   // Validate that all required providers are available
   activeContexts.forEach(context => {
     if (!contextRegistry[context as keyof typeof contextRegistry]) {
       missingProviders.push(context);
     }
   });
-  
+
   return {
     activeContexts,
     providerChain,

@@ -20,20 +20,20 @@ class ImageValidator {
 
     async validateAll() {
         console.log('🔍 Validating image optimization...');
-        
+
         const issues = [];
         const optimizedDir = './website/assets/images/optimized';
-        
+
         try {
             await this.validateDirectory(optimizedDir, issues);
-            
+
             if (issues.length === 0) {
                 console.log('✅ All images are properly optimized!');
             } else {
                 console.log(`⚠️  Found ${issues.length} optimization issues:`);
                 issues.forEach(issue => console.log(`   - ${issue}`));
             }
-            
+
         } catch (error) {
             console.error('❌ Validation failed:', error);
         }
@@ -41,10 +41,10 @@ class ImageValidator {
 
     async validateDirectory(dir, issues) {
         const files = await fs.readdir(dir, { withFileTypes: true });
-        
+
         for (const file of files) {
             const filePath = path.join(dir, file.name);
-            
+
             if (file.isDirectory()) {
                 await this.validateDirectory(filePath, issues);
             } else if (this.isImageFile(file.name)) {
@@ -53,4 +53,4 @@ class ImageValidator {
         }
     }
 
-    async validateImage(imag 
+    async validateImage(imag

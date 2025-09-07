@@ -39,7 +39,7 @@ class BLEManager implements BLEManagerInterface {
 
   async startScanning(): Promise<void> {
     if (this.isScanning) return;
-    
+
     this.isScanning = true;
     this.discoveredDevices.clear();
 
@@ -166,12 +166,12 @@ class BLEManager implements BLEManagerInterface {
       // Simulate gradual battery drain
       const newLevel = Math.max(0, device.batteryLevel - Math.random() * 2);
       device.batteryLevel = Math.round(newLevel);
-      
+
       this.onBatteryLevelChangedCallback?.(deviceId, device.batteryLevel);
     }, 30000); // Check every 30 seconds
   }
 }
-  
+
 // Only export the instance as default to avoid duplicate identifier issues
 const bleManager = new BLEManager();
 export default bleManager;

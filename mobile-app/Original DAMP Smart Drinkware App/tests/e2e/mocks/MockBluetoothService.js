@@ -1,6 +1,6 @@
 /**
  * Mock Bluetooth Service
- * 
+ *
  * Provides a mock implementation of Bluetooth functionality for testing
  */
 

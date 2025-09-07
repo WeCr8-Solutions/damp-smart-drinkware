@@ -16,4 +16,3 @@ export interface AppUser extends UserProfile {
 }
 
 export default UserProfile;
- 

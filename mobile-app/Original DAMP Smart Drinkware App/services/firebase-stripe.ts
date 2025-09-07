@@ -14,7 +14,7 @@ let getSubscriptionStatusFn: any;
 if (FeatureFlags.STRIPE && FeatureFlags.FIREBASE) {
   try {
     const { httpsCallable, getFunctions } = require('firebase/functions');
-    
+
     // Initialize Firebase Functions
     const functions = getFunctions();
 
@@ -112,7 +112,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
  * Firebase Stripe Service Class
  */
 export class FirebaseStripeService {
-  
+
   /**
    * Create Stripe checkout session for subscription
    */
@@ -124,7 +124,7 @@ export class FirebaseStripeService {
     try {
       const auth = getAuth();
       const user = auth.currentUser;
-      
+
       if (!user) {
         throw new Error('User not authenticated');
       }
@@ -255,7 +255,7 @@ export class FirebaseStripeService {
   static calculateYearlySavings(): number {
     const monthly = SUBSCRIPTION_PLANS.find(p => p.id === 'premium')?.price || 0;
     const yearly = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_yearly')?.price || 0;
-    
+
     const yearlyEquivalent = monthly * 12;
     return yearlyEquivalent - yearly;
   }
@@ -266,7 +266,7 @@ export class FirebaseStripeService {
   static async openCheckout(planId: string): Promise<void> {
     try {
       const { checkoutUrl } = await this.createCheckoutSession(planId);
-      
+
       // Use Expo WebBrowser to open checkout
       const { WebBrowser } = await import('expo-web-browser');
       await WebBrowser.openBrowserAsync(checkoutUrl, {
@@ -282,8 +282,8 @@ export class FirebaseStripeService {
    * Validate subscription status
    */
   static isSubscriptionActive(subscription: UserSubscription): boolean {
-    return subscription.hasSubscription && 
-           subscription.status === 'active' && 
+    return subscription.hasSubscription &&
+           subscription.status === 'active' &&
            !subscription.cancelAtPeriodEnd;
   }
 
@@ -305,16 +305,16 @@ export class FirebaseStripeService {
           return { status: 'Ending Soon', color: '#FF9800', icon: 'clock' };
         }
         return { status: 'Active', color: '#4CAF50', icon: 'check' };
-      
+
       case 'past_due':
         return { status: 'Past Due', color: '#F44336', icon: 'alert' };
-      
+
       case 'canceled':
         return { status: 'Canceled', color: '#999', icon: 'x' };
-      
+
       case 'incomplete':
         return { status: 'Incomplete', color: '#FF9800', icon: 'clock' };
-      
+
       default:
         return { status: 'Unknown', color: '#999', icon: 'x' };
     }

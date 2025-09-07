@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f23">
-    
+
     <!-- Security Headers -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.googletagmanager.com;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    
+
     <!-- SEO Meta Tags -->
     <title>DAMP Smart Drinkware Products - Complete Product Ecosystem | Smart BLE Tracking</title>
     <meta name="description" content="Explore our complete DAMP Smart Drinkware ecosystem: Handle, Silicone Bottom, Cup Sleeve with BLE technology. Universal compatibility for most drinkware brands.">
@@ -19,7 +19,7 @@
     <meta name="author" content="WeCr8 Solutions LLC">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <link rel="canonical" href="https://dampdrink.com/pages/products.html">
-    
+
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dampdrink.com/pages/products.html">
@@ -27,12 +27,12 @@
     <meta property="og:description" content="Explore our complete DAMP Smart Drinkware ecosystem with universal compatibility for all your favorite cups and bottles.">
     <meta property="og:image" content="https://dampdrink.com/assets/images/og-products.jpg">
     <meta property="og:site_name" content="DAMP Smart Drinkware">
-    
+
     <!-- PERFORMANCE OPTIMIZATION: Resource Hints -->
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="dns-prefetch" href="https://www.gstatic.com">
-    
+
     <!-- PERFORMANCE OPTIMIZATION: Critical CSS Inline -->
     <style>
         :root {
@@ -46,9 +46,9 @@
             --card-bg: rgba(255, 255, 255, 0.08);
             --border-color: rgba(255, 255, 255, 0.15);
         }
-        
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
@@ -56,12 +56,12 @@
             line-height: 1.6;
             padding-top: 80px;
         }
-        
+
         .page-loading { opacity: 0; transition: opacity 0.3s ease; }
         .page-ready { opacity: 1; }
-        
+
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        
+
         .skip-to-content {
             position: absolute;
             top: -40px;
@@ -74,7 +74,7 @@
         }
         .skip-to-content:focus { top: 0; }
     </style>
-    
+
     <!-- PERFORMANCE OPTIMIZATION: CSS Loading -->
     <link rel="preload" href="../assets/css/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="../assets/css/navigation.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -82,7 +82,7 @@
         <link rel="stylesheet" href="../assets/css/main.css">
         <link rel="stylesheet" href="../assets/css/navigation.css">
     </noscript>
-    
+
     <!-- Page Specific Optimized Styles -->
     <style>
         .products-hero {
@@ -92,7 +92,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .products-hero::before {
             content: '';
             position: absolute;
@@ -103,14 +103,14 @@
             background: radial-gradient(circle at 50% 30%, rgba(0, 212, 255, 0.15) 0%, transparent 50%);
             pointer-events: none;
         }
-        
+
         .hero-content {
             position: relative;
             z-index: 2;
             max-width: 800px;
             margin: 0 auto;
         }
-        
+
         .hero-content h1 {
             font-size: clamp(3rem, 6vw, 4rem);
             font-weight: 900;
@@ -120,19 +120,19 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .hero-subtitle {
             font-size: 1.3rem;
             color: var(--text-secondary);
             margin-bottom: 40px;
             line-height: 1.6;
         }
-        
+
         .products-section {
             padding: 80px 0;
             background: rgba(26, 26, 46, 0.3);
         }
-        
+
         .section-title {
             font-size: clamp(2.5rem, 5vw, 3.5rem);
             font-weight: 800;
@@ -140,7 +140,7 @@
             margin-bottom: 20px;
             color: var(--text-primary);
         }
-        
+
         .section-subtitle {
             font-size: 1.2rem;
             color: var(--text-secondary);
@@ -150,14 +150,14 @@
             margin-left: auto;
             margin-right: auto;
         }
-        
+
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 40px;
             margin: 80px 0;
         }
-        
+
         .product-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -169,7 +169,7 @@
             will-change: transform;
             overflow: hidden;
         }
-        
+
         .product-card::before {
             content: '';
             position: absolute;
@@ -180,17 +180,17 @@
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
             transition: left 0.6s ease;
         }
-        
+
         .product-card:hover::before {
             left: 100%;
         }
-        
+
         .product-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
             border-color: rgba(0, 212, 255, 0.3);
         }
-        
+
         .product-badge {
             position: absolute;
             top: 20px;
@@ -203,7 +203,7 @@
             font-weight: 700;
             text-transform: uppercase;
         }
-        
+
         .product-image {
             width: 200px;
             height: 200px;
@@ -212,39 +212,39 @@
             overflow: hidden;
             background: linear-gradient(45deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.1));
         }
-        
+
         .product-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
-        
+
         .product-card:hover .product-image img {
             transform: scale(1.05);
         }
-        
+
         .product-name {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary-color);
             margin-bottom: 15px;
         }
-        
+
         .product-description {
             color: var(--text-secondary);
             margin-bottom: 20px;
             font-size: 0.95rem;
             line-height: 1.5;
         }
-        
+
         .product-price {
             font-size: 2rem;
             font-weight: 900;
             color: var(--secondary-color);
             margin-bottom: 25px;
         }
-        
+
         .product-features {
             list-style: none;
             margin-bottom: 30px;
@@ -253,7 +253,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        
+
         .product-features li {
             color: var(--text-muted);
             font-size: 0.9rem;
@@ -261,7 +261,7 @@
             padding-left: 20px;
             position: relative;
         }
-        
+
         .product-features li::before {
             content: '✓';
             position: absolute;
@@ -269,13 +269,13 @@
             color: var(--secondary-color);
             font-weight: 700;
         }
-        
+
         .product-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
-        
+
         .btn {
             display: inline-block;
             padding: 15px 30px;
@@ -289,34 +289,34 @@
             text-align: center;
             will-change: transform;
         }
-        
+
         .btn-primary {
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             color: white;
         }
-        
+
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
         }
-        
+
         .btn-secondary {
             background: transparent;
             color: var(--primary-color);
             border: 2px solid var(--primary-color);
         }
-        
+
         .btn-secondary:hover {
             background: var(--primary-color);
             color: white;
             transform: translateY(-2px);
         }
-        
+
         .btn-small {
             padding: 12px 20px;
             font-size: 0.9rem;
         }
-        
+
         /* Navigation Styles */
         .damp-nav {
             position: fixed;
@@ -329,7 +329,7 @@
             padding: 15px 0;
             border-bottom: 1px solid var(--border-color);
         }
-        
+
         .nav-container {
             display: flex;
             justify-content: space-between;
@@ -338,7 +338,7 @@
             margin: 0 auto;
             padding: 0 20px;
         }
-        
+
         .logo {
             display: flex;
             align-items: center;
@@ -352,17 +352,17 @@
             text-decoration: none;
             transition: transform 0.3s ease;
         }
-        
+
         .logo:hover {
             transform: scale(1.05);
         }
-        
+
         .logo img {
             width: 32px;
             height: 32px;
             filter: brightness(0) invert(1);
         }
-        
+
         .hamburger {
             display: flex;
             flex-direction: column;
@@ -374,12 +374,12 @@
             border-radius: 8px;
             transition: all 0.3s ease;
         }
-        
+
         .hamburger:hover {
             background: rgba(255, 255, 255, 0.1);
             transform: scale(1.05);
         }
-        
+
         .hamburger-line {
             width: 25px;
             height: 3px;
@@ -389,28 +389,28 @@
             display: block;
             transform-origin: center;
         }
-        
+
         /* Footer Styles */
         .footer {
             background: rgba(0, 0, 0, 0.6);
             padding: 80px 0 40px;
             border-top: 1px solid var(--border-color);
         }
-        
+
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 40px;
             margin-bottom: 40px;
         }
-        
+
         .footer-section h3 {
             color: var(--primary-color);
             margin-bottom: 20px;
             font-size: 1.2rem;
             font-weight: 700;
         }
-        
+
         .footer-section a {
             color: var(--text-muted);
             text-decoration: none;
@@ -418,27 +418,27 @@
             margin-bottom: 10px;
             transition: color 0.3s ease;
         }
-        
+
         .footer-section a:hover {
             color: var(--primary-color);
         }
-        
+
         .footer-bottom {
             border-top: 1px solid var(--border-color);
             padding-top: 30px;
             text-align: center;
             color: var(--text-muted);
         }
-        
+
         .footer-logo {
             margin-bottom: 20px;
         }
-        
+
         .footer-logo img {
             width: 50px;
             height: 50px;
         }
-        
+
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .products-grid {
@@ -446,45 +446,45 @@
                 gap: 30px;
                 margin: 60px 0;
             }
-            
+
             .product-actions {
                 grid-template-columns: 1fr;
             }
-            
+
             .voting-actions {
                 flex-direction: column;
                 align-items: center;
             }
-            
+
             .voting-stats {
                 gap: 20px;
             }
-            
+
             .btn-vote {
                 font-size: 1.1rem;
                 padding: 15px 35px;
             }
-            
+
             .products-hero {
                 padding: 100px 0 60px;
             }
         }
-        
+
         @media (max-width: 480px) {
             .container {
                 padding: 0 15px;
             }
-            
+
             .product-card {
                 padding: 30px 20px;
             }
-            
+
             .product-image {
                 width: 150px;
                 height: 150px;
             }
         }
-        
+
         /* Reduced motion support */
         @media (prefers-reduced-motion: reduce) {
             .product-card,
@@ -494,13 +494,13 @@
             .vote-stat {
                 transition-duration: 0.1s !important;
             }
-            
+
             .product-card::before {
                 display: none;
             }
         }
     </style>
-    
+
     <!-- PERFORMANCE OPTIMIZATION: Preload Navigation Script -->
     <link rel="preload" href="../assets/js/navigation.js" as="script">
 </head>
@@ -508,7 +508,7 @@
 <body class="page-loading">
     <!-- Skip to Content -->
     <a href="#main-content" class="skip-to-content">Skip to main content</a>
-    
+
     <!-- Navigation Header -->
     <nav class="damp-nav" id="dampNav">
         <div class="nav-container">
@@ -650,7 +650,7 @@
                 <p class="section-subtitle">
                     Choose from our range of smart drinkware solutions designed to work with any cup, bottle, or tumbler you already love.
                 </p>
-                
+
                 <div class="products-grid">
                     <!-- DAMP Handle -->
                     <div class="product-card">
@@ -767,7 +767,7 @@
                     <h2>Community-Driven Development</h2>
                     <p>Your voice shapes our product roadmap! Join thousands of DAMP users voting on which smart drinkware we develop next.</p>
                 </div>
-                
+
                 <div class="voting-stats">
                     <div class="vote-stat">
                         <span class="vote-stat-number" id="total-votes">0</span>
@@ -782,7 +782,7 @@
                         <span class="vote-stat-label">Participation Rate</span>
                     </div>
                 </div>
-                
+
                 <div class="voting-actions">
                     <a href="product-voting.html" class="btn-vote">🗳️ Cast Your Vote</a>
                     <a href="product-voting.html" class="btn btn-secondary" style="padding: 20px 50px; font-size: 1.3rem;">View Live Results</a>
@@ -804,7 +804,7 @@
                         Never leave your drink behind with revolutionary BLE technology that keeps you connected to your favorite beverage.
                     </p>
                 </div>
-                
+
                 <div class="footer-section">
                     <h3>Products</h3>
                     <a href="products.html">All Products</a>
@@ -813,7 +813,7 @@
                     <a href="cup-sleeve-v1.0.html">Cup Sleeve</a>
                     <!-- <a href="baby-bottle-v1.0.html">Baby Bottle</a> TEMPORARILY DISABLED -->
                 </div>
-                
+
                 <div class="footer-section">
                     <h3>Community</h3>
                     <a href="product-voting.html">Product Voting</a>
@@ -822,7 +822,7 @@
                     <a href="support.html">Support Center</a>
                     <a href="about.html">About Us</a>
                 </div>
-                
+
                 <div class="footer-section">
                     <h3>Legal & Support</h3>
                     <a href="privacy.html">Privacy Policy</a>
@@ -832,7 +832,7 @@
                     <a href="support.html#warranty">Warranty</a>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
                 <p>&copy; 2025 WeCr8 Solutions LLC. All rights reserved.</p>
                 <p style="margin-top: 15px; font-size: 0.9rem; opacity: 0.8;">
@@ -847,30 +847,30 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.remove('page-loading');
             document.body.classList.add('page-ready');
-            
+
             // Load core scripts progressively
             loadCoreScripts();
-            
+
             // Load voting data
             setTimeout(updateVotingStats, 1000);
-            
+
             // Initialize FAQ if present
             initializeFAQ();
         });
-        
+
         function loadCoreScripts() {
             const scripts = [
                 '../assets/js/navigation.js',
                 '../assets/js/cookie-policy.js',
                 '../assets/js/auth-modal.js'
             ];
-            
+
             // Load modern Firebase setup as module
             const firebaseScript = document.createElement('script');
             firebaseScript.type = 'module';
             firebaseScript.src = '../assets/js/firebase-modern-setup.js';
             document.head.appendChild(firebaseScript);
-            
+
             scripts.forEach((src, index) => {
                 setTimeout(() => {
                     const script = document.createElement('script');
@@ -882,7 +882,7 @@
                 }, index * 100);
             });
         }
-        
+
         function updateVotingStats() {
             // Update with real-time data if available
             try {
@@ -893,33 +893,33 @@
                 console.log('Using static voting data');
             }
         }
-        
+
         function updateVotingDisplay(data) {
             const totalVotesEl = document.getElementById('total-votes');
             const leadingEl = document.getElementById('leading-product');
             const participationEl = document.getElementById('participation-rate');
-            
+
             if (totalVotesEl) totalVotesEl.textContent = data.totalVotes?.toLocaleString() || '2,847';
             if (leadingEl) leadingEl.textContent = data.leadingProduct || 'Handle';
             if (participationEl) participationEl.textContent = (data.participationRate || 68) + '%';
         }
-        
+
         function initializeFAQ() {
             // Initialize FAQ functionality if FAQ items exist on page
             const faqItems = document.querySelectorAll('.faq-item');
-            
+
             faqItems.forEach(item => {
                 const question = item.querySelector('.faq-question');
-                
+
                 if (question) {
                     question.addEventListener('click', () => {
                         const isActive = item.classList.contains('active');
-                        
+
                         // Close all other FAQ items
                         faqItems.forEach(otherItem => {
                             otherItem.classList.remove('active');
                         });
-                        
+
                         // Toggle current item
                         if (!isActive) {
                             item.classList.add('active');
@@ -928,7 +928,7 @@
                 }
             });
         }
-        
+
         // Track page analytics
         function trackPageView() {
             if (window.gtag) {
@@ -939,7 +939,7 @@
                 });
             }
         }
-        
+
         // Call analytics tracking
         setTimeout(trackPageView, 2000);
     </script>

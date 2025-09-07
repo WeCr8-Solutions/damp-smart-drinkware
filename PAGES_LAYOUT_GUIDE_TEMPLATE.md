@@ -8,7 +8,7 @@ This template shows how to create layout documentation for each page in the `/pa
 
 ### High Priority Pages (Document First)
 1. **products.html** (Priority 0.95) - Weekly updates
-2. **pre-sale-funnel.html** (Priority 0.95) - Weekly updates  
+2. **pre-sale-funnel.html** (Priority 0.95) - Weekly updates
 3. **how-it-works.html** (Priority 0.9) - Monthly updates
 4. **product-voting.html** (Priority 0.9) - Daily updates
 5. **damp-handle-v1.0.html** (Priority 0.9) - Weekly updates
@@ -84,7 +84,7 @@ For each page, create: `[PAGE_NAME]_LAYOUT_GUIDE.md`
 
 ### Navigation Context
 - **Breadcrumbs**: [If applicable]
-- **Back Navigation**: [If applicable] 
+- **Back Navigation**: [If applicable]
 - **Related Pages**: [List related pages from sitemap]
 
 ### Analytics Events
@@ -252,10 +252,10 @@ touch [PAGE_NAME]_LAYOUT_GUIDE.md
 ```html
 <div class="product-card" data-product="[product-id]">
     <div class="product-image">
-        <img data-src="assets/images/products/[product]/[product].png" 
-             alt="[Product Name]" 
-             loading="lazy" 
-             width="280" 
+        <img data-src="assets/images/products/[product]/[product].png"
+             alt="[Product Name]"
+             loading="lazy"
+             width="280"
              height="280">
     </div>
     <div class="product-info">
@@ -324,6 +324,6 @@ touch [PAGE_NAME]_LAYOUT_GUIDE.md
 
 ---
 
-**Template Version**: 1.0  
-**Last Updated**: January 2025  
-**Use This Template**: For all pages in `/pages` directory 
+**Template Version**: 1.0
+**Last Updated**: January 2025
+**Use This Template**: For all pages in `/pages` directory

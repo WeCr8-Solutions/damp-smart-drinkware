@@ -40,7 +40,7 @@ window.DAMP_CONFIG = {
         testMode: false,
         adFormats: {
             banner: "728x90",
-            rectangle: "300x250", 
+            rectangle: "300x250",
             mobile: "320x50",
             responsive: "auto"
         },
@@ -66,4 +66,4 @@ if (window.FIREBASE_CONFIG?.apiKey && !window.FIREBASE_CONFIG.apiKey.includes('y
     console.log('✅ Firebase API key configured - voting system will use Firebase');
 } else {
     console.warn('⚠️ Firebase API key not properly configured - voting system will use fallback mode');
-} 
+}

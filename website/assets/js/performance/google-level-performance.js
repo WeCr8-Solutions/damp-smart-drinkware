@@ -34,20 +34,20 @@ class DAMPPerformanceManager {
         this.hotReloadEnabled = false;
         this.performanceBudget = null;
         this.optimizationQueue = [];
-        
+
         this.init();
     }
 
     async init() {
         console.log('[DAMP Performance] Initializing Google-level performance monitoring...');
-        
+
         try {
             await this.setupPerformanceObservers();
             await this.loadPerformanceBudget();
             await this.setupHotReload();
             await this.initializeOptimizations();
             await this.startPerformanceMonitoring();
-            
+
             console.log('[DAMP Performance] Advanced performance monitoring active');
         } catch (error) {
             console.error('[DAMP Performance] Initialization failed:', error);
@@ -150,7 +150,7 @@ class DAMPPerformanceManager {
         console.log(`[DAMP Performance] Poor ${metricName} detected (${value}), triggering optimizations...`);
 
         const optimizations = this.getOptimizationsForMetric(metricName);
-        
+
         for (const optimization of optimizations) {
             if (!this.metrics.optimizations.appliedOptimizations.includes(optimization.id)) {
                 await this.applyOptimization(optimization);
@@ -188,7 +188,7 @@ class DAMPPerformanceManager {
     async applyOptimization(optimization) {
         try {
             console.log(`[DAMP Performance] Applying optimization: ${optimization.id}`);
-            
+
             switch (optimization.action) {
                 case 'preloadLCPImage':
                     await this.preloadLCPImage();
@@ -210,7 +210,7 @@ class DAMPPerformanceManager {
             }
 
             this.metrics.optimizations.appliedOptimizations.push(optimization.id);
-            
+
         } catch (error) {
             console.error(`[DAMP Performance] Failed to apply optimization ${optimization.id}:`, error);
         }
@@ -231,7 +231,7 @@ class DAMPPerformanceManager {
             link.as = 'image';
             link.href = lcpImage.src;
             document.head.appendChild(link);
-            
+
             console.log('[DAMP Performance] Preloaded LCP image:', lcpImage.src);
         }
     }
@@ -239,7 +239,7 @@ class DAMPPerformanceManager {
     async optimizeCriticalCSS() {
         // Move critical CSS inline and defer non-critical CSS
         const stylesheets = document.querySelectorAll('link[rel="stylesheet"]');
-        
+
         for (const stylesheet of stylesheets) {
             if (!stylesheet.href.includes('critical') && !stylesheet.href.includes('main')) {
                 stylesheet.media = 'print';
@@ -248,29 +248,29 @@ class DAMPPerformanceManager {
                 };
             }
         }
-        
+
         console.log('[DAMP Performance] Optimized critical CSS loading');
     }
 
     async deferNonCriticalJS() {
         // Defer JavaScript that's not critical for initial render
         const scripts = document.querySelectorAll('script[src]');
-        
+
         for (const script of scripts) {
-            if (!script.src.includes('critical') && 
-                !script.src.includes('header') && 
+            if (!script.src.includes('critical') &&
+                !script.src.includes('header') &&
                 !script.src.includes('scripts')) {
                 script.defer = true;
             }
         }
-        
+
         console.log('[DAMP Performance] Deferred non-critical JavaScript');
     }
 
     async addImageDimensions() {
         // Add width and height attributes to images to prevent CLS
         const images = document.querySelectorAll('img:not([width]):not([height])');
-        
+
         for (const img of images) {
             img.onload = function() {
                 if (!this.width || !this.height) {
@@ -279,7 +279,7 @@ class DAMPPerformanceManager {
                 }
             };
         }
-        
+
         console.log(`[DAMP Performance] Added dimensions to ${images.length} images`);
     }
 
@@ -292,13 +292,13 @@ class DAMPPerformanceManager {
             }
         `;
         document.head.appendChild(style);
-        
+
         // Preload critical fonts
         const criticalFonts = [
             '/assets/fonts/primary-font.woff2',
             '/assets/fonts/secondary-font.woff2'
         ];
-        
+
         for (const fontUrl of criticalFonts) {
             const link = document.createElement('link');
             link.rel = 'preload';
@@ -308,7 +308,7 @@ class DAMPPerformanceManager {
             link.href = fontUrl;
             document.head.appendChild(link);
         }
-        
+
         console.log('[DAMP Performance] Optimized font loading');
     }
 
@@ -316,7 +316,7 @@ class DAMPPerformanceManager {
     async setupHotReload() {
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             this.hotReloadEnabled = true;
-            
+
             // Listen for hot reload messages from service worker
             if ('BroadcastChannel' in window) {
                 const hotReloadChannel = new BroadcastChannel('damp-hot-reload');
@@ -324,24 +324,24 @@ class DAMPPerformanceManager {
                     this.handleHotReload(event.data);
                 };
             }
-            
+
             // File system watching (if available)
             if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
                 navigator.serviceWorker.controller.postMessage({
                     type: 'HMR_ENABLE'
                 });
             }
-            
+
             console.log('[DAMP Performance] Hot Module Replacement enabled');
         }
     }
 
     handleHotReload(data) {
         const { type, url, timestamp } = data;
-        
+
         if (type === 'HMR_UPDATE') {
             console.log(`[DAMP HMR] Hot reloading: ${url}`);
-            
+
             // Determine what to reload based on file type
             if (url.includes('.css')) {
                 this.hotReloadCSS(url);
@@ -350,7 +350,7 @@ class DAMPPerformanceManager {
             } else if (url.includes('.html')) {
                 this.hotReloadHTML();
             }
-            
+
             // Re-measure performance after hot reload
             setTimeout(() => {
                 this.remeasurePerformance();
@@ -388,11 +388,11 @@ class DAMPPerformanceManager {
             .then(html => {
                 const parser = new DOMParser();
                 const newDoc = parser.parseFromString(html, 'text/html');
-                
+
                 // Update main content without full reload
                 const mainContent = document.querySelector('main');
                 const newMainContent = newDoc.querySelector('main');
-                
+
                 if (mainContent && newMainContent) {
                     mainContent.innerHTML = newMainContent.innerHTML;
                     this.reinitializeComponents();
@@ -404,11 +404,11 @@ class DAMPPerformanceManager {
     trackResourcePerformance(entry) {
         const resourceType = this.getResourceType(entry.name);
         const loadTime = entry.responseEnd - entry.startTime;
-        
+
         if (!this.metrics.customMetrics.resourceLoadTime[resourceType]) {
             this.metrics.customMetrics.resourceLoadTime[resourceType] = [];
         }
-        
+
         this.metrics.customMetrics.resourceLoadTime[resourceType].push({
             url: entry.name,
             loadTime: loadTime,
@@ -448,14 +448,14 @@ class DAMPPerformanceManager {
 
         const budget = this.performanceBudget.budget[0];
         const resourceBudget = budget.resourceSizes?.find(r => r.resourceType === resourceType);
-        
+
         if (resourceBudget && entry.transferSize > resourceBudget.budget * 1024) {
             console.warn(`[DAMP Performance] Resource budget exceeded for ${resourceType}:`, {
                 url: entry.name,
                 size: entry.transferSize,
                 budget: resourceBudget.budget * 1024
             });
-            
+
             this.addRecommendation({
                 type: 'budget-exceeded',
                 resourceType: resourceType,
@@ -497,7 +497,7 @@ class DAMPPerformanceManager {
                     saveData: navigator.connection.saveData,
                     timestamp: Date.now()
                 };
-                
+
                 // Adjust optimizations based on connection
                 this.adaptToConnection();
             });
@@ -511,7 +511,7 @@ class DAMPPerformanceManager {
                         duration: entry.duration,
                         startTime: entry.startTime
                     });
-                    
+
                     if (entry.duration > 100) {
                         this.addRecommendation({
                             type: 'long-task',
@@ -527,16 +527,16 @@ class DAMPPerformanceManager {
 
     adaptToConnection() {
         const connection = this.metrics.customMetrics.connectionType;
-        
+
         if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
             console.log('[DAMP Performance] Slow connection detected, applying optimizations...');
-            
+
             // Reduce image quality
             this.optimizeImagesForSlowConnection();
-            
+
             // Defer non-critical resources
             this.deferNonCriticalResources();
-            
+
             // Enable aggressive caching
             this.enableAggressiveCaching();
         }
@@ -578,7 +578,7 @@ class DAMPPerformanceManager {
             FCP: null,
             INP: null
         };
-        
+
         // Re-setup observers
         this.setupPerformanceObservers();
     }
@@ -596,7 +596,7 @@ class DAMPPerformanceManager {
         };
 
         const validScores = Object.values(scores).filter(score => score !== null);
-        return validScores.length > 0 ? 
+        return validScores.length > 0 ?
             Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length) : null;
     }
 
@@ -620,7 +620,7 @@ class DAMPPerformanceManager {
     // Manual optimization trigger
     async optimizeNow() {
         console.log('[DAMP Performance] Manual optimization triggered...');
-        
+
         const poorMetrics = Object.entries(this.metrics.coreWebVitals)
             .filter(([name, value]) => {
                 if (value === null) return false;
@@ -645,4 +645,4 @@ window.getDampPerformanceMetrics = () => dampPerformance.getMetrics();
 window.getDampPerformanceScore = () => dampPerformance.getPerformanceScore();
 window.optimizeDampPerformance = () => dampPerformance.optimizeNow();
 
-console.log('[DAMP Performance] Google-level performance monitoring initialized'); 
+console.log('[DAMP Performance] Google-level performance monitoring initialized');

@@ -42,19 +42,19 @@ export const componentConnections = {
     'BLEProvider',
     'CategorySlider'
   ],
-  
+
   // Components that use hooks
   hookConsumers: [
     'BLEManager',
     'BLEProvider'
   ],
-  
+
   // Components that use utilities
   utilityConsumers: [
     'BLEManager',
     'CategorySlider'
   ],
-  
+
   // Cross-component dependencies
   dependencies: {
     'BLEManager': ['@/hooks/useBLE', '@/contexts/AuthContext', '@/utils/deviceManager'],

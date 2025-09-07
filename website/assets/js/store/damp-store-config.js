@@ -2,7 +2,7 @@
  * DAMP Global Store Configuration
  * Google Engineering Standards Implementation
  * Production-Ready Store Setup with Firebase & Stripe
- * 
+ *
  * @fileoverview Main configuration and initialization for the DAMP global store
  * @author WeCr8 Solutions LLC
  * @version 2.0.0
@@ -26,15 +26,15 @@ export const STORE_CONFIG = {
         appId: "your-app-id",
         measurementId: "your-measurement-id"
     },
-    
+
     // Stripe Configuration
     stripe: {
         publishableKey: "pk_test_your_publishable_key" // Use pk_live_ for production
     },
-    
+
     // Environment Configuration
     environment: process.env.NODE_ENV || 'production',
-    
+
     // Store Options
     storeOptions: {
         enablePersistence: true,
@@ -60,7 +60,7 @@ export const STATE_KEYS = {
         EMAIL_VERIFICATION_SENT: 'auth/emailVerificationSent',
         PASSWORD_RESET_SENT: 'auth/passwordResetSent'
     },
-    
+
     // User Profile & Settings
     USER: {
         PROFILE: 'user/profile',
@@ -70,7 +70,7 @@ export const STATE_KEYS = {
         DEVICES: 'user/devices',
         NOTIFICATIONS: 'user/notifications'
     },
-    
+
     // Application State
     APP: {
         INITIALIZED: 'app/initialized',
@@ -80,7 +80,7 @@ export const STATE_KEYS = {
         THEME: 'app/theme',
         LANGUAGE: 'app/language'
     },
-    
+
     // DAMP Devices & IoT
     DEVICES: {
         CONNECTED: 'devices/connected',
@@ -90,7 +90,7 @@ export const STATE_KEYS = {
         BATTERY_LEVELS: 'devices/batteryLevels',
         LOCATION_ZONES: 'devices/locationZones'
     },
-    
+
     // Payments & Subscriptions
     PAYMENTS: {
         LOADING: 'payments/loading',
@@ -99,7 +99,7 @@ export const STATE_KEYS = {
         PAYMENT_HISTORY: 'payments/history',
         PENDING_PAYMENTS: 'payments/pending'
     },
-    
+
     // Analytics & Metrics
     ANALYTICS: {
         USER_EVENTS: 'analytics/userEvents',
@@ -123,7 +123,7 @@ export const ACTIONS = {
         VERIFY_EMAIL: 'AUTH_VERIFY_EMAIL',
         RESET_PASSWORD: 'AUTH_RESET_PASSWORD'
     },
-    
+
     // User Actions
     USER: {
         LOAD_PROFILE: 'USER_LOAD_PROFILE',
@@ -131,7 +131,7 @@ export const ACTIONS = {
         CONNECT_DEVICE: 'USER_CONNECT_DEVICE',
         DISCONNECT_DEVICE: 'USER_DISCONNECT_DEVICE'
     },
-    
+
     // Payment Actions
     PAYMENTS: {
         CREATE_PAYMENT_INTENT: 'PAYMENTS_CREATE_PAYMENT_INTENT',
@@ -140,7 +140,7 @@ export const ACTIONS = {
         CANCEL_SUBSCRIPTION: 'PAYMENTS_CANCEL_SUBSCRIPTION',
         UPDATE_PAYMENT_METHOD: 'PAYMENTS_UPDATE_PAYMENT_METHOD'
     },
-    
+
     // Device Actions
     DEVICES: {
         SCAN_DEVICES: 'DEVICES_SCAN',
@@ -160,11 +160,11 @@ export class DAMPStoreInitializer {
     #store = null;
     #logger = null;
     #initialized = false;
-    
+
     constructor() {
         this.#logger = new Logger('StoreInitializer');
     }
-    
+
     /**
      * Initialize the DAMP global store
      * @param {Object} config - Configuration overrides
@@ -173,42 +173,42 @@ export class DAMPStoreInitializer {
     async initialize(config = {}) {
         try {
             this.#logger.info('Initializing DAMP Global Store');
-            
+
             // Merge configuration
             const finalConfig = this.#mergeConfig(STORE_CONFIG, config);
-            
+
             // Get store instance
             this.#store = DAMPStore;
-            
+
             // Initialize store with configuration
             await this.#store.initialize(finalConfig);
-            
+
             // Set up action handlers
             this.#setupActionHandlers();
-            
+
             // Set up middleware
             this.#setupMiddleware();
-            
+
             // Set up cross-platform synchronization
             this.#setupCrossPlatformSync();
-            
+
             // Initialize application state
             await this.#initializeApplicationState();
-            
+
             // Set up auto-cleanup
             this.#setupAutoCleanup();
-            
+
             this.#initialized = true;
             this.#logger.info('DAMP Global Store initialized successfully');
-            
+
             return this.#store;
-            
+
         } catch (error) {
             this.#logger.error('Store initialization failed', error);
             throw error;
         }
     }
-    
+
     /**
      * Get store instance
      * @returns {DAMPStore} Store instance
@@ -219,21 +219,21 @@ export class DAMPStoreInitializer {
         }
         return this.#store;
     }
-    
+
     /**
      * Store Usage Examples
      */
-    
+
     /**
      * Example: User Authentication Flow
      */
     async exampleAuthFlow() {
         const store = this.getStore();
-        
+
         // Subscribe to auth state changes
         const unsubscribeAuth = store.subscribe(STATE_KEYS.AUTH.STATE, (authState) => {
             console.log('Auth state changed:', authState);
-            
+
             switch (authState) {
                 case AuthState.AUTHENTICATED:
                     console.log('User is authenticated');
@@ -246,7 +246,7 @@ export class DAMPStoreInitializer {
                     break;
             }
         });
-        
+
         // Sign up a new user
         try {
             await store.dispatch({
@@ -257,23 +257,23 @@ export class DAMPStoreInitializer {
                     displayName: 'John Doe'
                 }
             });
-            
+
             console.log('User signed up successfully');
-            
+
         } catch (error) {
             console.error('Sign up failed:', error);
         }
-        
+
         // Clean up subscription
         // unsubscribeAuth();
     }
-    
+
     /**
      * Example: Payment Processing
      */
     async examplePaymentFlow() {
         const store = this.getStore();
-        
+
         // Create payment intent
         try {
             const paymentResult = await store.dispatch({
@@ -287,9 +287,9 @@ export class DAMPStoreInitializer {
                     }
                 }
             });
-            
+
             console.log('Payment intent created:', paymentResult);
-            
+
             // Confirm payment with payment method
             const confirmResult = await store.dispatch({
                 type: ACTIONS.PAYMENTS.CONFIRM_PAYMENT,
@@ -304,25 +304,25 @@ export class DAMPStoreInitializer {
                     }
                 }
             });
-            
+
             console.log('Payment confirmed:', confirmResult);
-            
+
         } catch (error) {
             console.error('Payment failed:', error);
         }
     }
-    
+
     /**
      * Example: Device Management
      */
     async exampleDeviceFlow() {
         const store = this.getStore();
-        
+
         // Subscribe to device changes
         const unsubscribeDevices = store.subscribe(STATE_KEYS.DEVICES.CONNECTED, (devices) => {
             console.log('Connected devices:', devices);
         });
-        
+
         // Connect to a DAMP device
         try {
             await store.dispatch({
@@ -333,9 +333,9 @@ export class DAMPStoreInitializer {
                     connectionType: 'bluetooth'
                 }
             });
-            
+
             console.log('Device connected successfully');
-            
+
             // Set up location zones
             await store.dispatch({
                 type: ACTIONS.DEVICES.SET_LOCATION_ZONE,
@@ -347,18 +347,18 @@ export class DAMPStoreInitializer {
                     ]
                 }
             });
-            
+
         } catch (error) {
             console.error('Device connection failed:', error);
         }
     }
-    
+
     /**
      * Example: Cross-Platform State Sync
      */
     async exampleCrossPlatformSync() {
         const store = this.getStore();
-        
+
         // This state will automatically sync across web and mobile
         await store.setState(STATE_KEYS.USER.PREFERENCES, {
             theme: 'dark',
@@ -372,15 +372,15 @@ export class DAMPStoreInitializer {
                 volume: 'imperial'
             }
         });
-        
+
         // Listen for sync events
         store.on('sync:received', (event) => {
             console.log('Received sync update:', event);
         });
     }
-    
+
     // Private methods
-    
+
     /**
      * @private
      */
@@ -393,7 +393,7 @@ export class DAMPStoreInitializer {
             storeOptions: { ...defaultConfig.storeOptions, ...userConfig.storeOptions }
         };
     }
-    
+
     /**
      * @private
      */
@@ -405,7 +405,7 @@ export class DAMPStoreInitializer {
             }
             return data;
         });
-        
+
         // Payment action handlers
         this.#store.addMiddleware(async (type, data) => {
             if (type === 'DISPATCH' && data.type?.startsWith('PAYMENTS_')) {
@@ -413,7 +413,7 @@ export class DAMPStoreInitializer {
             }
             return data;
         });
-        
+
         // Device action handlers
         this.#store.addMiddleware(async (type, data) => {
             if (type === 'DISPATCH' && data.type?.startsWith('DEVICES_')) {
@@ -422,55 +422,55 @@ export class DAMPStoreInitializer {
             return data;
         });
     }
-    
+
     /**
      * @private
      */
     async #handleAuthAction(action) {
         const { auth } = this.#store;
-        
+
         switch (action.type) {
             case ACTIONS.AUTH.SIGN_UP:
                 return await auth.signUp(action.payload);
-                
+
             case ACTIONS.AUTH.SIGN_IN:
                 return await auth.signIn(action.payload.email, action.payload.password);
-                
+
             case ACTIONS.AUTH.SIGN_OUT:
                 return await auth.signOut();
-                
+
             case ACTIONS.AUTH.UPDATE_PROFILE:
                 return await auth.updateProfile(action.payload);
-                
+
             default:
                 return action;
         }
     }
-    
+
     /**
      * @private
      */
     async #handlePaymentAction(action) {
         const { payment } = this.#store;
-        
+
         switch (action.type) {
             case ACTIONS.PAYMENTS.CREATE_PAYMENT_INTENT:
                 return await payment.createPaymentIntent(action.payload);
-                
+
             case ACTIONS.PAYMENTS.CONFIRM_PAYMENT:
                 return await payment.confirmPayment(
                     action.payload.clientSecret,
                     action.payload.paymentMethodData
                 );
-                
+
             case ACTIONS.PAYMENTS.CREATE_SUBSCRIPTION:
                 return await payment.createSubscriptionCheckout(action.payload);
-                
+
             default:
                 return action;
         }
     }
-    
+
     /**
      * @private
      */
@@ -481,17 +481,17 @@ export class DAMPStoreInitializer {
                 // Implement device connection logic
                 console.log('Connecting to device:', action.payload);
                 return { success: true, device: action.payload };
-                
+
             case ACTIONS.DEVICES.DISCONNECT:
                 // Implement device disconnection logic
                 console.log('Disconnecting device:', action.payload);
                 return { success: true };
-                
+
             default:
                 return action;
         }
     }
-    
+
     /**
      * @private
      */
@@ -509,23 +509,23 @@ export class DAMPStoreInitializer {
             }
             return data;
         });
-        
+
         // Performance monitoring middleware
         this.#store.addMiddleware(async (type, data) => {
             const startTime = performance.now();
             const result = data;
             const endTime = performance.now();
-            
+
             if (endTime - startTime > 100) {
                 this.#logger.warn(`Slow store operation: ${type}`, {
                     duration: `${(endTime - startTime).toFixed(2)}ms`
                 });
             }
-            
+
             return result;
         });
     }
-    
+
     /**
      * @private
      */
@@ -538,13 +538,13 @@ export class DAMPStoreInitializer {
                 STATE_KEYS.USER.DEVICES,
                 STATE_KEYS.DEVICES.LOCATION_ZONES
             ];
-            
+
             if (syncableKeys.includes(event.key)) {
                 await this.#store.sync.broadcastStateChange(event);
             }
         });
     }
-    
+
     /**
      * @private
      */
@@ -553,19 +553,19 @@ export class DAMPStoreInitializer {
         await this.#store.setState(STATE_KEYS.APP.INITIALIZED, true);
         await this.#store.setState(STATE_KEYS.APP.LOADING, false);
         await this.#store.setState(STATE_KEYS.APP.NETWORK_STATUS, navigator.onLine);
-        
+
         // Listen for network status changes
         if (typeof window !== 'undefined') {
             window.addEventListener('online', () => {
                 this.#store.setState(STATE_KEYS.APP.NETWORK_STATUS, true);
             });
-            
+
             window.addEventListener('offline', () => {
                 this.#store.setState(STATE_KEYS.APP.NETWORK_STATUS, false);
             });
         }
     }
-    
+
     /**
      * @private
      */
@@ -574,9 +574,9 @@ export class DAMPStoreInitializer {
         setInterval(() => {
             const analytics = this.#store.getState(STATE_KEYS.ANALYTICS.USER_EVENTS) || [];
             const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
-            
+
             const filtered = analytics.filter(event => event.timestamp > oneDayAgo);
-            
+
             if (filtered.length !== analytics.length) {
                 this.#store.setState(STATE_KEYS.ANALYTICS.USER_EVENTS, filtered, { skipSync: true });
             }
@@ -609,4 +609,4 @@ export function getDAMPStore() {
 // Export everything
 export { DAMPStore } from './core/store-architecture.js';
 export { AuthState } from './modules/auth-module.js';
-export default storeInitializer; 
+export default storeInitializer;

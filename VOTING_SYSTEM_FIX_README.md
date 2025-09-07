@@ -70,7 +70,7 @@ Your voting system had several critical issues that prevented it from working pr
 - Votes stored locally and in Firebase (if available)
 - Real-time updates between users
 
-#### ✅ **Customer Voting**  
+#### ✅ **Customer Voting**
 - Requires user authentication
 - One vote per authenticated user
 - Higher priority in decision-making
@@ -86,7 +86,7 @@ Your voting system had several critical issues that prevented it from working pr
    window.FIREBASE_CONFIG = {
      apiKey: "your_actual_firebase_api_key_here"
    };
-   
+
    // Method 2: Build-time injection (recommended)
    // Use the secure build script: node scripts/build-with-env.js
    ```
@@ -108,12 +108,12 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null || votingType == 'public';
     }
-    
+
     // User votes - read/write by owner only
     match /userVotes/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
-    
+
     // Public votes - read by all, write by anyone
     match /publicVotes/{sessionId} {
       allow read, write: if true;
@@ -219,4 +219,4 @@ The voting system is now robust, secure, and user-friendly! 🎉
 
 ---
 
-**Security Note**: The exposed Firebase API key has been removed from the codebase. Make sure to rotate your Firebase API key in the Firebase Console and configure it properly using environment variables. 
+**Security Note**: The exposed Firebase API key has been removed from the codebase. Make sure to rotate your Firebase API key in the Firebase Console and configure it properly using environment variables.

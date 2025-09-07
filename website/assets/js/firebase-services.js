@@ -54,31 +54,31 @@ let messagingInitialized = false;
 
 export const initializeMessaging = async () => {
   if (messagingInitialized) return;
-  
+
   try {
     // Request notification permission
     const permission = await Notification.requestPermission();
-    
+
     if (permission === 'granted') {
       // Get FCM token
       const token = await getToken(messaging, {
         vapidKey: 'your-vapid-key' // Add your VAPID key
       });
-      
+
       if (token) {
         console.log('FCM Token:', token);
         // Store token in user profile
         await storeMessagingToken(token);
       }
-      
+
       // Handle foreground messages
       onMessage(messaging, (payload) => {
         console.log('Received foreground message:', payload);
-        
+
         // Show custom notification
         showNotification(payload.notification);
       });
-      
+
       messagingInitialized = true;
     }
   } catch (error) {
@@ -221,4 +221,4 @@ document.addEventListener('DOMContentLoaded', () => {
   logPageView(document.title);
 });
 
-export default app; 
+export default app;

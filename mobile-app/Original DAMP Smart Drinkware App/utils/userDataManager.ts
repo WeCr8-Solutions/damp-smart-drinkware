@@ -1,6 +1,6 @@
 /**
  * User Data Management Utilities
- * 
+ *
  * Handles cleaning and managing user data in Supabase by removing
  * template/placeholder values and maintaining only genuine user information.
  */
@@ -104,10 +104,10 @@ const TEMPLATE_AVATARS = [
  */
 function isTemplateValue(value: string | null | undefined, templateList: string[]): boolean {
   if (!value || typeof value !== 'string') return false;
-  
+
   const normalizedValue = value.toLowerCase().trim();
-  
-  return templateList.some(template => 
+
+  return templateList.some(template =>
     normalizedValue.includes(template.toLowerCase()) ||
     normalizedValue === template.toLowerCase()
   );
@@ -118,24 +118,24 @@ function isTemplateValue(value: string | null | undefined, templateList: string[
  */
 function isTemplateName(name: string | null | undefined): boolean {
   if (!name || typeof name !== 'string') return false;
-  
+
   const trimmedName = name.trim();
-  
+
   // Check against template values
   if (isTemplateValue(trimmedName, TEMPLATE_VALUES)) return true;
-  
+
   // Check for email-derived names (before @ symbol)
   if (trimmedName.includes('@')) return true;
-  
+
   // Check for single character or very short names
   if (trimmedName.length <= 1) return true;
-  
+
   // Check for names that are just numbers
   if (/^\d+$/.test(trimmedName)) return true;
-  
+
   // Check for UUID-like strings
   if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(trimmedName)) return true;
-  
+
   return false;
 }
 
@@ -144,9 +144,9 @@ function isTemplateName(name: string | null | undefined): boolean {
  */
 function isTemplatePhone(phone: string | null | undefined): boolean {
   if (!phone || typeof phone !== 'string') return false;
-  
+
   const normalizedPhone = phone.replace(/[\s\-\(\)]/g, '');
-  
+
   return TEMPLATE_PHONES.some(template => {
     const normalizedTemplate = template.replace(/[\s\-\(\)]/g, '');
     return normalizedPhone === normalizedTemplate;
@@ -158,8 +158,8 @@ function isTemplatePhone(phone: string | null | undefined): boolean {
  */
 function isTemplateAvatar(avatarUrl: string | null | undefined): boolean {
   if (!avatarUrl || typeof avatarUrl !== 'string') return false;
-  
-  return TEMPLATE_AVATARS.some(template => 
+
+  return TEMPLATE_AVATARS.some(template =>
     avatarUrl.toLowerCase().includes(template.toLowerCase())
   );
 }
@@ -171,10 +171,10 @@ function cleanUserPreferences(preferences: any): { notifications: boolean; theme
   if (!preferences || typeof preferences !== 'object') {
     return undefined;
   }
-  
+
   const validThemes = ['light', 'dark', 'system'];
   const validLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'zh', 'ja', 'ko'];
-  
+
   return {
     notifications: typeof preferences.notifications === 'boolean' ? preferences.notifications : true,
     theme: validThemes.includes(preferences.theme) ? preferences.theme : 'system',
@@ -194,12 +194,12 @@ export function validateAndCleanUserData(userData: Partial<any>): UserDataValida
   const cleanedData: Partial<CleanUserProfile> = {};
   const removedFields: string[] = [];
   const warnings: string[] = [];
-  
+
   // Always include required fields
   if (userData.id) {
     cleanedData.id = userData.id;
   }
-  
+
   // Clean full name
   if (userData.full_name) {
     if (isTemplateName(userData.full_name)) {
@@ -209,7 +209,7 @@ export function validateAndCleanUserData(userData: Partial<any>): UserDataValida
       cleanedData.full_name = userData.full_name.trim();
     }
   }
-  
+
   // Clean phone number
   if (userData.phone) {
     if (isTemplatePhone(userData.phone)) {
@@ -219,7 +219,7 @@ export function validateAndCleanUserData(userData: Partial<any>): UserDataValida
       cleanedData.phone = userData.phone.trim();
     }
   }
-  
+
   // Clean avatar URL
   if (userData.avatar_url) {
     if (isTemplateAvatar(userData.avatar_url)) {
@@ -229,7 +229,7 @@ export function validateAndCleanUserData(userData: Partial<any>): UserDataValida
       cleanedData.avatar_url = userData.avatar_url;
     }
   }
-  
+
   // Clean preferences
   if (userData.preferences) {
     const cleanedPreferences = cleanUserPreferences(userData.preferences);
@@ -237,15 +237,15 @@ export function validateAndCleanUserData(userData: Partial<any>): UserDataValida
       cleanedData.preferences = cleanedPreferences;
     }
   }
-  
+
   // Add timestamps
   const now = new Date().toISOString();
   cleanedData.updated_at = now;
-  
+
   if (!userData.created_at) {
     cleanedData.created_at = now;
   }
-  
+
   return {
     isValid: true,
     cleanedData,
@@ -264,21 +264,21 @@ export async function createOrUpdateCleanUserProfile(
   try {
     // Validate and clean the user data
     const validation = validateAndCleanUserData({ ...userData, id: userId });
-    
+
     if (!validation.isValid) {
       return {
         success: false,
         error: 'User data validation failed',
       };
     }
-    
+
     // Check if user profile already exists
     const { data: existingProfile, error: fetchError } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .maybeSingle();
-    
+
     if (fetchError && fetchError.code !== 'PGRST116') {
       console.error('Error fetching existing profile:', fetchError);
       return {
@@ -286,23 +286,23 @@ export async function createOrUpdateCleanUserProfile(
         error: 'Failed to check existing profile',
       };
     }
-    
+
     let result;
-    
+
     if (existingProfile) {
       // Update existing profile with cleaned data
       const updateData = {
         ...validation.cleanedData,
         id: userId, // Ensure ID is included
       };
-      
+
       const { data, error } = await supabase
         .from('profiles')
         .update(updateData)
         .eq('id', userId)
         .select()
         .single();
-      
+
       if (error) {
         console.error('Error updating profile:', error);
         return {
@@ -310,7 +310,7 @@ export async function createOrUpdateCleanUserProfile(
           error: 'Failed to update user profile',
         };
       }
-      
+
       result = data;
     } else {
       // Create new profile with cleaned data
@@ -319,13 +319,13 @@ export async function createOrUpdateCleanUserProfile(
         id: userId,
         created_at: new Date().toISOString(),
       };
-      
+
       const { data, error } = await supabase
         .from('profiles')
         .insert(insertData)
         .select()
         .single();
-      
+
       if (error) {
         console.error('Error creating profile:', error);
         return {
@@ -333,22 +333,22 @@ export async function createOrUpdateCleanUserProfile(
           error: 'Failed to create user profile',
         };
       }
-      
+
       result = data;
     }
-    
+
     console.log('User profile cleaned and saved:', {
       userId,
       removedFields: validation.removedFields,
       warnings: validation.warnings,
     });
-    
+
     return {
       success: true,
       data: result,
       warnings: validation.warnings,
     };
-    
+
   } catch (error) {
     console.error('Error in createOrUpdateCleanUserProfile:', error);
     return {
@@ -372,7 +372,7 @@ export async function cleanAllUserProfiles(): Promise<{
     const { data: profiles, error: fetchError } = await supabase
       .from('profiles')
       .select('*');
-    
+
     if (fetchError) {
       return {
         success: false,
@@ -381,7 +381,7 @@ export async function cleanAllUserProfiles(): Promise<{
         errors: [fetchError.message],
       };
     }
-    
+
     if (!profiles || profiles.length === 0) {
       return {
         success: true,
@@ -390,25 +390,25 @@ export async function cleanAllUserProfiles(): Promise<{
         errors: [],
       };
     }
-    
+
     let processed = 0;
     let cleaned = 0;
     const errors: string[] = [];
-    
+
     // Process each profile
     for (const profile of profiles) {
       try {
         processed++;
-        
+
         const validation = validateAndCleanUserData(profile);
-        
+
         // Check if any fields were removed (indicating cleaning was needed)
         if (validation.removedFields.length > 0) {
           const { error: updateError } = await supabase
             .from('profiles')
             .update(validation.cleanedData)
             .eq('id', profile.id);
-          
+
           if (updateError) {
             errors.push(`Failed to clean profile ${profile.id}: ${updateError.message}`);
           } else {
@@ -420,14 +420,14 @@ export async function cleanAllUserProfiles(): Promise<{
         errors.push(`Error processing profile ${profile.id}: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
     }
-    
+
     return {
       success: errors.length === 0,
       processed,
       cleaned,
       errors,
     };
-    
+
   } catch (error) {
     return {
       success: false,
@@ -452,22 +452,22 @@ export async function getCleanUserProfile(userId: string): Promise<{
       .select('*')
       .eq('id', userId)
       .single();
-    
+
     if (error) {
       return {
         success: false,
         error: error.message,
       };
     }
-    
+
     // Validate that the returned data is clean
     const validation = validateAndCleanUserData(data);
-    
+
     return {
       success: true,
       data: validation.cleanedData as CleanUserProfile,
     };
-    
+
   } catch (error) {
     return {
       success: false,

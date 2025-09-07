@@ -116,8 +116,8 @@ export class TestDataFactory {
         status: faker.helpers.arrayElement(['active', 'inactive', 'cancelled']),
         plan: faker.helpers.arrayElement(['free', 'premium', 'pro']),
         startDate: faker.date.past({ years: 1 }).toISOString(),
-        endDate: faker.datatype.boolean({ probability: 0.2 }) 
-          ? faker.date.future().toISOString() 
+        endDate: faker.datatype.boolean({ probability: 0.2 })
+          ? faker.date.future().toISOString()
           : undefined
       } : undefined,
       ...overrides
@@ -141,7 +141,7 @@ export class TestDataFactory {
 
     const name = faker.helpers.arrayElement(deviceNames[deviceType]);
     const serialPrefix = deviceType.toUpperCase().replace('-', '');
-    
+
     return {
       id: `${deviceType.replace('-', '_')}_${faker.string.alphanumeric(8)}`,
       name,
@@ -173,15 +173,15 @@ export class TestDataFactory {
   static createSensorData(overrides: Partial<TestSensorData> = {}): TestSensorData {
     // Generate realistic temperature (indoor range)
     const temperature = faker.number.float({ min: 18, max: 28, fractionDigits: 1 });
-    
+
     // Generate humidity based on temperature (realistic correlation)
     const baseHumidity = temperature < 22 ? 55 : 45;
-    const humidity = faker.number.float({ 
-      min: Math.max(30, baseHumidity - 15), 
-      max: Math.min(70, baseHumidity + 15), 
-      fractionDigits: 1 
+    const humidity = faker.number.float({
+      min: Math.max(30, baseHumidity - 15),
+      max: Math.min(70, baseHumidity + 15),
+      fractionDigits: 1
     });
-    
+
     // Generate realistic pressure (sea level range)
     const pressure = faker.number.float({ min: 980, max: 1040, fractionDigits: 2 });
 
@@ -223,10 +223,10 @@ export class TestDataFactory {
       isConnectable: faker.datatype.boolean({ probability: 0.9 }),
       serviceUUIDs: [
         '12345678-1234-1234-1234-123456789abc', // DAMP primary service
-        ...(faker.datatype.boolean({ probability: 0.3 }) 
+        ...(faker.datatype.boolean({ probability: 0.3 })
           ? ['180f'] // Battery service
           : []),
-        ...(faker.datatype.boolean({ probability: 0.2 }) 
+        ...(faker.datatype.boolean({ probability: 0.2 })
           ? ['180a'] // Device information service
           : [])
       ],
@@ -277,7 +277,7 @@ export class TestDataFactory {
     } = options;
 
     const user = this.createUser();
-    const devices = Array.from({ length: deviceCount }, () => 
+    const devices = Array.from({ length: deviceCount }, () =>
       this.createDevice({ userId: user.id })
     );
 
@@ -339,7 +339,7 @@ export class TestDataFactory {
       }));
 
       currentTime += intervalMs;
-      
+
       // Gradual drift in base values
       baseTemp += faker.number.float({ min: -0.1, max: 0.1, fractionDigits: 2 });
       baseHumidity += faker.number.float({ min: -0.5, max: 0.5, fractionDigits: 2 });
@@ -357,20 +357,20 @@ export class TestDataFactory {
     dataPointsPerDevice: number;
   }) {
     const { userCount, devicesPerUser, dataPointsPerDevice } = options;
-    
+
     const users = Array.from({ length: userCount }, () => this.createUser());
-    
+
     const allData = users.map(user => {
       const devices = Array.from({ length: devicesPerUser }, () =>
         this.createDevice({ userId: user.id })
       );
-      
+
       const sensorData = devices.flatMap(device =>
         Array.from({ length: dataPointsPerDevice }, () =>
           this.createSensorData({ deviceId: device.id })
         )
       );
-      
+
       return { user, devices, sensorData };
     });
 

@@ -43,7 +43,7 @@ Object.defineProperty(global, 'performance', {
 // Mock React Native modules for performance testing
 jest.mock('react-native-reanimated', () => {
   const reanimatedMock = require('react-native-reanimated/mock');
-  
+
   // Enhance mock with performance tracking
   reanimatedMock.runOnJS = jest.fn((fn) => {
     const start = performance.now();
@@ -52,14 +52,14 @@ jest.mock('react-native-reanimated', () => {
     console.log(`runOnJS execution time: ${end - start}ms`);
     return result;
   });
-  
+
   return reanimatedMock;
 });
 
 // Mock Gesture Handler with performance tracking
 jest.mock('react-native-gesture-handler', () => {
   const gestureHandler = require('react-native-gesture-handler/jestSetup');
-  
+
   return {
     ...gestureHandler,
     GestureDetector: ({ children, gesture, ...props }: any) => {
@@ -72,7 +72,7 @@ jest.mock('react-native-gesture-handler', () => {
           console.log(`Gesture processing time: ${end - start}ms`);
         }, 0);
       });
-      
+
       return children;
     }
   };
@@ -90,7 +90,7 @@ const mockBleManagerWithPerformance = {
       }, 100);
     });
   }),
-  
+
   connectToDevice: jest.fn((deviceId: string) => {
     const start = performance.now();
     return new Promise((resolve) => {
@@ -105,7 +105,7 @@ const mockBleManagerWithPerformance = {
       }, 200);
     });
   }),
-  
+
   readCharacteristicForDevice: jest.fn(() => {
     const start = performance.now();
     return new Promise((resolve) => {
@@ -116,7 +116,7 @@ const mockBleManagerWithPerformance = {
       }, 50);
     });
   }),
-  
+
   writeCharacteristicWithResponseForDevice: jest.fn(() => {
     const start = performance.now();
     return new Promise((resolve) => {
@@ -195,20 +195,20 @@ export const performanceTestUtils = {
   measureAnimationPerformance: (animationDuration: number) => {
     const frames: number[] = [];
     let lastTimestamp = performance.now();
-    
+
     const measureFrame = () => {
       const currentTimestamp = performance.now();
       const frameTime = currentTimestamp - lastTimestamp;
       frames.push(frameTime);
       lastTimestamp = currentTimestamp;
-      
+
       if (frames.length * 16.67 < animationDuration) {
         requestAnimationFrame(measureFrame);
       }
     };
-    
+
     requestAnimationFrame(measureFrame);
-    
+
     return {
       getFrameStats: () => {
         const avgFrameTime = frames.reduce((a, b) => a + b, 0) / frames.length;
@@ -291,7 +291,7 @@ expect.extend({
   toBeWithinPerformanceBenchmark(received: number, benchmark: number, tolerance = 0.1) {
     const maxAllowed = benchmark * (1 + tolerance);
     const pass = received <= maxAllowed;
-    
+
     return {
       message: () =>
         pass
@@ -303,7 +303,7 @@ expect.extend({
 
   toHaveAcceptableFPS(received: number) {
     const pass = received >= 30; // At least 30 FPS
-    
+
     return {
       message: () =>
         pass
@@ -316,7 +316,7 @@ expect.extend({
   toHaveReasonableMemoryUsage(received: number, baseline: number, maxGrowthFactor = 2) {
     const maxAllowed = baseline * maxGrowthFactor;
     const pass = received <= maxAllowed;
-    
+
     return {
       message: () =>
         pass

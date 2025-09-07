@@ -102,7 +102,7 @@ const mockStats = {
 describe('HomeScreen Integration Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Setup mock implementations
     const mockFrom = jest.fn().mockReturnValue({
       select: jest.fn().mockReturnValue({
@@ -111,7 +111,7 @@ describe('HomeScreen Integration Tests', () => {
         }),
       }),
     });
-    
+
     (supabase.from as jest.Mock).mockImplementation(mockFrom);
     (supabase.auth.getUser as jest.Mock).mockResolvedValue({
       data: { user: mockUser },
@@ -343,7 +343,7 @@ describe('HomeScreen Integration Tests', () => {
 
     it('should render without performance issues', async () => {
       const startTime = Date.now();
-      
+
       render(
         <TestWrapper>
           <HomeScreen />
@@ -359,7 +359,7 @@ describe('HomeScreen Integration Tests', () => {
   describe('Integration with External Services', () => {
     it('should register current device on mount', async () => {
       const registerCurrentDevice = require('@/utils/userProfileManager').registerCurrentDevice;
-      
+
       render(
         <TestWrapper>
           <HomeScreen />

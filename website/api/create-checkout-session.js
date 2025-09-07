@@ -62,7 +62,7 @@ export default async function handler(req, res) {
 
         for (const [productId, quantity] of Object.entries(cart)) {
             const product = products[productId];
-            
+
             if (!product) {
                 return res.status(400).json({ error: `Invalid product: ${productId}` });
             }
@@ -134,13 +134,13 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('Stripe checkout error:', error);
-        
+
         // Don't expose internal errors to client
-        const errorMessage = error.type === 'StripeCardError' 
-            ? 'Payment processing error. Please try again.' 
+        const errorMessage = error.type === 'StripeCardError'
+            ? 'Payment processing error. Please try again.'
             : 'An error occurred. Please try again or contact support.';
 
-        res.status(500).json({ 
+        res.status(500).json({
             error: errorMessage,
             support_email: 'support@dampdrink.com'
         });
@@ -169,19 +169,19 @@ export async function handleStripeWebhook(req, res) {
             const session = event.data.object;
             await handlePreOrderSuccess(session);
             break;
-        
+
         case 'payment_intent.succeeded':
             // Handle when payment is captured (product ships)
             const paymentIntent = event.data.object;
             await handlePaymentSuccess(paymentIntent);
             break;
-        
+
         case 'payment_intent.payment_failed':
             // Handle payment failure
             const failedPayment = event.data.object;
             await handlePaymentFailure(failedPayment);
             break;
-        
+
         default:
             console.log(`Unhandled event type ${event.type}`);
     }
@@ -209,4 +209,4 @@ async function handlePaymentFailure(paymentIntent) {
     // Send notification to customer
     // Update order status
     console.log('Payment failed:', paymentIntent.id);
-} 
+}

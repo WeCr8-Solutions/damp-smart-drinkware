@@ -145,7 +145,7 @@ class ZoneManager implements ZoneManagerInterface {
 
   checkDeviceInZone(deviceId: string, latitude: number, longitude: number): Zone | null {
     const activeZones = this.getActiveZones();
-    
+
     for (const zone of activeZones) {
       if (zone.deviceIds.includes(deviceId)) {
         const distance = this.calculateDistance(
@@ -154,7 +154,7 @@ class ZoneManager implements ZoneManagerInterface {
           zone.latitude,
           zone.longitude
         );
-        
+
         if (distance <= zone.radius) {
           return zone;
         }
@@ -172,7 +172,7 @@ class ZoneManager implements ZoneManagerInterface {
     if (this.isMonitoring) return;
 
     this.isMonitoring = true;
-    
+
     // Simulate location monitoring
     this.monitoringInterval = setInterval(() => {
       this.simulateLocationUpdates();
@@ -181,7 +181,7 @@ class ZoneManager implements ZoneManagerInterface {
 
   stopMonitoring(): void {
     this.isMonitoring = false;
-    
+
     if (this.monitoringInterval) {
       clearInterval(this.monitoringInterval);
       this.monitoringInterval = undefined;
@@ -191,13 +191,13 @@ class ZoneManager implements ZoneManagerInterface {
   private simulateLocationUpdates(): void {
     // In a real app, this would get actual device locations via BLE proximity
     // For simulation, we'll randomly move devices in and out of zones
-    
+
     const activeZones = this.getActiveZones();
     const deviceIds = ['device-1', 'device-2', 'device-3']; // Mock device IDs
 
     deviceIds.forEach(deviceId => {
       const lastPosition = this.lastKnownPositions.get(deviceId);
-      
+
       // Simulate random movement
       const randomZone = activeZones[Math.floor(Math.random() * activeZones.length)];
       if (!randomZone) return;
@@ -205,10 +205,10 @@ class ZoneManager implements ZoneManagerInterface {
       // Add some randomness to position within/outside zone
       const offsetLat = (Math.random() - 0.5) * 0.001; // ~100m variation
       const offsetLng = (Math.random() - 0.5) * 0.001;
-      
+
       const newLat = randomZone.latitude + offsetLat;
       const newLng = randomZone.longitude + offsetLng;
-      
+
       const currentZone = this.checkDeviceInZone(deviceId, newLat, newLng);
       const previousZoneId = lastPosition?.zoneId;
       const currentZoneId = currentZone?.id;
@@ -239,7 +239,7 @@ class ZoneManager implements ZoneManagerInterface {
             zoneId: previousZoneId,
             timestamp: new Date()
           });
-          
+
           this.onZoneEventCallback?.({
             type: 'enter',
             deviceId,

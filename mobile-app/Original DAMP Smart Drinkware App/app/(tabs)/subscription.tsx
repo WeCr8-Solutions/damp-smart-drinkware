@@ -31,7 +31,7 @@ export default function SubscriptionScreen() {
 
   useEffect(() => {
     fetchUserSubscription();
-    
+
     return () => {
       mounted.current = false;
     };
@@ -40,7 +40,7 @@ export default function SubscriptionScreen() {
   const fetchUserSubscription = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) {
         router.replace('/auth/login');
         return;
@@ -81,7 +81,7 @@ export default function SubscriptionScreen() {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (!session?.access_token) {
         router.replace('/auth/login');
         return;

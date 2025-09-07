@@ -20,25 +20,25 @@ class ProductValidator {
     async validate() {
         try {
             console.log('🔍 Validating products.json...');
-            
+
             if (!fs.existsSync(this.productsFile)) {
                 throw new Error(`Products file not found: ${this.productsFile}`);
             }
 
             const products = JSON.parse(fs.readFileSync(this.productsFile, 'utf8'));
-            
+
             this.validateStructure(products);
             this.validateProducts(products);
             this.validateImages(products);
             this.validatePricing(products);
             this.validateCompatibility(products);
-            
+
             this.reportResults(products);
-            
+
             if (this.errors.length > 0) {
                 process.exit(1);
             }
-            
+
         } catch (error) {
             console.error('❌ Validation failed:', error.message);
             process.exit(1);
@@ -64,10 +64,10 @@ class ProductValidator {
      */
     validateProducts(products) {
         const productIds = new Set();
-        
+
         products.forEach((product, index) => {
             const prefix = `Product ${index + 1} (${product.name || 'Unknown'})`;
-            
+
             // Required fields
             if (!product.id) {
                 this.errors.push(`${prefix}: Missing required field 'id'`);
@@ -76,20 +76,20 @@ class ProductValidator {
             } else {
                 productIds.add(product.id);
             }
-            
+
             if (!product.name) {
                 this.errors.push(`${prefix}: Missing required field 'name'`);
             }
-            
+
             if (!product.category) {
                 this.errors.push(`${prefix}: Missing required field 'category'`);
             }
-            
+
             // Inventory validation
             if (typeof product.inventory !== 'number' || product.inventory < 0) {
                 this.errors.push(`${prefix}: Inventory must be a non-negative number`);
             }
-            
+
             // Status validation
             const validStatuses = ['development', 'preorder', 'available', 'discontinued'];
             if (!validStatuses.includes(product.status)) {
@@ -109,7 +109,7 @@ class ProductValidator {
     validateImages(products) {
         products.forEach((product, index) => {
             const prefix = `Product ${index + 1} (${product.name || 'Unknown'})`;
-            
+
             if (product.images?.primary) {
                 const imagePath = path.join(__dirname, '..', 'website', product.images.primary);
                 if (!fs.existsSync(imagePath)) {
@@ -118,7 +118,7 @@ class ProductValidator {
             } else {
                 this.warnings.push(`${prefix}: No primary image specified`);
             }
-            
+
             if (product.images?.gallery && Array.isArray(product.images.gallery)) {
                 product.images.gallery.forEach((imagePath, imgIndex) => {
                     const fullPath = path.join(__dirname, '..', 'website', imagePath);
@@ -136,33 +136,33 @@ class ProductValidator {
     validatePricing(products) {
         products.forEach((product, index) => {
             const prefix = `Product ${index + 1} (${product.name || 'Unknown'})`;
-            
+
             if (!product.pricing) {
                 this.errors.push(`${prefix}: Missing pricing information`);
                 return;
             }
-            
+
             const { current, original, currency } = product.pricing;
-            
+
             // Price validation
             if (typeof current !== 'number' || current < 0) {
                 this.errors.push(`${prefix}: Current price must be a non-negative number`);
             }
-            
+
             if (typeof original !== 'number' || original < 0) {
                 this.errors.push(`${prefix}: Original price must be a non-negative number`);
             }
-            
+
             if (current > original) {
                 this.warnings.push(`${prefix}: Current price ($${current}) is higher than original price ($${original})`);
             }
-            
+
             // Currency validation
             const validCurrencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD'];
             if (!validCurrencies.includes(currency)) {
                 this.warnings.push(`${prefix}: Unknown currency '${currency}'. Valid values: ${validCurrencies.join(', ')}`);
             }
-            
+
             // Discount calculation validation
             if (original > 0 && current > 0) {
                 const expectedDiscount = Math.round((1 - (current / original)) * 100);
@@ -179,25 +179,25 @@ class ProductValidator {
     validateCompatibility(products) {
         products.forEach((product, index) => {
             const prefix = `Product ${index + 1} (${product.name || 'Unknown'})`;
-            
+
             if (!product.compatibility) {
                 this.warnings.push(`${prefix}: Missing compatibility information`);
                 return;
             }
-            
+
             const { type, brand, models } = product.compatibility;
-            
+
             // Compatibility type validation
             const validTypes = ['universal', 'brand-specific', 'model-specific'];
             if (!validTypes.includes(type)) {
                 this.warnings.push(`${prefix}: Unknown compatibility type '${type}'. Valid values: ${validTypes.join(', ')}`);
             }
-            
+
             // Brand-specific validation
             if (type === 'brand-specific' && !brand) {
                 this.errors.push(`${prefix}: Brand-specific compatibility requires a brand name`);
             }
-            
+
             // Models validation
             if (type !== 'universal' && (!models || !Array.isArray(models) || models.length === 0)) {
                 this.warnings.push(`${prefix}: Specific compatibility should include supported models`);
@@ -213,21 +213,21 @@ class ProductValidator {
         console.log(`   Products: ${products.length}`);
         console.log(`   Errors: ${this.errors.length}`);
         console.log(`   Warnings: ${this.warnings.length}`);
-        
+
         if (this.errors.length > 0) {
             console.log('\n❌ Errors:');
             this.errors.forEach(error => console.log(`   - ${error}`));
         }
-        
+
         if (this.warnings.length > 0) {
             console.log('\n⚠️  Warnings:');
             this.warnings.forEach(warning => console.log(`   - ${warning}`));
         }
-        
+
         if (this.errors.length === 0 && this.warnings.length === 0) {
             console.log('✅ All validations passed!');
         }
-        
+
         // Summary by category
         const categories = [...new Set(products.map(p => p.category))];
         console.log('\n📋 Products by Category:');
@@ -235,7 +235,7 @@ class ProductValidator {
             const count = products.filter(p => p.category === category).length;
             console.log(`   - ${category}: ${count} products`);
         });
-        
+
         // Summary by status
         const statuses = [...new Set(products.map(p => p.status))];
         console.log('\n📈 Products by Status:');

@@ -7,7 +7,7 @@ Your Firebase project configuration:
 const firebaseConfig = {
   apiKey: "your_firebase_api_key_here", // Replace with your actual Firebase API key
   authDomain: "damp-smart-drinkware.firebaseapp.com",
-  projectId: "damp-smart-drinkware", 
+  projectId: "damp-smart-drinkware",
   storageBucket: "damp-smart-drinkware.firebasestorage.app",
   messagingSenderId: "309818614427",
   appId: "1:309818614427:web:db15a4851c05e58aa25c3e",
@@ -143,4 +143,4 @@ console.log(await getRemoteConfigValue('support_contact_email'));
 // Verify messaging token
 const token = await messaging().getToken();
 console.log('FCM Token:', token);
-``` 
+```

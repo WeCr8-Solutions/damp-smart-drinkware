@@ -126,7 +126,7 @@ async function setupEmulatorVotingSystem() {
     console.log('\n🎉 DAMP Voting System fully initialized in emulator!');
     console.log('\n📋 Collections created:');
     console.log('  - voting/productVoting (main voting data)');
-    console.log('  - voting/settings (admin settings)'); 
+    console.log('  - voting/settings (admin settings)');
     console.log('  - stats/global (global statistics)');
 
     console.log('\n🔗 Access your data:');

@@ -1,6 +1,6 @@
 /**
  * Data Management Modal
- * 
+ *
  * Storage, backup, and data management options
  */
 
@@ -84,14 +84,14 @@ export default function DataManagementModal({
     try {
       // Simulate backup process
       await new Promise(resolve => setTimeout(resolve, 3000));
-      
+
       setBackupInfo(prev => ({
         ...prev,
         status: 'idle',
         lastBackup: new Date(),
         backupSize: prev.backupSize + 0.1,
       }));
-      
+
       Alert.alert('Backup Complete', 'Your data has been successfully backed up.');
     } catch (error) {
       setBackupInfo(prev => ({ ...prev, status: 'error' }));
@@ -117,7 +117,7 @@ export default function DataManagementModal({
             try {
               // Simulate restore process
               await new Promise(resolve => setTimeout(resolve, 2000));
-              
+
               setBackupInfo(prev => ({ ...prev, status: 'idle' }));
               Alert.alert('Restore Complete', 'Your data has been restored from backup.');
             } catch (error) {
@@ -224,7 +224,7 @@ export default function DataManagementModal({
                 </View>
               </View>
             </View>
-            
+
             {/* Storage Bar */}
             <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
               <View

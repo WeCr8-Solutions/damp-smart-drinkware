@@ -2,7 +2,7 @@
 
 /**
  * DAMP Smart Drinkware - Firebase Connection Test
- * 
+ *
  * This script tests the Firebase connection and basic functionality
  * to ensure everything is set up correctly.
  */
@@ -43,14 +43,14 @@ function initializeFirebase() {
 // Test Firestore connection
 async function testFirestoreConnection() {
   log('🔄 Testing Firestore connection...', 'blue');
-  
+
   try {
     const db = admin.firestore();
-    
+
     // Try to read the global stats document
     const statsRef = db.doc('stats/global');
     const statsSnap = await statsRef.get();
-    
+
     if (statsSnap.exists) {
       const data = statsSnap.data();
       log('✅ Firestore connection successful', 'green');
@@ -71,22 +71,22 @@ async function testFirestoreConnection() {
 // Test voting collections
 async function testVotingCollections() {
   log('🔄 Testing voting collections...', 'blue');
-  
+
   try {
     const db = admin.firestore();
-    
+
     // Test customer voting
     const customerVotingRef = db.doc('voting/products');
     const customerVotingSnap = await customerVotingRef.get();
-    
+
     // Test public voting
     const publicVotingRef = db.doc('voting/public');
     const publicVotingSnap = await publicVotingRef.get();
-    
+
     if (customerVotingSnap.exists && publicVotingSnap.exists) {
       const customerData = customerVotingSnap.data();
       const publicData = publicVotingSnap.data();
-      
+
       log('✅ Voting collections found', 'green');
       log(`🗳️ Customer votes: ${customerData.totalVotes}`, 'cyan');
       log(`🌍 Public votes: ${publicData.totalVotes}`, 'cyan');
@@ -105,14 +105,14 @@ async function testVotingCollections() {
 // Test newsletter subscribers collection
 async function testNewsletterCollection() {
   log('🔄 Testing newsletter subscribers collection...', 'blue');
-  
+
   try {
     const db = admin.firestore();
-    
+
     // Try to read newsletter subscribers
     const subscribersRef = db.collection('newsletter_subscribers');
     const subscribersSnap = await subscribersRef.limit(5).get();
-    
+
     log('✅ Newsletter collection accessible', 'green');
     log(`📧 Sample subscribers found: ${subscribersSnap.size}`, 'cyan');
     return true;
@@ -126,18 +126,18 @@ async function testNewsletterCollection() {
 // Test admin user
 async function testAdminUser() {
   log('🔄 Testing admin user...', 'blue');
-  
+
   try {
     const adminEmail = 'admin@dampdrink.com';
-    
+
     // Try to get admin user from Auth
     const adminUser = await admin.auth().getUserByEmail(adminEmail);
-    
+
     // Try to get admin user document from Firestore
     const db = admin.firestore();
     const adminUserRef = db.doc(`users/${adminUser.uid}`);
     const adminUserSnap = await adminUserRef.get();
-    
+
     if (adminUserSnap.exists && adminUserSnap.data().role === 'admin') {
       log('✅ Admin user found and configured', 'green');
       log(`👤 Admin: ${adminEmail}`, 'cyan');
@@ -161,17 +161,17 @@ async function testAdminUser() {
 // Test products collection
 async function testProductsCollection() {
   log('🔄 Testing products collection...', 'blue');
-  
+
   try {
     const db = admin.firestore();
-    
+
     const productsRef = db.collection('products');
     const productsSnap = await productsRef.get();
-    
+
     if (productsSnap.size > 0) {
       log('✅ Products collection found', 'green');
       log(`🛍️ Products available: ${productsSnap.size}`, 'cyan');
-      
+
       // List product names
       const productNames = productsSnap.docs.map(doc => doc.data().name);
       log(`   Products: ${productNames.join(', ')}`, 'cyan');
@@ -192,32 +192,32 @@ async function runTests() {
   log('🧪 DAMP Smart Drinkware - Firebase Connection Test', 'cyan');
   log('================================================', 'cyan');
   log('', 'reset');
-  
+
   const results = [];
-  
+
   // Initialize Firebase
   const firebaseInit = initializeFirebase();
   if (!firebaseInit) {
     log('❌ Cannot proceed without Firebase initialization', 'red');
     process.exit(1);
   }
-  
+
   log('', 'reset');
-  
+
   // Run all tests
   results.push({ name: 'Firestore Connection', result: await testFirestoreConnection() });
   results.push({ name: 'Voting Collections', result: await testVotingCollections() });
   results.push({ name: 'Newsletter Collection', result: await testNewsletterCollection() });
   results.push({ name: 'Admin User', result: await testAdminUser() });
   results.push({ name: 'Products Collection', result: await testProductsCollection() });
-  
+
   log('', 'reset');
   log('📋 Test Results Summary:', 'cyan');
   log('========================', 'cyan');
-  
+
   let passed = 0;
   let failed = 0;
-  
+
   results.forEach(test => {
     if (test.result) {
       log(`✅ ${test.name}`, 'green');
@@ -227,10 +227,10 @@ async function runTests() {
       failed++;
     }
   });
-  
+
   log('', 'reset');
   log(`📊 Results: ${passed} passed, ${failed} failed`, passed === results.length ? 'green' : 'yellow');
-  
+
   if (passed === results.length) {
     log('', 'reset');
     log('🎉 All tests passed! Your Firebase setup is working correctly.', 'green');
@@ -245,7 +245,7 @@ async function runTests() {
     log('⚠️ Some tests failed. Please check the errors above.', 'yellow');
     log('💡 Try running: node scripts/firebase-init.js', 'blue');
   }
-  
+
   log('', 'reset');
 }
 
@@ -260,4 +260,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { runTests }; 
+module.exports = { runTests };

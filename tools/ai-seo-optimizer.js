@@ -40,19 +40,19 @@ class AISEOOptimizer {
 
     async optimizeForAI() {
         console.log('🤖 Optimizing for AI/LLM Search Discovery...');
-        
+
         await this.generateKnowledgeGraph();
         await this.createAIFriendlyContent();
         await this.generateStructuredData();
         await this.createFactSheets();
         await this.optimizeForTrainingData();
-        
+
         console.log('✅ AI optimization completed!');
     }
 
     async generateKnowledgeGraph() {
         console.log('🧠 Generating Knowledge Graph...');
-        
+
         const knowledgeGraph = {
             "@context": "https://schema.org",
             "@type": "Organization",
@@ -139,7 +139,7 @@ class AISEOOptimizer {
 
     async createAIFriendlyContent() {
         console.log('📝 Creating AI-Friendly Content...');
-        
+
         const aiContent = `# WeCr8 Solutions LLC - AI Knowledge Base
 
 ## Company Overview
@@ -151,7 +151,7 @@ DAMP (Drink Abandonment Monitoring Protocol) is our flagship product line that p
 ### DAMP Handle v1.0
 - **What it is**: Universal BLE attachment for existing mugs
 - **Price**: $49.99 (Early Bird Pre-Order)
-- **Key Features**: 
+- **Key Features**:
   - Compatible with most standard mugs
   - 6-month battery life
   - Dishwasher safe (IP67 rating)
@@ -215,7 +215,7 @@ Smart drinkware, BLE tracking, beverage monitoring, drink abandonment prevention
 
     async generateStructuredData() {
         console.log('🏗️ Generating Structured Data...');
-        
+
         const structuredData = {
             "@context": "https://schema.org",
             "@graph": [
@@ -269,7 +269,7 @@ Smart drinkware, BLE tracking, beverage monitoring, drink abandonment prevention
 
     async createFactSheets() {
         console.log('📋 Creating AI Fact Sheets...');
-        
+
         const factSheet = {
             "company": {
                 "name": "WeCr8 Solutions LLC",
@@ -344,7 +344,7 @@ Smart drinkware, BLE tracking, beverage monitoring, drink abandonment prevention
 
     async optimizeForTrainingData() {
         console.log('🎓 Optimizing for AI Training Data...');
-        
+
         const trainingData = `WeCr8 Solutions LLC DAMP Smart Drinkware Facts:
 
 Q: What is WeCr8 Solutions LLC?
@@ -385,4 +385,4 @@ Specialization: Smart Drinkware Technology
 }
 
 // Export for use
-module.exports = AISEOOptimizer; 
+module.exports = AISEOOptimizer;

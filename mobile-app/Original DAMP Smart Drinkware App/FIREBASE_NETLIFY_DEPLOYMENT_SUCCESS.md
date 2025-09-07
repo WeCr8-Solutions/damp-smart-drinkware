@@ -111,7 +111,7 @@ If you want to deploy immediately, use Git deployment:
 
 ---
 
-*Deployment configured: $(date)*  
-*Owner: zach@wecr8.info*  
-*Architecture: Firebase-only, Secure Environment Variables*  
+*Deployment configured: $(date)*
+*Owner: zach@wecr8.info*
+*Architecture: Firebase-only, Secure Environment Variables*
 *Domain: https://dampdrink.com*

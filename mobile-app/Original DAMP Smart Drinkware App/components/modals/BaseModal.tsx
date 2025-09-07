@@ -1,6 +1,6 @@
 /**
  * Base Modal Component
- * 
+ *
  * Provides consistent modal structure with safe area handling
  */
 

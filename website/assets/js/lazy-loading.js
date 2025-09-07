@@ -18,7 +18,7 @@ class DAMPLazyLoader {
         this.loadedImages = new Set();
         this.failedImages = new Set();
         this.retryCount = new Map();
-        
+
         this.init();
     }
 
@@ -35,10 +35,10 @@ class DAMPLazyLoader {
         this.setupImageLazyLoading();
         this.setupVideoLazyLoading();
         this.setupIframeLazyLoading();
-        
+
         // Handle dynamic content
         this.observeNewElements();
-        
+
         // Performance monitoring
         this.setupPerformanceMonitoring();
     }
@@ -108,14 +108,14 @@ class DAMPLazyLoader {
         const ctx = canvas.getContext('2d');
         canvas.width = 40;
         canvas.height = 30;
-        
+
         // Generate gradient placeholder
         const gradient = ctx.createLinearGradient(0, 0, 40, 30);
         gradient.addColorStop(0, '#1a1a2e');
         gradient.addColorStop(1, '#16213e');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, 40, 30);
-        
+
         // Apply blur effect
         img.style.filter = 'blur(5px)';
         img.style.transition = `filter ${this.options.fadeInDuration}ms ease`;
@@ -138,10 +138,10 @@ class DAMPLazyLoader {
             cursor: pointer;
         `;
         placeholder.innerHTML = '<span>▶ Click to load content</span>';
-        
+
         iframe.parentNode.insertBefore(placeholder, iframe);
         iframe.style.display = 'none';
-        
+
         placeholder.addEventListener('click', () => {
             this.loadElement(iframe);
             placeholder.remove();
@@ -150,7 +150,7 @@ class DAMPLazyLoader {
 
     async loadElement(element) {
         const elementType = element.getAttribute('data-lazy');
-        
+
         try {
             switch (elementType) {
                 case 'image':
@@ -165,14 +165,14 @@ class DAMPLazyLoader {
                 default:
                     await this.loadGenericElement(element);
             }
-            
+
             // Mark as loaded
             element.setAttribute('data-loaded', 'true');
             element.removeAttribute('data-lazy');
-            
+
             // Trigger custom event
             this.dispatchLoadEvent(element);
-            
+
         } catch (error) {
             console.error('Failed to load element:', error);
             this.handleLoadError(element);
@@ -189,35 +189,35 @@ class DAMPLazyLoader {
 
             // Check for WebP support and use WebP if available
             const optimizedSrc = this.getOptimizedImageSrc(src);
-            
+
             const newImg = new Image();
-            
+
             newImg.onload = () => {
                 // Update src and remove blur
                 img.src = optimizedSrc;
                 img.removeAttribute('data-src');
-                
+
                 if (this.options.enableBlur) {
                     img.style.filter = 'none';
                 }
-                
+
                 // Add fade-in animation
                 img.style.opacity = '0';
                 img.style.transition = `opacity ${this.options.fadeInDuration}ms ease`;
-                
+
                 requestAnimationFrame(() => {
                     img.style.opacity = '1';
                 });
-                
+
                 this.loadedImages.add(src);
                 resolve();
             };
-            
+
             newImg.onerror = () => {
                 this.handleImageError(img, src);
                 reject(new Error(`Failed to load image: ${src}`));
             };
-            
+
             // Start loading
             newImg.src = optimizedSrc;
         });
@@ -229,10 +229,10 @@ class DAMPLazyLoader {
 
         video.src = src;
         video.removeAttribute('data-src');
-        
+
         // Preload metadata
         video.preload = 'metadata';
-        
+
         return new Promise((resolve) => {
             video.addEventListener('loadedmetadata', resolve, { once: true });
         });
@@ -245,7 +245,7 @@ class DAMPLazyLoader {
         iframe.src = src;
         iframe.removeAttribute('data-src');
         iframe.style.display = '';
-        
+
         return new Promise((resolve) => {
             iframe.addEventListener('load', resolve, { once: true });
         });
@@ -257,7 +257,7 @@ class DAMPLazyLoader {
             element.src = src;
             element.removeAttribute('data-src');
         }
-        
+
         // Handle background images
         const bgImage = element.getAttribute('data-bg');
         if (bgImage) {
@@ -271,12 +271,12 @@ class DAMPLazyLoader {
         if (!this.options.enableWebP || !this.supportsWebP()) {
             return src;
         }
-        
+
         // Convert to WebP if the image service supports it
         if (src.includes('.jpg') || src.includes('.jpeg') || src.includes('.png')) {
             return src.replace(/\.(jpg|jpeg|png)$/, '.webp');
         }
-        
+
         return src;
     }
 
@@ -284,22 +284,22 @@ class DAMPLazyLoader {
         if (this._webpSupported !== undefined) {
             return this._webpSupported;
         }
-        
+
         const canvas = document.createElement('canvas');
         canvas.width = 1;
         canvas.height = 1;
-        
+
         this._webpSupported = canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
         return this._webpSupported;
     }
 
     handleImageError(img, src) {
         const retryCount = this.retryCount.get(src) || 0;
-        
+
         if (retryCount < this.options.retryAttempts) {
             // Retry loading
             this.retryCount.set(src, retryCount + 1);
-            
+
             setTimeout(() => {
                 this.loadImage(img);
             }, this.options.retryDelay * (retryCount + 1));
@@ -321,39 +321,39 @@ class DAMPLazyLoader {
         if (window.dampIconGenerator && typeof window.dampIconGenerator.generateSVGFallback === 'function') {
             return window.dampIconGenerator.generateSVGFallback(400);
         }
-        
+
         // Generate DAMP-branded fallback with white droplet
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = 400;
         canvas.height = 300;
-        
+
         // Create gradient background
         const gradient = ctx.createRadialGradient(200, 150, 0, 200, 150, 200);
         gradient.addColorStop(0, '#667eea');
         gradient.addColorStop(1, '#764ba2');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, 400, 300);
-        
+
         // Draw water droplet shape
         this.drawDropletFallback(ctx, 200, 150, 60);
-        
+
         // Add DAMP branding
         ctx.fillStyle = 'white';
         ctx.font = 'bold 24px Arial';
         ctx.textAlign = 'center';
         ctx.fillText('DAMP', 200, 240);
-        
+
         ctx.font = '14px Arial';
         ctx.fillText('Image not available', 200, 260);
-        
+
         return canvas.toDataURL();
     }
-    
+
     drawDropletFallback(ctx, centerX, centerY, radius) {
         ctx.beginPath();
         ctx.moveTo(centerX, centerY - radius);
-        
+
         // Create water droplet shape using bezier curves
         ctx.bezierCurveTo(
             centerX + radius, centerY - radius,
@@ -365,10 +365,10 @@ class DAMPLazyLoader {
             centerX - radius, centerY - radius,
             centerX, centerY - radius
         );
-        
+
         ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
         ctx.fill();
-        
+
         // Add inner highlight
         ctx.beginPath();
         ctx.arc(centerX - radius * 0.3, centerY - radius * 0.3, radius * 0.2, 0, Math.PI * 2);
@@ -380,11 +380,11 @@ class DAMPLazyLoader {
         const rect = element.getBoundingClientRect();
         return rect.top < window.innerHeight && rect.bottom > 0;
     }
-    
+
     isLogoOrIcon(img) {
         // Don't lazy load logos, icons, or favicons
-        return img.src.includes('/logo/') || 
-               img.src.includes('icon') || 
+        return img.src.includes('/logo/') ||
+               img.src.includes('icon') ||
                img.src.includes('favicon') ||
                img.closest('nav') !== null;
     }
@@ -406,7 +406,7 @@ class DAMPLazyLoader {
                     });
                 });
             });
-            
+
             mutationObserver.observe(document.body, {
                 childList: true,
                 subtree: true
@@ -426,7 +426,7 @@ class DAMPLazyLoader {
                         }
                     });
                 });
-                
+
                 observer.observe({ entryTypes: ['largest-contentful-paint'] });
             } catch (e) {
                 console.warn('Performance monitoring not supported');
@@ -436,7 +436,7 @@ class DAMPLazyLoader {
 
     trackLCP(entry) {
         const lcpTime = entry.startTime;
-        
+
         // Track to analytics if available
         if (typeof gtag !== 'undefined') {
             gtag('event', 'web_vitals', {
@@ -445,7 +445,7 @@ class DAMPLazyLoader {
                 event_category: 'Performance'
             });
         }
-        
+
         console.log(`LCP: ${Math.round(lcpTime)}ms`);
     }
 
@@ -493,25 +493,25 @@ const lazyLoadCSS = `
         opacity: 0;
         transition: opacity 300ms ease;
     }
-    
+
     .lazy-loaded {
         opacity: 1;
     }
-    
+
     .lazy-error {
         opacity: 0.5;
         filter: grayscale(100%);
     }
-    
+
     .iframe-placeholder {
         cursor: pointer;
         transition: transform 0.3s ease;
     }
-    
+
     .iframe-placeholder:hover {
         transform: scale(1.02);
     }
-    
+
     @media (prefers-reduced-motion: reduce) {
         .lazy-loading,
         .lazy-loaded,
@@ -531,10 +531,10 @@ let dampLazyLoader;
 
 function initLazyLoading(options = {}) {
     dampLazyLoader = new DAMPLazyLoader(options);
-    
+
     // Make globally accessible
     window.dampLazyLoader = dampLazyLoader;
-    
+
     // Add utility functions to window
     window.lazyLoad = {
         refresh: () => dampLazyLoader.refreshObserver(),
@@ -558,11 +558,11 @@ if (typeof module !== 'undefined' && module.exports) {
 // Debug mode
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     console.log('DAMP Lazy Loading System initialized');
-    
+
     // Add debug function
     window.debugLazyLoading = () => {
         if (dampLazyLoader) {
             console.log('Lazy Loading Stats:', dampLazyLoader.getStats());
         }
     };
-} 
+}

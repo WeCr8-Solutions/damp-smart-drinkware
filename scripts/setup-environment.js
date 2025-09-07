@@ -45,7 +45,7 @@ class EnvironmentSetup {
 
         const envContent = fs.readFileSync(this.envPath, 'utf-8');
         const lines = envContent.split('\n');
-        
+
         const issues = [];
         const warnings = [];
         const configured = [];
@@ -66,7 +66,7 @@ class EnvironmentSetup {
         lines.forEach(line => {
             if (line.includes('=') && !line.startsWith('#')) {
                 const [key, value] = line.split('=');
-                
+
                 if (criticalKeys.includes(key.trim())) {
                     if (value && !value.includes('your_') && !value.includes('_here')) {
                         configured.push(`✅ ${key}: Configured`);
@@ -116,7 +116,7 @@ class EnvironmentSetup {
         // Copy template to .env
         const templateContent = fs.readFileSync(this.examplePath, 'utf-8');
         fs.writeFileSync(this.envPath, templateContent);
-        
+
         console.log('✅ Created .env file from template');
     }
 
@@ -168,8 +168,8 @@ class EnvironmentSetup {
             },
             {
                 name: 'Stripe Keys',
-                check: () => config.STRIPE_SECRET_KEY && config.STRIPE_PUBLISHABLE_KEY && 
-                           !config.STRIPE_SECRET_KEY.includes('your_') && 
+                check: () => config.STRIPE_SECRET_KEY && config.STRIPE_PUBLISHABLE_KEY &&
+                           !config.STRIPE_SECRET_KEY.includes('your_') &&
                            !config.STRIPE_PUBLISHABLE_KEY.includes('your_'),
                 message: 'Set your Stripe keys from Stripe Dashboard'
             },
@@ -197,7 +197,7 @@ class EnvironmentSetup {
     parseEnvFile(content) {
         const config = {};
         const lines = content.split('\n');
-        
+
         lines.forEach(line => {
             if (line.includes('=') && !line.startsWith('#')) {
                 const [key, ...valueParts] = line.split('=');
@@ -210,7 +210,7 @@ class EnvironmentSetup {
 
     showNextSteps() {
         console.log('\n🎯 Next Steps:\n');
-        
+
         console.log('1. 🔥 Configure Firebase:');
         console.log('   - Go to https://console.firebase.google.com/');
         console.log('   - Select your "damp-smart-drinkware" project');
@@ -261,4 +261,4 @@ if (require.main === module) {
     }
 }
 
-module.exports = EnvironmentSetup; 
+module.exports = EnvironmentSetup;

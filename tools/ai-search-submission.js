@@ -12,7 +12,7 @@ class AISearchSubmission {
         this.knowledgeGraph = 'https://dampdrink.com/knowledge-graph.json';
         this.factSheet = 'https://dampdrink.com/ai-fact-sheet.json';
         this.trainingData = 'https://dampdrink.com/ai-training-data.txt';
-        
+
         this.aiPlatforms = {
             'Google': 'https://www.google.com/ping?sitemap=',
             'Bing': 'https://www.bing.com/ping?sitemap=',
@@ -24,7 +24,7 @@ class AISearchSubmission {
 
     async submitToAISearch() {
         console.log('🤖 Submitting to AI Search Engines...');
-        
+
         // Create submission manifest
         const submission = {
             company: 'WeCr8 Solutions LLC',
@@ -124,4 +124,4 @@ Crawl-delay: 1
     }
 }
 
-module.exports = AISearchSubmission; 
+module.exports = AISearchSubmission;

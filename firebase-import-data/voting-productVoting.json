@@ -12,13 +12,13 @@
         "value": "2025-01-15T00:00:00.000Z"
       },
       "updatedAt": {
-        "__datatype__": "timestamp", 
+        "__datatype__": "timestamp",
         "value": "2025-01-15T00:00:00.000Z"
       }
     },
     "siliconeBottom": {
       "id": "siliconeBottom",
-      "name": "Silicone Bottom v1.0", 
+      "name": "Silicone Bottom v1.0",
       "description": "Non-slip silicone base",
       "image": "/assets/images/products/silicone-bottom/silicone-bottom.png",
       "votes": 0,
@@ -35,7 +35,7 @@
     "cupSleeve": {
       "id": "cupSleeve",
       "name": "Cup Sleeve v1.0",
-      "description": "Adjustable fit for most cups", 
+      "description": "Adjustable fit for most cups",
       "image": "/assets/images/products/cup-sleeve/cup-sleeve.png",
       "votes": 0,
       "percentage": 0,

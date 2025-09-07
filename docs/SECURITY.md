@@ -14,19 +14,19 @@ graph TB
         D[Website] --> E[CSP Headers]
         D --> F[HTTPS Only]
     end
-    
+
     subgraph "Backend Security"
         G[Firebase Auth] --> H[JWT Tokens]
         I[Cloud Functions] --> J[CORS Protection]
         K[Firestore] --> L[Security Rules]
     end
-    
+
     subgraph "Infrastructure Security"
         M[Netlify] --> N[Edge Security]
         O[CDN] --> P[DDoS Protection]
         Q[Environment Variables] --> R[Secret Management]
     end
-    
+
     A --> G
     D --> G
     G --> I
@@ -49,17 +49,17 @@ const secureLogin = async (email, password) => {
   try {
     const auth = getAuth();
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    
+
     // Token automatically managed by Firebase SDK
     const idToken = await userCredential.user.getIdToken();
-    
+
     // Store minimal user data locally
     const userData = {
       uid: userCredential.user.uid,
       email: userCredential.user.email,
       lastLogin: new Date().toISOString()
     };
-    
+
     return { success: true, user: userData };
   } catch (error) {
     // Never expose internal error details
@@ -81,18 +81,18 @@ const secureLogin = async (email, password) => {
 
 ### **Content Security Policy (CSP)**
 ```http
-Content-Security-Policy: 
-  default-src 'self'; 
-  script-src 'self' 'unsafe-inline' 'unsafe-eval' 
-    https://www.googletagmanager.com 
-    https://js.stripe.com 
+Content-Security-Policy:
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval'
+    https://www.googletagmanager.com
+    https://js.stripe.com
     https://checkout.stripe.com;
-  style-src 'self' 'unsafe-inline' 
+  style-src 'self' 'unsafe-inline'
     https://fonts.googleapis.com;
-  img-src 'self' data: blob: 
+  img-src 'self' data: blob:
     https://www.googletagmanager.com
     https://images.unsplash.com;
-  connect-src 'self' 
+  connect-src 'self'
     https://api.stripe.com
     https://checkout.stripe.com
     https://dampdrink.com;
@@ -125,16 +125,16 @@ const validateVoteInput = (productId, userId) => {
   // Sanitize inputs
   const sanitizedProductId = productId.toString().replace(/[^a-zA-Z0-9-]/g, '');
   const sanitizedUserId = userId.toString().replace(/[^a-zA-Z0-9-]/g, '');
-  
+
   // Validate format
   if (!/^[a-zA-Z0-9-]{1,50}$/.test(sanitizedProductId)) {
     throw new Error('Invalid product ID format');
   }
-  
+
   if (!/^[a-zA-Z0-9-]{1,50}$/.test(sanitizedUserId)) {
     throw new Error('Invalid user ID format');
   }
-  
+
   return { productId: sanitizedProductId, userId: sanitizedUserId };
 };
 ```
@@ -206,7 +206,7 @@ const secureApiCall = async (url, options = {}) => {
       }
     })
   };
-  
+
   return fetch(url, secureOptions);
 };
 ```
@@ -223,24 +223,24 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
-    
+
     // Voting is public read, authenticated write
     match /voting/{document} {
       allow read: if true;
-      allow write: if request.auth != null 
+      allow write: if request.auth != null
         && request.auth.uid != null
         && isValidVote(request.resource.data);
     }
-    
+
     // Orders require authentication and ownership
     match /orders/{orderId} {
-      allow read, write: if request.auth != null 
+      allow read, write: if request.auth != null
         && request.auth.uid == resource.data.userId;
     }
-    
+
     // Admin-only access
     match /admin/{document} {
-      allow read, write: if request.auth != null 
+      allow read, write: if request.auth != null
         && request.auth.token.admin == true;
     }
   }
@@ -270,27 +270,27 @@ exports.secureVoteSubmission = functions.https.onRequest((req, res) => {
       if (!idToken) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
-      
+
       const decodedToken = await admin.auth().verifyIdToken(idToken);
       const userId = decodedToken.uid;
-      
+
       // Rate limiting
       const recentVotes = await admin.firestore()
         .collection('voting')
         .where('userId', '==', userId)
         .where('timestamp', '>', new Date(Date.now() - 60000)) // 1 minute
         .get();
-        
+
       if (recentVotes.size > 5) {
         return res.status(429).json({ error: 'Rate limit exceeded' });
       }
-      
+
       // Validate and sanitize input
       const { productId } = req.body;
       if (!productId || typeof productId !== 'string') {
         return res.status(400).json({ error: 'Invalid input' });
       }
-      
+
       // Process vote securely
       const voteData = {
         productId: productId.substring(0, 50), // Limit length
@@ -298,9 +298,9 @@ exports.secureVoteSubmission = functions.https.onRequest((req, res) => {
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
         ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress
       };
-      
+
       await admin.firestore().collection('voting').add(voteData);
-      
+
       res.status(200).json({ success: true });
     } catch (error) {
       console.error('Vote submission error:', error);
@@ -330,36 +330,36 @@ int authenticate_device(device_credentials_t *creds) {
     mbedtls_pk_context pk;
     mbedtls_entropy_context entropy;
     mbedtls_ctr_drbg_context ctr_drbg;
-    
+
     // Initialize cryptographic contexts
     mbedtls_pk_init(&pk);
     mbedtls_entropy_init(&entropy);
     mbedtls_ctr_drbg_init(&ctr_drbg);
-    
+
     // Load device private key
-    int ret = mbedtls_pk_parse_key(&pk, 
-        (const unsigned char *)creds->private_key, 
+    int ret = mbedtls_pk_parse_key(&pk,
+        (const unsigned char *)creds->private_key,
         strlen(creds->private_key) + 1, NULL, 0);
-    
+
     if (ret != 0) {
         return -1; // Authentication failed
     }
-    
+
     // Create device signature for authentication
     unsigned char signature[256];
     size_t sig_len;
-    
+
     ret = mbedtls_pk_sign(&pk, MBEDTLS_MD_SHA256,
-        (const unsigned char *)creds->device_id, 
+        (const unsigned char *)creds->device_id,
         strlen(creds->device_id),
         signature, &sig_len,
         mbedtls_ctr_drbg_random, &ctr_drbg);
-    
+
     // Cleanup
     mbedtls_pk_free(&pk);
     mbedtls_entropy_free(&entropy);
     mbedtls_ctr_drbg_free(&ctr_drbg);
-    
+
     return ret == 0 ? 0 : -1;
 }
 ```
@@ -383,11 +383,11 @@ const createSecurePayment = async (amount, currency, customerId) => {
     if (!amount || amount < 50) { // Minimum $0.50
       throw new Error('Invalid amount');
     }
-    
+
     if (!['usd', 'eur', 'gbp'].includes(currency)) {
       throw new Error('Unsupported currency');
     }
-    
+
     // Create payment intent with security features
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount), // Prevent decimal attacks
@@ -405,7 +405,7 @@ const createSecurePayment = async (amount, currency, customerId) => {
         session: 'fraud_detection_enabled'
       }
     });
-    
+
     return {
       client_secret: paymentIntent.client_secret,
       payment_intent_id: paymentIntent.id
@@ -468,16 +468,16 @@ const securityLogger = {
       timestamp: new Date().toISOString(),
       severity: success ? 'info' : 'warning'
     };
-    
+
     // Log to secure monitoring system
     console.log(JSON.stringify(event));
-    
+
     // Alert on suspicious activity
     if (!success) {
       checkForBruteForce(ip, userId);
     }
   },
-  
+
   logDataAccess: (userId, resource, action) => {
     const event = {
       type: 'data_access',
@@ -487,7 +487,7 @@ const securityLogger = {
       timestamp: new Date().toISOString(),
       severity: 'info'
     };
-    
+
     console.log(JSON.stringify(event));
   }
 };

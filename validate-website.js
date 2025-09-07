@@ -1,6 +1,6 @@
 /**
  * DAMP Smart Drinkware - Website Validation Script
- * 
+ *
  * Validates all critical website components and configurations
  */
 
@@ -21,7 +21,7 @@ function test(name, condition, message = '') {
         message
     };
     tests.push(result);
-    
+
     if (condition) {
         passed++;
         console.log(`✅ ${name}: PASS ${message ? `- ${message}` : ''}`);
@@ -44,7 +44,7 @@ console.log('\n📄 Checking Page Structure...');
 const pagesDir = 'website/pages';
 const requiredPages = [
     'products.html',
-    'about.html', 
+    'about.html',
     'product-voting.html',
     'pre-sale-funnel.html'
 ];
@@ -126,7 +126,7 @@ console.log('5. Check that no 404 errors appear in console');
 
 console.log('\n🚀 Website should be fully functional with:');
 console.log('   ✅ Modern Firebase authentication');
-console.log('   ✅ Secure CSP configuration'); 
+console.log('   ✅ Secure CSP configuration');
 console.log('   ✅ Mobile-first navigation');
 console.log('   ✅ Performance optimizations');
 console.log('   ✅ Cross-platform compatibility');

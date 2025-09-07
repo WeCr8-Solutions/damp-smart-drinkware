@@ -9,4 +9,4 @@ class DAMPFooter extends HTMLElement {
         `;
     }
 }
-customElements.define('damp-footer', DAMPFooter); 
+customElements.define('damp-footer', DAMPFooter);

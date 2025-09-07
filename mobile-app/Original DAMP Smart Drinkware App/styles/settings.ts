@@ -1,6 +1,6 @@
 /**
  * Settings Styles
- * 
+ *
  * Shared styles for settings components with consistent design system
  */
 
@@ -109,7 +109,7 @@ export const settingsStyles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
-  
+
   // Header Styles
   header: {
     paddingHorizontal: SPACING.xl,

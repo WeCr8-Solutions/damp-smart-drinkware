@@ -16,7 +16,7 @@ import { XCircle, ArrowLeft, RefreshCw } from 'lucide-react-native';
 import { router } from 'expo-router';
 
 export default function SubscriptionCancelScreen() {
-  
+
   const handleRetry = () => {
     router.replace('/account/subscription');
   };
@@ -44,15 +44,15 @@ export default function SubscriptionCancelScreen() {
           <View style={styles.infoCard}>
             <Text style={styles.infoTitle}>What Happened?</Text>
             <Text style={styles.infoText}>
-              You canceled the subscription process before completing payment. 
+              You canceled the subscription process before completing payment.
               No charges were made to your account.
             </Text>
-            
+
             <Text style={styles.infoTitle2}>Still Want Premium?</Text>
             <Text style={styles.infoText}>
               You can start the subscription process again anytime. Premium features include:
             </Text>
-            
+
             <View style={styles.featuresList}>
               <Text style={styles.featureText}>• Unlimited devices</Text>
               <Text style={styles.featureText}>• Advanced analytics</Text>

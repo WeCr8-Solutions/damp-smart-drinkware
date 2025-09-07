@@ -15,7 +15,7 @@ import { SecurityUtils, useSecurityMonitoring } from './security';
 export { PerformanceMonitor, performanceMonitor, useRenderPerformance, BundleAnalyzer } from './performance';
 export type { PerformanceSnapshot } from './performance';
 
-// Security utilities  
+// Security utilities
 export { SecurityUtils, useSecurityMonitoring } from './security';
 export type { SecurityThreatReport } from './security';
 
@@ -28,7 +28,7 @@ export const utilityConnections = {
     'performance': ['react', 'react-native'],
     'security': ['react', 'react-native', 'crypto-js'],
   },
-  
+
   // Components and hooks that use these utilities
   consumers: {
     // 'deviceManager': [
@@ -48,7 +48,7 @@ export const utilityConnections = {
       '@/utils/performance',
     ],
   },
-  
+
   // Cross-utility dependencies
   crossReferences: {
     // 'deviceManager': ['supabaseDeviceManager'],
@@ -129,9 +129,9 @@ export const formatUtils: FormatUtils = {
 export const networkUtils: NetworkUtils = {
   checkConnectivity: async () => {
     try {
-      const response = await fetch('https://www.google.com', { 
+      const response = await fetch('https://www.google.com', {
         method: 'HEAD',
-        mode: 'no-cors' 
+        mode: 'no-cors'
       });
       return true;
     } catch {
@@ -167,7 +167,7 @@ export function validateUtilityConnectivity(): {
   const availableUtils = Object.keys(utilityRegistry);
   const utilityDependencies = utilityConnections.dependencies;
   const circularReferences: string[] = [];
-  
+
   // Check for circular dependencies
   Object.entries(utilityConnections.crossReferences).forEach(([util, refs]) => {
     refs.forEach(ref => {
@@ -177,12 +177,12 @@ export function validateUtilityConnectivity(): {
       }
     });
   });
-  
+
   // Calculate function coverage
   const totalExpectedFunctions = Object.keys(utilityConnections.dependencies).length;
   const availableFunctions = availableUtils.length;
   const functionCoverage = (availableFunctions / totalExpectedFunctions) * 100;
-  
+
   return {
     availableUtils,
     utilityDependencies,
@@ -202,17 +202,17 @@ export interface UtilityPerformance {
 
 export const utilityPerformanceTracker = {
   metrics: new Map<string, UtilityPerformance>(),
-  
+
   track: <T>(name: string, fn: () => T): T => {
     const start = performance.now();
     const startMemory = (performance as any).memory?.usedJSHeapSize || 0;
-    
+
     try {
       const result = fn();
-      
+
       const endTime = performance.now();
       const endMemory = (performance as any).memory?.usedJSHeapSize || 0;
-      
+
       const existing = utilityPerformanceTracker.metrics.get(name) || {
         functionName: name,
         executionTime: 0,
@@ -220,14 +220,14 @@ export const utilityPerformanceTracker = {
         callCount: 0,
         errorRate: 0,
       };
-      
+
       utilityPerformanceTracker.metrics.set(name, {
         ...existing,
         executionTime: (existing.executionTime + (endTime - start)) / (existing.callCount + 1),
         memoryUsage: endMemory - startMemory,
         callCount: existing.callCount + 1,
       });
-      
+
       return result;
     } catch (error) {
       const existing = utilityPerformanceTracker.metrics.get(name) || {
@@ -237,28 +237,28 @@ export const utilityPerformanceTracker = {
         callCount: 0,
         errorRate: 0,
       };
-      
+
       utilityPerformanceTracker.metrics.set(name, {
         ...existing,
         errorRate: (existing.errorRate * existing.callCount + 1) / (existing.callCount + 1),
         callCount: existing.callCount + 1,
       });
-      
+
       throw error;
     }
   },
-  
+
   getMetrics: () => Array.from(utilityPerformanceTracker.metrics.values()),
-  
+
   reset: () => utilityPerformanceTracker.metrics.clear(),
 };
 
 // Export types for circular connectivity (commented out until types are available)
-// export type { 
-//   BLEDevice, 
-//   DeviceReading, 
+// export type {
+//   BLEDevice,
+//   DeviceReading,
 //   AppUser,
-//   AppDatabase 
+//   AppDatabase
 // } from '@/types/global';
 
 // Utility metadata for development

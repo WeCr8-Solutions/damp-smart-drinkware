@@ -3,7 +3,7 @@
     "base_url": "https://dampdrink.com",
     "navigation_items": [
       "Features",
-      "Products", 
+      "Products",
       "App",
       "Support",
       "About",
@@ -68,7 +68,7 @@
       "last_updated": "2025-01-13"
     },
     "pages/support.html": {
-      "path": "/pages/support.html", 
+      "path": "/pages/support.html",
       "title": "DAMP Smart Drinkware Support - Help Center & Contact",
       "status": "updated",
       "sections": ["hero", "faq", "contact", "resources", "footer"],
@@ -275,4 +275,4 @@
     "monthly": ["SEO optimization", "Performance audit"],
     "quarterly": ["Design consistency review", "Feature updates"]
   }
-} 
+}

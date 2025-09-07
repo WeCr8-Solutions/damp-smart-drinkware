@@ -64,7 +64,7 @@ function displayHeader() {
 
 function isSensitiveValue(key, value) {
   if (!value || value.length < 8) return false;
-  
+
   // Check for obvious placeholder values
   if (value.includes('your_') || value.includes('_here') || value === 'your-secure-key-here') {
     return false;
@@ -78,7 +78,7 @@ function createSecureBackup(filePath, content) {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const randomSuffix = crypto.randomBytes(4).toString('hex');
   const backupPath = `${filePath}.backup.${timestamp}.${randomSuffix}`;
-  
+
   try {
     fs.writeFileSync(backupPath, content);
     return backupPath;
@@ -99,10 +99,10 @@ function sanitizeEnvironmentFile(filePath) {
     const lines = originalContent.split('\n');
     const sanitizedLines = [];
     const foundSecrets = [];
-    
+
     lines.forEach(line => {
       const trimmedLine = line.trim();
-      
+
       // Keep comments and empty lines as-is
       if (!trimmedLine || trimmedLine.startsWith('#')) {
         sanitizedLines.push(line);
@@ -112,13 +112,13 @@ function sanitizeEnvironmentFile(filePath) {
       const [key, ...valueParts] = trimmedLine.split('=');
       if (key && valueParts.length > 0) {
         const value = valueParts.join('=').trim();
-        
+
         if (isSensitiveValue(key, value)) {
           foundSecrets.push({
             key: key.trim(),
             value: value.substring(0, 8) + '...' + value.substring(value.length - 4)
           });
-          
+
           // Replace with placeholder
           const placeholder = PLACEHOLDER_REPLACEMENTS[key.trim()] || `your_${key.toLowerCase()}_here`;
           sanitizedLines.push(`${key}=${placeholder}`);
@@ -146,7 +146,7 @@ function sanitizeEnvironmentFile(filePath) {
       foundSecrets.forEach(secret => {
         console.log(`${colors.cyan}   • ${secret.key}: ${secret.value}${colors.reset}`);
       });
-      
+
       return true;
     } else {
       console.log(`${colors.green}✅ No sensitive data found in ${filePath}${colors.reset}`);
@@ -167,7 +167,7 @@ function createSecureTemplate(sourcePath, templatePath) {
     const content = fs.readFileSync(sourcePath, 'utf8');
     const lines = content.split('\n');
     const templateLines = [];
-    
+
     // Add template header
     templateLines.push('# 🔒 DAMP Smart Drinkware - Environment Variables Template');
     templateLines.push('# Copy this file to .env and replace all placeholder values');
@@ -176,7 +176,7 @@ function createSecureTemplate(sourcePath, templatePath) {
 
     lines.forEach(line => {
       const trimmedLine = line.trim();
-      
+
       // Keep comments (except the first few lines which we already added)
       if (trimmedLine.startsWith('#') && !line.includes('NEVER commit')) {
         templateLines.push(line);
@@ -209,7 +209,7 @@ function createSecureTemplate(sourcePath, templatePath) {
 
     const templateContent = templateLines.join('\n');
     fs.writeFileSync(templatePath, templateContent);
-    
+
     console.log(`${colors.green}✅ Created secure template: ${templatePath}${colors.reset}`);
     return true;
   } catch (error) {
@@ -220,7 +220,7 @@ function createSecureTemplate(sourcePath, templatePath) {
 
 function updateGitignore() {
   const gitignorePath = '.gitignore';
-  
+
   if (!fs.existsSync(gitignorePath)) {
     console.log(`${colors.yellow}⚠️  .gitignore not found${colors.reset}`);
     return;
@@ -228,7 +228,7 @@ function updateGitignore() {
 
   try {
     const content = fs.readFileSync(gitignorePath, 'utf8');
-    
+
     // Check if our security patterns are already there
     if (content.includes('# Environment variables (CRITICAL SECURITY)')) {
       console.log(`${colors.green}✅ .gitignore already contains security patterns${colors.reset}`);
@@ -244,15 +244,15 @@ function updateGitignore() {
 function displaySecurityReport() {
   console.log(`${colors.bold}${colors.cyan}📋 SECURITY REPORT:${colors.reset}`);
   console.log('');
-  
+
   const envFiles = ['.env', '.env.production', '.env.local', 'backend/.env'];
-  
+
   envFiles.forEach(file => {
     if (fs.existsSync(file)) {
       console.log(`${colors.yellow}🔍 ${file}:${colors.reset} Processed and secured`);
     }
   });
-  
+
   console.log('');
   console.log(`${colors.bold}${colors.green}✅ SECURITY ACTIONS COMPLETED:${colors.reset}`);
   console.log(`${colors.green}• Sensitive data removed from .env files${colors.reset}`);
@@ -260,14 +260,14 @@ function displaySecurityReport() {
   console.log(`${colors.green}• Template files updated with placeholders${colors.reset}`);
   console.log(`${colors.green}• .gitignore configured to prevent accidental commits${colors.reset}`);
   console.log('');
-  
+
   console.log(`${colors.bold}${colors.blue}🔄 NEXT STEPS:${colors.reset}`);
   console.log(`${colors.cyan}1.${colors.reset} Generate new secure keys: ${colors.bold}node scripts/generate-secure-keys.js${colors.reset}`);
   console.log(`${colors.cyan}2.${colors.reset} Update your .env files with real values (NEVER commit them)`);
   console.log(`${colors.cyan}3.${colors.reset} Validate your environment: ${colors.bold}node scripts/validate-environment.js${colors.reset}`);
   console.log(`${colors.cyan}4.${colors.reset} For production, use CI/CD environment variables instead of .env files`);
   console.log('');
-  
+
   console.log(`${colors.bold}${colors.red}⚠️ IMPORTANT:${colors.reset}`);
   console.log(`${colors.red}• Your original sensitive data is in backup files (keep them secure!)${colors.reset}`);
   console.log(`${colors.red}• Delete backup files after confirming everything works${colors.reset}`);
@@ -278,9 +278,9 @@ function displaySecurityReport() {
 function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes('--dry-run');
-  
+
   displayHeader();
-  
+
   if (dryRun) {
     console.log(`${colors.yellow}🔍 DRY RUN MODE - No files will be modified${colors.reset}`);
     console.log('');
@@ -297,17 +297,17 @@ function main() {
   ];
 
   let processedFiles = 0;
-  
+
   filesToProcess.forEach(file => {
     if (fs.existsSync(file)) {
       console.log(`${colors.blue}🔍 Processing: ${file}${colors.reset}`);
-      
+
       if (!dryRun) {
         const wasModified = sanitizeEnvironmentFile(file);
         if (wasModified) {
           processedFiles++;
         }
-        
+
         // Create template version
         const templatePath = file.replace(/\.env$/, '.env.example');
         createSecureTemplate(file, templatePath);

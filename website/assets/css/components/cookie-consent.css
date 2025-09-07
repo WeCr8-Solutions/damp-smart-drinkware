@@ -388,29 +388,29 @@
         margin: 10px;
         max-height: 85vh;
     }
-    
+
     .damp-cookie-actions {
         flex-direction: column;
     }
-    
+
     .damp-cookie-btn {
         min-width: auto;
     }
-    
+
     .damp-cookie-show-again {
         bottom: 10px;
         right: 10px;
         padding: 10px 12px;
         font-size: 12px;
     }
-    
+
     .damp-cookie-notification {
         top: 10px;
         right: 10px;
         left: 10px;
         transform: translateY(-100px);
     }
-    
+
     .damp-cookie-notification.show {
         transform: translateY(0);
     }
@@ -430,11 +430,11 @@
     .damp-cookie-modal {
         border: 2px solid var(--cookie-text);
     }
-    
+
     .damp-cookie-type {
         border-width: 2px;
     }
-    
+
     .damp-cookie-btn {
         border-width: 2px;
     }
@@ -443,4 +443,4 @@
 /* Body scroll lock when modal is open */
 body.damp-cookie-modal-open {
     overflow: hidden;
-} 
+}

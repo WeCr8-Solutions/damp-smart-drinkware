@@ -150,7 +150,7 @@ const stripe = Stripe('pk_test_your_actual_stripe_key_here');
 
 **✅ Your system is already configured with the correct lookup keys:**
 - DAMP_HAN_V1_pre-order / DAMP_HAN_V1_default
-- DAMP_SIL_BTM_pre-order / DAMP_SIL_BTM_default  
+- DAMP_SIL_BTM_pre-order / DAMP_SIL_BTM_default
 - DAMP_SLV_V1_pre-order / DAMP_SLV_V1_default
 - DAMP_BBB_V1_pre-order / DAMP_BBB_V1_default
 
@@ -226,7 +226,7 @@ async function sendPreOrderConfirmation(preOrder) {
             <p>Your payment has been authorized but won't be charged until we ship your order.</p>
         `
     };
-    
+
     await sgMail.send(msg);
 }
 ```
@@ -367,4 +367,4 @@ If you run into issues:
 
 ---
 
-**Remember**: This system is designed for pre-orders where you authorize payments but don't charge until shipping. This builds trust with customers and ensures you only charge when you can deliver! 
+**Remember**: This system is designed for pre-orders where you authorize payments but don't charge until shipping. This builds trust with customers and ensures you only charge when you can deliver!

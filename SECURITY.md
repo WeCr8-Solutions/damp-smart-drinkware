@@ -14,7 +14,7 @@ This document outlines the security practices and procedures for the DAMP Smart 
 1. Go to [Firebase Console](https://console.firebase.google.com/)
 2. Select your project: `damp-smart-drinkware`
 3. Go to Project Settings > General > Your apps
-4. Under "Web API Key", click "Regenerate" 
+4. Under "Web API Key", click "Regenerate"
 5. Update your `.env` files with the new key
 6. **DO NOT** commit the new key to the repository
 
@@ -211,4 +211,4 @@ The security system detects these patterns:
 
 ---
 
-**Remember: Security is everyone's responsibility. When in doubt, ask the security team!** 
+**Remember: Security is everyone's responsibility. When in doubt, ask the security team!**

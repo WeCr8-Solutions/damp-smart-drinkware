@@ -111,7 +111,7 @@ html {
     html {
         scroll-behavior: auto;
     }
-    
+
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
@@ -245,12 +245,12 @@ html {
     .complex-animation {
         animation: none;
     }
-    
+
     /* Simplify shadows on mobile */
     .heavy-shadow {
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
-    
+
     /* Optimize transforms on mobile */
     .mobile-optimized {
         transform: translateZ(0);
@@ -317,7 +317,7 @@ html {
     .performance-indicator {
         display: none !important;
     }
-    
+
     /* Optimize for print */
     * {
         background: transparent !important;
@@ -325,11 +325,11 @@ html {
         box-shadow: none !important;
         text-shadow: none !important;
     }
-    
+
     a, a:visited {
         text-decoration: underline;
     }
-    
+
     /* Show URLs after links */
     a[href]:after {
         content: " (" attr(href) ")";

@@ -1,13 +1,13 @@
 /**
  * Zone Management System for DAMP Smart Drinkware
- * 
+ *
  * Handles zone-based operations including geofencing, zone hierarchies,
  * device tracking, and location-based notifications.
- * 
+ *
  * @example
  * ```typescript
  * import { zoneManager } from '@/utils/zoneManager';
- * 
+ *
  * // Create a new zone
  * const homeZone = await zoneManager.createZone({
  *   name: 'Home',
@@ -16,10 +16,10 @@
  *   longitude: -122.4194,
  *   radius: 50
  * });
- * 
+ *
  * // Add device to zone
  * await zoneManager.addDeviceToZone(homeZone.id, 'device-123');
- * 
+ *
  * // Start monitoring
  * zoneManager.startMonitoring();
  * ```
@@ -456,7 +456,7 @@ export class ZoneManager {
     createdBy: string = 'system'
   ): Promise<ZoneOperationResult<Zone>> {
     const operation = 'createZone';
-    
+
     try {
       log('info', operation, 'Creating new zone', { input, createdBy });
 
@@ -896,7 +896,7 @@ export class ZoneManager {
     longitude: number,
     zoneId?: string
   ): ZoneBoundaryResult | null {
-    const zonesToCheck = zoneId 
+    const zonesToCheck = zoneId
       ? [this.zones.get(zoneId)].filter(Boolean) as Zone[]
       : Array.from(this.zones.values()).filter(z => z.status === 'active');
 
@@ -952,7 +952,7 @@ export class ZoneManager {
 
     // Check all active zones
     const activeZones = Array.from(this.zones.values()).filter(z => z.status === 'active');
-    
+
     for (const zone of activeZones) {
       const boundaryResult = this.checkDeviceInZone(deviceId, latitude, longitude, zone.id);
       const wasInZone = currentZoneId === zone.id;
@@ -961,7 +961,7 @@ export class ZoneManager {
       // Zone entry
       if (!wasInZone && isInZone) {
         await this.addDeviceToZone(zone.id, deviceId);
-        
+
         const event: ZoneEvent = {
           type: 'enter',
           zoneId: zone.id,
@@ -969,7 +969,7 @@ export class ZoneManager {
           timestamp,
           location,
         };
-        
+
         events.push(event);
         this.notifyEvent(event);
         this.updateZoneStats(zone.id, 'entry');
@@ -979,11 +979,11 @@ export class ZoneManager {
           this.startDwellTimer(zone.id, deviceId, zone.settings.dwellTimeThreshold);
         }
       }
-      
+
       // Zone exit
       else if (wasInZone && !isInZone) {
         await this.removeDeviceFromZone(zone.id, deviceId);
-        
+
         const event: ZoneEvent = {
           type: 'exit',
           zoneId: zone.id,
@@ -991,7 +991,7 @@ export class ZoneManager {
           timestamp,
           location,
         };
-        
+
         events.push(event);
         this.notifyEvent(event);
         this.updateZoneStats(zone.id, 'exit');
@@ -1015,7 +1015,7 @@ export class ZoneManager {
     }
 
     const interval = options.interval || DEFAULT_MONITORING_INTERVAL;
-    
+
     this.isMonitoring = true;
     log('info', 'startMonitoring', 'Zone monitoring started', { interval });
 
@@ -1033,7 +1033,7 @@ export class ZoneManager {
     }
 
     this.isMonitoring = false;
-    
+
     if (this.monitoringInterval) {
       clearInterval(this.monitoringInterval);
       this.monitoringInterval = undefined;
@@ -1057,14 +1057,14 @@ export class ZoneManager {
 
     deviceIds.forEach(deviceId => {
       const randomZone = zones[Math.floor(Math.random() * zones.length)];
-      
+
       // Generate random position near zone center
       const offsetLat = (Math.random() - 0.5) * 0.002; // ~200m variation
       const offsetLng = (Math.random() - 0.5) * 0.002;
-      
+
       const lat = randomZone.latitude + offsetLat;
       const lng = randomZone.longitude + offsetLng;
-      
+
       this.processLocationUpdate(deviceId, lat, lng, 10);
     });
   }
@@ -1078,7 +1078,7 @@ export class ZoneManager {
    */
   addEventListener(listener: (event: ZoneEvent) => void): () => void {
     this.eventListeners.push(listener);
-    
+
     return () => {
       const index = this.eventListeners.indexOf(listener);
       if (index > -1) {
@@ -1129,7 +1129,7 @@ export class ZoneManager {
    */
   private sendNotification(zone: Zone, event: ZoneEvent): void {
     const message = zone.settings.customMessage || this.getDefaultMessage(zone, event);
-    
+
     notificationManager.showNotification({
       type: 'zone',
       title: this.getNotificationTitle(event.type),
@@ -1185,7 +1185,7 @@ export class ZoneManager {
    */
   private startDwellTimer(zoneId: string, deviceId: string, thresholdMinutes: number): void {
     const timerKey = `${zoneId}-${deviceId}`;
-    
+
     // Clear existing timer
     const existingTimer = this.dwellTimers.get(timerKey);
     if (existingTimer) {
@@ -1201,7 +1201,7 @@ export class ZoneManager {
         timestamp: new Date(),
         location: this.lastKnownPositions.get(deviceId) || { latitude: 0, longitude: 0 },
       };
-      
+
       this.notifyEvent(event);
       this.dwellTimers.delete(timerKey);
     }, thresholdMinutes * 60 * 1000);
@@ -1282,7 +1282,7 @@ export class ZoneManager {
    * Gets zones for user
    */
   getUserZones(userId: string): Zone[] {
-    return this.getAllZones().filter(zone => 
+    return this.getAllZones().filter(zone =>
       this.hasZonePermission(zone.id, userId, 'viewer')
     );
   }

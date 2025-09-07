@@ -12,16 +12,16 @@ import { jest } from '@jest/globals';
 export function setupGlobalMocks() {
   // Mock React Native modules
   setupReactNativeMocks();
-  
+
   // Mock Expo modules
   setupExpoMocks();
-  
+
   // Mock Third-party libraries
   setupThirdPartyMocks();
-  
+
   // Mock Platform-specific APIs
   setupPlatformMocks();
-  
+
   // Mock Performance APIs
   setupPerformanceMocks();
 }

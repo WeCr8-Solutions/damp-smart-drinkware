@@ -2,7 +2,7 @@
  * DAMP Global Store Architecture
  * Google Engineering Standards Implementation
  * Cross-Platform State Management for Web & Mobile
- * 
+ *
  * @fileoverview Core store architecture with Firebase and Stripe integration
  * @author WeCr8 Solutions LLC
  * @version 2.0.0
@@ -23,7 +23,7 @@ class DAMPStoreManager extends EventEmitter {
      * @static
      */
     static #instance = null;
-    
+
     /**
      * @private
      */
@@ -35,7 +35,7 @@ class DAMPStoreManager extends EventEmitter {
     #logger = null;
     #errorHandler = null;
     #securityValidator = null;
-    
+
     /**
      * Private constructor for Singleton pattern
      */
@@ -44,14 +44,14 @@ class DAMPStoreManager extends EventEmitter {
         if (DAMPStoreManager.#instance) {
             throw new Error('DAMPStoreManager is a singleton. Use getInstance()');
         }
-        
+
         this.#logger = new Logger('DAMPStore');
         this.#errorHandler = new ErrorHandler();
         this.#securityValidator = new SecurityValidator();
         this.#detectPlatform();
         this.#initializeCore();
     }
-    
+
     /**
      * Get singleton instance
      * @returns {DAMPStoreManager}
@@ -62,7 +62,7 @@ class DAMPStoreManager extends EventEmitter {
         }
         return DAMPStoreManager.#instance;
     }
-    
+
     /**
      * Initialize the store with configuration
      * @param {Object} config - Store configuration
@@ -73,34 +73,34 @@ class DAMPStoreManager extends EventEmitter {
      */
     async initialize(config) {
         try {
-            this.#logger.info('Initializing DAMP Store Manager', { 
+            this.#logger.info('Initializing DAMP Store Manager', {
                 platform: this.#platform,
-                environment: config.environment 
+                environment: config.environment
             });
-            
+
             // Validate configuration
             this.#validateConfiguration(config);
-            
+
             // Initialize store modules
             await this.#initializeModules(config);
-            
+
             // Set up cross-platform synchronization
             await this.#setupCrossPlatformSync();
-            
+
             // Initialize middleware chain
             this.#initializeMiddleware();
-            
+
             this.#isInitialized = true;
             this.emit('store:initialized', { platform: this.#platform });
-            
+
             this.#logger.info('DAMP Store Manager initialized successfully');
-            
+
         } catch (error) {
             this.#errorHandler.handleError('STORE_INITIALIZATION_FAILED', error);
             throw error;
         }
     }
-    
+
     /**
      * Get current state slice
      * @param {string} key - State key
@@ -109,10 +109,10 @@ class DAMPStoreManager extends EventEmitter {
     getState(key) {
         this.#ensureInitialized();
         this.#securityValidator.validateStateAccess(key);
-        
+
         return this.#state.get(key);
     }
-    
+
     /**
      * Set state with validation and notifications
      * @param {string} key - State key
@@ -122,14 +122,14 @@ class DAMPStoreManager extends EventEmitter {
      */
     async setState(key, value, options = {}) {
         this.#ensureInitialized();
-        
+
         try {
             // Security validation
             this.#securityValidator.validateStateUpdate(key, value);
-            
+
             // Get previous state
             const previousState = this.#state.get(key);
-            
+
             // Apply middleware
             const processedValue = await this.#applyMiddleware('SET_STATE', {
                 key,
@@ -137,10 +137,10 @@ class DAMPStoreManager extends EventEmitter {
                 previousState,
                 options
             });
-            
+
             // Update state
             this.#state.set(key, processedValue.value);
-            
+
             // Emit state change event
             this.emit('state:changed', {
                 key,
@@ -149,23 +149,23 @@ class DAMPStoreManager extends EventEmitter {
                 timestamp: Date.now(),
                 platform: this.#platform
             });
-            
+
             // Trigger subscriptions
             this.#notifySubscriptions(key, processedValue.value, previousState);
-            
+
             // Cross-platform synchronization
             if (!options.skipSync) {
                 await this.#syncToPlatforms(key, processedValue.value);
             }
-            
+
             this.#logger.debug('State updated', { key, hasValue: !!processedValue.value });
-            
+
         } catch (error) {
             this.#errorHandler.handleError('STATE_UPDATE_FAILED', error, { key });
             throw error;
         }
     }
-    
+
     /**
      * Subscribe to state changes
      * @param {string} key - State key to watch
@@ -175,7 +175,7 @@ class DAMPStoreManager extends EventEmitter {
      */
     subscribe(key, callback, options = {}) {
         this.#ensureInitialized();
-        
+
         const subscriptionId = this.#generateSubscriptionId();
         const subscription = {
             id: subscriptionId,
@@ -185,13 +185,13 @@ class DAMPStoreManager extends EventEmitter {
             created: Date.now(),
             platform: this.#platform
         };
-        
+
         if (!this.#subscriptions.has(key)) {
             this.#subscriptions.set(key, new Map());
         }
-        
+
         this.#subscriptions.get(key).set(subscriptionId, subscription);
-        
+
         // Return unsubscribe function
         return () => {
             const keySubscriptions = this.#subscriptions.get(key);
@@ -203,7 +203,7 @@ class DAMPStoreManager extends EventEmitter {
             }
         };
     }
-    
+
     /**
      * Dispatch action with middleware support
      * @param {Object} action - Action object
@@ -211,29 +211,29 @@ class DAMPStoreManager extends EventEmitter {
      */
     async dispatch(action) {
         this.#ensureInitialized();
-        
+
         try {
             // Validate action structure
             this.#securityValidator.validateAction(action);
-            
+
             // Apply middleware chain
             const result = await this.#applyMiddleware('DISPATCH', action);
-            
+
             // Emit action dispatched event
             this.emit('action:dispatched', {
                 action: result,
                 timestamp: Date.now(),
                 platform: this.#platform
             });
-            
+
             return result;
-            
+
         } catch (error) {
             this.#errorHandler.handleError('ACTION_DISPATCH_FAILED', error, { action });
             throw error;
         }
     }
-    
+
     /**
      * Add middleware to the processing chain
      * @param {Function} middleware - Middleware function
@@ -242,11 +242,11 @@ class DAMPStoreManager extends EventEmitter {
         if (typeof middleware !== 'function') {
             throw new Error('Middleware must be a function');
         }
-        
+
         this.#middleware.push(middleware);
         this.#logger.debug('Middleware added', { count: this.#middleware.length });
     }
-    
+
     /**
      * Get store statistics and health metrics
      * @returns {Object} Store metrics
@@ -263,30 +263,30 @@ class DAMPStoreManager extends EventEmitter {
             memoryUsage: this.#getMemoryUsage()
         };
     }
-    
+
     /**
      * Clean up resources
      */
     destroy() {
         this.#logger.info('Destroying DAMP Store Manager');
-        
+
         // Clear all subscriptions
         this.#subscriptions.clear();
-        
+
         // Clear state
         this.#state.clear();
-        
+
         // Remove all listeners
         this.removeAllListeners();
-        
+
         // Reset singleton instance
         DAMPStoreManager.#instance = null;
-        
+
         this.#isInitialized = false;
     }
-    
+
     // Private methods
-    
+
     /**
      * @private
      */
@@ -299,45 +299,45 @@ class DAMPStoreManager extends EventEmitter {
             this.#platform = 'mobile'; // React Native or similar
         }
     }
-    
+
     /**
      * @private
      */
     #initializeCore() {
         this.#initTime = Date.now();
-        
+
         // Set up error handling
         this.on('error', (error) => {
             this.#errorHandler.handleError('STORE_ERROR', error);
         });
-        
+
         // Set up performance monitoring
         this.#setupPerformanceMonitoring();
     }
-    
+
     /**
      * @private
      */
     #validateConfiguration(config) {
         const required = ['firebase', 'stripe', 'environment'];
-        
+
         for (const key of required) {
             if (!config[key]) {
                 throw new Error(`Missing required configuration: ${key}`);
             }
         }
-        
+
         // Validate Firebase config
         if (!config.firebase.apiKey || !config.firebase.projectId) {
             throw new Error('Invalid Firebase configuration');
         }
-        
+
         // Validate Stripe config
         if (!config.stripe.publishableKey) {
             throw new Error('Invalid Stripe configuration');
         }
     }
-    
+
     /**
      * @private
      */
@@ -346,33 +346,33 @@ class DAMPStoreManager extends EventEmitter {
         const { FirebaseModule } = await import('./modules/firebase-module.js');
         this.firebase = new FirebaseModule(config.firebase);
         await this.firebase.initialize();
-        
+
         // Initialize Stripe module
         const { StripeModule } = await import('./modules/stripe-module.js');
         this.stripe = new StripeModule(config.stripe);
         await this.stripe.initialize();
-        
+
         // Initialize Auth module
         const { AuthModule } = await import('./modules/auth-module.js');
         this.auth = new AuthModule(this.firebase, this);
         await this.auth.initialize();
-        
+
         // Initialize Payment module
         const { PaymentModule } = await import('./modules/payment-module.js');
         this.payment = new PaymentModule(this.stripe, this);
         await this.payment.initialize();
-        
+
         // Initialize Sync module
         const { SyncModule } = await import('./modules/sync-module.js');
         this.sync = new SyncModule(this);
         await this.sync.initialize();
-        
+
         // Initialize Analytics module
         const { AnalyticsModule } = await import('./modules/analytics-module.js');
         this.analytics = new AnalyticsModule(this, config.analytics || {});
         await this.analytics.initialize();
     }
-    
+
     /**
      * @private
      */
@@ -384,7 +384,7 @@ class DAMPStoreManager extends EventEmitter {
             }
         });
     }
-    
+
     /**
      * @private
      */
@@ -394,13 +394,13 @@ class DAMPStoreManager extends EventEmitter {
         this.addMiddleware(this.#loggingMiddleware.bind(this));
         this.addMiddleware(this.#performanceMiddleware.bind(this));
     }
-    
+
     /**
      * @private
      */
     async #applyMiddleware(type, data) {
         let result = data;
-        
+
         for (const middleware of this.#middleware) {
             try {
                 result = await middleware(type, result, this);
@@ -409,17 +409,17 @@ class DAMPStoreManager extends EventEmitter {
                 break;
             }
         }
-        
+
         return result;
     }
-    
+
     /**
      * @private
      */
     #notifySubscriptions(key, value, previousValue) {
         const keySubscriptions = this.#subscriptions.get(key);
         if (!keySubscriptions) return;
-        
+
         keySubscriptions.forEach((subscription) => {
             try {
                 subscription.callback(value, previousValue, key);
@@ -428,7 +428,7 @@ class DAMPStoreManager extends EventEmitter {
             }
         });
     }
-    
+
     /**
      * @private
      */
@@ -437,14 +437,14 @@ class DAMPStoreManager extends EventEmitter {
             await this.sync.syncState(key, value);
         }
     }
-    
+
     /**
      * @private
      */
     #generateSubscriptionId() {
         return `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
-    
+
     /**
      * @private
      */
@@ -453,7 +453,7 @@ class DAMPStoreManager extends EventEmitter {
             throw new Error('Store not initialized. Call initialize() first.');
         }
     }
-    
+
     /**
      * @private
      */
@@ -464,7 +464,7 @@ class DAMPStoreManager extends EventEmitter {
             this.emit('metrics:updated', metrics);
         }, 30000); // Every 30 seconds
     }
-    
+
     /**
      * @private
      */
@@ -478,7 +478,7 @@ class DAMPStoreManager extends EventEmitter {
         }
         return null;
     }
-    
+
     /**
      * Built-in security middleware
      * @private
@@ -488,42 +488,42 @@ class DAMPStoreManager extends EventEmitter {
         this.#securityValidator.validateOperation(type, data);
         return data;
     }
-    
+
     /**
      * Built-in logging middleware
      * @private
      */
     async #loggingMiddleware(type, data, store) {
-        this.#logger.debug(`Store operation: ${type}`, { 
+        this.#logger.debug(`Store operation: ${type}`, {
             hasData: !!data,
-            platform: this.#platform 
+            platform: this.#platform
         });
         return data;
     }
-    
+
     /**
      * Built-in performance middleware
      * @private
      */
     async #performanceMiddleware(type, data, store) {
         const startTime = performance.now();
-        
+
         // Process continues to next middleware
         const result = data;
-        
+
         const endTime = performance.now();
         const duration = endTime - startTime;
-        
+
         if (duration > 100) { // Log slow operations
-            this.#logger.warn(`Slow store operation: ${type}`, { 
-                duration: `${duration.toFixed(2)}ms` 
+            this.#logger.warn(`Slow store operation: ${type}`, {
+                duration: `${duration.toFixed(2)}ms`
             });
         }
-        
+
         return result;
     }
 }
 
 // Export singleton instance
 export const DAMPStore = DAMPStoreManager.getInstance();
-export default DAMPStore; 
+export default DAMPStore;

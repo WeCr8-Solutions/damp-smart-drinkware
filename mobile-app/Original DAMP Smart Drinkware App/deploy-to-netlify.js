@@ -55,7 +55,7 @@ function checkPrerequisites() {
 function runCommand(command, description, options = {}) {
   log('cyan', `\n🔧 ${description}`);
   log('blue', '='.repeat(description.length + 4));
-  
+
   try {
     if (options.silent) {
       execSync(command, { encoding: 'utf8', stdio: 'pipe' });
@@ -103,7 +103,7 @@ function deployToNetlify() {
   log('white', '• npm run netlify:logs      - View deployment logs');
   log('white', '• npm run netlify:deploy    - Deploy again');
   log('white', '• npm run netlify:preview   - Deploy preview version');
-  
+
   log('cyan', '\n📚 For more help: npm run netlify:help');
 }
 

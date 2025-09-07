@@ -1,17 +1,17 @@
 /**
  * DAMP Smart Drinkware - Web Authentication Service
- * 
+ *
  * Web implementation of the unified cross-platform authentication system
  * Compatible with iOS and Android mobile apps via shared Firebase project
- * 
+ *
  * @see /mobile/services/AuthService.js - Mobile implementation
  * @see /mobile/schemas/user-schema.js - Unified user data schema
  * @see /docs/CROSS_PLATFORM_AUTH.md - Complete documentation
  */
 
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
@@ -25,14 +25,14 @@ import {
   deleteUser
 } from 'firebase/auth';
 
-import { 
-  doc, 
-  setDoc, 
-  getDoc, 
-  updateDoc, 
-  collection, 
-  query, 
-  where, 
+import {
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  collection,
+  query,
+  where,
   getDocs,
   serverTimestamp,
   increment
@@ -45,15 +45,15 @@ class DAMPAuthService {
     this.analytics = analytics;
     this.currentUser = null;
     this.authStateListeners = [];
-    
+
     // Initialize auth state listener
     this.initializeAuthState();
-    
+
     // Providers
     this.googleProvider = new GoogleAuthProvider();
     this.googleProvider.addScope('email');
     this.googleProvider.addScope('profile');
-    
+
     this.facebookProvider = new FacebookAuthProvider();
     this.facebookProvider.addScope('email');
   }
@@ -64,7 +64,7 @@ class DAMPAuthService {
   initializeAuthState() {
     onAuthStateChanged(this.auth, async (user) => {
       this.currentUser = user;
-      
+
       if (user) {
         // User is signed in
         await this.handleUserSignIn(user);
@@ -73,7 +73,7 @@ class DAMPAuthService {
         // User is signed out
         this.handleUserSignOut();
       }
-      
+
       // Notify all listeners
       this.authStateListeners.forEach(callback => callback(user));
     });
@@ -86,7 +86,7 @@ class DAMPAuthService {
     try {
       const userRef = doc(this.db, 'users', user.uid);
       const userSnap = await getDoc(userRef);
-      
+
       if (!userSnap.exists()) {
         // Create new user profile
         await this.createUserProfile(user);
@@ -97,10 +97,10 @@ class DAMPAuthService {
           isOnline: true
         });
       }
-      
+
       // Update global stats
       await this.updateGlobalStats('userSignIn');
-      
+
     } catch (error) {
       console.error('Error handling user sign in:', error);
     }
@@ -137,7 +137,7 @@ class DAMPAuthService {
       createdAt: serverTimestamp(),
       lastSignIn: serverTimestamp(),
       isOnline: true,
-      
+
       // DAMP-specific profile data
       profile: {
         firstName: additionalData.firstName || '',
@@ -152,7 +152,7 @@ class DAMPAuthService {
           zipCode: additionalData.zipCode || ''
         }
       },
-      
+
       // Preferences
       preferences: {
         newsletter: true,
@@ -167,7 +167,7 @@ class DAMPAuthService {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         theme: 'auto'
       },
-      
+
       // DAMP ecosystem data
       damp: {
         devices: [],
@@ -186,7 +186,7 @@ class DAMPAuthService {
         achievements: [],
         referralCode: this.generateReferralCode(user.uid)
       },
-      
+
       // E-commerce data
       orders: {
         totalOrders: 0,
@@ -195,7 +195,7 @@ class DAMPAuthService {
         favoriteCategories: [],
         averageOrderValue: 0
       },
-      
+
       // Analytics and engagement
       analytics: {
         firstVisit: serverTimestamp(),
@@ -204,7 +204,7 @@ class DAMPAuthService {
         deviceInfo: this.getDeviceInfo(),
         acquisitionSource: additionalData.source || 'direct'
       },
-      
+
       // Account settings
       account: {
         role: 'user', // user, premium, admin
@@ -215,16 +215,16 @@ class DAMPAuthService {
         lastPasswordChange: serverTimestamp()
       }
     };
-    
+
     const userRef = doc(this.db, 'users', user.uid);
     await setDoc(userRef, userProfile);
-    
+
     // Track user registration
     this.trackAnalytics('user_registration', {
       method: additionalData.signInMethod || 'email',
       source: additionalData.source || 'direct'
     });
-    
+
     return userProfile;
   }
 
@@ -235,29 +235,29 @@ class DAMPAuthService {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
       const user = userCredential.user;
-      
+
       // Update display name if provided
       if (additionalData.displayName) {
         await updateProfile(user, {
           displayName: additionalData.displayName
         });
       }
-      
+
       // Create user profile
       await this.createUserProfile(user, {
         ...additionalData,
         signInMethod: 'email'
       });
-      
+
       // Send email verification
       await this.sendEmailVerification();
-      
+
       return {
         success: true,
         user: user,
         message: 'Account created successfully! Please check your email for verification.'
       };
-      
+
     } catch (error) {
       return {
         success: false,
@@ -273,19 +273,19 @@ class DAMPAuthService {
   async signInWithEmail(email, password) {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-      
+
       this.trackAnalytics('user_sign_in', { method: 'email' });
-      
+
       return {
         success: true,
         user: userCredential.user,
         message: 'Signed in successfully!'
       };
-      
+
     } catch (error) {
       // Track failed login attempt
       await this.trackFailedLogin(email, error.code);
-      
+
       return {
         success: false,
         error: error.code,
@@ -301,15 +301,15 @@ class DAMPAuthService {
     try {
       const result = await signInWithPopup(this.auth, this.googleProvider);
       const user = result.user;
-      
+
       this.trackAnalytics('user_sign_in', { method: 'google' });
-      
+
       return {
         success: true,
         user: user,
         message: 'Signed in with Google successfully!'
       };
-      
+
     } catch (error) {
       return {
         success: false,
@@ -326,15 +326,15 @@ class DAMPAuthService {
     try {
       const result = await signInWithPopup(this.auth, this.facebookProvider);
       const user = result.user;
-      
+
       this.trackAnalytics('user_sign_in', { method: 'facebook' });
-      
+
       return {
         success: true,
         user: user,
         message: 'Signed in with Facebook successfully!'
       };
-      
+
     } catch (error) {
       return {
         success: false,
@@ -350,14 +350,14 @@ class DAMPAuthService {
   async signOut() {
     try {
       await firebaseSignOut(this.auth);
-      
+
       this.trackAnalytics('user_sign_out');
-      
+
       return {
         success: true,
         message: 'Signed out successfully!'
       };
-      
+
     } catch (error) {
       return {
         success: false,
@@ -373,16 +373,16 @@ class DAMPAuthService {
   async getUserProfile(uid = null) {
     const userId = uid || this.currentUser?.uid;
     if (!userId) return null;
-    
+
     try {
       const userRef = doc(this.db, 'users', userId);
       const userSnap = await getDoc(userRef);
-      
+
       if (userSnap.exists()) {
         return userSnap.data();
       }
       return null;
-      
+
     } catch (error) {
       console.error('Error getting user profile:', error);
       return null;
@@ -396,29 +396,29 @@ class DAMPAuthService {
     if (!this.currentUser) {
       throw new Error('No user signed in');
     }
-    
+
     try {
       const userRef = doc(this.db, 'users', this.currentUser.uid);
-      
+
       // Update Firestore profile
       await updateDoc(userRef, {
         ...updates,
         lastUpdated: serverTimestamp()
       });
-      
+
       // Update Firebase Auth profile if display name or photo changed
       const authUpdates = {};
       if (updates.displayName) authUpdates.displayName = updates.displayName;
       if (updates.photoURL) authUpdates.photoURL = updates.photoURL;
-      
+
       if (Object.keys(authUpdates).length > 0) {
         await updateProfile(this.currentUser, authUpdates);
       }
-      
+
       this.trackAnalytics('user_profile_update');
-      
+
       return { success: true, message: 'Profile updated successfully!' };
-      
+
     } catch (error) {
       console.error('Error updating profile:', error);
       return { success: false, message: 'Error updating profile. Please try again.' };
@@ -430,7 +430,7 @@ class DAMPAuthService {
    */
   async linkNewsletterSubscription(email, preferences = {}) {
     if (!this.currentUser) return;
-    
+
     try {
       // Update user preferences
       const userRef = doc(this.db, 'users', this.currentUser.uid);
@@ -442,15 +442,15 @@ class DAMPAuthService {
         'preferences.weeklyDigest': preferences.weeklyDigest !== false,
         newsletterLinkedAt: serverTimestamp()
       });
-      
+
       // Find and update newsletter subscription
       const newsletterQuery = query(
         collection(this.db, 'newsletter_subscribers'),
         where('email', '==', email)
       );
-      
+
       const querySnapshot = await getDocs(newsletterQuery);
-      
+
       if (!querySnapshot.empty) {
         const doc = querySnapshot.docs[0];
         await updateDoc(doc.ref, {
@@ -459,9 +459,9 @@ class DAMPAuthService {
           status: 'linked'
         });
       }
-      
+
       this.trackAnalytics('newsletter_account_link');
-      
+
     } catch (error) {
       console.error('Error linking newsletter subscription:', error);
     }
@@ -474,11 +474,11 @@ class DAMPAuthService {
     if (!this.currentUser) {
       throw new Error('No user signed in');
     }
-    
+
     try {
       const userRef = doc(this.db, 'users', this.currentUser.uid);
       const userProfile = await this.getUserProfile();
-      
+
       const device = {
         id: deviceData.id || this.generateDeviceId(),
         name: deviceData.name || 'My DAMP Device',
@@ -498,19 +498,19 @@ class DAMPAuthService {
           batteryAlerts: true
         }
       };
-      
+
       const updatedDevices = [...(userProfile?.damp?.devices || []), device];
-      
+
       await updateDoc(userRef, {
         'damp.devices': updatedDevices,
         'damp.totalDevices': updatedDevices.length,
         deviceAddedAt: serverTimestamp()
       });
-      
+
       this.trackAnalytics('device_added', { device_type: device.type });
-      
+
       return { success: true, device, message: 'Device added successfully!' };
-      
+
     } catch (error) {
       console.error('Error adding device:', error);
       return { success: false, message: 'Error adding device. Please try again.' };
@@ -524,12 +524,12 @@ class DAMPAuthService {
     if (!this.currentUser) {
       throw new Error('No user signed in');
     }
-    
+
     try {
       // Add vote to user's voting history
       const userRef = doc(this.db, 'users', this.currentUser.uid);
       const userProfile = await this.getUserProfile();
-      
+
       const vote = {
         productId,
         votedAt: serverTimestamp(),
@@ -537,19 +537,19 @@ class DAMPAuthService {
         userAgent: navigator.userAgent,
         ...voteData
       };
-      
+
       const votingHistory = [...(userProfile?.damp?.votingHistory || []), vote];
-      
+
       await updateDoc(userRef, {
         'damp.votingHistory': votingHistory,
         'damp.totalVotes': votingHistory.length,
         lastVoteAt: serverTimestamp()
       });
-      
+
       this.trackAnalytics('user_vote_submitted', { product_id: productId });
-      
+
       return { success: true, message: 'Vote submitted successfully!' };
-      
+
     } catch (error) {
       console.error('Error submitting user vote:', error);
       return { success: false, message: 'Error submitting vote. Please try again.' };
@@ -561,22 +561,22 @@ class DAMPAuthService {
    */
   async getUserOrders() {
     if (!this.currentUser) return [];
-    
+
     try {
       const ordersQuery = query(
         collection(this.db, 'orders'),
         where('userId', '==', this.currentUser.uid)
       );
-      
+
       const querySnapshot = await getDocs(ordersQuery);
       const orders = [];
-      
+
       querySnapshot.forEach(doc => {
         orders.push({ id: doc.id, ...doc.data() });
       });
-      
+
       return orders.sort((a, b) => b.createdAt?.toDate() - a.createdAt?.toDate());
-      
+
     } catch (error) {
       console.error('Error getting user orders:', error);
       return [];
@@ -590,7 +590,7 @@ class DAMPAuthService {
     if (!this.currentUser) {
       throw new Error('No user signed in');
     }
-    
+
     try {
       await sendEmailVerification(this.currentUser);
       return { success: true, message: 'Verification email sent!' };
@@ -618,16 +618,16 @@ class DAMPAuthService {
     if (!this.currentUser) {
       throw new Error('No user signed in');
     }
-    
+
     try {
       await updatePassword(this.currentUser, newPassword);
-      
+
       // Update last password change in profile
       const userRef = doc(this.db, 'users', this.currentUser.uid);
       await updateDoc(userRef, {
         'account.lastPasswordChange': serverTimestamp()
       });
-      
+
       return { success: true, message: 'Password updated successfully!' };
     } catch (error) {
       return { success: false, message: this.getErrorMessage(error.code) };
@@ -641,22 +641,22 @@ class DAMPAuthService {
     if (!this.currentUser) {
       throw new Error('No user signed in');
     }
-    
+
     try {
       const userId = this.currentUser.uid;
-      
+
       // Delete user profile from Firestore
       const userRef = doc(this.db, 'users', userId);
       await updateDoc(userRef, {
         'account.status': 'deleted',
         deletedAt: serverTimestamp()
       });
-      
+
       // Delete Firebase Auth account
       await deleteUser(this.currentUser);
-      
+
       this.trackAnalytics('user_account_deleted');
-      
+
       return { success: true, message: 'Account deleted successfully.' };
     } catch (error) {
       return { success: false, message: 'Error deleting account. Please try again.' };
@@ -668,7 +668,7 @@ class DAMPAuthService {
    */
   onAuthStateChange(callback) {
     this.authStateListeners.push(callback);
-    
+
     // Return unsubscribe function
     return () => {
       const index = this.authStateListeners.indexOf(callback);
@@ -698,11 +698,11 @@ class DAMPAuthService {
   generateReferralCode(uid) {
     return `DAMP${uid.slice(-6).toUpperCase()}`;
   }
-  
+
   generateDeviceId() {
     return `device_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
-  
+
   getDeviceInfo() {
     return {
       userAgent: navigator.userAgent,
@@ -712,7 +712,7 @@ class DAMPAuthService {
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
     };
   }
-  
+
   async trackFailedLogin(email, errorCode) {
     try {
       // Track failed login attempts for security
@@ -729,17 +729,17 @@ class DAMPAuthService {
       console.error('Error tracking failed login:', error);
     }
   }
-  
+
   async getClientIP() {
     // This would typically use a service to get the client's IP
     // For privacy reasons, we'll just return a placeholder
     return 'unknown';
   }
-  
+
   async updateGlobalStats(action) {
     try {
       const statsRef = doc(this.db, 'stats', 'global');
-      
+
       switch (action) {
         case 'userSignIn':
           await updateDoc(statsRef, {
@@ -754,18 +754,18 @@ class DAMPAuthService {
       console.error('Error updating global stats:', error);
     }
   }
-  
+
   trackAnalytics(eventName, parameters = {}) {
     if (this.analytics && typeof gtag !== 'undefined') {
       gtag('event', eventName, parameters);
     }
-    
+
     // Firebase Analytics
     if (this.analytics && window.firebaseServices?.analyticsService) {
       window.firebaseServices.analyticsService.logEvent(eventName, parameters);
     }
   }
-  
+
   getErrorMessage(errorCode) {
     const errorMessages = {
       'auth/user-not-found': 'No account found with this email address.',
@@ -780,10 +780,10 @@ class DAMPAuthService {
       'auth/cancelled-popup-request': 'Sign-in was cancelled.',
       'auth/popup-blocked': 'Sign-in popup was blocked by the browser.',
     };
-    
+
     return errorMessages[errorCode] || 'An unexpected error occurred. Please try again.';
   }
 }
 
 // Export the class
-export default DAMPAuthService; 
+export default DAMPAuthService;

@@ -26,7 +26,7 @@ const TEST_DEVICE_ID = 'test-device-456';
 
 async function testUserProfileCreation() {
   console.log('🔍 Testing User Profile Creation...');
-  
+
   try {
     const userData = {
       uid: TEST_USER_ID,
@@ -51,11 +51,11 @@ async function testUserProfileCreation() {
 
     await db.collection('users').doc(TEST_USER_ID).set(userData);
     console.log('✅ User profile created successfully');
-    
+
     // Verify data
     const userDoc = await db.collection('users').doc(TEST_USER_ID).get();
     console.log('✅ User data verified:', userDoc.exists);
-    
+
   } catch (error) {
     console.error('❌ User profile creation failed:', error.message);
   }
@@ -63,7 +63,7 @@ async function testUserProfileCreation() {
 
 async function testSubscriptionData() {
   console.log('🔍 Testing Subscription Data Structure...');
-  
+
   try {
     const subscriptionData = {
       userId: TEST_USER_ID,
@@ -91,7 +91,7 @@ async function testSubscriptionData() {
 
     await db.collection('subscription_events').add(eventData);
     console.log('✅ Subscription event logged successfully');
-    
+
   } catch (error) {
     console.error('❌ Subscription data test failed:', error.message);
   }
@@ -99,7 +99,7 @@ async function testSubscriptionData() {
 
 async function testDeviceData() {
   console.log('🔍 Testing Device Data Structure...');
-  
+
   try {
     const deviceData = {
       deviceId: TEST_DEVICE_ID,
@@ -137,7 +137,7 @@ async function testDeviceData() {
 
     await db.collection('device_readings').add(readingData);
     console.log('✅ Device reading created successfully');
-    
+
   } catch (error) {
     console.error('❌ Device data test failed:', error.message);
   }
@@ -145,7 +145,7 @@ async function testDeviceData() {
 
 async function testSyncQueue() {
   console.log('🔍 Testing Sync Queue Operations...');
-  
+
   try {
     const queueAction = {
       userId: TEST_USER_ID,
@@ -170,7 +170,7 @@ async function testSyncQueue() {
       completedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
     console.log('✅ Sync queue action processed');
-    
+
   } catch (error) {
     console.error('❌ Sync queue test failed:', error.message);
   }
@@ -178,7 +178,7 @@ async function testSyncQueue() {
 
 async function testNotificationPreferences() {
   console.log('🔍 Testing Notification Preferences...');
-  
+
   try {
     const preferences = {
       userId: TEST_USER_ID,
@@ -203,7 +203,7 @@ async function testNotificationPreferences() {
 
     await db.collection('user_preferences').doc(TEST_USER_ID).set(preferences);
     console.log('✅ Notification preferences saved successfully');
-    
+
   } catch (error) {
     console.error('❌ Notification preferences test failed:', error.message);
   }
@@ -211,7 +211,7 @@ async function testNotificationPreferences() {
 
 async function testUserActivity() {
   console.log('🔍 Testing User Activity Logging...');
-  
+
   try {
     const activities = [
       {
@@ -239,10 +239,10 @@ async function testUserActivity() {
       const ref = db.collection('user_activity').doc();
       batch.set(ref, activity);
     });
-    
+
     await batch.commit();
     console.log('✅ User activities logged successfully');
-    
+
   } catch (error) {
     console.error('❌ User activity test failed:', error.message);
   }
@@ -250,7 +250,7 @@ async function testUserActivity() {
 
 async function testZoneManagement() {
   console.log('🔍 Testing Zone Management...');
-  
+
   try {
     const zoneData = {
       userId: TEST_USER_ID,
@@ -268,7 +268,7 @@ async function testZoneManagement() {
 
     const zoneRef = await db.collection('safe_zones').add(zoneData);
     console.log('✅ Zone created successfully:', zoneRef.id);
-    
+
   } catch (error) {
     console.error('❌ Zone management test failed:', error.message);
   }
@@ -276,7 +276,7 @@ async function testZoneManagement() {
 
 async function testDataQueries() {
   console.log('🔍 Testing Data Queries...');
-  
+
   try {
     // Test user's devices query
     const userDevicesQuery = await db.collection('devices')
@@ -306,7 +306,7 @@ async function testDataQueries() {
       .limit(5)
       .get();
     console.log('✅ Device readings query:', deviceReadingsQuery.size, 'readings');
-    
+
   } catch (error) {
     console.error('❌ Data queries test failed:', error.message);
   }
@@ -314,13 +314,13 @@ async function testDataQueries() {
 
 async function testFirestoreRules() {
   console.log('🔍 Testing Firestore Security Rules...');
-  
+
   try {
     // Note: This would require setting up test authentication
     // For now, we'll just verify the rules are deployed
     console.log('⚠️  Security rules testing requires authenticated test environment');
     console.log('✅ Firestore rules are configured for new collections');
-    
+
   } catch (error) {
     console.error('❌ Security rules test failed:', error.message);
   }
@@ -328,27 +328,27 @@ async function testFirestoreRules() {
 
 async function cleanupTestData() {
   console.log('🧹 Cleaning up test data...');
-  
+
   try {
     const batch = db.batch();
-    
+
     // Clean up user document
     batch.delete(db.collection('users').doc(TEST_USER_ID));
-    
+
     // Clean up device document
     batch.delete(db.collection('devices').doc(TEST_DEVICE_ID));
-    
+
     // Clean up subscription
     batch.delete(db.collection('subscriptions').doc('sub_test123'));
-    
+
     // Clean up user preferences
     batch.delete(db.collection('user_preferences').doc(TEST_USER_ID));
-    
+
     await batch.commit();
-    
+
     // Clean up collections that used auto-generated IDs
     const collections = ['subscription_events', 'device_readings', 'sync_queue', 'user_activity', 'safe_zones'];
-    
+
     for (const collectionName of collections) {
       const query = await db.collection(collectionName).where('userId', '==', TEST_USER_ID).get();
       const deleteBatch = db.batch();
@@ -359,9 +359,9 @@ async function cleanupTestData() {
         await deleteBatch.commit();
       }
     }
-    
+
     console.log('✅ Test data cleaned up successfully');
-    
+
   } catch (error) {
     console.error('❌ Cleanup failed:', error.message);
   }
@@ -373,38 +373,38 @@ async function cleanupTestData() {
 async function runAllTests() {
   console.log('🚀 Starting Firebase Integration Tests for DAMP Smart Drinkware');
   console.log('===========================================================\n');
-  
+
   try {
     await testUserProfileCreation();
     console.log();
-    
+
     await testSubscriptionData();
     console.log();
-    
+
     await testDeviceData();
     console.log();
-    
+
     await testSyncQueue();
     console.log();
-    
+
     await testNotificationPreferences();
     console.log();
-    
+
     await testUserActivity();
     console.log();
-    
+
     await testZoneManagement();
     console.log();
-    
+
     await testDataQueries();
     console.log();
-    
+
     await testFirestoreRules();
     console.log();
-    
+
     console.log('🎉 All Firebase integration tests completed!');
     console.log('✅ New functions are ready for production deployment');
-    
+
   } catch (error) {
     console.error('💥 Test suite failed:', error);
   } finally {

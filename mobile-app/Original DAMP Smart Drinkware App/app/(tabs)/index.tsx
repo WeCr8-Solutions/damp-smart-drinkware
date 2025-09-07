@@ -7,10 +7,10 @@ import { getUserProfile, getUserGreeting, registerCurrentDevice } from '@/utils/
 import { auth } from '@/firebase/config';
 import DeviceInfoModal from '@/components/modals/DeviceInfoModal';
 import DeviceList from '@/components/DeviceList';
-import { 
-  getAllDevices, 
+import {
+  getAllDevices,
   getDeviceStats,
-  Device 
+  Device
 } from '@/utils/deviceManager';
 import { router } from 'expo-router';
 
@@ -20,11 +20,11 @@ export default function HomeScreen() {
   const [greeting, setGreeting] = useState('Hello');
   const [userName, setUserName] = useState('');
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ 
-    total: 0, 
-    connected: 0, 
-    disconnected: 0, 
-    lowBattery: 0 
+  const [stats, setStats] = useState({
+    total: 0,
+    connected: 0,
+    disconnected: 0,
+    lowBattery: 0
   });
   const [zones] = useState([
     { id: '1', name: 'Home', isActive: true, deviceCount: 1 },
@@ -37,13 +37,13 @@ export default function HomeScreen() {
     const loadUserData = async () => {
       try {
         setLoading(true);
-        
+
         // Get user profile
         const profile = await getUserProfile();
         if (profile) {
           setUserName(profile.full_name || '');
         }
-        
+
         // Get personalized greeting
         try {
           const personalizedGreeting = await getUserGreeting();
@@ -52,14 +52,14 @@ export default function HomeScreen() {
           console.error('Error fetching greeting:', error);
           setGreeting('Hello');
         }
-        
+
         // Register current device
         try {
           await registerCurrentDevice();
         } catch (error) {
           console.error('Error registering device:', error);
         }
-        
+
         // Load device stats
         await loadDeviceStats();
       } catch (error) {
@@ -222,7 +222,7 @@ export default function HomeScreen() {
                 <Plus size={16} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
-            <DeviceList 
+            <DeviceList
               showTitle={false}
               maxDevices={3}
               onDevicePress={handleDevicePress}

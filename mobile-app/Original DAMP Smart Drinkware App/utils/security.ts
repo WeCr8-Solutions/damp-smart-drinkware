@@ -44,36 +44,36 @@ export class SecurityUtils {
     if (!email || typeof email !== 'string' || email.length > 254) {
       return false;
     }
-    
+
     // Check for spaces (not allowed)
     if (email.includes(' ')) {
       return false;
     }
-    
+
     // Must have exactly one @ symbol
     const atCount = (email.match(/@/g) || []).length;
     if (atCount !== 1) {
       return false;
     }
-    
+
     const [localPart, domainPart] = email.split('@');
-    
+
     // Local part cannot be empty
     if (!localPart || localPart.length === 0) {
       return false;
     }
-    
+
     // Domain part must exist and have at least one dot
     if (!domainPart || !domainPart.includes('.')) {
       return false;
     }
-    
+
     // Domain must have at least two parts (domain.tld)
     const domainParts = domainPart.split('.');
     if (domainParts.length < 2 || domainParts.some(part => part.length === 0)) {
       return false;
     }
-    
+
     // Use stricter regex for overall format
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
     return emailRegex.test(email);
@@ -86,38 +86,38 @@ export class SecurityUtils {
     if (!phone || typeof phone !== 'string') {
       return false;
     }
-    
+
     // Clean the phone number by removing spaces, dashes, parentheses
     const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
-    
+
     // Check for invalid characters (should only contain digits and optional + at start)
     if (!/^[\+]?[\d]+$/.test(cleanPhone)) {
       return false;
     }
-    
+
     // Must be between 7 and 15 digits (after removing + if present)
     // Most international phone numbers are at least 7 digits
     const digitsOnly = cleanPhone.replace(/^\+/, '');
     if (digitsOnly.length < 7 || digitsOnly.length > 15) {
       return false;
     }
-    
+
     // Cannot start with 0 (international format)
     if (digitsOnly.startsWith('0')) {
       return false;
     }
-    
+
     // Cannot have multiple + signs
     const plusCount = (cleanPhone.match(/\+/g) || []).length;
     if (plusCount > 1) {
       return false;
     }
-    
+
     // If it has +, it must be at the beginning
     if (cleanPhone.includes('+') && !cleanPhone.startsWith('+')) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -148,7 +148,7 @@ export class SecurityUtils {
 
     for (const [key, expectedType] of Object.entries(schema)) {
       const value = obj[key];
-      
+
       if (expectedType.required && value === undefined) {
         return false;
       }
@@ -176,13 +176,13 @@ export class SecurityUtils {
   static generateSecureRandom(length: number = 32): string {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
-    
+
     for (let i = 0; i < length; i++) {
       // Use crypto.getRandomValues if available (web), fallback to Math.random
       const randomIndex = this.getSecureRandomInt(0, chars.length - 1);
       result += chars[randomIndex];
     }
-    
+
     return result;
   }
 
@@ -195,7 +195,7 @@ export class SecurityUtils {
       crypto.getRandomValues(array);
       return min + (array[0] % (max - min + 1));
     }
-    
+
     // Fallback for React Native
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -243,11 +243,11 @@ export class SecurityUtils {
     if (!token || typeof token !== 'string') {
       return '***';
     }
-    
+
     if (token.length <= 8) {
       return '***';
     }
-    
+
     return `${token.slice(0, 4)}***${token.slice(-4)}`;
   }
 
@@ -256,26 +256,26 @@ export class SecurityUtils {
    */
   static rateLimiter = (() => {
     const attempts = new Map<string, number[]>();
-    
+
     return {
       isAllowed(key: string, maxAttempts: number = 5, windowMs: number = 60000): boolean {
         const now = Date.now();
         const userAttempts = attempts.get(key) || [];
-        
+
         // Remove old attempts outside the window
         const recentAttempts = userAttempts.filter(time => now - time < windowMs);
-        
+
         if (recentAttempts.length >= maxAttempts) {
           return false;
         }
-        
+
         // Add current attempt
         recentAttempts.push(now);
         attempts.set(key, recentAttempts);
-        
+
         return true;
       },
-      
+
       reset(key: string): void {
         attempts.delete(key);
       }
@@ -286,7 +286,7 @@ export class SecurityUtils {
    * Check if app is running in debug mode (security risk)
    */
   static isDebuggingEnabled(): boolean {
-    return __DEV__ || 
+    return __DEV__ ||
            (Platform.OS === 'android' && (global as any).__DEV__) ||
            (typeof window !== 'undefined' && (window as any).__DEV__);
   }
@@ -296,26 +296,26 @@ export class SecurityUtils {
    */
   static detectSecurityThreats(): SecurityThreatReport {
     const threats: string[] = [];
-    
+
     // Check for debugging
     if (this.isDebuggingEnabled()) {
       threats.push('debug_mode_enabled');
     }
-    
+
     // Check for jailbreak/root (basic check)
     if (Platform.OS === 'ios' && this.isJailbroken()) {
       threats.push('jailbroken_device');
     }
-    
+
     if (Platform.OS === 'android' && this.isRooted()) {
       threats.push('rooted_device');
     }
-    
+
     // Check for suspicious network conditions
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
       threats.push('offline_mode');
     }
-    
+
     return {
       threatLevel: threats.length > 0 ? 'medium' : 'low',
       threats,
@@ -347,12 +347,12 @@ export class SecurityUtils {
     if (!token || typeof token !== 'string') {
       return false;
     }
-    
+
     const parts = token.split('.');
     if (parts.length !== 3) {
       return false;
     }
-    
+
     try {
       // Validate base64 encoding of header and payload
       atob(parts[0]);
@@ -386,7 +386,7 @@ export class SecurityUtils {
       'https://googleapis.com',
       'https://stripe.com',
     ];
-    
+
     return allowedDomains.some(domain => url.startsWith(domain));
   }
 
@@ -429,23 +429,23 @@ export interface SecurityThreatReport {
 // Security monitoring hook
 export function useSecurityMonitoring() {
   const [threatLevel, setThreatLevel] = React.useState<string>('low');
-  
+
   React.useEffect(() => {
     const checkThreats = () => {
       const report = SecurityUtils.detectSecurityThreats();
       setThreatLevel(report.threatLevel);
-      
+
       if (report.threats.length > 0) {
         console.warn('🚨 Security threats detected:', report);
       }
     };
-    
+
     checkThreats();
     const interval = setInterval(checkThreats, 60000); // Check every minute
-    
+
     return () => clearInterval(interval);
   }, []);
-  
+
   return { threatLevel };
 }
 

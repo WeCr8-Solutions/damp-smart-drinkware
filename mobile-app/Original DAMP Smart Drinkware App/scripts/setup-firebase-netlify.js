@@ -90,7 +90,7 @@ async function loginFirebase() {
 
   log('yellow', '⚠️  Not logged in to Firebase');
   const shouldLogin = await question('Would you like to login now? (y/n): ');
-  
+
   if (shouldLogin.toLowerCase() === 'y') {
     try {
       log('cyan', 'Opening Firebase login in browser...');
@@ -102,7 +102,7 @@ async function loginFirebase() {
       return false;
     }
   }
-  
+
   return false;
 }
 
@@ -124,7 +124,7 @@ async function loginNetlify() {
 
   log('yellow', '⚠️  Not logged in to Netlify');
   const shouldLogin = await question('Would you like to login now? (y/n): ');
-  
+
   if (shouldLogin.toLowerCase() === 'y') {
     try {
       log('cyan', 'Opening Netlify login in browser...');
@@ -136,7 +136,7 @@ async function loginNetlify() {
       return false;
     }
   }
-  
+
   return false;
 }
 
@@ -148,7 +148,7 @@ function getFirebaseProjects() {
   try {
     const projects = execSync('firebase projects:list --json', { encoding: 'utf8', stdio: 'pipe' });
     const parsed = JSON.parse(projects);
-    
+
     if (parsed.length === 0) {
       log('yellow', '⚠️  No Firebase projects found');
       log('white', '   Create one at: https://console.firebase.google.com');
@@ -171,7 +171,7 @@ function getFirebaseProjects() {
 // Select Firebase project
 async function selectFirebaseProject(projects) {
   if (projects.length === 0) return null;
-  
+
   if (projects.length === 1) {
     log('green', `✅ Using project: ${projects[0].projectId}`);
     return projects[0];
@@ -179,7 +179,7 @@ async function selectFirebaseProject(projects) {
 
   const choice = await question(`\nSelect a Firebase project (1-${projects.length}): `);
   const index = parseInt(choice) - 1;
-  
+
   if (index >= 0 && index < projects.length) {
     const selected = projects[index];
     log('green', `✅ Selected: ${selected.projectId}`);
@@ -199,10 +199,10 @@ function getFirebaseWebConfig(projectId) {
     // First, get the web apps for this project
     const apps = execSync(`firebase apps:list --project=${projectId} --json`, { encoding: 'utf8', stdio: 'pipe' });
     const parsedApps = JSON.parse(apps);
-    
+
     // Find web apps
     const webApps = parsedApps.filter(app => app.platform === 'WEB');
-    
+
     if (webApps.length === 0) {
       log('yellow', '⚠️  No web apps found for this project');
       log('white', '   Create one in Firebase Console > Project Settings > General > Your apps');
@@ -218,7 +218,7 @@ function getFirebaseWebConfig(projectId) {
     const parsedConfig = JSON.parse(config);
 
     log('green', '✅ Firebase web config retrieved!');
-    
+
     return {
       apiKey: parsedConfig.apiKey,
       authDomain: parsedConfig.authDomain,
@@ -306,7 +306,7 @@ async function setupNetlifySite() {
       execSync(command, { stdio: 'inherit' });
       execSync('netlify link', { stdio: 'inherit' });
     }
-    
+
     log('green', '✅ Netlify site setup complete!');
     return true;
   } catch (error) {
@@ -328,7 +328,7 @@ async function setNetlifyEnvVars(envVars) {
         log('green', `✅ Set ${key}`);
       }
     }
-    
+
     log('green', '\n✅ All environment variables set in Netlify!');
     return true;
   } catch (error) {
@@ -344,20 +344,20 @@ async function deployToNetlify() {
   log('blue', '========================');
 
   const shouldDeploy = await question('Would you like to deploy now? (y/n): ');
-  
+
   if (shouldDeploy.toLowerCase() === 'y') {
     try {
       log('cyan', 'Building and deploying...');
       execSync('netlify deploy --build --prod', { stdio: 'inherit' });
       log('green', '✅ Deployment successful!');
-      
+
       // Get site URL
       const status = execSync('netlify status', { encoding: 'utf8' });
       const urlMatch = status.match(/Site url:\s*(.+)/);
       if (urlMatch) {
         log('bright', `\n🌐 Your site is live at: ${urlMatch[1]}`);
       }
-      
+
       return true;
     } catch (error) {
       log('red', '❌ Deployment failed');
@@ -449,10 +449,10 @@ if (require.main === module) {
   runSetup();
 }
 
-module.exports = { 
-  checkFirebaseCLI, 
-  checkNetlifyCLI, 
-  getFirebaseProjects, 
+module.exports = {
+  checkFirebaseCLI,
+  checkNetlifyCLI,
+  getFirebaseProjects,
   getFirebaseWebConfig,
-  createEnvironmentFiles 
+  createEnvironmentFiles
 };

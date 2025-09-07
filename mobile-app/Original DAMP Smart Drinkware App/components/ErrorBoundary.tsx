@@ -50,7 +50,7 @@ export class AppErrorBoundary extends Component<Props, State> {
   static getDerivedStateFromError(error: Error): Partial<State> {
     // Generate unique error ID for tracking
     const errorId = `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+
     return {
       hasError: true,
       error,
@@ -60,23 +60,23 @@ export class AppErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     const { onError, level = 'component' } = this.props;
-    
+
     this.setState({ errorInfo });
-    
+
     // Enhanced error logging with Google-level detail
     const errorReport = this.createErrorReport(error, errorInfo);
-    
+
     // Log to console with structured data
     console.error('🚨 Error Boundary Caught Error:', errorReport);
-    
+
     // Report to external services
     this.reportError(error, errorInfo, errorReport);
-    
+
     // Call custom error handler
     if (onError) {
       onError(error, errorInfo);
     }
-    
+
     // Track error metrics
     this.trackErrorMetrics(error, level);
   }
@@ -86,27 +86,27 @@ export class AppErrorBoundary extends Component<Props, State> {
    */
   private createErrorReport(error: Error, errorInfo: ErrorInfo) {
     const { level = 'component' } = this.props;
-    
+
     return {
       // Error details
       errorId: this.state.errorId,
       message: error.message,
       stack: error.stack,
       name: error.name,
-      
+
       // React details
       componentStack: errorInfo.componentStack,
-      
+
       // Context information
       timestamp: new Date().toISOString(),
       platform: Platform.OS,
       platformVersion: Platform.Version,
       level,
       retryCount: this.retryCount,
-      
+
       // User context
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A',
-      
+
       // App context
       buildVersion: process.env.EXPO_PUBLIC_APP_VERSION || '1.0.0',
       environment: __DEV__ ? 'development' : 'production',
@@ -149,7 +149,7 @@ export class AppErrorBoundary extends Component<Props, State> {
   private trackErrorMetrics(error: Error, level: string): void {
     // Implement error rate tracking, error types, etc.
     const errorType = error.name || 'UnknownError';
-    
+
     // In a real implementation, send to monitoring service
     if (__DEV__) {
       console.log('📈 Error metrics tracked:', {
@@ -180,16 +180,16 @@ export class AppErrorBoundary extends Component<Props, State> {
    */
   private handleSendReport = (): void => {
     const { error, errorInfo, errorId } = this.state;
-    
+
     if (error && errorInfo) {
       const report = this.createErrorReport(error, errorInfo);
-      
+
       // In a real app, send to support system
       console.log('📧 Error report sent to support:', {
         errorId,
         timestamp: report.timestamp
       });
-      
+
       // Could open email client, in-app support chat, etc.
     }
   };
@@ -241,15 +241,15 @@ export class AppErrorBoundary extends Component<Props, State> {
       <SafeAreaView style={styles.appErrorContainer}>
         <View style={styles.appErrorContent}>
           <AlertTriangle size={64} color="#F44336" />
-          
+
           <Text style={styles.appErrorTitle}>
             Oops! Something went wrong
           </Text>
-          
+
           <Text style={styles.appErrorMessage}>
             The app encountered an unexpected error. We've been notified and are working to fix it.
           </Text>
-          
+
           <View style={styles.errorDetails}>
             <Text style={styles.errorId}>Error ID: {errorId}</Text>
             <Text style={styles.errorType}>
@@ -269,7 +269,7 @@ export class AppErrorBoundary extends Component<Props, State> {
                 </Text>
               </TouchableOpacity>
             )}
-            
+
             <TouchableOpacity
               style={[styles.button, styles.secondaryButton]}
               onPress={this.handleSendReport}
@@ -297,7 +297,7 @@ export class AppErrorBoundary extends Component<Props, State> {
         <Text style={styles.screenErrorMessage}>
           This screen couldn't load properly.
         </Text>
-        
+
         {__DEV__ && (
           <Text style={styles.devErrorMessage}>
             {error?.message}
@@ -363,7 +363,7 @@ export function withErrorBoundary<P extends object>(
 export function useErrorReporting() {
   const reportError = (error: Error, context?: Record<string, any>) => {
     console.error('Manual error report:', { error, context });
-    
+
     // Report to analytics services
     // firebase.analytics().logEvent('manual_error_report', {
     //   error_message: error.message,

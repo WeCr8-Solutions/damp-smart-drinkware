@@ -175,7 +175,7 @@
             .hamburger {
                 display: flex;
             }
-            
+
             .nav-links {
                 display: none;
             }
@@ -239,15 +239,15 @@
             body {
                 padding: calc(20px + var(--safe-area-top)) max(16px, var(--safe-area-right)) max(20px, var(--safe-area-bottom)) max(16px, var(--safe-area-left));
             }
-            
+
             .container {
                 padding: 20px;
             }
-            
+
             .product-summary {
                 padding: 20px;
             }
-            
+
             .btn {
                 padding: 15px 30px;
                 font-size: 1rem;
@@ -258,19 +258,19 @@
             body {
                 padding: calc(16px + var(--safe-area-top)) max(12px, var(--safe-area-right)) max(16px, var(--safe-area-bottom)) max(12px, var(--safe-area-left));
             }
-            
+
             .container {
                 padding: 16px;
             }
-            
+
             .product-summary {
                 padding: 16px;
             }
-            
+
             h1 {
                 font-size: 1.5rem !important;
             }
-            
+
             .btn {
                 padding: 12px 24px;
                 font-size: 0.9rem;
@@ -289,7 +289,7 @@
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
-    
+
     <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -297,18 +297,18 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="msapplication-TileColor" content="#1a1a2e">
     <meta name="msapplication-tap-highlight" content="no">
-    
+
     <!-- PWA Theme Colors -->
     <meta name="theme-color" content="#00d4ff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
-    
+
     <!-- PWA Icons -->
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/logo/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="48x48" href="/assets/images/logo/icon-48.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/logo/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/assets/images/logo/icon-512.png">
-    
+
     <!-- Apple Touch Icons -->
     <link rel="apple-touch-icon" sizes="57x57" href="/assets/images/logo/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/assets/images/logo/apple-icon-60x60.png">
@@ -332,14 +332,14 @@
                 <li><a href="../index.html#app">App</a></li>
                 <li><a href="../index.html#contact">Contact</a></li>
             </ul>
-            
+
             <div class="hamburger" onclick="toggleMobileMenu()">
                 <span></span>
                 <span></span>
                 <span></span>
             </div>
         </div>
-        
+
         <div class="mobile-menu" id="mobile-menu">
             <button class="mobile-close" onclick="toggleMobileMenu()">×</button>
             <a href="../index.html">Home</a>
@@ -348,10 +348,10 @@
             <a href="../index.html#contact">Contact</a>
         </div>
     </nav>
-    
+
     <div class="container">
         <h1 style="text-align: center; margin-bottom: 30px; color: #00d4ff;">Complete Your Pre-Order</h1>
-        
+
         <div class="product-summary">
             <h3 style="color: #00d4ff; margin-bottom: 15px;">Order Summary</h3>
             <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
@@ -385,11 +385,11 @@
         </div>
 
         <div class="error" id="error-message"></div>
-        
+
         <button class="btn" id="checkout-button" onclick="createCheckoutSession()">
             Complete Pre-Order - Secure Checkout
         </button>
-        
+
         <div class="loading" id="loading">
             <p>🔄 Creating secure checkout session...</p>
         </div>
@@ -402,16 +402,16 @@
 
     <!-- Scripts -->
     <script src="../assets/js/components/safe-area-wrapper.js"></script>
-    
+
     <script>
         // Replace with your actual Stripe publishable key
         const stripe = Stripe('pk_live_51ReW7yCcrIDahSGRjE5nEx9ENwPj8uzAfCJQtmVBkuEyeS7JNq0xscaAqdUFoKos7JO1cKbJXrIscBfUU4yNRQSy00lWo3F7p2');
-        
+
         // Get product details from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('product') || 'damp-handle';
         const quantity = parseInt(urlParams.get('quantity')) || 1;
-        
+
         // Product data with Stripe Lookup Keys
         const products = {
             'damp-handle': {
@@ -448,10 +448,10 @@
         function updateProductDisplay() {
             const product = products[productId];
             if (!product) return;
-            
+
             const savings = (product.originalPrice - product.price) * quantity;
             const total = product.price * quantity;
-            
+
             document.getElementById('product-name').textContent = product.name;
             document.getElementById('product-price').textContent = `$${(product.price / 100).toFixed(2)}`;
             document.getElementById('quantity').textContent = quantity;
@@ -465,15 +465,15 @@
             const button = document.getElementById('checkout-button');
             const loading = document.getElementById('loading');
             const errorDiv = document.getElementById('error-message');
-            
+
             button.disabled = true;
             button.style.display = 'none';
             loading.style.display = 'block';
             errorDiv.style.display = 'none';
-            
+
             try {
                 const product = products[productId];
-                
+
                 // Call your backend to create checkout session
                 const response = await fetch('/create-checkout-session', {
                     method: 'POST',
@@ -486,22 +486,22 @@
                         lookupKey: product.preOrderLookupKey
                     })
                 });
-                
+
                 const session = await response.json();
-                
+
                 if (session.error) {
                     throw new Error(session.error);
                 }
-                
+
                 // Redirect to Stripe Checkout
                 const result = await stripe.redirectToCheckout({
                     sessionId: session.id
                 });
-                
+
                 if (result.error) {
                     throw new Error(result.error.message);
                 }
-                
+
             } catch (error) {
                 console.error('Error:', error);
                 errorDiv.textContent = error.message;
@@ -519,10 +519,10 @@
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             const hamburger = document.querySelector('.hamburger');
-            
+
             menu.classList.toggle('active');
             hamburger.classList.toggle('active');
-            
+
             // Prevent body scroll when menu is open
             document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
         }
@@ -531,9 +531,9 @@
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('mobile-menu');
             const hamburger = document.querySelector('.hamburger');
-            
-            if (menu.classList.contains('active') && 
-                !menu.contains(event.target) && 
+
+            if (menu.classList.contains('active') &&
+                !menu.contains(event.target) &&
                 !hamburger.contains(event.target)) {
                 toggleMobileMenu();
             }
@@ -561,7 +561,7 @@
                         updateViaCache: 'none'
                     });
                     console.log('✅ Service Worker registered:', registration.scope);
-                    
+
                     // Handle updates
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
@@ -571,20 +571,20 @@
                             }
                         });
                     });
-                    
+
                     window.dampPWA = { registration };
                 } catch (error) {
                     console.error('❌ Service Worker failed:', error);
                 }
             });
         }
-        
+
         function showUpdateNotification() {
             const notification = document.createElement('div');
             notification.innerHTML = '<div style="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00d4ff,#00ff88);color:#1a1a2e;padding:15px 25px;border-radius:30px;font-weight:600;z-index:10000;display:flex;align-items:center;gap:15px;"><span>🚀</span><span>New version available!</span><button onclick="refreshApp()" style="background:rgba(26,26,46,0.2);color:#1a1a2e;border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;">Update</button><button onclick="this.parentElement.parentElement.remove()" style="background:transparent;border:none;color:#1a1a2e;cursor:pointer;padding:5px;">×</button></div>';
             document.body.appendChild(notification);
         }
-        
+
         function refreshApp() {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistration().then(registration => {
@@ -595,11 +595,11 @@
                 });
             }
         }
-        
+
         // Load Mobile App Redirect Script
         const mobileAppScript = document.createElement('script');
         mobileAppScript.src = '/assets/js/mobile-app-redirect.js';
         mobileAppScript.async = true;
         document.head.appendChild(mobileAppScript);
     </script></body>
-</html> 
+</html>

@@ -4,10 +4,10 @@
 
 The DAMP Smart Drinkware API is built on Firebase Cloud Functions, providing secure, scalable backend services for both web and mobile applications.
 
-**Base URL**: `https://us-central1-damp-smart-drinkware.cloudfunctions.net`  
-**Authentication**: Firebase JWT tokens  
-**Format**: JSON  
-**HTTPS**: Required  
+**Base URL**: `https://us-central1-damp-smart-drinkware.cloudfunctions.net`
+**Authentication**: Firebase JWT tokens
+**Format**: JSON
+**HTTPS**: Required
 
 ## 🔐 **Authentication**
 
@@ -71,7 +71,7 @@ const submitVote = async (productId) => {
       platform: 'web'
     })
   });
-  
+
   return response.json();
 };
 ```
@@ -532,15 +532,15 @@ class DAMPApiClient {
     this.authToken = authToken;
     this.baseUrl = 'https://us-central1-damp-smart-drinkware.cloudfunctions.net';
   }
-  
+
   async submitVote(productId) {
     return this.request('POST', '/api/vote', { productId });
   }
-  
+
   async getVotingResults() {
     return this.request('GET', '/api/voting/results');
   }
-  
+
   async request(method, endpoint, data = null) {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method,
@@ -550,7 +550,7 @@ class DAMPApiClient {
       },
       body: data ? JSON.stringify(data) : null
     });
-    
+
     return response.json();
   }
 }
@@ -564,7 +564,7 @@ import { getAuth } from 'firebase/auth';
 
 const useDAMPApi = () => {
   const [client, setClient] = useState<DAMPApiClient | null>(null);
-  
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -575,10 +575,10 @@ const useDAMPApi = () => {
         setClient(null);
       }
     });
-    
+
     return unsubscribe;
   }, []);
-  
+
   return client;
 };
 ```
@@ -590,22 +590,22 @@ const useDAMPApi = () => {
 // Example test using Jest
 describe('Voting API', () => {
   let apiClient;
-  
+
   beforeEach(async () => {
     // Setup authenticated client
     apiClient = new DAMPApiClient(await getTestToken());
   });
-  
+
   test('should submit vote successfully', async () => {
     const result = await apiClient.submitVote('damp-handle-universal');
-    
+
     expect(result.success).toBe(true);
     expect(result.voteId).toBeDefined();
   });
-  
+
   test('should get voting results', async () => {
     const results = await apiClient.getVotingResults();
-    
+
     expect(results.results).toBeDefined();
     expect(results.totalVotes).toBeGreaterThan(0);
   });
@@ -630,6 +630,6 @@ For higher rate limits, contact: enterprise@wecr8.info
 
 ---
 
-**API Version**: 1.0.0  
-**Last Updated**: 2024-12-19  
+**API Version**: 1.0.0
+**Last Updated**: 2024-12-19
 **Maintained by**: WeCr8 Solutions LLC

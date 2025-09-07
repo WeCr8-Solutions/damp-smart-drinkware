@@ -212,7 +212,7 @@ export default function Settings() {
             setCleaningData(true);
             try {
               const result = await cleanAllUserProfiles();
-              
+
               if (result.success) {
                 Alert.alert(
                   'Data Cleaned Successfully',
@@ -639,7 +639,7 @@ export default function Settings() {
           </View>
 
           <View style={settingsStyles.tabContainer}>
-            <CategorySlider 
+            <CategorySlider
               categories={tabs}
               selectedCategory={activeTab}
               onSelectCategory={setActiveTab}
@@ -676,7 +676,7 @@ export default function Settings() {
 
         {/* Tab Navigation - Using CategorySlider for horizontal scrolling */}
         <View style={settingsStyles.tabContainer}>
-          <CategorySlider 
+          <CategorySlider
             categories={tabs}
             selectedCategory={activeTab}
             onSelectCategory={setActiveTab}

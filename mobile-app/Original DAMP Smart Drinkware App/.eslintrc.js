@@ -29,24 +29,24 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/ban-ts-comment': 'warn',
-    
+
     // React
     'react/prop-types': 'off', // Not needed with TypeScript
     'react/react-in-jsx-scope': 'off', // Not needed with React 17+
     'react/display-name': 'off',
     'react/jsx-curly-brace-presence': ['warn', { props: 'never', children: 'never' }],
-    
+
     // React Hooks
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
-    
+
     // React Native
     'react-native/no-unused-styles': 'warn',
     'react-native/no-inline-styles': 'warn',
     'react-native/no-color-literals': 'warn',
     'react-native/no-raw-text': 'off', // Too restrictive
     'react-native/no-single-element-style-arrays': 'warn',
-    
+
     // Accessibility
     'react-native/accessibility-label': 'warn',
   },

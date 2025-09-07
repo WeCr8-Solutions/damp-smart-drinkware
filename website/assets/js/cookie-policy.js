@@ -15,22 +15,22 @@ class DAMPCookiePolicy {
             theme: 'professional',
             position: 'bottom',
             language: 'en',
-            
+
             // Company Information
             companyName: 'DAMP Smart Drinkware',
             privacyPolicyUrl: '/pages/privacy.html',
             cookiePolicyUrl: '/pages/cookie-policy.html',
-            
+
             // Feature Toggles
             enableAnalytics: true,
             enableMarketing: false,
             enableFunctional: true,
             enableSimpleBanner: true,
             enableDetailedModal: true,
-            
+
             // Debug & Development
             debug: window.location.hostname === 'localhost',
-            
+
             ...options
         };
 
@@ -99,7 +99,7 @@ class DAMPCookiePolicy {
                 bannerMessage: 'We use cookies to enhance your experience and analyze site usage.',
                 bannerMessageGDPR: 'We use cookies with your consent to enhance your experience, analyze site usage, and assist with marketing efforts.',
                 bannerMessageCCPA: 'We use cookies to enhance your experience. California residents have additional privacy rights.',
-                
+
                 // Actions
                 acceptAll: 'Accept All',
                 acceptSelected: 'Accept Selected',
@@ -108,31 +108,31 @@ class DAMPCookiePolicy {
                 managePreferences: 'Manage Preferences',
                 savePreferences: 'Save Preferences',
                 close: 'Close',
-                
+
                 // Modal
                 modalTitle: 'Cookie Preferences',
                 modalMessage: 'We use cookies to enhance your experience, analyze site usage, and personalize content. You can manage your preferences below.',
-                
+
                 // Links
                 learnMore: 'Learn More',
                 cookiePolicy: 'Cookie Policy',
                 privacyPolicy: 'Privacy Policy',
                 yourRights: 'Your Rights',
                 caPrivacyRights: 'CA Privacy Rights',
-                
+
                 // Notifications
                 allAccepted: 'All cookies accepted!',
                 essentialAccepted: 'Only essential cookies accepted.',
                 preferencesUpdated: 'Cookie preferences updated successfully!',
-                
+
                 // Tabs
                 tabPreferences: 'Preferences',
                 tabDetails: 'Cookie Details',
                 tabAbout: 'About Cookies',
-                
+
                 // About
                 aboutText: 'Cookies are small text files stored on your device when you visit a website. They help us provide you with a better experience by remembering your preferences and analyzing how you use our site.',
-                
+
                 // Settings
                 settingsButton: 'Cookie Settings',
                 poweredBy: 'Powered by DAMP Cookie Policy'
@@ -146,7 +146,7 @@ class DAMPCookiePolicy {
         this.modal = null;
         this.settingsModal = null;
         this.showAgainButton = null;
-        
+
         // Initialize
         this.init();
     }
@@ -161,7 +161,7 @@ class DAMPCookiePolicy {
         this.createElements();
         this.bindEvents();
         this.checkConsentStatus();
-        
+
         if (this.options.debug) {
             console.log('🍪 DAMP Cookie Policy initialized', {
                 consent: this.consentData,
@@ -184,7 +184,7 @@ class DAMPCookiePolicy {
             // Fallback region detection
             const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             const language = navigator.language || navigator.userLanguage;
-            
+
             // Simple region detection based on timezone and language
             if (timezone.includes('Europe') || language.startsWith('de') || language.startsWith('fr')) {
                 this.region = { requiresGDPR: true, requiresCCPA: false, name: 'EU' };
@@ -193,7 +193,7 @@ class DAMPCookiePolicy {
             } else {
                 this.region = { requiresGDPR: false, requiresCCPA: false, name: 'Other' };
             }
-            
+
             this.consentData.region = this.region;
         }
     }
@@ -209,11 +209,11 @@ class DAMPCookiePolicy {
                 if (parsed.version === this.consentData.version) {
                     this.consentData = { ...this.consentData, ...parsed };
                     this.isConsentGiven = true;
-                    
+
                     // Check if consent is still valid
                     const consentAge = Date.now() - this.consentData.timestamp;
                     const maxAge = this.options.consentDuration * 24 * 60 * 60 * 1000;
-                    
+
                     if (consentAge > maxAge) {
                         this.resetConsent();
                     }
@@ -235,12 +235,12 @@ class DAMPCookiePolicy {
             this.consentData.timestamp = Date.now();
             localStorage.setItem('damp_cookie_consent', JSON.stringify(this.consentData));
             this.isConsentGiven = true;
-            
+
             // Update consent systems
             this.updateGoogleConsent();
             this.updateComplianceManager();
             this.dispatchConsentEvent();
-            
+
             if (this.options.debug) {
                 console.log('🍪 Consent saved:', this.consentData);
             }
@@ -257,7 +257,7 @@ class DAMPCookiePolicy {
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         window.gtag = gtag;
-        
+
         // Set default consent state before GA loads
         gtag('consent', 'default', {
             'ad_storage': this.consentData.marketing ? 'granted' : 'denied',
@@ -269,9 +269,9 @@ class DAMPCookiePolicy {
             'security_storage': 'granted', // Always granted for security
             'wait_for_update': 500 // Wait up to 500ms for consent update
         });
-        
+
         window.gtag_consent_initialized = true;
-        
+
         if (this.options.debug) {
             console.log('🍪 Google Consent Mode v2 initialized');
         }
@@ -293,7 +293,7 @@ class DAMPCookiePolicy {
             };
 
             gtag('consent', 'update', consentUpdate);
-            
+
             // Track consent interaction with compliance data
             if (this.consentData.analytics) {
                 gtag('event', 'consent_update', {
@@ -310,7 +310,7 @@ class DAMPCookiePolicy {
                     }
                 });
             }
-            
+
             if (this.options.debug) {
                 console.log('🍪 Google Consent Mode v2 updated:', consentUpdate);
             }
@@ -324,7 +324,7 @@ class DAMPCookiePolicy {
         if (window.dampCompliance) {
             window.dampCompliance.updateConsent(this.consentData);
         }
-        
+
         // Update other analytics systems
         if (window.DAMP_Analytics) {
             window.DAMP_Analytics.updateConsent(this.consentData);
@@ -364,32 +364,32 @@ class DAMPCookiePolicy {
      */
     createSimpleBanner() {
         if (!this.options.enableSimpleBanner) return;
-        
+
         const texts = this.texts[this.options.language];
         let message = texts.bannerMessage;
         let additionalLinks = '';
-        
+
         // Customize message and links based on region
         if (this.region?.requiresGDPR) {
             message = texts.bannerMessageGDPR;
             additionalLinks = `
-                <a href="${this.options.privacyPolicyUrl}" target="_blank">${texts.privacyPolicy}</a> | 
+                <a href="${this.options.privacyPolicyUrl}" target="_blank">${texts.privacyPolicy}</a> |
                 <a href="${this.options.cookiePolicyUrl}" target="_blank">${texts.cookiePolicy}</a> |
                 <a href="/pages/user-rights.html" target="_blank">${texts.yourRights}</a>
             `;
         } else if (this.region?.requiresCCPA) {
             message = texts.bannerMessageCCPA;
             additionalLinks = `
-                <a href="${this.options.privacyPolicyUrl}" target="_blank">${texts.privacyPolicy}</a> | 
+                <a href="${this.options.privacyPolicyUrl}" target="_blank">${texts.privacyPolicy}</a> |
                 <a href="/pages/ccpa-rights.html" target="_blank">${texts.caPrivacyRights}</a>
             `;
         } else {
             additionalLinks = `
-                <a href="${this.options.privacyPolicyUrl}" target="_blank">${texts.privacyPolicy}</a> | 
+                <a href="${this.options.privacyPolicyUrl}" target="_blank">${texts.privacyPolicy}</a> |
                 <a href="${this.options.cookiePolicyUrl}" target="_blank">${texts.cookiePolicy}</a>
             `;
         }
-        
+
         this.banner = document.createElement('div');
         this.banner.className = 'damp-cookie-banner';
         this.banner.innerHTML = `
@@ -411,7 +411,7 @@ class DAMPCookiePolicy {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(this.banner);
     }
 
@@ -420,9 +420,9 @@ class DAMPCookiePolicy {
      */
     createDetailedModal() {
         if (!this.options.enableDetailedModal) return;
-        
+
         const texts = this.texts[this.options.language];
-        
+
         this.modal = document.createElement('div');
         this.modal.className = 'damp-cookie-modal';
         this.modal.innerHTML = `
@@ -440,8 +440,8 @@ class DAMPCookiePolicy {
                             <div class="cookie-type ${type.required ? 'required' : ''}" data-type="${key}">
                                 <div class="cookie-type-header">
                                     <label class="cookie-toggle">
-                                        <input type="checkbox" 
-                                               data-type="${key}" 
+                                        <input type="checkbox"
+                                               data-type="${key}"
                                                ${type.required ? 'checked disabled' : ''}
                                                ${this.consentData[key] ? 'checked' : ''}>
                                         <span class="cookie-toggle-slider"></span>
@@ -490,7 +490,7 @@ class DAMPCookiePolicy {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(this.modal);
     }
 
@@ -499,7 +499,7 @@ class DAMPCookiePolicy {
      */
     createSettingsModal() {
         const texts = this.texts[this.options.language];
-        
+
         this.settingsModal = document.createElement('div');
         this.settingsModal.className = 'damp-cookie-settings-modal';
         this.settingsModal.innerHTML = `
@@ -521,8 +521,8 @@ class DAMPCookiePolicy {
                                 ${Object.entries(this.cookieTypes).map(([key, type]) => `
                                     <div class="cookie-preference-item">
                                         <label class="cookie-toggle">
-                                            <input type="checkbox" 
-                                                   data-type="${key}" 
+                                            <input type="checkbox"
+                                                   data-type="${key}"
                                                    ${type.required ? 'checked disabled' : ''}
                                                    ${this.consentData[key] ? 'checked' : ''}>
                                             <span class="cookie-toggle-slider"></span>
@@ -568,7 +568,7 @@ class DAMPCookiePolicy {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(this.settingsModal);
     }
 
@@ -577,15 +577,15 @@ class DAMPCookiePolicy {
      */
     createShowAgainButton() {
         if (!this.options.showAgain) return;
-        
+
         const texts = this.texts[this.options.language];
-        
+
         this.showAgainButton = document.createElement('button');
         this.showAgainButton.className = 'damp-cookie-show-again';
         this.showAgainButton.innerHTML = `🍪 ${texts.settingsButton}`;
         this.showAgainButton.title = texts.managePreferences;
         this.showAgainButton.setAttribute('data-action', 'show-settings');
-        
+
         document.body.appendChild(this.showAgainButton);
     }
 
@@ -632,7 +632,7 @@ class DAMPCookiePolicy {
      */
     handleBannerClick(e) {
         const action = e.target.dataset.action;
-        
+
         switch (action) {
             case 'accept-all':
                 this.acceptAll('banner');
@@ -652,7 +652,7 @@ class DAMPCookiePolicy {
     handleModalClick(e) {
         const action = e.target.dataset.action;
         const expand = e.target.dataset.expand;
-        
+
         if (action) {
             switch (action) {
                 case 'accept-all':
@@ -693,7 +693,7 @@ class DAMPCookiePolicy {
     handleSettingsClick(e) {
         const action = e.target.dataset.action;
         const tab = e.target.dataset.tab;
-        
+
         if (action) {
             switch (action) {
                 case 'close-settings':
@@ -761,11 +761,11 @@ class DAMPCookiePolicy {
             this.hideBanner();
             this.modal.style.display = 'block';
             document.body.classList.add('cookie-modal-open');
-            
+
             setTimeout(() => {
                 this.modal.classList.add('visible');
             }, 10);
-            
+
             // Update checkbox states
             this.updateModalCheckboxes();
         }
@@ -778,7 +778,7 @@ class DAMPCookiePolicy {
         if (this.modal) {
             this.modal.classList.remove('visible');
             document.body.classList.remove('cookie-modal-open');
-            
+
             setTimeout(() => {
                 this.modal.style.display = 'none';
                 if (!this.isConsentGiven) {
@@ -795,11 +795,11 @@ class DAMPCookiePolicy {
         if (this.settingsModal) {
             this.settingsModal.style.display = 'block';
             document.body.classList.add('cookie-modal-open');
-            
+
             setTimeout(() => {
                 this.settingsModal.classList.add('visible');
             }, 10);
-            
+
             // Update checkbox states
             this.updateSettingsCheckboxes();
         }
@@ -812,7 +812,7 @@ class DAMPCookiePolicy {
         if (this.settingsModal) {
             this.settingsModal.classList.remove('visible');
             document.body.classList.remove('cookie-modal-open');
-            
+
             setTimeout(() => {
                 this.settingsModal.style.display = 'none';
             }, 300);
@@ -857,10 +857,10 @@ class DAMPCookiePolicy {
     toggleCookieDetails(type) {
         const details = this.modal.querySelector(`[data-details="${type}"]`);
         const expand = this.modal.querySelector(`[data-expand="${type}"] .expand-icon`);
-        
+
         if (details && expand) {
             const isExpanded = details.classList.contains('expanded');
-            
+
             if (isExpanded) {
                 details.classList.remove('expanded');
                 expand.style.transform = 'rotate(0deg)';
@@ -884,7 +884,7 @@ class DAMPCookiePolicy {
                 tab.classList.remove('active');
             }
         });
-        
+
         // Update tab panes
         const panes = this.settingsModal.querySelectorAll('.cookie-tab-pane');
         panes.forEach(pane => {
@@ -914,13 +914,13 @@ class DAMPCookiePolicy {
         Object.keys(this.cookieTypes).forEach(type => {
             this.consentData[type] = true;
         });
-        
+
         this.consentData.method = method;
         this.saveConsentData();
         this.hideAllModals();
         this.showNotification(this.texts[this.options.language].allAccepted);
         this.showSettingsButton();
-        
+
         this.trackEvent('cookie_consent_accept_all', { method });
     }
 
@@ -931,13 +931,13 @@ class DAMPCookiePolicy {
         Object.keys(this.cookieTypes).forEach(type => {
             this.consentData[type] = this.cookieTypes[type].required;
         });
-        
+
         this.consentData.method = method;
         this.saveConsentData();
         this.hideAllModals();
         this.showNotification(this.texts[this.options.language].essentialAccepted);
         this.showSettingsButton();
-        
+
         this.trackEvent('cookie_consent_essential_only', { method });
     }
 
@@ -950,8 +950,8 @@ class DAMPCookiePolicy {
         this.hideAllModals();
         this.showNotification(this.texts[this.options.language].preferencesUpdated);
         this.showSettingsButton();
-        
-        this.trackEvent('cookie_consent_accept_selected', { 
+
+        this.trackEvent('cookie_consent_accept_selected', {
             method,
             functional: this.consentData.functional,
             analytics: this.consentData.analytics,
@@ -966,13 +966,13 @@ class DAMPCookiePolicy {
         Object.keys(this.cookieTypes).forEach(type => {
             this.consentData[type] = this.cookieTypes[type].required;
         });
-        
+
         this.consentData.method = method;
         this.saveConsentData();
         this.hideAllModals();
         this.showNotification(this.texts[this.options.language].essentialAccepted);
         this.showSettingsButton();
-        
+
         this.trackEvent('cookie_consent_reject_all', { method });
     }
 
@@ -984,7 +984,7 @@ class DAMPCookiePolicy {
         this.saveConsentData();
         this.hideSettings();
         this.showNotification(this.texts[this.options.language].preferencesUpdated);
-        
+
         this.trackEvent('cookie_consent_settings_saved', {
             functional: this.consentData.functional,
             analytics: this.consentData.analytics,
@@ -1026,11 +1026,11 @@ class DAMPCookiePolicy {
             method: null
         };
         this.isConsentGiven = false;
-        
+
         if (this.showAgainButton) {
             this.showAgainButton.style.display = 'none';
         }
-        
+
         if (this.options.autoShow) {
             this.showBanner();
         }
@@ -1048,13 +1048,13 @@ class DAMPCookiePolicy {
                 <span class="notification-message">${message}</span>
             </div>
         `;
-        
+
         document.body.appendChild(notification);
-        
+
         setTimeout(() => {
             notification.classList.add('show');
         }, 100);
-        
+
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => {
@@ -1114,12 +1114,12 @@ class DAMPCookiePolicy {
      */
     addStyles() {
         if (document.getElementById('damp-cookie-styles')) return;
-        
+
         const style = document.createElement('style');
         style.id = 'damp-cookie-styles';
         style.textContent = `
             /* DAMP Cookie Policy Styles - Comprehensive */
-            
+
             /* Banner Styles */
             .damp-cookie-banner {
                 position: fixed;
@@ -1806,13 +1806,13 @@ class DAMPCookiePolicy {
                 .cookie-type {
                     border-color: #000;
                 }
-                
+
                 .cookie-btn {
                     border: 2px solid currentColor;
                 }
             }
         `;
-        
+
         document.head.appendChild(style);
     }
 }
@@ -1821,24 +1821,24 @@ class DAMPCookiePolicy {
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize the comprehensive cookie policy system
     window.dampCookiePolicy = new DAMPCookiePolicy();
-    
+
     // Legacy compatibility
     window.simpleCookieConsent = window.dampCookiePolicy;
     window.dampCookieConsent = window.dampCookiePolicy;
-    
+
     // Global convenience functions
     window.acceptCookies = function() {
         if (window.dampCookiePolicy) {
             window.dampCookiePolicy.acceptAll('legacy_function');
         }
     };
-    
+
     window.showCookieSettings = function() {
         if (window.dampCookiePolicy) {
             window.dampCookiePolicy.showSettingsModal();
         }
     };
-    
+
     if (window.dampCookiePolicy.options.debug) {
         console.log('🍪 DAMP Cookie Policy System Ready', {
             version: '3.0.0',
@@ -1851,4 +1851,4 @@ document.addEventListener('DOMContentLoaded', function() {
 // Export for module use
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DAMPCookiePolicy;
-} 
+}

@@ -12,11 +12,11 @@ class DAMPMonitoring {
             sampleRate: 1.0,
             endpoint: '/api/monitoring'
         };
-        
+
         this.errors = [];
         this.performance = {};
         this.userActions = [];
-        
+
         this.init();
     }
 
@@ -25,13 +25,13 @@ class DAMPMonitoring {
         this.setupPerformanceTracking();
         this.setupUserTracking();
         this.startReporting();
-        
+
         console.log('🔍 DAMP Monitoring initialized');
     }
 
     setupErrorTracking() {
         if (!this.config.enableErrorTracking) return;
-        
+
         window.addEventListener('error', (event) => {
             this.trackError({
                 type: 'javascript',
@@ -59,12 +59,12 @@ class DAMPMonitoring {
 
     trackError(error) {
         this.errors.push(error);
-        
+
         // Immediate reporting for critical errors
         if (this.isCriticalError(error)) {
             this.reportImmediately({ errors: [error] });
         }
-        
+
         console.error('Error tracked:', error);
     }
 
@@ -75,8 +75,8 @@ class DAMPMonitoring {
             /order/i,
             /security/i
         ];
-        
-        return criticalPatterns.some(pattern => 
+
+        return criticalPatterns.some(pattern =>
             pattern.test(error.message) || pattern.test(error.filename)
         );
     }
@@ -124,4 +124,4 @@ window.dampMonitoring = new DAMPMonitoring();
 // Export for testing
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DAMPMonitoring;
-} 
+}

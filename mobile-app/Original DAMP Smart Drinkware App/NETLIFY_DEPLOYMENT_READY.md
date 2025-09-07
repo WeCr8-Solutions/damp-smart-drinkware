@@ -44,7 +44,7 @@ Go to **Site Settings > Environment Variables** and add these:
 #### **Required Firebase Variables:**
 ```
 EXPO_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
-EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project-id.firebaseapp.com  
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project-id.firebaseapp.com
 EXPO_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
 EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project-id.appspot.com
 EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789
@@ -81,7 +81,7 @@ EAS CLI is configured and ready:
 eas build --platform ios --profile development
 eas build --platform android --profile development
 
-# Production builds  
+# Production builds
 eas build --platform ios --profile production
 eas build --platform android --profile production
 ```
@@ -100,7 +100,7 @@ eas build --platform android --profile production
 🌐 WEB APP (Primary Focus)
 ├── 🔥 Firebase (Owner: zach@wecr8.info)
 │   ├── Authentication
-│   ├── Firestore Database  
+│   ├── Firestore Database
 │   ├── Cloud Functions
 │   └── Storage
 ├── 🌐 Netlify Deployment
@@ -124,7 +124,7 @@ eas build --platform android --profile production
 
 Your DAMP Smart Drinkware web app is now:
 - ✅ **Workflow-free** (no blocking GitHub Actions)
-- ✅ **PWA-disabled** (no download prompts) 
+- ✅ **PWA-disabled** (no download prompts)
 - ✅ **Secure** (environment variables in Netlify Dashboard)
 - ✅ **Firebase-only** (clean, single database architecture)
 - ✅ **Production-ready** (successful build verification)

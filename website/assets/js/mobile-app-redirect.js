@@ -20,7 +20,7 @@
         const isIOS = /iphone|ipad|ipod/.test(userAgent);
         const isAndroid = /android/.test(userAgent);
         const isMobile = /mobile|tablet|iphone|ipad|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile/.test(userAgent);
-        
+
         return {
             isIOS,
             isAndroid,
@@ -32,7 +32,7 @@
     // Show mobile app install prompt instead of PWA
     function showMobileAppPrompt() {
         const platform = detectPlatform();
-        
+
         // Create install button
         const installBtn = document.createElement('button');
         installBtn.innerHTML = '📱 Get DAMP App';
@@ -59,7 +59,7 @@
         installBtn.onclick = () => {
             // Track analytics
             if ('gtag' in window) {
-                gtag('event', 'mobile_app_redirect', { 
+                gtag('event', 'mobile_app_redirect', {
                     event_category: 'engagement',
                     platform: platform.isIOS ? 'ios' : platform.isAndroid ? 'android' : 'desktop'
                 });
@@ -73,7 +73,7 @@
                 // On desktop, show options or go to mobile app
                 showAppDownloadOptions();
             }
-            
+
             installBtn.remove();
         };
 
@@ -109,7 +109,7 @@
     // Show app download options for desktop users
     function showAppDownloadOptions() {
         const platform = detectPlatform();
-        
+
         // Create modal overlay
         const overlay = document.createElement('div');
         overlay.style.cssText = `
@@ -270,10 +270,10 @@
     function init() {
         addStyles();
         overridePWABehavior();
-        
+
         // Show prompt after 3 seconds if not already shown
         setTimeout(() => {
-            if (!document.querySelector('button[style*="Install App"]') && 
+            if (!document.querySelector('button[style*="Install App"]') &&
                 !document.querySelector('button[style*="Get DAMP App"]')) {
                 showMobileAppPrompt();
             }

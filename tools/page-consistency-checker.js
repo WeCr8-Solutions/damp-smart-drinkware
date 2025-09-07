@@ -24,14 +24,14 @@ class PageConsistencyChecker {
      */
     async checkAllPages() {
         console.log('🔍 Starting page consistency check...\n');
-        
+
         // Get all HTML files
         const htmlFiles = this.getHtmlFiles();
-        
+
         for (const file of htmlFiles) {
             await this.checkPage(file);
         }
-        
+
         this.generateReport();
         return this.issues;
     }
@@ -41,17 +41,17 @@ class PageConsistencyChecker {
      */
     getHtmlFiles() {
         const files = [];
-        
+
         // Check main directory
         const mainFiles = fs.readdirSync(this.mainDir)
             .filter(file => file.endsWith('.html'))
             .map(file => path.join(this.mainDir, file));
-            
+
         // Check pages directory
         const pageFiles = fs.readdirSync(this.pagesDir)
             .filter(file => file.endsWith('.html'))
             .map(file => path.join(this.pagesDir, file));
-            
+
         return [...mainFiles, ...pageFiles];
     }
 
@@ -61,41 +61,41 @@ class PageConsistencyChecker {
     async checkPage(filePath) {
         const fileName = path.basename(filePath);
         const content = fs.readFileSync(filePath, 'utf8');
-        
+
         console.log(`Checking ${fileName}...`);
-        
+
         const pageIssues = [];
-        
+
         // Check hamburger navigation
         if (!this.hasHamburgerNav(content)) {
             pageIssues.push('Missing hamburger navigation');
         }
-        
+
         // Check Google Analytics
         if (!this.hasGoogleAnalytics(content)) {
             pageIssues.push('Missing Google Analytics');
         }
-        
+
         // Check mobile menu functionality
         if (!this.hasMobileMenuJS(content)) {
             pageIssues.push('Missing mobile menu JavaScript');
         }
-        
+
         // Check responsive design
         if (!this.hasResponsiveDesign(content)) {
             pageIssues.push('Missing responsive design elements');
         }
-        
+
         // Check safe area CSS
         if (!this.hasSafeAreaCSS(content)) {
             pageIssues.push('Missing safe area CSS variables');
         }
-        
+
         // Check accessibility features
         if (!this.hasAccessibilityFeatures(content)) {
             pageIssues.push('Missing accessibility features');
         }
-        
+
         if (pageIssues.length > 0) {
             this.issues.push({
                 file: fileName,
@@ -103,7 +103,7 @@ class PageConsistencyChecker {
                 issues: pageIssues
             });
         }
-        
+
         console.log(`  ✓ ${pageIssues.length} issues found`);
     }
 
@@ -111,7 +111,7 @@ class PageConsistencyChecker {
      * Check if page has hamburger navigation
      */
     hasHamburgerNav(content) {
-        return content.includes('hamburger') && 
+        return content.includes('hamburger') &&
                content.includes('mobile-menu') &&
                content.includes('toggleMobileMenu');
     }
@@ -120,7 +120,7 @@ class PageConsistencyChecker {
      * Check if page has Google Analytics
      */
     hasGoogleAnalytics(content) {
-        return content.includes('gtag') || 
+        return content.includes('gtag') ||
                content.includes('google-analytics');
     }
 
@@ -241,7 +241,7 @@ class PageConsistencyChecker {
             .hamburger {
                 display: flex;
             }
-            
+
             .nav-links {
                 display: none;
             }
@@ -252,7 +252,7 @@ class PageConsistencyChecker {
             <span></span>
             <span></span>
         </div>
-        
+
         <div class="mobile-menu" id="mobile-menu">
             <button class="mobile-close" onclick="toggleMobileMenu()">×</button>
             <a href="/#features">Features</a>
@@ -266,10 +266,10 @@ class PageConsistencyChecker {
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             const hamburger = document.querySelector('.hamburger');
-            
+
             menu.classList.toggle('active');
             hamburger.classList.toggle('active');
-            
+
             // Prevent body scroll when menu is open
             document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
         }
@@ -278,9 +278,9 @@ class PageConsistencyChecker {
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('mobile-menu');
             const hamburger = document.querySelector('.hamburger');
-            
-            if (menu.classList.contains('active') && 
-                !menu.contains(event.target) && 
+
+            if (menu.classList.contains('active') &&
+                !menu.contains(event.target) &&
                 !hamburger.contains(event.target)) {
                 toggleMobileMenu();
             }
@@ -304,9 +304,9 @@ class PageConsistencyChecker {
     async autoFixPage(filePath) {
         const content = fs.readFileSync(filePath, 'utf8');
         let updatedContent = content;
-        
+
         const template = this.generateHamburgerNavTemplate();
-        
+
         // Add hamburger navigation if missing
         if (!this.hasHamburgerNav(content)) {
             // Add to nav-container (after nav-links)
@@ -316,14 +316,14 @@ class PageConsistencyChecker {
                 ${template.html}
                 </nav>`
             );
-            
+
             // Add CSS
             updatedContent = updatedContent.replace(
                 /<\/style>/,
                 `${template.css}
                 </style>`
             );
-            
+
             // Add JavaScript
             updatedContent = updatedContent.replace(
                 /<\/body>/,
@@ -333,10 +333,10 @@ class PageConsistencyChecker {
                 </body>`
             );
         }
-        
+
         // Write updated content
         fs.writeFileSync(filePath, updatedContent);
-        
+
         console.log(`✅ Auto-fixed ${path.basename(filePath)}`);
     }
 
@@ -346,14 +346,14 @@ class PageConsistencyChecker {
     generateReport() {
         console.log('\n📊 CONSISTENCY CHECK REPORT');
         console.log('=' .repeat(50));
-        
+
         if (this.issues.length === 0) {
             console.log('✅ All pages are consistent!');
             return;
         }
-        
+
         console.log(`Found ${this.issues.length} pages with issues:\n`);
-        
+
         this.issues.forEach((issue, index) => {
             console.log(`${index + 1}. ${issue.file}`);
             console.log(`   Path: ${issue.path}`);
@@ -361,7 +361,7 @@ class PageConsistencyChecker {
             issue.issues.forEach(i => console.log(`     - ${i}`));
             console.log('');
         });
-        
+
         console.log('🔧 RECOMMENDED ACTIONS:');
         console.log('1. Run auto-fix for pages with missing hamburger navigation');
         console.log('2. Manually review and test all fixes');
@@ -374,26 +374,26 @@ class PageConsistencyChecker {
      */
     updateInventory(fileName, status = 'updated') {
         const inventory = pageInventory;
-        
+
         // Update the appropriate page entry
         for (const pageKey in inventory.pages) {
             if (pageKey.includes(fileName) || fileName.includes(pageKey)) {
                 inventory.pages[pageKey].status = status;
                 inventory.pages[pageKey].last_updated = new Date().toISOString().split('T')[0];
-                
+
                 // Update components
                 if (inventory.pages[pageKey].components) {
                     inventory.pages[pageKey].components.navigation = {
                         desktop: '✓ implemented',
                         mobile: '✓ implemented'
                     };
-                    
+
                     // Remove issues
                     delete inventory.pages[pageKey].issues;
                 }
             }
         }
-        
+
         // Write updated inventory
         fs.writeFileSync(
             path.join(__dirname, '../website/pages/page-inventory.json'),
@@ -406,22 +406,22 @@ class PageConsistencyChecker {
 async function main() {
     const checker = new PageConsistencyChecker();
     const args = process.argv.slice(2);
-    
+
     if (args.includes('--check')) {
         await checker.checkAllPages();
     } else if (args.includes('--fix')) {
         const issues = await checker.checkAllPages();
-        
+
         if (issues.length > 0) {
             console.log('\n🔧 Starting auto-fix process...');
-            
+
             for (const issue of issues) {
                 if (issue.issues.includes('Missing hamburger navigation')) {
                     await checker.autoFixPage(issue.path);
                     checker.updateInventory(issue.file);
                 }
             }
-            
+
             console.log('\n✅ Auto-fix complete! Please test all pages.');
         }
     } else {
@@ -443,4 +443,4 @@ if (require.main === module) {
     main().catch(console.error);
 }
 
-module.exports = PageConsistencyChecker; 
+module.exports = PageConsistencyChecker;

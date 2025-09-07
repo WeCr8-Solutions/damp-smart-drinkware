@@ -1,6 +1,6 @@
 /**
  * Settings Section Component
- * 
+ *
  * Reusable component for grouping related settings with a title and card-based UI
  */
 
@@ -29,7 +29,7 @@ interface SettingsSectionProps {
 
 export default function SettingsSection({ title, items }: SettingsSectionProps) {
   if (items.length === 0) return null;
-  
+
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>

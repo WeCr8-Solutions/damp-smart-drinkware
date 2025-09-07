@@ -36,7 +36,7 @@ export const getPlatformConfig = () => {
       return { ...firebaseConfig, ...androidConfig };
     }
   }
-  
+
   // Default to web config
   return firebaseConfig;
 };
@@ -44,7 +44,7 @@ export const getPlatformConfig = () => {
 // Environment configuration
 export const getEnvironmentConfig = () => {
   const baseConfig = getPlatformConfig();
-  
+
   // Development environment
   if (__DEV__ || process.env.NODE_ENV === 'development') {
     return {
@@ -59,7 +59,7 @@ export const getEnvironmentConfig = () => {
       }
     };
   }
-  
+
   // Production environment
   return {
     ...baseConfig,
@@ -67,4 +67,4 @@ export const getEnvironmentConfig = () => {
   };
 };
 
-export default firebaseConfig; 
+export default firebaseConfig;

@@ -1,6 +1,6 @@
 /**
  * Zone Management Modal
- * 
+ *
  * Comprehensive zone management interface with creation, editing, and monitoring
  */
 
@@ -90,7 +90,7 @@ export default function ZoneManagementModal({
     setCreating(true);
     try {
       const result = await zoneManager.createZone(newZone as ZoneInput, user.id);
-      
+
       if (result.success) {
         setNewZone({
           name: '',
@@ -128,7 +128,7 @@ export default function ZoneManagementModal({
           style: 'destructive',
           onPress: async () => {
             if (!user) return;
-            
+
             const result = await zoneManager.deleteZone(zone.id, user.id);
             if (result.success) {
               loadZones();
@@ -182,7 +182,7 @@ export default function ZoneManagementModal({
     const now = new Date();
     const diff = now.getTime() - timestamp.getTime();
     const minutes = Math.floor(diff / 60000);
-    
+
     if (minutes < 1) return 'Just now';
     if (minutes < 60) return `${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
@@ -252,7 +252,7 @@ export default function ZoneManagementModal({
               {recentEvents.slice(0, 3).map((event, index) => {
                 const zone = zones.find(z => z.id === event.zoneId);
                 const isLast = index === Math.min(recentEvents.length - 1, 2);
-                
+
                 return (
                   <View
                     key={`${event.zoneId}-${event.timestamp.getTime()}`}
@@ -273,7 +273,7 @@ export default function ZoneManagementModal({
                       </View>
                       <View style={settingsStyles.settingText}>
                         <Text style={settingsStyles.settingTitle}>
-                          {event.type === 'enter' ? 'Zone Entry' : 
+                          {event.type === 'enter' ? 'Zone Entry' :
                            event.type === 'exit' ? 'Zone Exit' : 'Zone Event'}
                         </Text>
                         <Text style={settingsStyles.settingSubtitle}>
@@ -341,9 +341,9 @@ export default function ZoneManagementModal({
                 <TextInput
                   style={settingsStyles.textInput}
                   value={newZone.radius?.toString()}
-                  onChangeText={(text) => setNewZone(prev => ({ 
-                    ...prev, 
-                    radius: parseInt(text) || 50 
+                  onChangeText={(text) => setNewZone(prev => ({
+                    ...prev,
+                    radius: parseInt(text) || 50
                   }))}
                   placeholder="50"
                   keyboardType="numeric"
@@ -412,7 +412,7 @@ export default function ZoneManagementModal({
             <View style={settingsStyles.sectionContent}>
               {zones.map((zone, index) => {
                 const isLast = index === zones.length - 1;
-                
+
                 return (
                   <View
                     key={zone.id}

@@ -14,21 +14,21 @@ console.log('==================================================\n');
  */
 function testAuthenticationLogic() {
   console.log('🔐 Testing Authentication Function Logic...');
-  
+
   try {
     // Test 1: User Profile Creation Logic
     const createUserProfile = (user) => {
       if (!user.uid || !user.email) {
         throw new Error('Missing required user data');
       }
-      
+
       return {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName || null,
         emailVerified: user.emailVerified || false,
         createdAt: new Date().toISOString(),
-        
+
         // Authentication preferences
         preferences: {
           notifications: {
@@ -52,7 +52,7 @@ function testAuthenticationLogic() {
             activityVisibility: 'friends',
           }
         },
-        
+
         // User statistics
         stats: {
           votesCount: 0,
@@ -64,7 +64,7 @@ function testAuthenticationLogic() {
             mobile: { appOpens: 0 }
           }
         },
-        
+
         // Subscription info
         subscription: {
           plan: 'free',
@@ -72,7 +72,7 @@ function testAuthenticationLogic() {
           stripeCustomerId: null,
           paymentMethods: [],
         },
-        
+
         // Security settings
         security: {
           lastPasswordChange: new Date().toISOString(),
@@ -101,15 +101,15 @@ function testAuthenticationLogic() {
     const validateUserAuth = (user) => {
       const requiredFields = ['uid', 'email'];
       const missingFields = requiredFields.filter(field => !user[field]);
-      
+
       if (missingFields.length > 0) {
         return { valid: false, errors: [`Missing fields: ${missingFields.join(', ')}`] };
       }
-      
+
       if (!user.email.includes('@')) {
         return { valid: false, errors: ['Invalid email format'] };
       }
-      
+
       return { valid: true, errors: [] };
     };
 
@@ -121,10 +121,10 @@ function testAuthenticationLogic() {
     const checkUserPermissions = (user, requiredRole = 'user') => {
       const userRole = user.role || 'user';
       const roleHierarchy = ['user', 'premium', 'admin'];
-      
+
       const userRoleIndex = roleHierarchy.indexOf(userRole);
       const requiredRoleIndex = roleHierarchy.indexOf(requiredRole);
-      
+
       return userRoleIndex >= requiredRoleIndex;
     };
 
@@ -136,7 +136,7 @@ function testAuthenticationLogic() {
     console.error('❌ Authentication logic test failed:', error.message);
     return false;
   }
-  
+
   return true;
 }
 
@@ -145,7 +145,7 @@ function testAuthenticationLogic() {
  */
 function testStripeIntegrationLogic() {
   console.log('💳 Testing Stripe Integration Logic...');
-  
+
   try {
     // Test 1: Subscription Plans Configuration
     const subscriptionPlans = {
@@ -161,7 +161,7 @@ function testStripeIntegrationLogic() {
       },
       premium: {
         id: 'premium',
-        name: 'Premium Plan', 
+        name: 'Premium Plan',
         price: 9.99,
         currency: 'usd',
         interval: 'month',
@@ -173,7 +173,7 @@ function testStripeIntegrationLogic() {
         id: 'premium_yearly',
         name: 'Premium Yearly',
         price: 99.99,
-        currency: 'usd', 
+        currency: 'usd',
         interval: 'year',
         stripePriceId: 'price_premium_yearly',
         features: ['All premium features', '2 months free', 'Unlimited devices'],
@@ -190,12 +190,12 @@ function testStripeIntegrationLogic() {
       if (!userId || !planId || !customerId) {
         throw new Error('Missing required subscription data');
       }
-      
+
       const plan = subscriptionPlans[planId];
       if (!plan) {
         throw new Error(`Invalid plan ID: ${planId}`);
       }
-      
+
       return {
         subscriptionId: `sub_${Date.now()}`,
         userId,
@@ -222,7 +222,7 @@ function testStripeIntegrationLogic() {
     const processWebhookEvent = (eventType, eventData) => {
       const supportedEvents = [
         'customer.subscription.created',
-        'customer.subscription.updated', 
+        'customer.subscription.updated',
         'customer.subscription.deleted',
         'invoice.payment_succeeded',
         'invoice.payment_failed',
@@ -231,8 +231,8 @@ function testStripeIntegrationLogic() {
       ];
 
       if (!supportedEvents.includes(eventType)) {
-        return { 
-          processed: false, 
+        return {
+          processed: false,
           reason: `Unsupported event type: ${eventType}`,
           status: 'ignored'
         };
@@ -251,8 +251,8 @@ function testStripeIntegrationLogic() {
       return processedEvent;
     };
 
-    const webhookResult = processWebhookEvent('customer.subscription.created', { 
-      subscription: testSubscription 
+    const webhookResult = processWebhookEvent('customer.subscription.created', {
+      subscription: testSubscription
     });
     console.log('✅ Webhook processing logic works');
     console.log(`   - Event processed: ${webhookResult.processed}`);
@@ -262,15 +262,15 @@ function testStripeIntegrationLogic() {
     const validatePaymentMethod = (paymentMethod) => {
       const requiredFields = ['id', 'type', 'last4'];
       const missingFields = requiredFields.filter(field => !paymentMethod[field]);
-      
+
       if (missingFields.length > 0) {
         return { valid: false, errors: [`Missing fields: ${missingFields.join(', ')}`] };
       }
-      
+
       if (paymentMethod.type === 'card' && paymentMethod.last4.length !== 4) {
         return { valid: false, errors: ['Invalid last4 format'] };
       }
-      
+
       return { valid: true, errors: [] };
     };
 
@@ -291,7 +291,7 @@ function testStripeIntegrationLogic() {
     console.error('❌ Stripe integration logic test failed:', error.message);
     return false;
   }
-  
+
   return true;
 }
 
@@ -300,24 +300,24 @@ function testStripeIntegrationLogic() {
  */
 function testDeviceManagementLogic() {
   console.log('📱 Testing Device Management Logic...');
-  
+
   try {
     // Test 1: Device Registration Logic
     const registerDevice = (deviceId, deviceType, userId, macAddress) => {
       const validTypes = ['handle', 'bottom', 'sleeve', 'bottle'];
-      
+
       if (!deviceId || !deviceType || !userId) {
         throw new Error('Missing required device data');
       }
-      
+
       if (!validTypes.includes(deviceType)) {
         throw new Error(`Invalid device type. Must be one of: ${validTypes.join(', ')}`);
       }
-      
+
       if (macAddress && !/^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/i.test(macAddress)) {
         throw new Error('Invalid MAC address format');
       }
-      
+
       return {
         deviceId,
         deviceType,
@@ -352,7 +352,7 @@ function testDeviceManagementLogic() {
     const updateDeviceStatus = (device, updates) => {
       const allowedUpdates = ['batteryLevel', 'location', 'temperature', 'isConnected', 'lastSeen'];
       const validUpdates = {};
-      
+
       for (const [key, value] of Object.entries(updates)) {
         if (allowedUpdates.includes(key)) {
           if (key === 'batteryLevel' && (value < 0 || value > 100)) {
@@ -361,7 +361,7 @@ function testDeviceManagementLogic() {
           validUpdates[key] = value;
         }
       }
-      
+
       return {
         ...device,
         ...validUpdates,
@@ -374,7 +374,7 @@ function testDeviceManagementLogic() {
       temperature: 68.5,
       isConnected: true
     });
-    
+
     console.log('✅ Device status update logic works');
     console.log(`   - Battery updated to: ${updatedDevice.batteryLevel}%`);
     console.log(`   - Temperature: ${updatedDevice.temperature}°F`);
@@ -389,7 +389,7 @@ function testDeviceManagementLogic() {
           severity: device.batteryLevel <= 10 ? 'critical' : 'warning'
         };
       }
-      
+
       return { alertRequired: false };
     };
 
@@ -403,7 +403,7 @@ function testDeviceManagementLogic() {
     console.error('❌ Device management logic test failed:', error.message);
     return false;
   }
-  
+
   return true;
 }
 
@@ -412,19 +412,19 @@ function testDeviceManagementLogic() {
  */
 function testVotingSystemLogic() {
   console.log('🗳️ Testing Voting System Logic...');
-  
+
   try {
     // Test 1: Vote Casting Logic
     const castVote = (productId, userId, voteType = 'upvote') => {
       if (!productId) {
         throw new Error('Product ID is required');
       }
-      
+
       const validVoteTypes = ['upvote', 'downvote'];
       if (!validVoteTypes.includes(voteType)) {
         throw new Error(`Invalid vote type. Must be: ${validVoteTypes.join(' or ')}`);
       }
-      
+
       return {
         voteId: `${productId}_${userId || 'anonymous'}_${Date.now()}`,
         productId,
@@ -446,11 +446,11 @@ function testVotingSystemLogic() {
       if (!userId) {
         return { isDuplicate: false }; // Allow anonymous votes
       }
-      
-      const existingVote = existingVotes.find(vote => 
+
+      const existingVote = existingVotes.find(vote =>
         vote.productId === productId && vote.userId === userId
       );
-      
+
       return {
         isDuplicate: !!existingVote,
         existingVote: existingVote || null
@@ -465,7 +465,7 @@ function testVotingSystemLogic() {
     // Test 3: Vote Counting Logic
     const countVotes = (votes, productId) => {
       const productVotes = votes.filter(vote => vote.productId === productId);
-      
+
       return {
         total: productVotes.length,
         upvotes: productVotes.filter(v => v.voteType === 'upvote').length,
@@ -484,7 +484,7 @@ function testVotingSystemLogic() {
     console.error('❌ Voting system logic test failed:', error.message);
     return false;
   }
-  
+
   return true;
 }
 
@@ -493,19 +493,19 @@ function testVotingSystemLogic() {
  */
 function testNotificationLogic() {
   console.log('🔔 Testing Notification System Logic...');
-  
+
   try {
     // Test 1: Notification Creation Logic
     const createNotification = (userId, title, body, type = 'general', data = {}) => {
       if (!userId || !title || !body) {
         throw new Error('Missing required notification data');
       }
-      
+
       const validTypes = ['general', 'battery_alert', 'device_status', 'subscription', 'marketing'];
       if (!validTypes.includes(type)) {
         throw new Error(`Invalid notification type: ${type}`);
       }
-      
+
       return {
         notificationId: `notif_${Date.now()}`,
         userId,
@@ -526,7 +526,7 @@ function testNotificationLogic() {
       'battery_alert',
       { deviceId: 'device-123', batteryLevel: 15 }
     );
-    
+
     console.log('✅ Notification creation logic works');
     console.log(`   - Title: ${testNotification.title}`);
     console.log(`   - Type: ${testNotification.type}`);
@@ -564,11 +564,11 @@ function testNotificationLogic() {
       if (!token || typeof token !== 'string') {
         return { valid: false, error: 'Token must be a non-empty string' };
       }
-      
+
       if (token.length < 10) {
         return { valid: false, error: 'Token too short' };
       }
-      
+
       return { valid: true };
     };
 
@@ -580,7 +580,7 @@ function testNotificationLogic() {
     console.error('❌ Notification logic test failed:', error.message);
     return false;
   }
-  
+
   return true;
 }
 
@@ -589,7 +589,7 @@ function testNotificationLogic() {
  */
 function runFunctionValidation() {
   console.log('🎬 Starting function logic validation...\n');
-  
+
   const results = {
     authentication: false,
     stripeIntegration: false,
@@ -597,27 +597,27 @@ function runFunctionValidation() {
     votingSystem: false,
     notifications: false
   };
-  
+
   try {
     results.authentication = testAuthenticationLogic();
     console.log();
-    
+
     results.stripeIntegration = testStripeIntegrationLogic();
     console.log();
-    
+
     results.deviceManagement = testDeviceManagementLogic();
     console.log();
-    
+
     results.votingSystem = testVotingSystemLogic();
     console.log();
-    
+
     results.notifications = testNotificationLogic();
     console.log();
-    
+
     // Summary
     const passed = Object.values(results).filter(r => r === true).length;
     const total = Object.keys(results).length;
-    
+
     console.log('🎯 Function Logic Validation Results:');
     console.log('=====================================');
     console.log(`✅ Authentication Functions: ${results.authentication ? 'PASS' : 'FAIL'}`);
@@ -627,7 +627,7 @@ function runFunctionValidation() {
     console.log(`✅ Notification System: ${results.notifications ? 'PASS' : 'FAIL'}`);
     console.log('=====================================');
     console.log(`🏆 Overall Score: ${passed}/${total} tests passed`);
-    
+
     if (passed === total) {
       console.log('🎉 All function logic tests PASSED!');
       console.log('✅ Your authentication and Stripe functions are ready for production');
@@ -635,9 +635,9 @@ function runFunctionValidation() {
     } else {
       console.log('⚠️  Some tests failed - please review the errors above');
     }
-    
+
     return passed === total;
-    
+
   } catch (error) {
     console.error('💥 Function validation failed:', error);
     return false;

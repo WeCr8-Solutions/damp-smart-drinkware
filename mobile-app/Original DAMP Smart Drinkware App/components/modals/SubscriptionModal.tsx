@@ -39,7 +39,7 @@ export default function SubscriptionModal({
     if (visible) {
       fetchUserSubscription();
     }
-    
+
     return () => {
       mounted.current = false;
     };
@@ -48,7 +48,7 @@ export default function SubscriptionModal({
   const fetchUserSubscription = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) {
         if (mounted.current) {
           setError('Please log in to view subscription information');
@@ -91,7 +91,7 @@ export default function SubscriptionModal({
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (!session?.access_token) {
         Alert.alert('Authentication Required', 'Please log in to subscribe');
         return;

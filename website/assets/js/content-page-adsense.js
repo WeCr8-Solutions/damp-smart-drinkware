@@ -23,7 +23,7 @@
     function isContentPage() {
         const currentPath = window.location.pathname.toLowerCase();
         return CONTENT_PAGE_PATTERNS.some(pattern => currentPath.includes(pattern)) ||
-               (currentPath.includes('/pages/') && !currentPath.includes('cart') && 
+               (currentPath.includes('/pages/') && !currentPath.includes('cart') &&
                 !currentPath.includes('checkout') && !currentPath.includes('-v1.0'));
     }
 
@@ -41,7 +41,7 @@
             script.async = true;
             script.crossOrigin = 'anonymous';
             script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`;
-            
+
             script.onload = () => {
                 if (!document.querySelector('meta[name="google-adsense-account"]')) {
                     const meta = document.createElement('meta');
@@ -51,7 +51,7 @@
                 }
                 resolve();
             };
-            
+
             script.onerror = () => reject(new Error('Failed to load AdSense'));
             document.head.appendChild(script);
         });
@@ -75,7 +75,7 @@
     function createContentAd(format = 'rectangle', className = '', position = 'center') {
         const adContainer = document.createElement('div');
         adContainer.className = `damp-ad-container ${className}`;
-        
+
         const baseStyles = `
             margin: 60px auto;
             text-align: center;
@@ -131,7 +131,7 @@
         adUnit.style.display = 'block';
         adUnit.dataset.adClient = ADSENSE_CLIENT_ID;
         adUnit.dataset.fullWidthResponsive = 'true';
-        
+
         // Format-specific settings
         if (format === 'banner' && window.innerWidth >= 768) {
             adUnit.dataset.adFormat = '728x90';
@@ -182,19 +182,19 @@
         if (!contentArea) return;
 
         const sections = contentArea.querySelectorAll('section, .section');
-        
+
         if (sections.length >= 2) {
             // Place ad after second section (mid-content)
             const midSection = sections[1];
             const format = window.innerWidth < 768 ? 'mobile' : 'rectangle';
             const midAd = createContentAd(format, 'damp-ad-mid-content', 'inline');
-            
+
             if (midSection.nextSibling) {
                 midSection.parentNode.insertBefore(midAd, midSection.nextSibling);
             } else {
                 midSection.parentNode.appendChild(midAd);
             }
-            
+
             console.log('📢 Content page mid-content ad placed');
         }
 
@@ -203,13 +203,13 @@
             const lastSection = sections[sections.length - 1];
             const bannerFormat = window.innerWidth < 768 ? 'mobile' : 'banner';
             const footerAd = createContentAd(bannerFormat, 'damp-ad-before-footer', 'center');
-            
+
             if (lastSection.nextSibling) {
                 lastSection.parentNode.insertBefore(footerAd, lastSection.nextSibling);
             } else {
                 lastSection.parentNode.appendChild(footerAd);
             }
-            
+
             console.log('📢 Content page footer ad placed');
         }
 
@@ -231,10 +231,10 @@
 
         try {
             console.log('🔄 Initializing content page AdSense...');
-            
+
             loadAdSenseStyles();
             await loadAdSenseScript();
-            
+
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(placeContentAds, 800);
@@ -242,9 +242,9 @@
             } else {
                 setTimeout(placeContentAds, 800);
             }
-            
+
             console.log('✅ Content page AdSense initialized');
-            
+
         } catch (error) {
             console.error('❌ Content page AdSense failed:', error);
         }

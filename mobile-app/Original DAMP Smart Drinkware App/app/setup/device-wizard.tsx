@@ -254,7 +254,7 @@ export default function DeviceSetupWizard() {
         <Text style={styles.stepDescription}>
           To provide the best experience, we need these permissions:
         </Text>
-        
+
         <View style={styles.permissionsList}>
           <TouchableOpacity
             style={[styles.permissionItem, permissionsGranted.bluetooth && styles.permissionGranted]}
@@ -302,7 +302,7 @@ export default function DeviceSetupWizard() {
         <Text style={styles.stepDescription}>
           Select the type of DAMP device you're setting up:
         </Text>
-        
+
         <View style={styles.deviceTypeGrid}>
           {deviceTypes.map((device) => (
             <TouchableOpacity
@@ -340,7 +340,7 @@ export default function DeviceSetupWizard() {
             Make sure your device is powered on and within range
           </Text>
         </View>
-        
+
         <View style={styles.deviceFound}>
           <CheckCircle size={24} color="#4CAF50" />
           <Text style={styles.deviceFoundText}>DAMP Device Found!</Text>
@@ -358,7 +358,7 @@ export default function DeviceSetupWizard() {
         <Text style={styles.stepDescription}>
           Give your device a name and choose where you'll use it:
         </Text>
-        
+
         <View style={styles.configSection}>
           <Text style={styles.configLabel}>Device Name</Text>
           <View style={styles.nameInput}>
@@ -399,12 +399,12 @@ export default function DeviceSetupWizard() {
         <View style={styles.notificationIcon}>
           <Bell size={48} color="#0277BD" />
         </View>
-        
+
         <Text style={styles.notificationTitle}>Stay Hydrated!</Text>
         <Text style={styles.notificationText}>
           Get gentle reminders to drink water and track your hydration goals.
         </Text>
-        
+
         <View style={styles.notificationOptions}>
           <View style={styles.notificationOption}>
             <Text style={styles.notificationOptionTitle}>Hydration Reminders</Text>
@@ -412,14 +412,14 @@ export default function DeviceSetupWizard() {
               Smart reminders based on your drinking patterns
             </Text>
           </View>
-          
+
           <View style={styles.notificationOption}>
             <Text style={styles.notificationOptionTitle}>Device Status</Text>
             <Text style={styles.notificationOptionSubtitle}>
               Battery alerts and connection status
             </Text>
           </View>
-          
+
           <View style={styles.notificationOption}>
             <Text style={styles.notificationOptionTitle}>Goals & Achievements</Text>
             <Text style={styles.notificationOptionSubtitle}>
@@ -437,13 +437,13 @@ export default function DeviceSetupWizard() {
         <View style={styles.completeIcon}>
           <CheckCircle size={64} color="#4CAF50" />
         </View>
-        
+
         <Text style={styles.completeTitle}>You're All Set!</Text>
         <Text style={styles.completeText}>
-          Your DAMP device is configured and ready to help you stay hydrated. 
+          Your DAMP device is configured and ready to help you stay hydrated.
           Start using the app to track your progress!
         </Text>
-        
+
         <View style={styles.summaryCard}>
           <Text style={styles.summaryTitle}>Setup Summary</Text>
           <View style={styles.summaryItem}>
@@ -492,7 +492,7 @@ export default function DeviceSetupWizard() {
               <ArrowLeft size={24} color="#0277BD" />
             </TouchableOpacity>
           )}
-          
+
           <View style={styles.headerCenter}>
             <Text style={styles.stepCounter}>
               {currentStep + 1} of {steps.length}
@@ -640,7 +640,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 24,
   },
-  
+
   // Welcome Step
   welcomeIcon: {
     alignItems: 'center',

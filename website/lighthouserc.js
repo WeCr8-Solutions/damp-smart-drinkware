@@ -11,10 +11,10 @@ module.exports = {
       url: [
         'http://localhost:3000'
       ],
-      
+
       // Number of runs per URL for more reliable results
       numberOfRuns: 3,
-      
+
       // Chrome settings for consistent results
       settings: {
         chromeFlags: [
@@ -25,7 +25,7 @@ module.exports = {
           '--disable-web-security',
           '--allow-running-insecure-content'
         ],
-        
+
         // Throttling settings to simulate real-world conditions
         throttlingMethod: 'simulate',
         throttling: {
@@ -36,10 +36,10 @@ module.exports = {
           downloadThroughputKbps: 0,
           uploadThroughputKbps: 0
         },
-        
+
         // Emulated device settings
         emulatedFormFactor: 'mobile',
-        
+
         // Skip certain audits that might be flaky in CI or not applicable to localhost
         skipAudits: [
           'canonical',
@@ -52,7 +52,7 @@ module.exports = {
         ]
       }
     },
-    
+
     // Performance budgets and assertions
     assert: {
       // Performance score thresholds
@@ -61,43 +61,43 @@ module.exports = {
         'categories:accessibility': ['error', { minScore: 0.9 }],
         'categories:best-practices': ['error', { minScore: 0.9 }],
         'categories:seo': ['error', { minScore: 0.9 }],
-        
+
         // Core Web Vitals thresholds
         'first-contentful-paint': ['error', { maxNumericValue: 2000 }],
         'largest-contentful-paint': ['error', { maxNumericValue: 4000 }],
         'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
         'total-blocking-time': ['error', { maxNumericValue: 300 }],
         'speed-index': ['error', { maxNumericValue: 4000 }],
-        
+
         // Resource optimization assertions (relaxed for initial testing)
         'unused-css-rules': ['warn', { maxLength: 1 }],
         'unused-javascript': ['warn', { maxLength: 1 }],
         'render-blocking-resources': ['warn', { maxLength: 2 }],
         'unminified-css': ['warn', { maxLength: 1 }],
         'unminified-javascript': ['warn', { maxLength: 1 }],
-        
+
         // Image optimization
         'modern-image-formats': ['warn', { maxLength: 2 }],
         'uses-optimized-images': ['warn', { maxLength: 2 }],
         'uses-responsive-images': ['warn', { maxLength: 2 }],
-        
+
         // Network efficiency
         'uses-text-compression': ['warn', { maxLength: 1 }],
         'efficient-animated-content': ['warn', { maxLength: 1 }],
-        
+
         // JavaScript optimization
         'legacy-javascript': ['warn', { maxLength: 1 }],
         'duplicated-javascript': ['warn', { maxLength: 1 }]
       }
     },
-    
+
     // Upload results to Lighthouse CI server with your token
     upload: {
       target: 'lhci',
-      token: 'im9Q4dcfP4CKT:84738926:BGAC6B7SHiI',
+      token: 'rC9ONokd8Gifyl:84787798:fURYEOcJXI',
       serverBaseUrl: 'https://lhci.canary.dev'
     },
-    
+
     // Server configuration for local testing
     server: {
       command: 'npm run serve:ci',

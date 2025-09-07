@@ -9,7 +9,7 @@ class DAMPAdSenseManager {
         this.initialized = false;
         this.adUnits = new Map();
         this.lazyLoadObserver = null;
-        
+
         this.init();
     }
 
@@ -47,7 +47,7 @@ class DAMPAdSenseManager {
             script.async = true;
             script.crossOrigin = 'anonymous';
             script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${this.config.clientId}`;
-            
+
             script.onload = () => {
                 // Add meta tag for AdSense verification
                 if (!document.querySelector('meta[name="google-adsense-account"]')) {
@@ -58,7 +58,7 @@ class DAMPAdSenseManager {
                 }
                 resolve();
             };
-            
+
             script.onerror = () => reject(new Error('Failed to load AdSense script'));
             document.head.appendChild(script);
         });
@@ -97,13 +97,13 @@ class DAMPAdSenseManager {
 
         const adId = `damp-ad-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         const formatSize = this.config.adFormats[format] || this.config.adFormats.rectangle;
-        
+
         // Create ad container with DAMP styling
         const adContainer = document.createElement('div');
         adContainer.className = `damp-ad-container ${className}`;
         adContainer.dataset.adId = adId;
         adContainer.dataset.placement = placement;
-        
+
         // Apply discrete styling
         Object.assign(adContainer.style, {
             margin: '40px auto',
@@ -121,7 +121,7 @@ class DAMPAdSenseManager {
         adUnit.dataset.adClient = this.config.clientId;
         adUnit.dataset.adFormat = format === 'responsive' ? 'auto' : formatSize;
         adUnit.dataset.fullWidthResponsive = 'true';
-        
+
         // Set dimensions for fixed formats
         if (format !== 'responsive' && formatSize.includes('x')) {
             const [width, height] = formatSize.split('x');
@@ -172,12 +172,12 @@ class DAMPAdSenseManager {
         try {
             // Push ad to AdSense
             (window.adsbygoogle = window.adsbygoogle || []).push({});
-            
+
             // Fade in the ad container
             setTimeout(() => {
                 adData.container.style.opacity = '1';
             }, 100);
-            
+
             adData.activated = true;
             console.log(`📢 AdSense unit activated: ${adId} (${adData.placement})`);
         } catch (error) {
@@ -238,7 +238,7 @@ class DAMPAdSenseManager {
         if (!this.initialized) return;
 
         const placements = this.config.placements[pageType] || [];
-        
+
         placements.forEach(placement => {
             this.placeAdBySelector(placement);
         });

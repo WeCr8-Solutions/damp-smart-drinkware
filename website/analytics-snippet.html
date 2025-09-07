@@ -1,4 +1,4 @@
-<!-- 
+<!--
 DAMP Analytics Implementation Snippet
 Google Engineering Standards - Production Ready
 Copy this snippet to any page for automatic analytics tracking
@@ -16,7 +16,7 @@ Usage: Include this in the <head> section of your HTML pages
   // Set consent defaults (GDPR compliant)
   gtag('consent', 'default', {
     'ad_storage': 'denied',
-    'ad_user_data': 'denied', 
+    'ad_user_data': 'denied',
     'ad_personalization': 'denied',
     'analytics_storage': 'denied', // Will be updated based on cookie consent
     'wait_for_update': 500
@@ -103,7 +103,7 @@ Usage: Include this in the <head> section of your HTML pages
     if (element) {
       const analyticsData = element.dataset.analytics;
       const elementType = element.tagName.toLowerCase();
-      
+
       gtag('event', 'click', {
         'event_category': 'engagement',
         'event_label': analyticsData,
@@ -124,7 +124,7 @@ Usage: Include this in the <head> section of your HTML pages
         const url = new URL(link.href, window.location.href);
         if (url.hostname !== window.location.hostname) {
           gtag('event', 'click', {
-            'event_category': 'outbound_links', 
+            'event_category': 'outbound_links',
             'event_label': url.hostname,
             'custom_map': {
               'destination_url': link.href,
@@ -143,7 +143,7 @@ Usage: Include this in the <head> section of your HTML pages
     if (event.target.tagName === 'FORM') {
       const form = event.target;
       const formName = form.name || form.id || 'unnamed_form';
-      
+
       gtag('event', 'form_submit', {
         'event_category': 'forms',
         'event_label': formName,
@@ -160,15 +160,15 @@ Usage: Include this in the <head> section of your HTML pages
     let maxScroll = 0;
     const scrollMilestones = [25, 50, 75, 90];
     let milestoneTracked = [false, false, false, false];
-    
+
     function trackScroll() {
       const scrollPercent = Math.round(
         (window.scrollY + window.innerHeight) / document.body.scrollHeight * 100
       );
-      
+
       if (scrollPercent > maxScroll) {
         maxScroll = scrollPercent;
-        
+
         scrollMilestones.forEach((milestone, index) => {
           if (scrollPercent >= milestone && !milestoneTracked[index]) {
             milestoneTracked[index] = true;
@@ -182,7 +182,7 @@ Usage: Include this in the <head> section of your HTML pages
         });
       }
     }
-    
+
     let scrollTimeout;
     window.addEventListener('scroll', function() {
       clearTimeout(scrollTimeout);
@@ -213,16 +213,16 @@ Usage: Include this in the <head> section of your HTML pages
 </script>
 
 <!-- Alternative: Include the full analytics service (for advanced features) -->
-<!-- 
+<!--
 <script type="module">
   import dampAnalytics from './assets/js/analytics/damp-analytics.js';
-  
+
   // Analytics will auto-initialize and provide advanced features
   window.dampAnalytics = dampAnalytics;
 </script>
 -->
 
-<!-- 
+<!--
 USAGE EXAMPLES:
 
 1. Track button clicks:
@@ -265,4 +265,4 @@ USAGE EXAMPLES:
        }]
      });
    </script>
---> 
+-->

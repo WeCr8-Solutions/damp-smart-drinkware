@@ -10,14 +10,14 @@ class DAMPSecurityUtils {
             'p', 'br', 'strong', 'em', 'span', 'div',
             'ul', 'ol', 'li', 'a', 'img', 'button'
         ];
-        
+
         this.allowedAttributes = {
             'a': ['href', 'title', 'target', 'rel'],
             'img': ['src', 'alt', 'title', 'width', 'height', 'loading'],
             'button': ['type', 'class', 'id', 'disabled'],
             '*': ['class', 'id', 'data-*']
         };
-        
+
         this.trustedDomains = [
             'dampdrink.com',
             'www.dampdrink.com',
@@ -33,15 +33,15 @@ class DAMPSecurityUtils {
      */
     sanitizeHTML(html) {
         if (!html || typeof html !== 'string') return '';
-        
+
         // Create a temporary DOM element
         const temp = document.createElement('div');
         temp.innerHTML = html;
-        
+
         // Remove all script tags
         const scripts = temp.querySelectorAll('script');
         scripts.forEach(script => script.remove());
-        
+
         // Remove dangerous attributes
         const allElements = temp.querySelectorAll('*');
         allElements.forEach(element => {
@@ -52,7 +52,7 @@ class DAMPSecurityUtils {
                     element.removeAttribute(attr);
                 }
             });
-            
+
             // Sanitize href attributes
             if (element.tagName === 'A' && element.href) {
                 if (element.href.startsWith('javascript:') || element.href.startsWith('data:')) {
@@ -60,7 +60,7 @@ class DAMPSecurityUtils {
                 }
             }
         });
-        
+
         return temp.innerHTML;
     }
 
@@ -71,7 +71,7 @@ class DAMPSecurityUtils {
      */
     safeSetInnerHTML(element, html) {
         if (!element || !html) return;
-        
+
         const sanitizedHTML = this.sanitizeHTML(html);
         element.innerHTML = sanitizedHTML;
     }
@@ -84,12 +84,12 @@ class DAMPSecurityUtils {
     validateForm(form) {
         const formData = new FormData(form);
         const validatedData = {};
-        
+
         for (let [key, value] of formData.entries()) {
             // Sanitize input values
             validatedData[key] = this.sanitizeInput(value);
         }
-        
+
         return validatedData;
     }
 
@@ -100,7 +100,7 @@ class DAMPSecurityUtils {
      */
     sanitizeInput(input) {
         if (!input || typeof input !== 'string') return '';
-        
+
         return input
             .replace(/[<>]/g, '') // Remove angle brackets
             .replace(/javascript:/gi, '') // Remove javascript: protocol
@@ -140,7 +140,7 @@ class DAMPSecurityUtils {
      */
     secureEventListener(element, event, handler) {
         if (!element || !event || typeof handler !== 'function') return;
-        
+
         element.addEventListener(event, (e) => {
             try {
                 handler(e);
@@ -158,16 +158,16 @@ class DAMPSecurityUtils {
      */
     rateLimit(func, limit = 60) {
         const calls = [];
-        
+
         return function(...args) {
             const now = Date.now();
             const recentCalls = calls.filter(time => now - time < 60000);
-            
+
             if (recentCalls.length >= limit) {
                 console.warn('DAMP Security: Rate limit exceeded');
                 return;
             }
-            
+
             calls.push(now);
             return func.apply(this, args);
         };
@@ -181,10 +181,10 @@ class DAMPSecurityUtils {
     secureSetItem(key, value) {
         try {
             const sanitizedKey = this.sanitizeInput(key);
-            const sanitizedValue = typeof value === 'string' ? 
-                this.sanitizeInput(value) : 
+            const sanitizedValue = typeof value === 'string' ?
+                this.sanitizeInput(value) :
                 JSON.stringify(value);
-            
+
             localStorage.setItem(sanitizedKey, sanitizedValue);
         } catch (error) {
             console.error('DAMP Security: Storage error:', error);
@@ -200,7 +200,7 @@ class DAMPSecurityUtils {
         try {
             const sanitizedKey = this.sanitizeInput(key);
             const item = localStorage.getItem(sanitizedKey);
-            
+
             // Try to parse as JSON, fallback to string
             try {
                 return JSON.parse(item);
@@ -220,4 +220,4 @@ window.DAMPSecurityUtils = new DAMPSecurityUtils();
 // Export for modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DAMPSecurityUtils;
-} 
+}

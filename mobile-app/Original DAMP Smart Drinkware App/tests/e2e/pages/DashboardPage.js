@@ -1,6 +1,6 @@
 /**
  * Dashboard Page Object
- * 
+ *
  * Represents the main dashboard page and provides methods
  * to interact with it in tests.
  */
@@ -11,7 +11,7 @@ export class DashboardPage {
    */
   constructor(page) {
     this.page = page;
-    
+
     // Selectors
     this.welcomeMessage = page.locator('[data-testid="welcome-message"]');
     this.userEmail = page.locator('[data-testid="user-email"]');
@@ -73,14 +73,14 @@ export class DashboardPage {
   async hasDeviceInRecentActivity(deviceName) {
     const activityItems = this.recentActivity.locator('[data-testid="activity-item"]');
     const count = await activityItems.count();
-    
+
     for (let i = 0; i < count; i++) {
       const text = await activityItems.nth(i).textContent();
       if (text && text.includes(deviceName)) {
         return true;
       }
     }
-    
+
     return false;
   }
 }

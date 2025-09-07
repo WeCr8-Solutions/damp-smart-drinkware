@@ -120,7 +120,7 @@
         <button class="run-tests-btn" onclick="runAuthTests()">🔐 Test Authentication</button>
         <button class="run-tests-btn" onclick="runPageTests()">📄 Test Pages</button>
         <button class="run-tests-btn" onclick="runFeatureTests()">⚡ Test Features</button>
-        
+
         <div class="progress-bar">
             <div class="progress-fill" id="progressFill"></div>
         </div>
@@ -225,41 +225,41 @@
     <script>
         let testProgress = 0;
         let totalTests = 16;
-        
+
         function updateProgress(increment = 1) {
             testProgress += increment;
             const percentage = (testProgress / totalTests) * 100;
             document.getElementById('progressFill').style.width = percentage + '%';
             document.getElementById('progressText').textContent = `Progress: ${testProgress}/${totalTests} tests completed (${Math.round(percentage)}%)`;
         }
-        
+
         function updateTestStatus(testId, status, message = '') {
             const testItem = document.getElementById(testId);
             const statusEl = testItem.querySelector('.status');
-            
+
             testItem.className = `test-item ${status}`;
             statusEl.className = `status ${status}`;
             statusEl.textContent = status.toUpperCase();
-            
+
             if (message) {
                 logResult(`${testId}: ${message}`);
             }
-            
+
             updateProgress();
         }
-        
+
         function logResult(message) {
             const results = document.getElementById('testResults');
             const timestamp = new Date().toLocaleTimeString();
             results.innerHTML += `<div>[${timestamp}] ${message}</div>`;
             results.scrollTop = results.scrollHeight;
         }
-        
+
         function clearResults() {
             document.getElementById('testResults').innerHTML = '<div>🔄 Running tests...</div>';
             testProgress = 0;
             updateProgress(0);
-            
+
             // Reset all test statuses
             document.querySelectorAll('.test-item').forEach(item => {
                 item.className = 'test-item';
@@ -267,7 +267,7 @@
                 item.querySelector('.status').textContent = 'PENDING';
             });
         }
-        
+
         async function testFirebaseInit() {
             try {
                 if (typeof window.firebaseServices !== 'undefined' && window.firebaseServices.app) {
@@ -279,7 +279,7 @@
                 updateTestStatus('firebase-init', 'error', `Firebase init error: ${error.message}`);
             }
         }
-        
+
         async function testAuthService() {
             try {
                 if (window.firebaseServices?.authService) {
@@ -291,7 +291,7 @@
                 updateTestStatus('auth-service', 'error', `Auth service error: ${error.message}`);
             }
         }
-        
+
         async function testFirestoreConnection() {
             try {
                 if (window.firebaseServices?.db) {
@@ -303,7 +303,7 @@
                 updateTestStatus('firestore-connection', 'error', `Firestore error: ${error.message}`);
             }
         }
-        
+
         async function testAuthModal() {
             try {
                 if (window.dampAuth || document.querySelector('.auth-modal')) {
@@ -315,7 +315,7 @@
                 updateTestStatus('auth-modal', 'error', `Auth modal error: ${error.message}`);
             }
         }
-        
+
         async function testHeaderComponent() {
             try {
                 const header = document.querySelector('damp-header') || document.querySelector('header');
@@ -328,7 +328,7 @@
                 updateTestStatus('header-component', 'error', `Header error: ${error.message}`);
             }
         }
-        
+
         async function testHamburgerMenu() {
             try {
                 const hamburger = document.querySelector('.hamburger') || document.querySelector('.mobile-menu-trigger');
@@ -341,7 +341,7 @@
                 updateTestStatus('hamburger-menu', 'error', `Hamburger menu error: ${error.message}`);
             }
         }
-        
+
         async function testMobileNavigation() {
             try {
                 const mobileNav = document.querySelector('.mobile-nav') || document.querySelector('.mobile-menu');
@@ -354,13 +354,13 @@
                 updateTestStatus('mobile-navigation', 'error', `Mobile navigation error: ${error.message}`);
             }
         }
-        
+
         async function testAuthButtons() {
             try {
                 // Check that auth buttons are NOT in desktop nav (should be hamburger only)
                 const desktopAuthButtons = document.querySelector('.nav-container .auth-buttons');
                 const hamburgerAuthButtons = document.querySelector('.mobile-menu .auth-buttons');
-                
+
                 if (!desktopAuthButtons && hamburgerAuthButtons) {
                     updateTestStatus('auth-buttons', 'success', 'Auth buttons correctly in hamburger only');
                 } else if (desktopAuthButtons) {
@@ -372,7 +372,7 @@
                 updateTestStatus('auth-buttons', 'error', `Auth buttons test error: ${error.message}`);
             }
         }
-        
+
         async function testPageLoad(pageId, url, pageName) {
             try {
                 const response = await fetch(url);
@@ -385,7 +385,7 @@
                 updateTestStatus(pageId, 'error', `${pageName} load error: ${error.message}`);
             }
         }
-        
+
         async function testHeroAnimation() {
             try {
                 if (typeof window.DAMP !== 'undefined' || document.querySelector('.hero-animation')) {
@@ -397,7 +397,7 @@
                 updateTestStatus('hero-animation', 'error', `Hero animation error: ${error.message}`);
             }
         }
-        
+
         async function testNewsletterSignup() {
             try {
                 const newsletter = document.querySelector('.newsletter-form') || document.querySelector('#newsletter');
@@ -410,7 +410,7 @@
                 updateTestStatus('newsletter-signup', 'error', `Newsletter error: ${error.message}`);
             }
         }
-        
+
         async function testPerformanceMonitor() {
             try {
                 if (typeof window.dampPerformance !== 'undefined' || window.DAMPPerformanceMonitor) {
@@ -422,7 +422,7 @@
                 updateTestStatus('performance-monitor', 'error', `Performance monitor error: ${error.message}`);
             }
         }
-        
+
         async function testLazyLoading() {
             try {
                 const lazyImages = document.querySelectorAll('img[loading="lazy"]');
@@ -435,96 +435,96 @@
                 updateTestStatus('lazy-loading', 'error', `Lazy loading error: ${error.message}`);
             }
         }
-        
+
         async function runAuthTests() {
             clearResults();
             logResult('🔐 Starting Authentication Tests...');
-            
+
             await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for Firebase to load
-            
+
             await testFirebaseInit();
             await testAuthService();
             await testFirestoreConnection();
             await testAuthModal();
-            
+
             logResult('✅ Authentication tests completed');
         }
-        
+
         async function runPageTests() {
             clearResults();
             logResult('📄 Starting Page Loading Tests...');
-            
+
             await testPageLoad('homepage', '/', 'Homepage');
             await testPageLoad('products-page', '/pages/products.html', 'Products Page');
             await testPageLoad('about-page', '/pages/about.html', 'About Page');
             await testPageLoad('voting-page', '/pages/product-voting.html', 'Voting Page');
-            
+
             logResult('✅ Page loading tests completed');
         }
-        
+
         async function runNavigationTests() {
             clearResults();
             logResult('📱 Starting Navigation Tests...');
-            
+
             await testHeaderComponent();
             await testHamburgerMenu();
             await testMobileNavigation();
             await testAuthButtons();
-            
+
             logResult('✅ Navigation tests completed');
         }
-        
+
         async function runFeatureTests() {
             clearResults();
             logResult('⚡ Starting Feature Tests...');
-            
+
             await testHeroAnimation();
             await testNewsletterSignup();
             await testPerformanceMonitor();
             await testLazyLoading();
-            
+
             logResult('✅ Feature tests completed');
         }
-        
+
         async function runAllTests() {
             clearResults();
             logResult('🚀 Starting Comprehensive Test Suite...');
-            
+
             // Reset progress
             totalTests = 16;
             testProgress = 0;
-            
+
             // Run all test categories
             await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for Firebase
-            
+
             // Firebase & Auth Tests
             await testFirebaseInit();
             await testAuthService();
             await testFirestoreConnection();
             await testAuthModal();
-            
+
             // Navigation Tests
             await testHeaderComponent();
             await testHamburgerMenu();
             await testMobileNavigation();
             await testAuthButtons();
-            
+
             // Page Loading Tests
             await testPageLoad('homepage', '/', 'Homepage');
             await testPageLoad('products-page', '/pages/products.html', 'Products Page');
             await testPageLoad('about-page', '/pages/about.html', 'About Page');
             await testPageLoad('voting-page', '/pages/product-voting.html', 'Voting Page');
-            
+
             // Feature Tests
             await testHeroAnimation();
             await testNewsletterSignup();
             await testPerformanceMonitor();
             await testLazyLoading();
-            
+
             logResult('🎉 All tests completed!');
             logResult(`📊 Results: ${document.querySelectorAll('.test-item.success').length} passed, ${document.querySelectorAll('.test-item.error').length} failed, ${document.querySelectorAll('.test-item.warning').length} warnings`);
         }
-        
+
         // Auto-run basic checks when page loads
         window.addEventListener('load', () => {
             setTimeout(() => {

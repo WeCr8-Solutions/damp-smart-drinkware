@@ -62,7 +62,7 @@ describe('PerformanceMonitor - Basic Functionality', () => {
     test('should return same instance', () => {
       const monitor1 = PerformanceMonitor.getInstance();
       const monitor2 = PerformanceMonitor.getInstance();
-      
+
       expect(monitor1).toBe(monitor2);
     });
 
@@ -77,7 +77,7 @@ describe('PerformanceMonitor - Basic Functionality', () => {
     test('should start and end timing correctly', () => {
       const mockStartTime = 1000;
       const mockEndTime = 1500;
-      
+
       mockPerformance.now
         .mockReturnValueOnce(mockStartTime)
         .mockReturnValueOnce(mockEndTime);
@@ -91,12 +91,12 @@ describe('PerformanceMonitor - Basic Functionality', () => {
 
     test('should handle missing timer', () => {
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-      
+
       const duration = monitor.endTiming('non-existent-timer');
-      
+
       expect(duration).toBe(0);
       expect(consoleSpy).toHaveBeenCalledWith('⚠️  Timer not found for label: non-existent-timer');
-      
+
       consoleSpy.mockRestore();
     });
 
@@ -104,7 +104,7 @@ describe('PerformanceMonitor - Basic Functionality', () => {
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
       const mockStartTime = 1000;
       const mockEndTime = 1200; // 200ms - above 100ms threshold
-      
+
       mockPerformance.now
         .mockReturnValueOnce(mockStartTime)
         .mockReturnValueOnce(mockEndTime);
@@ -115,7 +115,7 @@ describe('PerformanceMonitor - Basic Functionality', () => {
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('🐌 Slow operation detected: slow-operation took 200.00ms')
       );
-      
+
       consoleSpy.mockRestore();
     });
   });
@@ -124,7 +124,7 @@ describe('PerformanceMonitor - Basic Functionality', () => {
     test('should have memory monitoring functionality', () => {
       // Test that the method exists
       expect(typeof monitor.captureMemorySnapshot).toBe('function');
-      
+
       // Test that it runs without errors
       expect(() => {
         monitor.captureMemorySnapshot();
@@ -146,9 +146,9 @@ describe('PerformanceMonitor - Basic Functionality', () => {
     test('should monitor frame rate', () => {
       const mockRAF = jest.fn();
       global.requestAnimationFrame = mockRAF;
-      
+
       monitor.monitorFrameRate();
-      
+
       expect(mockRAF).toHaveBeenCalled();
     });
   });
@@ -157,16 +157,16 @@ describe('PerformanceMonitor - Basic Functionality', () => {
     test('should return performance snapshot', () => {
       monitor.startTiming('test1');
       monitor.startTiming('test2');
-      
+
       const snapshot = monitor.getPerformanceSnapshot();
-      
+
       expect(snapshot).toMatchObject({
         timestamp: expect.any(Number),
         platform: expect.any(String),
         activeTimers: 2,
         memorySnapshots: expect.any(Number),
       });
-      
+
       // Memory usage might not be available in test environment
       if (snapshot.memoryUsage) {
         expect(typeof snapshot.memoryUsage.used).toBe('number');
@@ -186,7 +186,7 @@ describe('BundleAnalyzer - Basic', () => {
     expect(consoleSpy).toHaveBeenCalledWith(
       expect.stringContaining('📦 Bundle loaded in')
     );
-    
+
     consoleSpy.mockRestore();
     delete (global as any).__BUNDLE_START_TIME__;
     delete (global as any).__DEV__;
@@ -194,13 +194,13 @@ describe('BundleAnalyzer - Basic', () => {
 
   test('should measure code splitting', async () => {
     const mockModule = { default: 'test-chunk' };
-    
+
     // Create a mock dynamic import
     const mockImport = jest.fn().mockResolvedValue(mockModule);
     (global as any).import = mockImport;
 
     const result = await BundleAnalyzer.measureCodeSplitting('test-chunk');
-    
+
     expect(result).toBe(mockModule);
   });
 });
@@ -208,28 +208,28 @@ describe('BundleAnalyzer - Basic', () => {
 describe('Performance Integration - Basic', () => {
   test('should work end-to-end', () => {
     const monitor = PerformanceMonitor.getInstance();
-    
+
     monitor.startTiming('e2e-test');
-    
+
     // Simulate some work with a mock
     mockPerformance.now.mockReturnValue(Date.now() + 50);
-    
+
     const duration = monitor.endTiming('e2e-test');
-    
+
     expect(duration).toBeGreaterThan(0);
   });
 
   test('should handle concurrent operations', () => {
     const monitor = PerformanceMonitor.getInstance();
-    
+
     monitor.startTiming('operation-1');
     monitor.startTiming('operation-2');
     monitor.startTiming('operation-3');
-    
+
     const duration1 = monitor.endTiming('operation-1');
     const duration2 = monitor.endTiming('operation-2');
     const duration3 = monitor.endTiming('operation-3');
-    
+
     expect(duration1).toBeGreaterThanOrEqual(0);
     expect(duration2).toBeGreaterThanOrEqual(0);
     expect(duration3).toBeGreaterThanOrEqual(0);
@@ -237,14 +237,14 @@ describe('Performance Integration - Basic', () => {
 
   test('should maintain consistency across operations', () => {
     const monitor = PerformanceMonitor.getInstance();
-    
+
     // Test multiple cycles
     for (let i = 0; i < 5; i++) {
       monitor.startTiming(`test-cycle-${i}`);
       const duration = monitor.endTiming(`test-cycle-${i}`);
       expect(duration).toBeGreaterThanOrEqual(0);
     }
-    
+
     const snapshot = monitor.getPerformanceSnapshot();
     expect(snapshot.activeTimers).toBe(0); // All should be completed
   });

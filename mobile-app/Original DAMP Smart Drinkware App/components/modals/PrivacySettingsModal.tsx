@@ -1,6 +1,6 @@
 /**
  * Privacy Settings Modal
- * 
+ *
  * Comprehensive privacy and security settings
  */
 
@@ -288,8 +288,8 @@ export default function PrivacySettingsModal({
               Privacy Notice
             </Text>
             <Text style={[settingsStyles.errorMessage, { color: '#64B5F6' }]}>
-              We are committed to protecting your privacy. Required settings marked with * 
-              are essential for app functionality and cannot be disabled. 
+              We are committed to protecting your privacy. Required settings marked with *
+              are essential for app functionality and cannot be disabled.
               All other settings are optional and can be changed at any time.
             </Text>
           </View>

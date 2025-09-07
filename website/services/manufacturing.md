@@ -23,4 +23,4 @@ WeCr8 Solutions LLC offers specialized small-scale manufacturing services with f
 4. Quality assurance
 5. Delivery and support
 
-Contact: manufacturing@wecr8solutions.com 
+Contact: manufacturing@wecr8solutions.com

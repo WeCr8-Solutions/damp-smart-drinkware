@@ -34,14 +34,14 @@
 
 /* Material Design Elevations */
 .elevation-4 {
-    box-shadow: 
+    box-shadow:
         0 2px 4px -1px rgba(0, 0, 0, 0.2),
         0 4px 5px 0 rgba(0, 0, 0, 0.14),
         0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
 
 .elevation-4:hover {
-    box-shadow: 
+    box-shadow:
         0 5px 5px -3px rgba(0, 0, 0, 0.2),
         0 8px 10px 1px rgba(0, 0, 0, 0.14),
         0 3px 14px 2px rgba(0, 0, 0, 0.12);
@@ -1072,42 +1072,42 @@
         gap: 24px;
         padding: 0 8px;
     }
-    
+
     .primary-actions {
         flex-direction: column;
         gap: 8px;
     }
-    
+
     .btn-material {
         padding: 12px 20px;
         font-size: 0.9rem;
     }
-    
+
     .app-features-grid {
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
+
     .cta-grid {
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
+
     .download-primary {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .download-btn {
         min-width: auto;
     }
-    
+
     .qr-codes {
         flex-direction: column;
         align-items: center;
         gap: 16px;
     }
-    
+
     .phone-frame {
         width: 250px;
         height: 500px;
@@ -1118,23 +1118,23 @@
     .product-card-content {
         padding: 16px;
     }
-    
+
     .product-pricing {
         padding: 12px;
     }
-    
+
     .price-main {
         font-size: 1.75rem;
     }
-    
+
     .mobile-app-section {
         padding: 60px 0;
     }
-    
+
     .cta-title {
         font-size: 1.5rem;
     }
-    
+
     .cta-description {
         font-size: 1rem;
     }
@@ -1146,7 +1146,7 @@
         break-inside: avoid;
         margin-bottom: 20px;
     }
-    
+
     .mobile-app-section {
         display: none;
     }
@@ -1157,11 +1157,11 @@
     .product-card {
         border-width: 2px;
     }
-    
+
     .btn-material {
         border-width: 2px;
     }
-    
+
     .store-badge {
         border-width: 2px;
     }
@@ -1432,18 +1432,18 @@
     .image-zoom-modal {
         transition: none;
     }
-    
+
     .product-card:hover {
         transform: none;
     }
-    
+
     .btn-material:hover,
     .store-badge:hover,
     .download-btn:hover {
         transform: none;
     }
-    
+
     .notification.active {
         transform: none;
     }
-} 
+}

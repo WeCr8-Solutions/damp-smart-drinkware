@@ -1,6 +1,6 @@
 # DAMP Smart Drinkware - Development Roadmap
 
-*Last Updated: January 2025*  
+*Last Updated: January 2025*
 *WeCr8 Solutions LLC*
 
 ---

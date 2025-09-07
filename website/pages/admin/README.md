@@ -265,4 +265,4 @@ For questions about the DAMP Admin System:
 
 ---
 
-*Built with ❤️ for the DAMP Smart Drinkware ecosystem* 
+*Built with ❤️ for the DAMP Smart Drinkware ecosystem*

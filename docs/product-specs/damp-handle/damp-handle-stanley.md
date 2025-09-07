@@ -9,7 +9,7 @@ compatibility:
   type: "brand-specific"
   brand: "Stanley"
   description: "Precision-engineered for Stanley Tumbler series"
-  models: 
+  models:
     - "Stanley Adventure Quencher (20oz, 30oz, 40oz)"
     - "Stanley Classic Trigger Action (16oz, 20oz)"
     - "Stanley IceFlow Flip Straw (20oz, 30oz)"
@@ -31,7 +31,7 @@ specifications:
   installation: "Stanley-specific precision mount"
 images:
   primary: "assets/images/products/damp-handle/stanley.png"
-  gallery: 
+  gallery:
     - "assets/images/products/damp-handle/stanley-quencher.png"
     - "assets/images/products/damp-handle/stanley-classic.png"
     - "assets/images/products/damp-handle/stanley-installation.png"
@@ -67,4 +67,4 @@ Precision-engineered specifically for Stanley's popular tumbler series. Features
 2. Slide down until click engagement
 3. Verify secure lock with gentle tug
 4. Pair with DAMP app
-5. Enjoy smart Stanley experience! 
+5. Enjoy smart Stanley experience!

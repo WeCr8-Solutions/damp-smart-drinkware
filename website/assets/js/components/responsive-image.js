@@ -45,13 +45,13 @@ class ResponsiveImage extends HTMLElement {
         const alt = this.getAttribute('alt') || '';
         const sizes = this.getAttribute('sizes') || '100vw';
         const loading = this.getAttribute('loading') || 'lazy';
-        
+
         if (!src) return;
-        
+
         // Extract product info from src
         const productMatch = src.match(/products\/([^\/]+)\//);
         const logoMatch = src.match(/logo\/([^\/]+)/);
-        
+
         let basePath;
         if (productMatch) {
             basePath = `/assets/images/optimized/products/${productMatch[1]}/${productMatch[1]}`;
@@ -65,21 +65,21 @@ class ResponsiveImage extends HTMLElement {
 
         // Generate picture element with multiple sources
         const picture = document.createElement('picture');
-        
+
         // AVIF source (most efficient)
         const avifSource = document.createElement('source');
         avifSource.type = 'image/avif';
         avifSource.srcset = this.generateSrcSet(basePath, 'avif');
         avifSource.sizes = sizes;
         picture.appendChild(avifSource);
-        
+
         // WebP source (good efficiency)
         const webpSource = document.createElement('source');
         webpSource.type = 'image/webp';
         webpSource.srcset = this.generateSrcSet(basePath, 'webp');
         webpSource.sizes = sizes;
         picture.appendChild(webpSource);
-        
+
         // PNG fallback
         const img = document.createElement('img');
         img.src = `${basePath}-medium.png`;
@@ -88,7 +88,7 @@ class ResponsiveImage extends HTMLElement {
         img.alt = alt;
         img.loading = loading;
         img.style.cssText = this.getAttribute('style') || '';
-        
+
         picture.appendChild(img);
         this.appendChild(picture);
     }
@@ -115,4 +115,4 @@ class ResponsiveImage extends HTMLElement {
     }
 }
 
-customElements.define('responsive-image', ResponsiveImage); 
+customElements.define('responsive-image', ResponsiveImage);

@@ -53,4 +53,4 @@ body {
 .artistic-curtain-bubble {
     will-change: transform, opacity;
     transform: translateZ(0); /* Force hardware acceleration */
-} 
+}

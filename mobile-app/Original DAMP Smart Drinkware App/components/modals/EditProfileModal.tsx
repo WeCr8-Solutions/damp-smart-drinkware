@@ -1,6 +1,6 @@
 /**
  * Edit Profile Modal
- * 
+ *
  * Allows users to edit their profile information
  */
 

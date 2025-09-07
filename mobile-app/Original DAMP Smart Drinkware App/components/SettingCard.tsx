@@ -1,6 +1,6 @@
 /**
  * Setting Card Component
- * 
+ *
  * Reusable card component for settings items with consistent design
  */
 
@@ -76,7 +76,7 @@ export default function SettingCard({
           )}
         </View>
       </View>
-      
+
       {type === 'toggle' && onToggle && (
         <Switch
           value={value || false}
@@ -87,7 +87,7 @@ export default function SettingCard({
           style={styles.switch}
         />
       )}
-      
+
       {type === 'navigation' && (
         <Text style={styles.chevron}>›</Text>
       )}

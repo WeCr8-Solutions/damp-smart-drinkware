@@ -224,7 +224,7 @@ class PurchasingService {
    */
   addToCart(item: CartItem): void {
     const existingIndex = this.cart.findIndex(
-      cartItem => cartItem.productId === item.productId && 
+      cartItem => cartItem.productId === item.productId &&
                   cartItem.selectedColor === item.selectedColor &&
                   cartItem.selectedSize === item.selectedSize
     );
@@ -241,7 +241,7 @@ class PurchasingService {
    */
   removeFromCart(productId: string, selectedColor?: string, selectedSize?: string): void {
     this.cart = this.cart.filter(
-      item => !(item.productId === productId && 
+      item => !(item.productId === productId &&
                item.selectedColor === selectedColor &&
                item.selectedSize === selectedSize)
     );
@@ -252,7 +252,7 @@ class PurchasingService {
    */
   updateCartItemQuantity(productId: string, quantity: number, selectedColor?: string, selectedSize?: string): void {
     const item = this.cart.find(
-      cartItem => cartItem.productId === productId && 
+      cartItem => cartItem.productId === productId &&
                   cartItem.selectedColor === selectedColor &&
                   cartItem.selectedSize === selectedSize
     );
@@ -327,7 +327,7 @@ class PurchasingService {
       };
 
       const orderRef = await addDoc(collection(db, 'orders'), order);
-      
+
       return { success: true, orderId: orderRef.id };
     } catch (error) {
       console.error('Create order error:', error);
@@ -352,7 +352,7 @@ class PurchasingService {
       };
 
       await addDoc(collection(db, 'preOrders'), preOrder);
-      
+
       return { success: true };
     } catch (error) {
       console.error('Submit pre-order error:', error);
@@ -403,7 +403,7 @@ class PurchasingService {
 
       // Use Firebase Stripe service to create checkout session
       const checkoutResult = await FirebaseStripeService.createStoreCheckout(lineItems, orderResult.orderId!);
-      
+
       if (checkoutResult.success && checkoutResult.url) {
         // Clear cart on successful checkout initiation
         this.clearCart();

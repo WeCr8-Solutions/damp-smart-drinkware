@@ -7,14 +7,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Shopping Cart - DAMP Smart Drinkware | Complete Your Pre-Order</title>
-    
+
     <!-- SEO Meta Tags -->
     <meta name="description" content="Review your DAMP Smart Drinkware pre-order cart and complete your purchase. Secure checkout with early bird pricing and exclusive pre-order benefits.">
     <meta name="keywords" content="DAMP cart, smart drinkware checkout, pre-order cart, secure checkout, early bird pricing">
     <meta name="author" content="WeCr8 Solutions LLC">
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://dampdrink.com/pages/cart.html">
-    
+
     <!-- DAMP Analytics - Google Analytics 4 with GDPR Compliance -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YW2BN4SVPQ"></script>
     <script>
@@ -25,7 +25,7 @@
       // Set consent defaults (GDPR compliant)
       gtag('consent', 'default', {
         'ad_storage': 'denied',
-        'ad_user_data': 'denied', 
+        'ad_user_data': 'denied',
         'ad_personalization': 'denied',
         'analytics_storage': 'denied',
         'wait_for_update': 500
@@ -97,7 +97,7 @@
         if (element) {
           const analyticsData = element.dataset.analytics;
           const elementType = element.tagName.toLowerCase();
-          
+
           gtag('event', 'click', {
             'event_category': 'ecommerce',
             'event_label': analyticsData,
@@ -116,13 +116,13 @@
 
     <!-- Stripe -->
     <script src="https://js.stripe.com/v3/"></script>
-    
+
     <!-- CSS Architecture -->
     <link rel="stylesheet" href="../assets/css/main.css">
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
-    
+
     <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -130,18 +130,18 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="msapplication-TileColor" content="#1a1a2e">
     <meta name="msapplication-tap-highlight" content="no">
-    
+
     <!-- PWA Theme Colors -->
     <meta name="theme-color" content="#00d4ff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
-    
+
     <!-- PWA Icons -->
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/logo/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/logo/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="48x48" href="/assets/images/logo/icon-48.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/logo/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/assets/images/logo/icon-512.png">
-    
+
     <!-- Apple Touch Icons -->
     <link rel="apple-touch-icon" sizes="57x57" href="/assets/images/logo/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/assets/images/logo/apple-icon-60x60.png">
@@ -174,7 +174,7 @@
                 <div class="lg:col-span-2">
                     <div class="card">
                         <h2 class="text-2xl font-bold mb-6">Your Items</h2>
-                        
+
                         <!-- Cart Items Will Be Populated by JavaScript -->
                         <div id="cart-items" class="space-y-4">
                             <!-- Example cart item -->
@@ -195,7 +195,7 @@
                                 <button class="btn btn-sm btn-ghost text-error">Remove</button>
                             </div>
                         </div>
-                        
+
                         <!-- Empty Cart Message -->
                         <div id="empty-cart" class="text-center py-12 hidden">
                             <div class="text-6xl mb-4">🛒</div>
@@ -205,12 +205,12 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Order Summary -->
                 <div class="lg:col-span-1">
                     <div class="card sticky top-24">
                         <h2 class="text-2xl font-bold mb-6">Order Summary</h2>
-                        
+
                         <div class="space-y-4 mb-6">
                             <div class="flex justify-between">
                                 <span>Subtotal</span>
@@ -231,7 +231,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Promo Code -->
                         <div class="promo-code-section mb-6">
                             <div class="promo-code-title">Promo Code</div>
@@ -240,12 +240,12 @@
                                 <button class="promo-code-apply">Apply</button>
                             </div>
                         </div>
-                        
+
                         <div class="space-y-3">
                             <button class="btn btn-primary btn-lg w-full">Proceed to Checkout</button>
                             <button class="btn btn-secondary w-full">Continue Shopping</button>
                         </div>
-                        
+
                         <div class="mt-6 text-center">
                             <div class="flex items-center justify-center gap-2 text-sm text-secondary">
                                 <span>🔒</span>
@@ -264,10 +264,10 @@
     <script src="../assets/js/components/header.js"></script>
     <script src="../assets/js/auth-modal.js"></script>
     <script src="../assets/js/scripts.js"></script>
-    
+
     <!-- Stripe Integration -->
     <script src="https://js.stripe.com/v3/"></script>
-    
+
     <!-- Cart Functionality -->
     <script>
         // Initialize Stripe
@@ -327,28 +327,28 @@
                 const cartHTML = this.cart.map(item => `
                     <div class="cart-item" data-product-id="${item.id}">
                         <div class="flex items-center gap-4 p-4 border rounded-lg">
-                            <img src="${item.image || '/assets/images/products/' + item.id + '/' + item.id + '.png'}" 
-                                 alt="${item.name}" 
+                            <img src="${item.image || '/assets/images/products/' + item.id + '/' + item.id + '.png'}"
+                                 alt="${item.name}"
                                  class="w-20 h-20 object-cover rounded">
-                            
+
                             <div class="flex-1">
                                 <h3 class="font-semibold text-lg">${item.name}</h3>
                                 <p class="text-secondary text-sm">${item.description || 'Smart drinkware accessory'}</p>
                                 <div class="flex items-center gap-4 mt-2">
                                     <span class="font-bold text-primary">$${item.price}</span>
                                     <div class="quantity-controls flex items-center gap-2">
-                                        <button onclick="dampCart.updateQuantity('${item.id}', ${item.quantity - 1})" 
+                                        <button onclick="dampCart.updateQuantity('${item.id}', ${item.quantity - 1})"
                                                 class="btn-sm bg-gray-200 hover:bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center">-</button>
                                         <span class="quantity px-3 py-1 bg-gray-100 rounded">${item.quantity}</span>
-                                        <button onclick="dampCart.updateQuantity('${item.id}', ${item.quantity + 1})" 
+                                        <button onclick="dampCart.updateQuantity('${item.id}', ${item.quantity + 1})"
                                                 class="btn-sm bg-gray-200 hover:bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center">+</button>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="text-right">
                                 <div class="font-bold text-lg">$${(item.price * item.quantity).toFixed(2)}</div>
-                                <button onclick="dampCart.removeItem('${item.id}')" 
+                                <button onclick="dampCart.removeItem('${item.id}')"
                                         class="text-red-500 hover:text-red-700 text-sm mt-1">Remove</button>
                             </div>
                         </div>
@@ -400,7 +400,7 @@
 
                 const checkoutBtn = document.querySelector('.btn-primary.btn-lg');
                 const originalText = checkoutBtn.textContent;
-                
+
                 try {
                     checkoutBtn.disabled = true;
                     checkoutBtn.textContent = 'Processing...';
@@ -461,7 +461,7 @@
 
                     // Redirect to Stripe Checkout
                     const { error } = await stripe.redirectToCheckout({ sessionId });
-                    
+
                     if (error) {
                         throw new Error(error.message);
                     }
@@ -478,7 +478,7 @@
             applyPromoCode() {
                 const promoInput = document.querySelector('.promo-code-input');
                 const promoCode = promoInput.value.trim().toUpperCase();
-                
+
                 // Valid promo codes
                 const promoCodes = {
                     'EARLY20': { discount: 0.20, description: '20% off early bird discount' },
@@ -494,7 +494,7 @@
                 } else {
                     alert('❌ Invalid promo code. Please try again.');
                 }
-                
+
                 promoInput.value = '';
             }
 
@@ -505,13 +505,13 @@
             // Add item to cart (called from other pages)
             addItem(product) {
                 const existingItem = this.cart.find(item => item.id === product.id);
-                
+
                 if (existingItem) {
                     existingItem.quantity += 1;
                 } else {
                     this.cart.push({ ...product, quantity: 1 });
                 }
-                
+
                 this.saveCart();
                 this.renderCart();
                 this.updateOrderSummary();
@@ -529,10 +529,10 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.body.classList.add('page-loaded');
             document.body.classList.remove('page-loading');
-            
+
             // Initialize DAMP Cart
             window.dampCart = new DAMPCart();
-            
+
             // Add sample items if cart is empty (for testing)
             if (window.dampCart.cart.length === 0) {
                 // Uncomment for testing:
@@ -557,7 +557,7 @@
                         updateViaCache: 'none'
                     });
                     console.log('✅ Service Worker registered:', registration.scope);
-                    
+
                     // Handle updates
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
@@ -567,20 +567,20 @@
                             }
                         });
                     });
-                    
+
                     window.dampPWA = { registration };
                 } catch (error) {
                     console.error('❌ Service Worker failed:', error);
                 }
             });
         }
-        
+
         function showUpdateNotification() {
             const notification = document.createElement('div');
             notification.innerHTML = '<div style="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00d4ff,#00ff88);color:#1a1a2e;padding:15px 25px;border-radius:30px;font-weight:600;z-index:10000;display:flex;align-items:center;gap:15px;"><span>🚀</span><span>New version available!</span><button onclick="refreshApp()" style="background:rgba(26,26,46,0.2);color:#1a1a2e;border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;">Update</button><button onclick="this.parentElement.parentElement.remove()" style="background:transparent;border:none;color:#1a1a2e;cursor:pointer;padding:5px;">×</button></div>';
             document.body.appendChild(notification);
         }
-        
+
         function refreshApp() {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistration().then(registration => {
@@ -591,11 +591,11 @@
                 });
             }
         }
-        
+
         // Load Mobile App Redirect Script
         const mobileAppScript = document.createElement('script');
         mobileAppScript.src = '/assets/js/mobile-app-redirect.js';
         mobileAppScript.async = true;
         document.head.appendChild(mobileAppScript);
     </script></body>
-</html> 
+</html>

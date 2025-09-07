@@ -40,32 +40,32 @@ const OUTPUT_DIR = path.join(__dirname, '../website/assets/images/logo');
  */
 async function generatePWAIcons() {
     console.log('🎨 Generating PWA icons...');
-    
+
     try {
         // Ensure output directory exists
         await fs.mkdir(OUTPUT_DIR, { recursive: true });
-        
+
         // Check if source logo exists
         try {
             await fs.access(SOURCE_LOGO);
         } catch (error) {
             throw new Error(`Source logo not found: ${SOURCE_LOGO}`);
         }
-        
+
         // Generate each icon size
         for (const icon of PWA_ICON_SIZES) {
             const filename = icon.filename || `icon-${icon.size}.png`;
             const outputPath = path.join(OUTPUT_DIR, filename);
-            
+
             console.log(`📱 Generating ${filename} (${icon.size}x${icon.size})...`);
-            
+
             try {
                 let sharpInstance = sharp(SOURCE_LOGO);
-                
+
                 // For maskable icons, add padding to ensure safe area
                 if (icon.purpose.includes('maskable')) {
                     const paddedSize = Math.floor(icon.size * 1.2); // 20% padding
-                    
+
                     sharpInstance = sharpInstance
                         .resize(Math.floor(icon.size * 0.8), Math.floor(icon.size * 0.8), {
                             fit: 'contain',
@@ -88,7 +88,7 @@ async function generatePWAIcons() {
                             background: { r: 0, g: 0, b: 0, alpha: 0 }
                         });
                 }
-                
+
                 await sharpInstance
                     .png({
                         quality: 100,
@@ -96,22 +96,22 @@ async function generatePWAIcons() {
                         adaptiveFiltering: true
                     })
                     .toFile(outputPath);
-                
+
                 console.log(`✅ Generated ${filename}`);
-                
+
             } catch (error) {
                 console.error(`❌ Failed to generate ${filename}:`, error.message);
             }
         }
-        
+
         // Generate favicon.ico
         await generateFavicon();
-        
+
         // Generate splash screens for iOS
         await generateSplashScreens();
-        
+
         console.log('🎉 PWA icons generation completed!');
-        
+
     } catch (error) {
         console.error('❌ PWA icon generation failed:', error.message);
         process.exit(1);
@@ -123,10 +123,10 @@ async function generatePWAIcons() {
  */
 async function generateFavicon() {
     console.log('🔖 Generating favicon.ico...');
-    
+
     const faviconSizes = [16, 32, 48];
     const faviconPath = path.join(OUTPUT_DIR, 'favicon.ico');
-    
+
     try {
         // For ICO files, we'll generate a 32x32 PNG as primary favicon
         await sharp(SOURCE_LOGO)
@@ -136,15 +136,15 @@ async function generateFavicon() {
             })
             .png()
             .toFile(path.join(OUTPUT_DIR, 'favicon.png'));
-        
+
         // Copy PNG as ICO for compatibility
         await fs.copyFile(
             path.join(OUTPUT_DIR, 'favicon.png'),
             faviconPath
         );
-        
+
         console.log('✅ Generated favicon.ico');
-        
+
     } catch (error) {
         console.error('❌ Failed to generate favicon:', error.message);
     }
@@ -155,7 +155,7 @@ async function generateFavicon() {
  */
 async function generateSplashScreens() {
     console.log('📱 Generating iOS splash screens...');
-    
+
     const splashScreens = [
         { width: 1125, height: 2436, name: 'splash-iphone-x.png' },
         { width: 828, height: 1792, name: 'splash-iphone-xr.png' },
@@ -165,17 +165,17 @@ async function generateSplashScreens() {
         { width: 1536, height: 2048, name: 'splash-ipad.png' },
         { width: 2048, height: 2732, name: 'splash-ipad-pro.png' }
     ];
-    
+
     const splashDir = path.join(OUTPUT_DIR, 'splash');
     await fs.mkdir(splashDir, { recursive: true });
-    
+
     for (const splash of splashScreens) {
         const outputPath = path.join(splashDir, splash.name);
-        
+
         try {
             // Create splash screen with logo centered on brand background
             const logoSize = Math.min(splash.width, splash.height) * 0.3;
-            
+
             await sharp({
                 create: {
                     width: splash.width,
@@ -196,9 +196,9 @@ async function generateSplashScreens() {
             }])
             .png()
             .toFile(outputPath);
-            
+
             console.log(`✅ Generated ${splash.name}`);
-            
+
         } catch (error) {
             console.error(`❌ Failed to generate ${splash.name}:`, error.message);
         }
@@ -210,4 +210,4 @@ if (require.main === module) {
     generatePWAIcons();
 }
 
-module.exports = { generatePWAIcons }; 
+module.exports = { generatePWAIcons };

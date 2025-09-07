@@ -1,6 +1,6 @@
 # DAMP Mobile Apps - iOS & Android
 
-**React Native mobile applications for DAMP Smart Drinkware**  
+**React Native mobile applications for DAMP Smart Drinkware**
 *iOS and Android apps with unified Firebase authentication*
 
 ---
@@ -65,8 +65,8 @@ cd android/
    ```bash
    # Run on iOS simulator
    npm run ios
-   
-   # Run on Android emulator  
+
+   # Run on Android emulator
    npm run android
    ```
 
@@ -97,7 +97,7 @@ const authService = new DAMPAuthService(auth, firestore);
 
 // Sign up new user
 const result = await authService.createAccount(
-  'user@example.com', 
+  'user@example.com',
   'password123',
   'John Doe'
 );
@@ -163,25 +163,25 @@ All platforms use the **same Firestore user document**:
   email: "user@example.com",
   displayName: "John Doe",
   platform: "ios", // Tracks last login platform
-  
+
   // Preferences sync across devices
   preferences: {
     notifications: { push: true, email: true },
     app: { darkMode: false, language: "en" }
   },
-  
+
   // Activity stats
   stats: {
     votesCount: 5,
     ordersCount: 2,
     loyaltyPoints: 250
   },
-  
+
   // Connected DAMP devices
   devices: [
     {
       deviceId: "DAMP_001",
-      type: "handle", 
+      type: "handle",
       name: "My Coffee Mug",
       batteryLevel: 85
     }
@@ -225,7 +225,7 @@ cd ../website/ && npm start
 # iOS build
 npm run build:ios
 
-# Android build  
+# Android build
 npm run build:android
 ```
 
@@ -283,7 +283,7 @@ cd android && ./gradlew clean
 
 ### Post-Launch
 - [ ] Monitor authentication success rates
-- [ ] Track cross-platform user journeys  
+- [ ] Track cross-platform user journeys
 - [ ] Analyze crash reports
 - [ ] Gather user feedback
 - [ ] Plan feature updates

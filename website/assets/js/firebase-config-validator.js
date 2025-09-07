@@ -1,6 +1,6 @@
 /**
  * DAMP Firebase Configuration Validator
- * 
+ *
  * Validates Firebase configuration and console setup
  */
 
@@ -12,19 +12,19 @@ class FirebaseConfigValidator {
 
   async validateConfiguration() {
     console.log('🔍 Validating Firebase Configuration...');
-    
+
     // Check if Firebase services are available
     await this.checkFirebaseServices();
-    
+
     // Validate configuration values
     this.validateConfigValues();
-    
+
     // Test Firebase connection
     await this.testFirebaseConnection();
-    
+
     // Validate Firebase console settings
     await this.validateConsoleSettings();
-    
+
     this.displayResults();
     return this.validationResults;
   }
@@ -70,7 +70,7 @@ class FirebaseConfigValidator {
     ];
 
     const missing = requiredFields.filter(field => !this.config[field]);
-    
+
     if (missing.length === 0) {
       this.validationResults.configValues = {
         status: 'success',
@@ -102,7 +102,7 @@ class FirebaseConfigValidator {
 
       // Test auth connection by checking current user
       const currentUser = window.firebaseServices.auth.currentUser;
-      
+
       this.validationResults.connection = {
         status: 'success',
         message: 'Firebase connection established',
@@ -121,16 +121,16 @@ class FirebaseConfigValidator {
 
   async validateConsoleSettings() {
     const recommendations = [];
-    
+
     // Check if running on correct domain
     if (this.config?.authDomain) {
       const expectedDomain = this.config.authDomain;
       const currentDomain = window.location.hostname;
-      
+
       if (currentDomain === 'localhost' || currentDomain.startsWith('192.168')) {
         recommendations.push('Add localhost and local IP to authorized domains in Firebase Console');
       }
-      
+
       if (currentDomain === 'dampdrink.com' && expectedDomain !== 'damp-smart-drinkware.firebaseapp.com') {
         recommendations.push('Verify custom domain configuration in Firebase Console');
       }
@@ -151,27 +151,27 @@ class FirebaseConfigValidator {
   displayResults() {
     console.log('\n📊 Firebase Configuration Validation Results:');
     console.log('='.repeat(50));
-    
+
     Object.entries(this.validationResults).forEach(([key, result]) => {
-      const icon = result.status === 'success' ? '✅' : 
-                   result.status === 'warning' ? '⚠️' : 
+      const icon = result.status === 'success' ? '✅' :
+                   result.status === 'warning' ? '⚠️' :
                    result.status === 'error' ? '❌' : 'ℹ️';
-      
+
       console.log(`${icon} ${key}: ${result.message}`);
-      
+
       if (result.details) {
         Object.entries(result.details).forEach(([detailKey, detailValue]) => {
           console.log(`   ${detailKey}: ${detailValue}`);
         });
       }
-      
+
       if (result.recommendations) {
         result.recommendations.forEach(rec => {
           console.log(`   • ${rec}`);
         });
       }
     });
-    
+
     console.log('\n🔗 Firebase Console: https://console.firebase.google.com/project/damp-smart-drinkware');
   }
 }
@@ -182,7 +182,7 @@ if (typeof window !== 'undefined') {
     const validator = new FirebaseConfigValidator();
     return await validator.validateConfiguration();
   };
-  
+
   // Auto-validate after a delay to allow Firebase to initialize
   setTimeout(async () => {
     if (window.firebaseServices) {

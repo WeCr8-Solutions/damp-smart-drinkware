@@ -43,7 +43,7 @@ export const updateUserProfile = functions.https.onCall(async (data, context) =>
     if (preferences) {
       const currentUserDoc = await admin.firestore().collection('users').doc(userId).get();
       const currentData = currentUserDoc.data();
-      
+
       updateData.preferences = {
         ...currentData?.preferences,
         ...preferences,
@@ -98,7 +98,7 @@ export const uploadUserAvatar = functions.https.onCall(async (data, context) => 
 
     // Process image with Sharp
     const processedImage = await sharp(imageBuffer)
-      .resize(400, 400, { 
+      .resize(400, 400, {
         fit: 'cover',
         position: 'center',
       })
@@ -175,11 +175,11 @@ export const uploadUserAvatar = functions.https.onCall(async (data, context) => 
 
   } catch (error) {
     console.error('Error uploading avatar:', error);
-    
+
     if (error instanceof functions.https.HttpsError) {
       throw error;
     }
-    
+
     throw new functions.https.HttpsError('internal', 'Failed to upload avatar');
   }
 });
@@ -246,7 +246,7 @@ export const updateNotificationPreferences = functions.https.onCall(async (data,
   try {
     // Validate notification settings structure
     const validSettings = {
-      hydrationReminders: typeof notificationSettings.hydrationReminders === 'boolean' 
+      hydrationReminders: typeof notificationSettings.hydrationReminders === 'boolean'
         ? notificationSettings.hydrationReminders : true,
       deviceStatus: typeof notificationSettings.deviceStatus === 'boolean'
         ? notificationSettings.deviceStatus : true,

@@ -86,7 +86,7 @@ export default function SubscriptionManagementScreen() {
 
       // Load current subscription from Firebase
       const subscriptionData = await FirebaseStripeService.getSubscriptionStatus();
-      
+
       if (subscriptionData.hasSubscription) {
         setSubscription({
           id: 'firebase-subscription',

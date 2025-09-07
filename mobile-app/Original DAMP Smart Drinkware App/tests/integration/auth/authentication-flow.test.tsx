@@ -63,7 +63,7 @@ const AuthTestComponent = ({ onAuthState }: { onAuthState: (state: any) => void 
 describe('Authentication Flow Integration Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Default mock implementations
     mockSupabase.auth.onAuthStateChange.mockImplementation((callback) => {
       // Simulate initial session check
@@ -686,7 +686,7 @@ describe('Authentication Flow Integration Tests', () => {
       // This would be more relevant for actual implementation testing
       // Here we just verify that passwords aren't logged or exposed
       const consoleSpy = jest.spyOn(console, 'log');
-      
+
       render(
         <TestWrapper>
           <LoginScreen />

@@ -19,10 +19,10 @@ class ServiceWorkerManager {
         try {
             // Register main service worker
             await this.registerMainServiceWorker();
-            
+
             // Register Firebase messaging service worker
             await this.registerMessagingServiceWorker();
-            
+
             console.log('✅ All service workers registered successfully');
             return true;
         } catch (error) {
@@ -36,14 +36,14 @@ class ServiceWorkerManager {
             this.swRegistration = await navigator.serviceWorker.register('/sw.js', {
                 scope: '/'
             });
-            
+
             console.log('✅ Main Service Worker registered with scope:', this.swRegistration.scope);
-            
+
             // Handle updates
             this.swRegistration.addEventListener('updatefound', () => {
                 const newWorker = this.swRegistration.installing;
                 console.log('🔄 New Service Worker installing...');
-                
+
                 newWorker.addEventListener('statechange', () => {
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                         console.log('🔄 New Service Worker installed, refresh to activate');
@@ -52,7 +52,7 @@ class ServiceWorkerManager {
                     }
                 });
             });
-            
+
             return this.swRegistration;
         } catch (error) {
             console.error('❌ Main Service Worker registration failed:', error);
@@ -71,7 +71,7 @@ class ServiceWorkerManager {
             this.messagingSwRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
                 scope: '/firebase-cloud-messaging-push-scope'
             });
-            
+
             console.log('✅ Firebase Messaging Service Worker registered with scope:', this.messagingSwRegistration.scope);
             return this.messagingSwRegistration;
         } catch (error) {

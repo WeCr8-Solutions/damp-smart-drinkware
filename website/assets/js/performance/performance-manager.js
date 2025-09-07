@@ -18,31 +18,31 @@ class DAMPPerformanceManager {
      */
     init() {
         console.log('⚡ DAMP Performance: Initializing performance manager...');
-        
+
         // Setup performance monitoring
         this.initPerformanceMonitoring();
-        
+
         // Setup resource optimization
         this.initResourceOptimization();
-        
+
         // Setup lazy loading
         this.initLazyLoading();
-        
+
         // Setup service worker
         this.initServiceWorker();
-        
+
         // Setup critical resource hints
         this.initResourceHints();
-        
+
         // Setup image optimization
         this.initImageOptimization();
-        
+
         // Setup font optimization
         this.initFontOptimization();
-        
+
         // Setup JavaScript optimization
         this.initJavaScriptOptimization();
-        
+
         console.log('✅ DAMP Performance: Performance manager initialized');
     }
 
@@ -53,18 +53,18 @@ class DAMPPerformanceManager {
         try {
             // Core Web Vitals monitoring
             this.initCoreWebVitals();
-            
+
             // Resource timing monitoring
             this.initResourceTiming();
-            
+
             // User timing monitoring
             this.initUserTiming();
-            
+
             // Network monitoring
             this.initNetworkMonitoring();
-            
+
             console.log('📊 Performance monitoring initialized');
-            
+
         } catch (error) {
             console.error('Performance monitoring setup failed:', error);
         }
@@ -119,15 +119,15 @@ class DAMPPerformanceManager {
         this.observePerformanceEntry('resource', (entry) => {
             const resourceType = this.getResourceType(entry.name);
             const loadTime = entry.responseEnd - entry.startTime;
-            
+
             if (!this.metrics.resources) {
                 this.metrics.resources = {};
             }
-            
+
             if (!this.metrics.resources[resourceType]) {
                 this.metrics.resources[resourceType] = [];
             }
-            
+
             this.metrics.resources[resourceType].push({
                 name: entry.name,
                 loadTime: loadTime,
@@ -158,7 +158,7 @@ class DAMPPerformanceManager {
                 rtt: connection.rtt,
                 saveData: connection.saveData
             };
-            
+
             connection.addEventListener('change', () => {
                 this.metrics.network = {
                     effectiveType: connection.effectiveType,
@@ -177,13 +177,13 @@ class DAMPPerformanceManager {
     initResourceOptimization() {
         // Preload critical resources
         this.preloadCriticalResources();
-        
+
         // Setup resource caching
         this.initResourceCaching();
-        
+
         // Setup compression
         this.initCompression();
-        
+
         console.log('🗜️ Resource optimization initialized');
     }
 
@@ -216,7 +216,7 @@ class DAMPPerformanceManager {
      */
     initResourceCaching() {
         const cacheableTypes = ['image', 'script', 'style'];
-        
+
         this.observePerformanceEntry('resource', (entry) => {
             const resourceType = this.getResourceType(entry.name);
             if (cacheableTypes.includes(resourceType)) {
@@ -231,13 +231,13 @@ class DAMPPerformanceManager {
     initLazyLoading() {
         // Lazy load images
         this.initImageLazyLoading();
-        
+
         // Lazy load sections
         this.initSectionLazyLoading();
-        
+
         // Lazy load scripts
         this.initScriptLazyLoading();
-        
+
         console.log('🔄 Lazy loading initialized');
     }
 
@@ -253,7 +253,7 @@ class DAMPPerformanceManager {
                         img.src = img.dataset.src;
                         img.removeAttribute('data-src');
                         imageObserver.unobserve(img);
-                        
+
                         // Performance mark
                         performance.mark(`image-loaded-${img.src}`);
                     }
@@ -295,10 +295,10 @@ class DAMPPerformanceManager {
                 if (entry.isIntersecting) {
                     const section = entry.target;
                     section.classList.add('loaded');
-                    
+
                     // Load section-specific resources
                     this.loadSectionResources(section);
-                    
+
                     sectionObserver.unobserve(section);
                 }
             });
@@ -320,7 +320,7 @@ class DAMPPerformanceManager {
                 if (entry.isIntersecting) {
                     const container = entry.target;
                     const scriptSrc = container.dataset.script;
-                    
+
                     if (scriptSrc && !this.loadingStates.get(scriptSrc)) {
                         this.loadScript(scriptSrc);
                         scriptObserver.unobserve(container);
@@ -342,12 +342,12 @@ class DAMPPerformanceManager {
             try {
                 const registration = await navigator.serviceWorker.register('/sw.js');
                 console.log('🔧 Service Worker registered:', registration);
-                
+
                 // Listen for updates
                 registration.addEventListener('updatefound', () => {
                     console.log('🔄 Service Worker update found');
                 });
-                
+
             } catch (error) {
                 console.error('Service Worker registration failed:', error);
             }
@@ -393,10 +393,10 @@ class DAMPPerformanceManager {
     initImageOptimization() {
         // Convert images to WebP if supported
         this.initWebPSupport();
-        
+
         // Responsive images
         this.initResponsiveImages();
-        
+
         // Image compression
         this.initImageCompression();
     }
@@ -409,7 +409,7 @@ class DAMPPerformanceManager {
         webp.onload = webp.onerror = () => {
             const hasWebPSupport = webp.height === 2;
             document.documentElement.classList.toggle('webp', hasWebPSupport);
-            
+
             if (hasWebPSupport) {
                 this.convertImagesToWebP();
             }
@@ -424,7 +424,7 @@ class DAMPPerformanceManager {
         document.querySelectorAll('img').forEach(img => {
             if (img.src && !img.src.includes('.webp')) {
                 const webpSrc = img.src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
-                
+
                 // Test if WebP version exists
                 const testImg = new Image();
                 testImg.onload = () => {
@@ -447,7 +447,7 @@ class DAMPPerformanceManager {
                 const extension = img.src.split('.').pop();
                 return `${baseName}-${suffix}.${extension} ${width}w`;
             }).join(', ');
-            
+
             img.srcset = srcset;
             img.sizes = '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw';
         });
@@ -484,10 +484,10 @@ class DAMPPerformanceManager {
     initJavaScriptOptimization() {
         // Code splitting
         this.initCodeSplitting();
-        
+
         // Module preloading
         this.initModulePreloading();
-        
+
         // Dead code elimination
         this.initDeadCodeElimination();
     }
@@ -551,11 +551,11 @@ class DAMPPerformanceManager {
      */
     optimizeForConnection() {
         const connection = this.metrics.network;
-        
+
         if (connection.saveData || connection.effectiveType === 'slow-2g') {
             // Reduce quality for slow connections
             document.documentElement.classList.add('reduced-quality');
-            
+
             // Disable non-essential features
             this.disableNonEssentialFeatures();
         }
@@ -567,7 +567,7 @@ class DAMPPerformanceManager {
     disableNonEssentialFeatures() {
         // Disable animations
         document.documentElement.classList.add('no-animations');
-        
+
         // Reduce image quality
         document.querySelectorAll('img').forEach(img => {
             if (img.dataset.lowQuality) {
@@ -668,4 +668,4 @@ class DAMPPerformanceManager {
 window.DAMP = window.DAMP || {};
 window.DAMP.Performance = new DAMPPerformanceManager();
 
-export default window.DAMP.Performance; 
+export default window.DAMP.Performance;

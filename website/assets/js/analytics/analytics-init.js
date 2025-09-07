@@ -2,7 +2,7 @@
  * DAMP Analytics Initialization Script
  * Google Engineering Standards Implementation
  * Simple Script for Automatic Analytics Setup
- * 
+ *
  * @fileoverview Simple script to initialize analytics on any page
  * @author WeCr8 Solutions LLC
  * @version 2.0.0
@@ -10,7 +10,7 @@
 
 (function() {
     'use strict';
-    
+
     // Configuration
     const ANALYTICS_CONFIG = {
         MEASUREMENT_ID: 'G-YW2BN4SVPQ',
@@ -18,7 +18,7 @@
         AUTO_TRACK_EVENTS: true,
         CONSENT_REQUIRED: true
     };
-    
+
     // Google Analytics 4 Initialization
     function initializeGoogleAnalytics() {
         // Create and load the gtag script
@@ -26,15 +26,15 @@
         gtagScript.async = true;
         gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_CONFIG.MEASUREMENT_ID}`;
         document.head.appendChild(gtagScript);
-        
+
         // Initialize dataLayer and gtag function
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         window.gtag = gtag;
-        
+
         // Initialize with current date
         gtag('js', new Date());
-        
+
         // Set consent defaults (GDPR compliance)
         gtag('consent', 'default', {
             'ad_storage': 'denied',
@@ -43,7 +43,7 @@
             'analytics_storage': ANALYTICS_CONFIG.CONSENT_REQUIRED ? 'denied' : 'granted',
             'wait_for_update': 500
         });
-        
+
         // Configure Google Analytics
         gtag('config', ANALYTICS_CONFIG.MEASUREMENT_ID, {
             'send_page_view': true, // Let GA handle page views initially
@@ -53,10 +53,10 @@
             'cookie_expires': 63072000, // 2 years
             'debug_mode': ANALYTICS_CONFIG.DEBUG
         });
-        
+
         console.log('✅ Google Analytics 4 initialized:', ANALYTICS_CONFIG.MEASUREMENT_ID);
     }
-    
+
     // Check and update consent based on cookie settings
     function checkConsentStatus() {
         try {
@@ -69,7 +69,7 @@
             console.warn('Could not check cookie consent status:', error);
         }
     }
-    
+
     // Update analytics consent
     function updateAnalyticsConsent(consentSettings) {
         if (window.gtag) {
@@ -79,15 +79,15 @@
                 'ad_user_data': consentSettings.marketing ? 'granted' : 'denied',
                 'ad_personalization': consentSettings.marketing ? 'granted' : 'denied'
             });
-            
+
             console.log('🍪 Analytics consent updated:', consentSettings);
         }
     }
-    
+
     // Enhanced page view tracking with additional context
     function trackEnhancedPageView() {
         if (!window.gtag) return;
-        
+
         const pageData = {
             page_title: document.title,
             page_location: window.location.href,
@@ -102,15 +102,15 @@
                 'viewport_size': `${window.innerWidth}x${window.innerHeight}`
             }
         };
-        
+
         gtag('event', 'page_view', pageData);
         console.log('📊 Enhanced page view tracked:', pageData.page_title);
     }
-    
+
     // Set up automatic event tracking
     function setupAutomaticTracking() {
         if (!ANALYTICS_CONFIG.AUTO_TRACK_EVENTS) return;
-        
+
         // Track clicks on elements with data-analytics attribute
         document.addEventListener('click', function(event) {
             const element = event.target.closest('[data-analytics]');
@@ -118,7 +118,7 @@
                 const analyticsData = element.dataset.analytics;
                 const elementType = element.tagName.toLowerCase();
                 const elementText = element.textContent?.trim()?.substring(0, 50);
-                
+
                 gtag('event', 'click', {
                     event_category: 'engagement',
                     event_label: analyticsData,
@@ -131,13 +131,13 @@
                 });
             }
         });
-        
+
         // Track form submissions
         document.addEventListener('submit', function(event) {
             if (window.gtag && event.target.tagName === 'FORM') {
                 const form = event.target;
                 const formName = form.name || form.id || 'unnamed_form';
-                
+
                 gtag('event', 'form_submit', {
                     event_category: 'forms',
                     event_label: formName,
@@ -149,7 +149,7 @@
                 });
             }
         });
-        
+
         // Track outbound links
         document.addEventListener('click', function(event) {
             const link = event.target.closest('a');
@@ -171,34 +171,34 @@
                 }
             }
         });
-        
+
         // Track scroll depth
         setupScrollTracking();
-        
+
         // Track page performance
         setupPerformanceTracking();
-        
+
         console.log('🎯 Automatic event tracking enabled');
     }
-    
+
     // Track scroll depth milestones
     function setupScrollTracking() {
         let maxScroll = 0;
         const scrollMilestones = [25, 50, 75, 90];
         let milestoneTracked = [false, false, false, false];
-        
+
         function trackScroll() {
             const scrollPercent = Math.round(
                 (window.scrollY + window.innerHeight) / document.body.scrollHeight * 100
             );
-            
+
             if (scrollPercent > maxScroll) {
                 maxScroll = scrollPercent;
-                
+
                 scrollMilestones.forEach((milestone, index) => {
                     if (scrollPercent >= milestone && !milestoneTracked[index]) {
                         milestoneTracked[index] = true;
-                        
+
                         if (window.gtag) {
                             gtag('event', 'scroll', {
                                 event_category: 'engagement',
@@ -211,14 +211,14 @@
                 });
             }
         }
-        
+
         let scrollTimeout;
         window.addEventListener('scroll', function() {
             clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(trackScroll, 1000);
         });
     }
-    
+
     // Track page performance metrics
     function setupPerformanceTracking() {
         if ('performance' in window) {
@@ -240,7 +240,7 @@
             });
         }
     }
-    
+
     // Listen for consent changes
     function setupConsentListener() {
         // Listen for cookie consent changes
@@ -254,7 +254,7 @@
                 }
             }
         });
-        
+
         // Listen for consent updates via custom events
         window.addEventListener('cookieConsentUpdated', function(event) {
             if (event.detail) {
@@ -262,7 +262,7 @@
             }
         });
     }
-    
+
     // Utility functions
     function getPageSection() {
         const path = window.location.pathname;
@@ -273,12 +273,12 @@
         }
         return 'unknown';
     }
-    
+
     function getPageSubsection() {
         const hash = window.location.hash;
         return hash ? hash.substring(1) : null;
     }
-    
+
     function getSessionId() {
         let sessionId = sessionStorage.getItem('dampSessionId');
         if (!sessionId) {
@@ -287,7 +287,7 @@
         }
         return sessionId;
     }
-    
+
     function getUserType() {
         // Simple user type detection
         if (document.referrer && !document.referrer.includes(window.location.hostname)) {
@@ -295,57 +295,57 @@
         }
         return localStorage.getItem('dampVisitor') ? 'returning_visitor' : 'new_visitor';
     }
-    
+
     function getDeviceCategory() {
         const width = window.innerWidth;
         if (width < 768) return 'mobile';
         if (width < 1024) return 'tablet';
         return 'desktop';
     }
-    
+
     function getPageLoadTime() {
         return Date.now() - performance.timing.navigationStart;
     }
-    
+
     // Mark visitor as returning
     function markVisitor() {
         if (!localStorage.getItem('dampVisitor')) {
             localStorage.setItem('dampVisitor', 'true');
         }
     }
-    
+
     // Initialize everything when DOM is ready
     function initialize() {
         console.log('🚀 Initializing DAMP Analytics...');
-        
+
         // Initialize Google Analytics
         initializeGoogleAnalytics();
-        
+
         // Check consent status
         checkConsentStatus();
-        
+
         // Set up consent listener
         setupConsentListener();
-        
+
         // Mark visitor
         markVisitor();
-        
+
         // Wait for gtag to be available, then set up tracking
         const checkGtag = setInterval(function() {
             if (window.gtag) {
                 clearInterval(checkGtag);
-                
+
                 // Track enhanced page view
                 setTimeout(trackEnhancedPageView, 100);
-                
+
                 // Set up automatic tracking
                 setupAutomaticTracking();
-                
+
                 console.log('✅ DAMP Analytics fully initialized');
             }
         }, 100);
     }
-    
+
     // Initialize when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initialize);
@@ -353,7 +353,7 @@
         // DOM is already ready
         setTimeout(initialize, 0);
     }
-    
+
     // Expose utility functions globally
     window.dampAnalyticsUtils = {
         trackEvent: function(eventName, eventData) {
@@ -377,5 +377,5 @@
             }
         }
     };
-    
-})(); 
+
+})();

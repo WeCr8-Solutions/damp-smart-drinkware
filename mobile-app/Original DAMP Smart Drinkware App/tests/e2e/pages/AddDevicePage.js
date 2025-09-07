@@ -1,6 +1,6 @@
 /**
  * Add Device Page Object
- * 
+ *
  * Represents the add device flow and provides methods
  * to interact with it in tests.
  */
@@ -11,7 +11,7 @@ export class AddDevicePage {
    */
   constructor(page) {
     this.page = page;
-    
+
     // Selectors
     this.deviceTypeTitle = page.locator('[data-testid="device-type-title"]');
     this.deviceTypesList = page.locator('[data-testid="device-types-list"]');

@@ -98,7 +98,7 @@ class DAMPPricingSystem {
                     }
                 }
             },
-            
+
             // Pricing tiers and phases
             pricing_phases: {
                 pre_order: {
@@ -235,31 +235,31 @@ class DAMPPricingSystem {
     init() {
         // Set up automatic price updates
         this.setupPriceUpdates();
-        
+
         // Initialize promo code system
         this.initPromoCodeSystem();
-        
+
         // Set up event listeners
         this.setupEventListeners();
-        
+
         console.log('🎯 DAMP Pricing System initialized');
     }
 
     // Get current pricing phase
     getCurrentPricingPhase() {
         const now = new Date();
-        
+
         for (const [phase, config] of Object.entries(this.config.pricing_phases)) {
             if (config.active) {
                 const startDate = new Date(config.start_date);
                 const endDate = config.end_date ? new Date(config.end_date) : null;
-                
+
                 if (now >= startDate && (!endDate || now <= endDate)) {
                     return { phase, config };
                 }
             }
         }
-        
+
         return { phase: 'standard', config: this.config.pricing_phases.standard };
     }
 
@@ -336,8 +336,8 @@ class DAMPPricingSystem {
             discounts: discounts,
             pricing_phase: currentPhase.phase,
             phase_badge: currentPhase.config.badge,
-            delivery_estimate: currentPhase.phase === 'pre_order' ? 
-                product.delivery.pre_order_delivery : 
+            delivery_estimate: currentPhase.phase === 'pre_order' ?
+                product.delivery.pre_order_delivery :
                 product.delivery.standard_delivery,
             currency: product.pricing.currency
         };
@@ -354,7 +354,7 @@ class DAMPPricingSystem {
         if (!discountConfig.applicable_products.includes(productId)) return null;
 
         for (const tier of discountConfig.tiers) {
-            if (quantity >= tier.min_quantity && 
+            if (quantity >= tier.min_quantity &&
                 (!tier.max_quantity || quantity <= tier.max_quantity)) {
                 return tier;
             }
@@ -366,18 +366,18 @@ class DAMPPricingSystem {
     // Get seasonal discount for a product
     getSeasonalDiscount(productId) {
         const now = new Date();
-        
+
         for (const [season, config] of Object.entries(this.config.seasonal_pricing)) {
             if (config.active && config.applicable_products.includes(productId)) {
                 const startDate = new Date(config.start_date);
                 const endDate = new Date(config.end_date);
-                
+
                 if (now >= startDate && now <= endDate) {
                     return config;
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -463,7 +463,7 @@ class DAMPPricingSystem {
             const productId = element.dataset.productId;
             const quantity = parseInt(element.dataset.quantity) || 1;
             const priceType = element.dataset.priceType || 'final';
-            
+
             if (productId) {
                 const pricing = this.getProductPrice(productId, quantity);
                 this.updatePriceElement(element, pricing, priceType);
@@ -540,7 +540,7 @@ class DAMPPricingSystem {
     handlePromoCodeInput(event) {
         const code = event.target.value.toUpperCase();
         const button = document.querySelector(`[data-promo-apply="${event.target.dataset.promoInput}"]`);
-        
+
         if (button) {
             button.disabled = code.length < 3;
         }
@@ -550,7 +550,7 @@ class DAMPPricingSystem {
     handlePromoCodeApply(event) {
         const inputId = event.target.dataset.promoApply;
         const input = document.querySelector(`[data-promo-input="${inputId}"]`);
-        
+
         if (input) {
             const code = input.value.trim();
             this.validateAndApplyPromoCode(code);
@@ -561,12 +561,12 @@ class DAMPPricingSystem {
     validateAndApplyPromoCode(code) {
         // This would typically make an API call to validate the code
         // For now, we'll use the local validation
-        
+
         // Get current cart total (this should be dynamic based on your cart system)
         const cartTotal = this.getCurrentCartTotal();
-        
+
         const promoResult = this.applyPromoCode(code, cartTotal);
-        
+
         if (promoResult) {
             // Code is valid
             this.showPromoSuccess(promoResult);
@@ -599,10 +599,10 @@ class DAMPPricingSystem {
         const notification = document.createElement('div');
         notification.className = `pricing-notification pricing-notification-${type}`;
         notification.textContent = message;
-        
+
         // Add to page
         document.body.appendChild(notification);
-        
+
         // Auto-remove after 3 seconds
         setTimeout(() => {
             notification.remove();
@@ -619,7 +619,7 @@ class DAMPPricingSystem {
     updateCartWithPromo(promoResult) {
         // This should integrate with your cart system
         console.log('Applying promo to cart:', promoResult);
-        
+
         // Dispatch event for cart to listen to
         window.dispatchEvent(new CustomEvent('damp:promoApplied', {
             detail: promoResult
@@ -645,7 +645,7 @@ class DAMPPricingSystem {
             // Skip API call if no backend pricing endpoint is configured
             console.log('ℹ️ Pricing reload skipped (static configuration in use)');
             return;
-            
+
             const response = await fetch('/api/pricing/config');
             const newConfig = await response.json();
             this.config = newConfig;
@@ -710,4 +710,4 @@ window.DAMPPricing = new DAMPPricingSystem();
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DAMPPricingSystem;
-} 
+}

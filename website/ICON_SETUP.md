@@ -164,7 +164,7 @@ After generating the icons:
 **Solution**: Ensure `icon.png` exists in `website/assets/images/logo/`
 
 ### Issue: "Icons still not loading"
-**Solution**: 
+**Solution**:
 1. Check browser console for errors
 2. Verify file paths in manifest.json
 3. Clear browser cache
@@ -196,4 +196,4 @@ If you encounter issues:
 
 ---
 
-The icon system is now set up with automatic fallbacks and optimization. Once you generate the required sizes, your icons will load properly across all devices and platforms! 
+The icon system is now set up with automatic fallbacks and optimization. Once you generate the required sizes, your icons will load properly across all devices and platforms!

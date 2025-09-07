@@ -15,9 +15,9 @@
 .skeleton-image {
     width: 200px;
     height: 150px;
-    background: linear-gradient(90deg, 
-        rgba(255, 255, 255, 0.1) 25%, 
-        rgba(255, 255, 255, 0.2) 50%, 
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.1) 25%,
+        rgba(255, 255, 255, 0.2) 50%,
         rgba(255, 255, 255, 0.1) 75%
     );
     background-size: 400% 100%;
@@ -28,9 +28,9 @@
 
 .skeleton-text {
     height: 20px;
-    background: linear-gradient(90deg, 
-        rgba(255, 255, 255, 0.1) 25%, 
-        rgba(255, 255, 255, 0.2) 50%, 
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.1) 25%,
+        rgba(255, 255, 255, 0.2) 50%,
         rgba(255, 255, 255, 0.1) 75%
     );
     background-size: 400% 100%;
@@ -98,4 +98,4 @@
     color: rgba(255, 255, 255, 0.7);
     margin-bottom: 20px;
     font-size: 0.9rem;
-} 
+}

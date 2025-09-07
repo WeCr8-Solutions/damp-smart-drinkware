@@ -39,62 +39,62 @@ class DAMPPerformanceMonitor {
             },
             ...options
         };
-        
+
         this.results = [];
         this.alerts = [];
-        
+
         this.ensureOutputDirectory();
     }
-    
+
     ensureOutputDirectory() {
         if (!fs.existsSync(this.config.outputDir)) {
             fs.mkdirSync(this.config.outputDir, { recursive: true });
         }
     }
-    
+
     async runAudit() {
         console.log('🚀 Starting DAMP Performance Monitoring...');
         console.log(`📊 Auditing ${this.config.urls.length} URLs`);
-        
+
         for (const url of this.config.urls) {
             console.log(`\n🔍 Auditing: ${url}`);
             await this.auditUrl(url);
         }
-        
+
         await this.generateReport();
         await this.checkThresholds();
         await this.sendAlerts();
-        
+
         console.log('\n✅ Performance monitoring complete!');
         return this.results;
     }
-    
+
     async auditUrl(url) {
         const timestamp = new Date().toISOString();
         const reportPath = path.join(
             this.config.outputDir,
             `lighthouse-${this.sanitizeUrl(url)}-${Date.now()}.json`
         );
-        
+
         try {
             // Run Lighthouse audit
             const command = `npx lighthouse "${url}" --output=json --output-path="${reportPath}" --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage"`;
-            
+
             console.log(`  ⏳ Running Lighthouse audit...`);
             execSync(command, { stdio: 'pipe' });
-            
+
             // Parse results
             const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
             const result = this.parseReport(report, url, timestamp);
-            
+
             this.results.push(result);
-            
+
             // Log results
             this.logResults(result);
-            
+
         } catch (error) {
             console.error(`  ❌ Error auditing ${url}:`, error.message);
-            
+
             this.results.push({
                 url,
                 timestamp,
@@ -103,11 +103,11 @@ class DAMPPerformanceMonitor {
             });
         }
     }
-    
+
     parseReport(report, url, timestamp) {
         const categories = report.lhr.categories;
         const audits = report.lhr.audits;
-        
+
         return {
             url,
             timestamp,
@@ -129,10 +129,10 @@ class DAMPPerformanceMonitor {
             reportPath: report.lhr.finalUrl
         };
     }
-    
+
     extractOpportunities(audits) {
         const opportunities = [];
-        
+
         const opportunityAudits = [
             'render-blocking-resources',
             'unused-css-rules',
@@ -143,7 +143,7 @@ class DAMPPerformanceMonitor {
             'unminified-css',
             'unminified-javascript'
         ];
-        
+
         for (const auditId of opportunityAudits) {
             const audit = audits[auditId];
             if (audit && audit.score < 1) {
@@ -157,27 +157,27 @@ class DAMPPerformanceMonitor {
                 });
             }
         }
-        
+
         return opportunities.sort((a, b) => b.savings - a.savings);
     }
-    
+
     logResults(result) {
         if (!result.success) {
             console.log(`  ❌ Audit failed`);
             return;
         }
-        
+
         console.log(`  📊 Performance: ${result.scores.performance}/100`);
         console.log(`  ♿ Accessibility: ${result.scores.accessibility}/100`);
         console.log(`  🏆 Best Practices: ${result.scores.bestPractices}/100`);
         console.log(`  🔍 SEO: ${result.scores.seo}/100`);
-        
+
         console.log(`  🎯 Core Web Vitals:`);
         console.log(`    FCP: ${Math.round(result.metrics.fcp)}ms`);
         console.log(`    LCP: ${Math.round(result.metrics.lcp)}ms`);
         console.log(`    CLS: ${result.metrics.cls.toFixed(3)}`);
         console.log(`    TBT: ${Math.round(result.metrics.tbt)}ms`);
-        
+
         if (result.opportunities.length > 0) {
             console.log(`  💡 Top opportunities:`);
             result.opportunities.slice(0, 3).forEach(opp => {
@@ -185,49 +185,49 @@ class DAMPPerformanceMonitor {
             });
         }
     }
-    
+
     async checkThresholds() {
         console.log('\n🎯 Checking performance thresholds...');
-        
+
         for (const result of this.results) {
             if (!result.success) continue;
-            
+
             const violations = [];
-            
+
             // Check score thresholds
             if (result.scores.performance < this.config.thresholds.performance) {
                 violations.push(`Performance score ${result.scores.performance} below threshold ${this.config.thresholds.performance}`);
             }
-            
+
             if (result.scores.accessibility < this.config.thresholds.accessibility) {
                 violations.push(`Accessibility score ${result.scores.accessibility} below threshold ${this.config.thresholds.accessibility}`);
             }
-            
+
             if (result.scores.bestPractices < this.config.thresholds.bestPractices) {
                 violations.push(`Best Practices score ${result.scores.bestPractices} below threshold ${this.config.thresholds.bestPractices}`);
             }
-            
+
             if (result.scores.seo < this.config.thresholds.seo) {
                 violations.push(`SEO score ${result.scores.seo} below threshold ${this.config.thresholds.seo}`);
             }
-            
+
             // Check Core Web Vitals thresholds
             if (result.metrics.fcp > this.config.thresholds.fcp) {
                 violations.push(`FCP ${Math.round(result.metrics.fcp)}ms exceeds threshold ${this.config.thresholds.fcp}ms`);
             }
-            
+
             if (result.metrics.lcp > this.config.thresholds.lcp) {
                 violations.push(`LCP ${Math.round(result.metrics.lcp)}ms exceeds threshold ${this.config.thresholds.lcp}ms`);
             }
-            
+
             if (result.metrics.cls > this.config.thresholds.cls) {
                 violations.push(`CLS ${result.metrics.cls.toFixed(3)} exceeds threshold ${this.config.thresholds.cls}`);
             }
-            
+
             if (result.metrics.tbt > this.config.thresholds.tbt) {
                 violations.push(`TBT ${Math.round(result.metrics.tbt)}ms exceeds threshold ${this.config.thresholds.tbt}ms`);
             }
-            
+
             if (violations.length > 0) {
                 const alert = {
                     url: result.url,
@@ -237,9 +237,9 @@ class DAMPPerformanceMonitor {
                     scores: result.scores,
                     metrics: result.metrics
                 };
-                
+
                 this.alerts.push(alert);
-                
+
                 console.log(`  ⚠️  ${result.url}:`);
                 violations.forEach(violation => {
                     console.log(`    • ${violation}`);
@@ -248,17 +248,17 @@ class DAMPPerformanceMonitor {
                 console.log(`  ✅ ${result.url}: All thresholds passed`);
             }
         }
-        
+
         if (this.alerts.length === 0) {
             console.log('🎉 All performance thresholds passed!');
         } else {
             console.log(`⚠️  ${this.alerts.length} performance alerts generated`);
         }
     }
-    
+
     async generateReport() {
         console.log('\n📊 Generating performance report...');
-        
+
         const report = {
             timestamp: new Date().toISOString(),
             summary: {
@@ -272,11 +272,11 @@ class DAMPPerformanceMonitor {
             alerts: this.alerts,
             config: this.config
         };
-        
+
         // Save detailed report
         const reportPath = path.join(this.config.outputDir, `performance-report-${Date.now()}.json`);
         fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
-        
+
         // Generate summary report
         const summaryPath = path.join(this.config.outputDir, 'latest-summary.json');
         const summary = {
@@ -286,20 +286,20 @@ class DAMPPerformanceMonitor {
             worstPerformingUrl: this.findWorstPerformingUrl(),
             topOpportunities: this.getTopOpportunities()
         };
-        
+
         fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2));
-        
+
         console.log(`  ✅ Detailed report saved: ${reportPath}`);
         console.log(`  ✅ Summary saved: ${summaryPath}`);
-        
+
         return report;
     }
-    
+
     calculateAverageScores() {
         const successfulResults = this.results.filter(r => r.success);
-        
+
         if (successfulResults.length === 0) return null;
-        
+
         const totals = successfulResults.reduce((acc, result) => {
             acc.performance += result.scores.performance;
             acc.accessibility += result.scores.accessibility;
@@ -307,9 +307,9 @@ class DAMPPerformanceMonitor {
             acc.seo += result.scores.seo;
             return acc;
         }, { performance: 0, accessibility: 0, bestPractices: 0, seo: 0 });
-        
+
         const count = successfulResults.length;
-        
+
         return {
             performance: Math.round(totals.performance / count),
             accessibility: Math.round(totals.accessibility / count),
@@ -317,20 +317,20 @@ class DAMPPerformanceMonitor {
             seo: Math.round(totals.seo / count)
         };
     }
-    
+
     findWorstPerformingUrl() {
         const successfulResults = this.results.filter(r => r.success);
-        
+
         if (successfulResults.length === 0) return null;
-        
+
         return successfulResults.reduce((worst, current) => {
             return current.scores.performance < worst.scores.performance ? current : worst;
         });
     }
-    
+
     getTopOpportunities() {
         const allOpportunities = [];
-        
+
         this.results.forEach(result => {
             if (result.success && result.opportunities) {
                 result.opportunities.forEach(opp => {
@@ -339,49 +339,49 @@ class DAMPPerformanceMonitor {
                 });
             }
         });
-        
+
         return allOpportunities
             .sort((a, b) => b.savings - a.savings)
             .slice(0, 10);
     }
-    
+
     async sendAlerts() {
         if (this.alerts.length === 0) return;
-        
+
         console.log('\n📢 Sending performance alerts...');
-        
+
         // Send Slack notification
         if (this.config.slackWebhook) {
             await this.sendSlackAlert();
         }
-        
+
         // Send email notifications
         if (this.config.emailConfig.enabled) {
             await this.sendEmailAlert();
         }
-        
+
         // GitHub Issue (if in CI environment)
         if (process.env.GITHUB_ACTIONS) {
             await this.createGitHubIssue();
         }
     }
-    
+
     async sendSlackAlert() {
         try {
             const message = this.formatSlackMessage();
-            
+
             // This would typically use a Slack webhook
             console.log('📱 Slack alert formatted (webhook required for sending):');
             console.log(JSON.stringify(message, null, 2));
-            
+
         } catch (error) {
             console.error('❌ Failed to send Slack alert:', error.message);
         }
     }
-    
+
     formatSlackMessage() {
         const averageScores = this.calculateAverageScores();
-        
+
         return {
             text: `🚨 DAMP Performance Alert - ${this.alerts.length} issues detected`,
             blocks: [
@@ -417,7 +417,7 @@ class DAMPPerformanceMonitor {
                     type: 'section',
                     text: {
                         type: 'mrkdwn',
-                        text: `*Issues Found:*\n${this.alerts.map(alert => 
+                        text: `*Issues Found:*\n${this.alerts.map(alert =>
                             `• ${alert.url}: ${alert.violations.length} violations`
                         ).join('\n')}`
                     }
@@ -425,18 +425,18 @@ class DAMPPerformanceMonitor {
             ]
         };
     }
-    
+
     async sendEmailAlert() {
         // Email sending would be implemented here
         console.log('📧 Email alert ready (SMTP configuration required)');
         console.log(`Recipients: ${this.config.emailConfig.recipients.join(', ')}`);
     }
-    
+
     async createGitHubIssue() {
         // GitHub issue creation would be implemented here
         console.log('🐛 GitHub issue creation ready (GitHub API integration required)');
     }
-    
+
     sanitizeUrl(url) {
         return url.replace(/https?:\/\//, '').replace(/[\/\?#]/g, '-').replace(/[^a-zA-Z0-9\-]/g, '');
     }
@@ -446,11 +446,11 @@ class DAMPPerformanceMonitor {
 if (require.main === module) {
     const args = process.argv.slice(2);
     const options = {};
-    
+
     // Parse command line arguments
     for (let i = 0; i < args.length; i++) {
         const arg = args[i];
-        
+
         if (arg === '--url' && args[i + 1]) {
             options.urls = [args[i + 1]];
             i++;
@@ -477,9 +477,9 @@ Environment Variables:
             process.exit(0);
         }
     }
-    
+
     const monitor = new DAMPPerformanceMonitor(options);
-    
+
     monitor.runAudit()
         .then(() => {
             console.log('\n🎉 Performance monitoring completed successfully!');

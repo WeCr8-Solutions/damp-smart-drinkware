@@ -1,6 +1,6 @@
 /**
  * Accessibility Settings Modal
- * 
+ *
  * Comprehensive accessibility and display options
  */
 
@@ -227,7 +227,7 @@ export default function AccessibilityModal({
             <View style={settingsStyles.sectionContent}>
               {section.items.map((item, itemIndex) => {
                 const isLast = itemIndex === section.items.length - 1;
-                
+
                 if (item.type === 'slider') {
                   return (
                     <View
@@ -311,7 +311,7 @@ export default function AccessibilityModal({
               Accessibility Features
             </Text>
             <Text style={[settingsStyles.errorMessage, { color: '#64B5F6' }]}>
-              These settings help make the app more accessible for users with different needs. 
+              These settings help make the app more accessible for users with different needs.
               Changes take effect immediately and are saved automatically.
             </Text>
           </View>

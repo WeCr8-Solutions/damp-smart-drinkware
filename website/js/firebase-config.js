@@ -22,9 +22,9 @@ if (firebaseConfig.apiKey === "your_firebase_api_key_here") {
   console.warn('⚠️ Firebase API key not configured - voting system will use fallback mode');
 }
 
-console.log('🔥 Firebase config loaded:', { 
+console.log('🔥 Firebase config loaded:', {
   hasApiKey: firebaseConfig.apiKey !== "your_firebase_api_key_here",
-  projectId: firebaseConfig.projectId 
+  projectId: firebaseConfig.projectId
 });
 
 // Initialize Firebase
@@ -43,19 +43,19 @@ if (window.location.hostname === 'localhost') {
   if (!auth._delegate._config.emulator) {
     connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
   }
-  
+
   if (!db._delegate._config.settings?.host?.includes('localhost')) {
     connectFirestoreEmulator(db, 'localhost', 8080);
   }
-  
+
   if (!functions._delegate.region) {
     connectFunctionsEmulator(functions, 'localhost', 5001);
   }
-  
+
   if (!storage._delegate._config.host?.includes('localhost')) {
     connectStorageEmulator(storage, 'localhost', 9199);
   }
 }
 
 // Export the app instance
-export default app; 
+export default app;

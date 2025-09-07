@@ -135,10 +135,10 @@ export default function NotificationSettingsScreen() {
   const requestNotificationPermission = async () => {
     try {
       setLoading(true);
-      
+
       const { status } = await Notifications.requestPermissionsAsync();
       setPermissionStatus(status);
-      
+
       if (status === 'granted') {
         Alert.alert(
           'Notifications Enabled',
