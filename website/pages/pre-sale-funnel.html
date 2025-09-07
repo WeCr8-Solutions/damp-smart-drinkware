@@ -782,8 +782,8 @@
                 
                 <!-- DAMP Silicone Bottom -->
                 <div class="product-card" data-product-id="silicone-bottom">
-                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #00d4ff, #0099cc); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
-                        <span style="font-size: 3rem; color: white;">🥤</span>
+                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #00d4ff, #0099cc); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px;">
+                        <img src="../assets/images/products/silicone-bottom/silicone-bottom.png" alt="DAMP Silicone Bottom" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Silicone Bottom</h3>
                     <div class="product-pricing" style="margin-bottom: 15px;">
@@ -805,8 +805,8 @@
 
                 <!-- DAMP Handle v1.0 -->
                 <div class="product-card" data-product-id="damp-handle">
-                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #ff4757, #ff6b6b); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
-                        <span style="font-size: 3rem; color: white;">🔧</span>
+                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #ff4757, #ff6b6b); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px;">
+                        <img src="../assets/images/products/damp-handle/damp-handle.png" alt="DAMP Handle v1.0" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Handle v1.0</h3>
                     <div class="product-pricing" style="margin-bottom: 15px;">
@@ -828,8 +828,8 @@
 
                 <!-- DAMP Cup Sleeve -->
                 <div class="product-card" data-product-id="cup-sleeve">
-                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #ffa502, #ff6348); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
-                        <span style="font-size: 3rem; color: white;">☕</span>
+                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #ffa502, #ff6348); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px;">
+                        <img src="../assets/images/products/cup-sleeve/cup-sleeve.png" alt="DAMP Cup Sleeve" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Cup Sleeve</h3>
                     <div class="product-pricing" style="margin-bottom: 15px;">
@@ -851,8 +851,8 @@
 
                 <!-- DAMP Baby Bottle -->
                 <div class="product-card" data-product-id="baby-bottle">
-                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #a55eea, #fd79a8); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
-                        <span style="font-size: 3rem; color: white;">🍼</span>
+                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #a55eea, #fd79a8); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px;">
+                        <img src="../assets/images/products/baby-bottle/baby-bottle.png" alt="DAMP Baby Bottle" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Baby Bottle</h3>
                     <div class="product-pricing" style="margin-bottom: 15px;">
@@ -1016,6 +1016,11 @@
             
             updateQuantity(productId, change) {
                 const quantityEl = document.querySelector(`[data-product="${productId}"].quantity`);
+                if (!quantityEl) {
+                    console.error('❌ Quantity element not found for:', productId);
+                    return;
+                }
+                
                 const currentQty = parseInt(quantityEl.textContent);
                 const newQty = Math.max(0, Math.min(10, currentQty + change)); // Limit 0-10
                 
@@ -1023,21 +1028,60 @@
                 
                 // Update add to cart button state
                 const addBtn = document.querySelector(`[data-product-id="${productId}"]`);
+                if (!addBtn) {
+                    return;
+                }
+                
                 const isInCart = this.cart[productId] && this.cart[productId] > 0;
                 
                 if (newQty > 0) {
                     addBtn.style.opacity = '1';
                     addBtn.style.cursor = 'pointer';
                     addBtn.textContent = `Add ${newQty} to Cart`;
+                    addBtn.disabled = false;
                 } else if (isInCart) {
                     // Item is already in cart, allow adding more
                     addBtn.style.opacity = '1';
                     addBtn.style.cursor = 'pointer';
                     addBtn.textContent = 'Add More to Cart';
+                    addBtn.disabled = false;
                 } else {
                     addBtn.style.opacity = '0.7';
                     addBtn.style.cursor = 'not-allowed';
                     addBtn.textContent = 'Add to Cart';
+                    addBtn.disabled = true;
+                }
+                
+                // Update checkout button state
+                this.updateCheckoutButton();
+            }
+            
+            updateCheckoutButton() {
+                const checkoutBtn = document.getElementById('checkout-button');
+                if (!checkoutBtn) return;
+                
+                // Check if there are any items with quantity > 0 OR items in cart
+                const hasQuantitySelected = Array.from(document.querySelectorAll('.quantity')).some(el => parseInt(el.textContent) > 0);
+                const hasItemsInCart = Object.keys(this.cart).length > 0;
+                
+                if (hasQuantitySelected || hasItemsInCart) {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.style.opacity = '1';
+                    checkoutBtn.style.cursor = 'pointer';
+                    
+                    if (hasItemsInCart) {
+                        const total = Object.entries(this.cart).reduce((sum, [productId, quantity]) => {
+                            return sum + (this.products[productId].price * quantity);
+                        }, 0);
+                        checkoutBtn.textContent = `Checkout - $${total.toFixed(2)}`;
+                    } else {
+                        checkoutBtn.textContent = 'Add Items to Cart First';
+                    }
+                } else {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.style.opacity = '0.5';
+                    checkoutBtn.style.cursor = 'not-allowed';
+                    checkoutBtn.textContent = 'Add Items to Cart First';
                 }
             }
             
@@ -1062,6 +1106,9 @@
                 
                 // Update cart display
                 this.updateCartDisplay();
+                
+                // Update checkout button
+                this.updateCheckoutButton();
                 
                 // Show success message
                 const productName = this.products[productId].name;
