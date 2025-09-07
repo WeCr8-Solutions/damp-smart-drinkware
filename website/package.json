@@ -1,7 +1,7 @@
 {
-  "name": "damp-smart-drinkware",
+  "name": "damp-smart-drinkware-website",
   "version": "1.0.0",
-  "description": "Professional smart drinkware website with BLE technology",
+  "description": "Professional smart drinkware website with BLE technology and performance optimization",
   "main": "index.html",
   "private": true,
   "scripts": {
@@ -11,12 +11,12 @@
     "serve:test": "npx http-server . -p 3001 -c-1 --silent",
     "serve:prod": "npx http-server dist -p 3002 -c-1 --silent",
     "serve:e2e": "npx http-server dist -p 3003 -c-1 --silent",
-    
+    "serve:ci": "npx http-server dist -p 3000 -c-1 --silent",
     "build": "npm run validate:all && npm run build:prod",
     "build:dev": "npm run optimize:images:quick && node ../build/build.js --dev",
-    "build:prod": "npm run optimize:images && node ../build/build.js --prod && npm run minify:all",
+    "build:prod": "npm run optimize:images && node build-optimize.js && npm run minify:all",
     "build:analyze": "npm run build:prod && npm run bundle:analyze",
-    
+    "build:optimize": "node build-optimize.js",
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "jest --config=../tests/config/jest.config.js --testPathPattern=unit --coverage --passWithNoTests",
     "test:integration": "jest --config=../tests/config/jest.config.js --testPathPattern=integration --coverage --passWithNoTests",
@@ -29,110 +29,61 @@
     "test:a11y": "axe --include=\"main,nav,footer\" --exclude=\"#ads\" --dir=. --save=a11y-report.json",
     "test:watch": "jest --config=../tests/config/jest.config.js --watch",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --config=../tests/config/jest.config.js --runInBand",
-    
-    "coverage:report": "jest --config=../tests/config/jest.config.js --coverage --coverageReporters=html,lcov,text-summary",
-    "coverage:check": "nyc check-coverage --statements 90 --branches 90 --functions 90 --lines 90",
-    "coverage:open": "open coverage/lcov-report/index.html",
-    
-    "lint": "eslint . --ext .js,.json,.html,.md --cache --cache-location .eslintcache",
-    "lint:ci": "eslint . --ext .js,.json,.html,.md --format json --output-file eslint-report.json",
-    "lint:fix": "eslint . --ext .js,.json,.html,.md --fix --cache",
-    "lint:watch": "nodemon --ext js,json,html,md --exec \"npm run lint\"",
-    
-    "format": "prettier --write \"**/*.{js,json,html,css,md}\"",
-    "format:check": "prettier --check \"**/*.{js,json,html,css,md}\" --write=false",
-    "format:ci": "prettier --check \"**/*.{js,json,html,css,md}\" --write=false --list-different > prettier-report.json",
-    
-    "type-check": "tsc --noEmit --project ../tsconfig.json",
-    "type-check:watch": "tsc --noEmit --project ../tsconfig.json --watch",
-    
-    "lighthouse:all": "npm run lighthouse:desktop && npm run lighthouse:mobile",
-    "lighthouse:desktop": "lighthouse http://localhost:3000 --output=html,json --output-path=./reports/lighthouse-desktop --chrome-flags='--headless' --preset=desktop",
-    "lighthouse:mobile": "lighthouse http://localhost:3000 --output=html,json --output-path=./reports/lighthouse-mobile --chrome-flags='--headless'",
-    "lighthouse:ci": "lhci autorun --config=../quality/lighthouseci.json",
-    "lighthouse:budget": "lighthouse http://localhost:3000 --budget-path=../quality/performance-budget.json --output=html --output-path=./reports/lighthouse-budget.html",
-    "lighthouse:compare": "lighthouse-batch --file urls.txt --compare",
-    
-    "security:audit": "npm audit --audit-level=moderate --json > security-audit.json",
-    "security:snyk": "snyk test --json > snyk-report.json",
-    "security:check": "npm run security:audit && npm run security:snyk",
-    
-    "validate:html": "html-validate *.html pages/*.html --config=../quality/html-validate.json",
-    "validate:css": "stylelint 'assets/css/**/*.css' --config=../quality/.stylelintrc.json",
-    "validate:js": "npm run lint",
-    "validate:images": "node ../tools/validate-images.js",
-    "validate:links": "broken-link-checker http://localhost:3000 --recursive --get --filter-level=3",
-    "validate:all": "npm run validate:html && npm run validate:css && npm run validate:js && npm run type-check",
-    
-    "optimize:images": "node ../tools/image-optimizer.js",
-    "optimize:images:quick": "node ../tools/image-optimizer.js --quick",
-    "optimize:fonts": "node ../tools/font-optimizer.js",
-    "optimize:css": "postcss assets/css/**/*.css --use autoprefixer cssnano --replace",
-    "optimize:js": "terser assets/js/**/*.js --compress --mangle --output-dir=dist/assets/js/",
-    
-    "minify:html": "html-minifier-terser --input-dir . --output-dir dist --file-ext html --remove-comments --collapse-whitespace",
-    "minify:css": "cleancss -o dist/assets/css/main.min.css assets/css/*.css",
-    "minify:js": "terser assets/js/**/*.js --compress --mangle --output dist/assets/js/main.min.js",
-    "minify:all": "npm run minify:html && npm run minify:css && npm run minify:js",
-    
-    "bundle:analyze": "webpack-bundle-analyzer dist/static/js/*.js",
-    "bundle:visualize": "npx source-map-explorer dist/assets/js/*.js",
-    
-    "docs:generate": "jsdoc -c ../quality/jsdoc.config.json",
-    "docs:serve": "docsify serve docs",
-    
-    "quality:report": "node ../tools/quality-reporter.js",
-    "quality:gate": "npm run validate:all && npm run test && npm run security:check && npm run lighthouse:budget",
-    
-    "pre-commit": "lint-staged",
-    "pre-push": "npm run quality:gate",
-    
-    "clean": "rimraf dist coverage .nyc_output .eslintcache test-results reports",
-    "clean:cache": "rimraf node_modules/.cache .eslintcache",
-    "clean:all": "npm run clean && npm run clean:cache && rimraf node_modules",
-    
-    "audit": "npm run security:check && npm run validate:all && npm run lighthouse:all",
-    "audit:ci": "npm run security:check && npm run validate:all && npm run test && npm run lighthouse:ci",
-    
-    "deploy": "npm run build && npm run audit:ci",
-    "deploy:staging": "npm run deploy && node ../deployment/deploy-staging.js",
-    "deploy:production": "npm run deploy && node ../deployment/deploy-production.js",
-    
-    "start": "http-server --no-cache --cors -a 0.0.0.0 -p 3000 .",
-    "ci": "npm ci && npm run audit:ci",
-    "analyze": "webpack-bundle-analyzer dist/assets/js/*.js --mode static --open",
-    "build:analyze": "npm run build && npm run analyze"
+    "lighthouse": "lighthouse https://dampdrink.com --output=json --output-path=lighthouse-report.json",
+    "lighthouse:local": "lighthouse http://localhost:3000 --output=json --output-path=lighthouse-report-local.json",
+    "lighthouse:ci": "lhci autorun",
+    "lighthouse:ci:collect": "lhci collect",
+    "lighthouse:ci:assert": "lhci assert",
+    "lighthouse:ci:upload": "lhci upload",
+    "performance:audit": "npm run build:prod && npm run lighthouse:local",
+    "performance:monitor": "npm run lighthouse:ci",
+    "performance:budget": "npm run lighthouse:ci:assert",
+    "optimize:images": "node ../build/optimize-images.js",
+    "optimize:images:quick": "node ../build/optimize-images.js --quick",
+    "optimize:css": "node ../build/optimize-css.js",
+    "optimize:js": "node ../build/optimize-js.js",
+    "minify:css": "cssnano assets/css/**/*.css --dir dist/assets/css",
+    "minify:js": "terser assets/js/**/*.js --compress --mangle --output-dir dist/assets/js",
+    "minify:all": "npm run minify:css && npm run minify:js",
+    "lint": "eslint assets/js/**/*.js",
+    "lint:fix": "eslint assets/js/**/*.js --fix",
+    "lint:watch": "nodemon --exec \"npm run lint\" --watch assets/js --ext js",
+    "validate:html": "html-validate *.html pages/*.html",
+    "validate:css": "stylelint assets/css/**/*.css",
+    "validate:js": "eslint assets/js/**/*.js",
+    "validate:all": "npm run validate:html && npm run validate:css && npm run validate:js",
+    "bundle:analyze": "webpack-bundle-analyzer dist/assets/js --port 8888",
+    "security:audit": "npm audit",
+    "security:fix": "npm audit fix",
+    "deploy:preview": "npm run build:prod && npx netlify deploy --dir=dist",
+    "deploy:prod": "npm run build:prod && npx netlify deploy --prod --dir=dist",
+    "clean": "rm -rf dist node_modules/.cache .lighthouseci",
+    "clean:reports": "rm -rf lighthouse-report*.json .lighthouseci coverage",
+    "start": "npm run serve",
+    "prestart": "npm run build:optimize"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@playwright/test": "^1.40.0",
-    "@axe-core/cli": "^4.8.0",
-    "babel-jest": "^29.6.1",
-    "clean-css": "^5.3.2",
-    "eslint": "^8.45.0",
-    "html-minifier-terser": "^7.2.0",
-    "html-validate": "^8.2.0",
-    "http-server": "^14.1.1",
-    "imagemin": "^8.0.1",
-    "imagemin-avif": "^0.1.5",
-    "imagemin-mozjpeg": "^10.0.0",
-    "imagemin-pngquant": "^9.0.2",
-    "imagemin-webp": "^6.0.0",
-    "jest": "^29.6.1",
-    "jest-environment-jsdom": "^29.6.1",
-    "jest-html-reporters": "^3.1.5",
-    "jest-junit": "^16.0.0",
-    "lighthouse": "^10.4.0",
-    "lint-staged": "^14.0.1",
-    "nodemon": "^3.0.1",
-    "nyc": "^15.1.0",
-    "playwright": "^1.40.0",
-    "prettier": "^3.0.0",
-    "rimraf": "^5.0.1",
-    "sharp": "^0.32.6",
-    "stylelint": "^15.10.2",
-    "terser": "^5.19.2",
-    "typescript": "^5.1.6"
+    "@lhci/cli": "^0.12.0",
+    "axe-core": "^4.8.3",
+    "cssnano": "^6.0.3",
+    "eslint": "^8.56.0",
+    "html-validate": "^8.7.4",
+    "jest": "^29.7.0",
+    "lighthouse": "^11.7.1",
+    "nodemon": "^3.0.2",
+    "playwright": "^1.40.1",
+    "postcss": "^8.4.32",
+    "stylelint": "^16.1.0",
+    "terser": "^5.26.0",
+    "webpack-bundle-analyzer": "^4.10.1"
+  },
+  "dependencies": {
+    "firebase": "^10.7.1",
+    "stripe": "^14.12.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "browserslist": [
     "> 1%",
@@ -140,21 +91,16 @@
     "not dead",
     "not ie 11"
   ],
-  "keywords": [
-    "smart-drinkware",
-    "ble-technology",
-    "iot",
-    "beverage-tracking",
-    "professional-website"
-  ],
-  "author": {
-    "name": "WeCr8 Solutions LLC",
-    "email": "hello@dampdrink.com",
-    "url": "https://dampdrink.com"
-  },
-  "license": "UNLICENSED",
-  "repository": {
-    "type": "git",
-    "url": "private"
+  "lighthouse": {
+    "extends": "lighthouse:default",
+    "settings": {
+      "onlyAudits": [
+        "first-contentful-paint",
+        "largest-contentful-paint",
+        "speed-index",
+        "cumulative-layout-shift",
+        "total-blocking-time"
+      ]
+    }
   }
-} 
+}

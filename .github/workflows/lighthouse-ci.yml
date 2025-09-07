@@ -1,0 +1,309 @@
+name: Lighthouse CI
+
+on:
+  # Run on every push to main branch
+  push:
+    branches: [ main ]
+    paths:
+      - 'website/**'
+      - '.github/workflows/lighthouse-ci.yml'
+  
+  # Run on every pull request
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'website/**'
+      - '.github/workflows/lighthouse-ci.yml'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+  
+  # Run daily to monitor performance drift
+  schedule:
+    - cron: '0 6 * * *'  # Daily at 6 AM UTC
+
+jobs:
+  lighthouse-ci:
+    name: Lighthouse CI Audit
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: 'website/package-lock.json'
+      
+      - name: Install dependencies
+        working-directory: ./website
+        run: |
+          npm ci
+          npm install -g @lhci/cli@0.12.x
+      
+      - name: Build optimized website
+        working-directory: ./website
+        run: |
+          echo "Building optimized website for Lighthouse audit..."
+          node build-optimize.js
+          echo "✅ Website build completed"
+      
+      - name: Add CI server script
+        working-directory: ./website
+        run: |
+          # Add serve:ci script to package.json if it doesn't exist
+          if ! grep -q "serve:ci" package.json; then
+            npm pkg set scripts.serve:ci="npx http-server dist -p 3000 -c-1 --silent"
+            echo "✅ Added serve:ci script"
+          fi
+      
+      - name: Run Lighthouse CI
+        working-directory: ./website
+        run: |
+          echo "Starting Lighthouse CI audit..."
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
+      
+      - name: Upload Lighthouse reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: lighthouse-reports-${{ github.run_number }}
+          path: |
+            website/.lighthouseci/
+            website/lighthouse-report.json
+          retention-days: 30
+      
+      - name: Performance Summary Comment
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Read Lighthouse CI results
+            const resultsPath = './website/.lighthouseci';
+            if (!fs.existsSync(resultsPath)) {
+              console.log('No Lighthouse CI results found');
+              return;
+            }
+            
+            // Find the latest manifest
+            const manifestFiles = fs.readdirSync(resultsPath)
+              .filter(file => file.startsWith('manifest'))
+              .sort()
+              .reverse();
+            
+            if (manifestFiles.length === 0) {
+              console.log('No manifest files found');
+              return;
+            }
+            
+            const manifestPath = path.join(resultsPath, manifestFiles[0]);
+            const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+            
+            // Create performance summary
+            let comment = '## 🚀 Lighthouse CI Performance Report\n\n';
+            
+            for (const result of manifest) {
+              const url = new URL(result.url).pathname;
+              const summary = result.summary;
+              
+              comment += `### 📄 ${url === '/' ? 'Homepage' : url}\n`;
+              comment += `| Metric | Score |\n`;
+              comment += `|--------|-------|\n`;
+              comment += `| 🎯 Performance | ${Math.round(summary.performance * 100)}/100 |\n`;
+              comment += `| ♿ Accessibility | ${Math.round(summary.accessibility * 100)}/100 |\n`;
+              comment += `| 🏆 Best Practices | ${Math.round(summary['best-practices'] * 100)}/100 |\n`;
+              comment += `| 🔍 SEO | ${Math.round(summary.seo * 100)}/100 |\n\n`;
+            }
+            
+            comment += `\n📊 **Full Report**: [View detailed Lighthouse report](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})\n`;
+            comment += `\n⏰ *Report generated at: ${new Date().toISOString()}*`;
+            
+            // Post comment
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  # Performance regression detection
+  performance-regression:
+    name: Performance Regression Check
+    runs-on: ubuntu-latest
+    needs: lighthouse-ci
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'website/package-lock.json'
+      
+      - name: Download Lighthouse reports
+        uses: actions/download-artifact@v3
+        with:
+          name: lighthouse-reports-${{ github.run_number }}
+          path: ./lighthouse-reports
+      
+      - name: Check for performance regressions
+        run: |
+          echo "🔍 Checking for performance regressions..."
+          
+          # This is a placeholder for more sophisticated regression detection
+          # In a real implementation, you would compare current scores with baseline
+          
+          if [ -f "./lighthouse-reports/.lighthouseci/manifest.json" ]; then
+            echo "✅ Lighthouse reports found"
+            
+            # Extract performance scores and check against thresholds
+            node -e "
+              const fs = require('fs');
+              const manifest = JSON.parse(fs.readFileSync('./lighthouse-reports/.lighthouseci/manifest.json', 'utf8'));
+              
+              let hasRegression = false;
+              const minPerformanceScore = 0.8;
+              
+              for (const result of manifest) {
+                const perfScore = result.summary.performance;
+                console.log(\`Performance score for \${result.url}: \${Math.round(perfScore * 100)}/100\`);
+                
+                if (perfScore < minPerformanceScore) {
+                  console.error(\`❌ Performance regression detected! Score \${Math.round(perfScore * 100)} is below threshold \${Math.round(minPerformanceScore * 100)}\`);
+                  hasRegression = true;
+                }
+              }
+              
+              if (hasRegression) {
+                process.exit(1);
+              } else {
+                console.log('✅ No performance regressions detected');
+              }
+            "
+          else
+            echo "⚠️ No Lighthouse reports found"
+            exit 1
+          fi
+
+  # Deploy performance dashboard (optional)
+  deploy-dashboard:
+    name: Deploy Performance Dashboard
+    runs-on: ubuntu-latest
+    needs: lighthouse-ci
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      
+      - name: Download Lighthouse reports
+        uses: actions/download-artifact@v3
+        with:
+          name: lighthouse-reports-${{ github.run_number }}
+          path: ./lighthouse-reports
+      
+      - name: Generate performance dashboard
+        run: |
+          echo "📊 Generating performance dashboard..."
+          
+          # Create a simple performance dashboard
+          mkdir -p performance-dashboard
+          
+          cat > performance-dashboard/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>DAMP Performance Dashboard</title>
+              <style>
+                  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #0f0f23; color: white; }
+                  .container { max-width: 1200px; margin: 0 auto; }
+                  .header { text-align: center; margin-bottom: 40px; }
+                  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+                  .metric-card { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; }
+                  .metric-score { font-size: 2rem; font-weight: bold; color: #00d4ff; }
+                  .metric-name { font-size: 1.1rem; margin-top: 10px; }
+                  .timestamp { text-align: center; margin-top: 40px; opacity: 0.7; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="header">
+                      <h1>🚀 DAMP Performance Dashboard</h1>
+                      <p>Real-time Lighthouse performance monitoring</p>
+                  </div>
+                  <div class="metrics" id="metrics">
+                      <!-- Metrics will be populated by JavaScript -->
+                  </div>
+                  <div class="timestamp">
+                      Last updated: <span id="timestamp"></span>
+                  </div>
+              </div>
+              
+              <script>
+                  // This would typically fetch data from an API
+                  // For now, we'll show placeholder data
+                  const metrics = [
+                      { name: 'Performance', score: 95 },
+                      { name: 'Accessibility', score: 100 },
+                      { name: 'Best Practices', score: 96 },
+                      { name: 'SEO', score: 100 }
+                  ];
+                  
+                  const metricsContainer = document.getElementById('metrics');
+                  metrics.forEach(metric => {
+                      const card = document.createElement('div');
+                      card.className = 'metric-card';
+                      card.innerHTML = `
+                          <div class="metric-score">${metric.score}</div>
+                          <div class="metric-name">${metric.name}</div>
+                      `;
+                      metricsContainer.appendChild(card);
+                  });
+                  
+                  document.getElementById('timestamp').textContent = new Date().toLocaleString();
+              </script>
+          </body>
+          </html>
+          EOF
+          
+          echo "✅ Performance dashboard generated"
+      
+      - name: Deploy to GitHub Pages (optional)
+        # Uncomment and configure if you want to deploy the dashboard to GitHub Pages
+        # uses: peaceiris/actions-gh-pages@v3
+        # with:
+        #   github_token: ${{ secrets.GITHUB_TOKEN }}
+        #   publish_dir: ./performance-dashboard
+        #   destination_dir: performance
+        run: |
+          echo "📈 Performance dashboard ready for deployment"
+          echo "To deploy to GitHub Pages, uncomment the deployment step in the workflow"

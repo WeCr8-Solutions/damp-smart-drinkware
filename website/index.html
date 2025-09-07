@@ -52,18 +52,74 @@
     <link rel="preconnect" href="https://pagead2.googlesyndication.com">
     <link rel="dns-prefetch" href="https://js.stripe.com">
     
-    <!-- AdSense Integration -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3639153716376265"
-            crossorigin="anonymous"></script>
+    <!-- AdSense Meta (script deferred to improve performance) -->
     <meta name="google-adsense-account" content="ca-pub-3639153716376265">
     
-    <!-- Load Main Styles Immediately -->
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/navigation.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/auth-styles.css">
-    <link rel="stylesheet" href="assets/css/adsense-styles.css">
-    <link rel="stylesheet" href="assets/css/performance-optimizations.css">
+    <!-- Critical CSS Inlined for Performance -->
+    <style id="critical-css">
+        /* Critical CSS Variables and Base Styles */
+        :root {
+            --primary-color: #00d4ff;
+            --primary-dark: #0099cc;
+            --secondary-color: #00ff88;
+            --accent-color: #ff4757;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.85);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(255, 255, 255, 0.15);
+            --nav-height: 80px;
+            --safe-area-top: env(safe-area-inset-top);
+        }
+        
+        *,*::before,*::after{box-sizing:border-box}
+        body,h1,h2,h3,h4,p{margin:0}
+        html{font-display:swap;text-rendering:optimizeSpeed;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);color:var(--text-primary);line-height:1.6;overflow-x:hidden;margin:0;padding:0}
+        
+        .container{max-width:1200px;margin:0 auto;padding:0 20px}
+        .skip-to-content{position:absolute;top:-40px;left:0;background:var(--primary-color);color:#000;padding:8px;text-decoration:none;z-index:10000;font-weight:700}
+        .skip-to-content:focus{top:0}
+        
+        .hero-section{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 20px 80px;position:relative;contain:layout style paint}
+        .hero-content{max-width:900px;z-index:2}
+        .hero-logo{margin-bottom:40px}
+        .hero-logo img{width:90px;height:90px;object-fit:contain}
+        .hero-title{font-size:clamp(3.5rem,8vw,5rem);font-weight:900;margin-bottom:30px;background:linear-gradient(45deg,var(--text-primary),var(--primary-color));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1}
+        .hero-subtitle{font-size:clamp(1.2rem,2.5vw,1.5rem);color:var(--text-secondary);margin-bottom:50px;line-height:1.5}
+        
+        .btn{display:inline-block;padding:18px 40px;border-radius:50px;font-size:1.1rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;transition:transform 0.2s ease,box-shadow 0.2s ease;text-transform:uppercase;letter-spacing:0.5px;margin:10px;text-align:center}
+        .btn-primary{background:linear-gradient(45deg,var(--primary-color),var(--primary-dark));color:white;box-shadow:0 6px 20px rgba(0,212,255,0.3)}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,212,255,0.4)}
+        .btn-secondary{background:transparent;color:var(--primary-color);border:2px solid var(--primary-color)}
+        .btn-secondary:hover{background:var(--primary-color);color:white}
+        
+        .hero-animation-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,var(--bg-primary) 0%,var(--bg-secondary) 100%);z-index:100000;display:flex;align-items:center;justify-content:center;overflow:hidden}
+        body:not(.animation-complete){overflow:hidden;height:100vh}
+        body:not(.animation-complete) main{opacity:0}
+        body.animation-complete{overflow:auto;height:auto}
+        body.animation-complete main{opacity:1;transition:opacity 0.5s ease}
+        
+        @media(max-width:768px){.hero-section{padding:100px 20px 60px}.btn{display:block;margin:10px auto;text-align:center}}
+        @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+    </style>
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="assets/css/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="assets/css/navigation.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="assets/images/logo/logo.png" as="image">
+    
+    <!-- Load Non-Critical Styles Asynchronously -->
+    <noscript>
+        <link rel="stylesheet" href="assets/css/main.css">
+        <link rel="stylesheet" href="assets/css/navigation.css">
+        <link rel="stylesheet" href="assets/css/styles.css">
+        <link rel="stylesheet" href="assets/css/auth-styles.css">
+        <link rel="stylesheet" href="assets/css/adsense-styles.css">
+        <link rel="stylesheet" href="assets/css/performance-optimizations.css">
+    </noscript>
     
     <!-- Enhanced Visual Styles with Animations -->
     <style>
@@ -812,7 +868,7 @@
             <div class="container">
                 <div class="hero-content">
                     <div class="hero-logo">
-                        <img src="assets/images/logo/logo.png" alt="DAMP Logo" loading="eager" decoding="async">
+                        <img src="assets/images/logo/logo.png" alt="DAMP Logo" width="90" height="90" loading="eager" decoding="async">
                     </div>
                     
                     <h1 class="hero-title">Never Leave Your Drink Behind</h1>
@@ -946,7 +1002,7 @@
                 <div class="products-grid">
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="assets/images/products/damp-handle/damp-handle.png" alt="DAMP Handle" loading="lazy">
+                            <img src="assets/images/products/damp-handle/damp-handle.png" alt="DAMP Handle" width="120" height="120" loading="lazy" decoding="async">
                         </div>
                         <h3 class="product-name">DAMP Handle</h3>
                         <div class="product-price">$49.99</div>
@@ -956,7 +1012,7 @@
                     
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="assets/images/products/silicone-bottom/silicone-bottom.png" alt="Silicone Bottom" loading="lazy">
+                            <img src="assets/images/products/silicone-bottom/silicone-bottom.png" alt="Silicone Bottom" width="120" height="120" loading="lazy" decoding="async">
                         </div>
                         <h3 class="product-name">Silicone Bottom</h3>
                         <div class="product-price">$29.99</div>
@@ -966,7 +1022,7 @@
                     
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="assets/images/products/cup-sleeve/cup-sleeve.png" alt="Cup Sleeve" loading="lazy">
+                            <img src="assets/images/products/cup-sleeve/cup-sleeve.png" alt="Cup Sleeve" width="120" height="120" loading="lazy" decoding="async">
                         </div>
                         <h3 class="product-name">Cup Sleeve</h3>
                         <div class="product-price">$39.99</div>
@@ -1156,14 +1212,15 @@
         </section>
     </main>
 
-    <!-- Load Core Scripts Immediately -->
-    <script src="assets/js/components/header.js"></script>
+    <!-- Load Lighthouse Performance Optimizer First -->
+    <script src="assets/js/performance/lighthouse-optimizer.js"></script>
     
-    <!-- Load Hero Animation -->
-    <script src="assets/js/components/hero-animation.js"></script>
+    <!-- Load Critical Scripts -->
+    <script defer src="assets/js/components/header.js"></script>
+    <script defer src="assets/js/components/hero-animation.js"></script>
     
-    <!-- Load Newsletter System -->
-    <script src="assets/js/newsletter.js"></script>
+    <!-- Load Newsletter System (Non-Critical) -->
+    <script defer src="assets/js/newsletter.js"></script>
     
     <!-- Authentication Styles -->
     <link rel="stylesheet" href="assets/css/auth-styles.css">
@@ -1306,23 +1363,60 @@
 
     <!-- Service Worker Registration handled by service-worker-registration.js above -->
 
-    <!-- Analytics (Load Last) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YW2BN4SVPQ"></script>
+    <!-- Analytics and AdSense (Deferred for Performance) -->
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-YW2BN4SVPQ', {
-            debug_mode: window.location.hostname === 'localhost'
+        // Defer analytics and ads loading for better performance
+        function loadAnalyticsAndAds() {
+            // Load Google Analytics
+            const gtag = document.createElement('script');
+            gtag.async = true;
+            gtag.src = 'https://www.googletagmanager.com/gtag/js?id=G-YW2BN4SVPQ';
+            document.head.appendChild(gtag);
+            
+            gtag.onload = function() {
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-YW2BN4SVPQ', {
+                    debug_mode: window.location.hostname === 'localhost'
+                });
+                
+                // Track initial page load
+                gtag('event', 'page_view', {
+                    page_title: document.title,
+                    page_location: window.location.href
+                });
+                
+                console.log('✅ Firebase Analytics loaded deferred');
+            };
+            
+            // Load AdSense
+            const adsense = document.createElement('script');
+            adsense.async = true;
+            adsense.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3639153716376265';
+            adsense.crossOrigin = 'anonymous';
+            document.head.appendChild(adsense);
+            
+            adsense.onload = function() {
+                console.log('✅ AdSense loaded deferred');
+            };
+        }
+        
+        // Load analytics and ads after page interaction or timeout
+        let analyticsLoaded = false;
+        function triggerAnalyticsLoad() {
+            if (analyticsLoaded) return;
+            analyticsLoaded = true;
+            loadAnalyticsAndAds();
+        }
+        
+        // Load on first user interaction
+        ['mousedown', 'touchstart', 'keydown', 'scroll'].forEach(event => {
+            document.addEventListener(event, triggerAnalyticsLoad, { once: true, passive: true });
         });
         
-        // Track initial page load
-        gtag('event', 'page_view', {
-            page_title: document.title,
-            page_location: window.location.href
-        });
-        
-        console.log('✅ Firebase Analytics initialized with ID: G-YW2BN4SVPQ');
+        // Fallback: Load after 3 seconds
+        setTimeout(triggerAnalyticsLoad, 3000);
     </script>
 </body>
 </html>
