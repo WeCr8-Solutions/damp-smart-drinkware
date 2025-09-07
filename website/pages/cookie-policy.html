@@ -396,35 +396,10 @@
             }
         }
         
-        // PWA Install Prompt
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            setTimeout(showInstallPrompt, 3000);
-        });
-        
-        function showInstallPrompt() {
-            if (!deferredPrompt) return;
-            const installBtn = document.createElement('button');
-            installBtn.innerHTML = '📱 Install App';
-            installBtn.style.cssText = 'position:fixed;bottom:20px;right:20px;background:linear-gradient(45deg,#00d4ff,#00ff88);color:#1a1a2e;border:none;padding:15px 25px;border-radius:30px;font-weight:700;cursor:pointer;z-index:9999;animation:pulse 2s infinite;';
-            installBtn.onclick = async () => {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    console.log('✅ PWA installed');
-                    if ('gtag' in window) gtag('event', 'pwa_install', { event_category: 'engagement' });
-                }
-                deferredPrompt = null;
-                installBtn.remove();
-            };
-            document.body.appendChild(installBtn);
-        }
-        
-        // PWA Styles
-        const pwaStyles = document.createElement('style');
-        pwaStyles.textContent = '@keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } } @media (display-mode: standalone) { body { padding-top: env(safe-area-inset-top); } }';
-        document.head.appendChild(pwaStyles);
+        // Load Mobile App Redirect Script
+        const mobileAppScript = document.createElement('script');
+        mobileAppScript.src = '/assets/js/mobile-app-redirect.js';
+        mobileAppScript.async = true;
+        document.head.appendChild(mobileAppScript);
     </script></body>
 </html> 

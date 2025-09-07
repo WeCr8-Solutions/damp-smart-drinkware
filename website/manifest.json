@@ -206,6 +206,11 @@
   ],
   "related_applications": [
     {
+      "platform": "webapp",
+      "url": "https://dampdrink.com",
+      "id": "com.damp.smartdrinkware"
+    },
+    {
       "platform": "play",
       "url": "https://play.google.com/store/apps/details?id=com.damp.smartdrinkware",
       "id": "com.damp.smartdrinkware"
@@ -216,7 +221,7 @@
       "id": "123456789"
     }
   ],
-  "prefer_related_applications": false,
+  "prefer_related_applications": true,
   
   "protocol_handlers": [
     {
