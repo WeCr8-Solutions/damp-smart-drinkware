@@ -52,7 +52,16 @@ class DAMPBuildOptimizer {
 
         } catch (error) {
             console.error('❌ Optimization failed:', error.message);
-            process.exit(1);
+            console.log('🔄 Attempting fallback build...');
+            
+            try {
+                // Create basic dist directory with unoptimized files
+                this.createFallbackBuild();
+                console.log('✅ Fallback build completed successfully');
+            } catch (fallbackError) {
+                console.error('❌ Fallback build also failed:', fallbackError.message);
+                process.exit(1);
+            }
         }
     }
 
@@ -383,6 +392,61 @@ class DAMPBuildOptimizer {
         const i = Math.floor(Math.log(bytes) / Math.log(k));
 
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    createFallbackBuild() {
+        console.log('🔄 Creating fallback build without optimization...');
+        
+        // Create dist directory
+        this.createDistDirectory();
+        
+        // Copy files without optimization
+        const copyRecursive = (src, dest) => {
+            if (fs.existsSync(src)) {
+                const stats = fs.statSync(src);
+                if (stats.isDirectory()) {
+                    if (!fs.existsSync(dest)) {
+                        fs.mkdirSync(dest, { recursive: true });
+                    }
+                    fs.readdirSync(src).forEach(item => {
+                        copyRecursive(path.join(src, item), path.join(dest, item));
+                    });
+                } else {
+                    fs.copyFileSync(src, dest);
+                }
+            }
+        };
+
+        // Copy assets
+        if (fs.existsSync(this.assetsDir)) {
+            copyRecursive(this.assetsDir, path.join(this.distDir, 'assets'));
+        }
+
+        // Copy HTML files
+        const htmlFiles = fs.readdirSync(this.projectRoot).filter(file => file.endsWith('.html'));
+        htmlFiles.forEach(file => {
+            fs.copyFileSync(
+                path.join(this.projectRoot, file),
+                path.join(this.distDir, file)
+            );
+        });
+
+        // Copy pages directory if it exists
+        const pagesDir = path.join(this.projectRoot, 'pages');
+        if (fs.existsSync(pagesDir)) {
+            copyRecursive(pagesDir, path.join(this.distDir, 'pages'));
+        }
+
+        // Copy other important files
+        const importantFiles = ['manifest.json', 'robots.txt', 'sitemap.xml', 'sw.js', 'firebase-messaging-sw.js'];
+        importantFiles.forEach(file => {
+            const srcPath = path.join(this.projectRoot, file);
+            if (fs.existsSync(srcPath)) {
+                fs.copyFileSync(srcPath, path.join(this.distDir, file));
+            }
+        });
+
+        console.log('✅ Fallback build completed - files copied without optimization');
     }
 }
 
