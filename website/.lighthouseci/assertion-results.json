@@ -1,0 +1,119 @@
+[
+  {
+    "name": "minScore",
+    "expected": 0.9,
+    "actual": 0,
+    "values": [
+      0
+    ],
+    "operator": ">=",
+    "passed": false,
+    "auditId": "csp-xss",
+    "level": "error",
+    "url": "http://localhost:3000/",
+    "auditTitle": "Ensure CSP is effective against XSS attacks",
+    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/best-practices/csp-xss/"
+  },
+  {
+    "name": "minScore",
+    "expected": 0.9,
+    "actual": 0,
+    "values": [
+      0
+    ],
+    "operator": ">=",
+    "passed": false,
+    "auditId": "errors-in-console",
+    "level": "error",
+    "url": "http://localhost:3000/",
+    "auditTitle": "Browser errors were logged to the console",
+    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/best-practices/errors-in-console/"
+  },
+  {
+    "name": "minScore",
+    "expected": 0.9,
+    "actual": 0,
+    "values": [
+      0
+    ],
+    "operator": ">=",
+    "passed": false,
+    "auditId": "font-size",
+    "level": "error",
+    "url": "http://localhost:3000/",
+    "auditTitle": "Document doesn't use legible font sizes",
+    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/seo/font-size/"
+  },
+  {
+    "name": "minScore",
+    "expected": 0.9,
+    "actual": 0,
+    "values": [
+      0
+    ],
+    "operator": ">=",
+    "passed": false,
+    "auditId": "meta-description",
+    "level": "error",
+    "url": "http://localhost:3000/",
+    "auditTitle": "Document does not have a meta description",
+    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/seo/meta-description/"
+  },
+  {
+    "name": "minScore",
+    "expected": 0.9,
+    "actual": 0,
+    "values": [
+      0
+    ],
+    "operator": ">=",
+    "passed": false,
+    "auditId": "tap-targets",
+    "level": "error",
+    "url": "http://localhost:3000/",
+    "auditTitle": "Tap targets are not sized appropriately",
+    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/seo/tap-targets/"
+  },
+  {
+    "name": "maxLength",
+    "expected": 0,
+    "actual": 1,
+    "values": [
+      1
+    ],
+    "operator": "<=",
+    "passed": false,
+    "auditId": "uses-text-compression",
+    "level": "error",
+    "url": "http://localhost:3000/",
+    "auditTitle": "Enable text compression",
+    "auditDocumentationLink": "https://developer.chrome.com/docs/lighthouse/performance/uses-text-compression/"
+  },
+  {
+    "name": "auditRan",
+    "expected": 1,
+    "actual": 0,
+    "values": [
+      0
+    ],
+    "operator": ">=",
+    "passed": false,
+    "auditId": "canonical",
+    "level": "error",
+    "url": "http://localhost:3000/"
+  },
+  {
+    "name": "minScore",
+    "expected": 0.9,
+    "actual": 0.64,
+    "values": [
+      0.64
+    ],
+    "operator": ">=",
+    "passed": false,
+    "auditProperty": "seo",
+    "auditId": "categories",
+    "level": "error",
+    "url": "http://localhost:3000/"
+  }
+]
