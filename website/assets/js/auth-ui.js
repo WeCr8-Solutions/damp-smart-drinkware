@@ -385,10 +385,10 @@ class DAMPAuthUI {
             <span class="user-email">Loading...</span>
           </div>
           <div class="user-menu-dropdown">
-            <button class="dropdown-toggle" onclick="dampAuthUI.toggleUserMenu()">
+            <button class="dropdown-toggle" data-dropdown-toggle="user-menu" onclick="dampAuthUI.toggleUserMenu()">
               <span class="dropdown-icon">▼</span>
             </button>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu" data-dropdown="user-menu">
               <a href="/pages/profile.html" class="dropdown-item">
                 <span class="item-icon">👤</span>
                 <span class="item-text">Profile</span>
@@ -746,9 +746,18 @@ class DAMPAuthUI {
   }
 
   toggleUserMenu() {
-    const dropdown = document.querySelector('.dropdown-menu');
-    if (dropdown) {
-      dropdown.classList.toggle('show');
+    // Use the new dropdown manager if available
+    if (window.dampDropdownManager) {
+      const toggle = document.querySelector('.dropdown-toggle');
+      if (toggle) {
+        window.dampDropdownManager.toggleDropdown(toggle);
+      }
+    } else {
+      // Fallback to legacy behavior
+      const dropdown = document.querySelector('.dropdown-menu');
+      if (dropdown) {
+        dropdown.classList.toggle('show');
+      }
     }
   }
 

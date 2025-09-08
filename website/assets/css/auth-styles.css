@@ -1043,12 +1043,15 @@
   transform: translateY(-10px);
   transition: all 0.2s ease;
   z-index: 1000;
+  pointer-events: none;
+  overflow: hidden;
 }
 
 .dropdown-menu.show {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+  pointer-events: auto;
 }
 
 .dropdown-item {

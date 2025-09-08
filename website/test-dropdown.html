@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Test - DAMP Smart Drinkware</title>
+    <link rel="stylesheet" href="assets/css/auth-styles.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .dropdown-demo {
+            position: relative;
+            display: inline-block;
+            margin: 10px;
+        }
+        .demo-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .demo-button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 DAMP Dropdown Test Suite</h1>
+        <p>Testing enhanced dropdown functionality and fixes.</p>
+
+        <!-- Test 1: New Dropdown Manager -->
+        <div class="test-section">
+            <h3>Test 1: Enhanced Dropdown Manager</h3>
+            <p>Testing the new dropdown manager with proper ARIA attributes and keyboard navigation.</p>
+            
+            <div class="dropdown-demo">
+                <button class="demo-button" data-dropdown-toggle="test-menu-1">
+                    Open Menu 1 ▼
+                </button>
+                <div class="dropdown-menu" data-dropdown="test-menu-1">
+                    <a href="#" class="dropdown-item">
+                        <span class="item-icon">👤</span>
+                        <span class="item-text">Profile</span>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <span class="item-icon">⚙️</span>
+                        <span class="item-text">Settings</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" data-dropdown-action="logout">
+                        <span class="item-icon">🚪</span>
+                        <span class="item-text">Sign Out</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="dropdown-demo">
+                <button class="demo-button" data-dropdown-toggle="test-menu-2">
+                    Open Menu 2 ▼
+                </button>
+                <div class="dropdown-menu" data-dropdown="test-menu-2">
+                    <a href="#" class="dropdown-item">
+                        <span class="item-icon">📊</span>
+                        <span class="item-text">Dashboard</span>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <span class="item-icon">📱</span>
+                        <span class="item-text">Devices</span>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <span class="item-icon">📦</span>
+                        <span class="item-text">Orders</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 2: Legacy Dropdown Support -->
+        <div class="test-section">
+            <h3>Test 2: Legacy Dropdown Support</h3>
+            <p>Testing backward compatibility with existing dropdown implementations.</p>
+            
+            <div class="dropdown-demo">
+                <button class="dropdown-toggle">
+                    Legacy Menu ▼
+                </button>
+                <div class="dropdown-menu">
+                    <a href="#" class="dropdown-item">
+                        <span class="item-icon">🏠</span>
+                        <span class="item-text">Home</span>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <span class="item-icon">📄</span>
+                        <span class="item-text">About</span>
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <span class="item-icon">📞</span>
+                        <span class="item-text">Contact</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 3: User Menu (Auth UI) -->
+        <div class="test-section">
+            <h3>Test 3: User Menu (Auth UI Integration)</h3>
+            <p>Testing the user menu dropdown that's used in the authentication system.</p>
+            
+            <div class="user-menu" style="display: flex;">
+                <div class="user-avatar">
+                    <span class="avatar-fallback">👤</span>
+                </div>
+                <div class="user-info">
+                    <span class="user-name">Test User</span>
+                    <span class="user-email">test@example.com</span>
+                </div>
+                <div class="user-menu-dropdown">
+                    <button class="dropdown-toggle" data-dropdown-toggle="user-menu" onclick="dampAuthUI.toggleUserMenu()">
+                        <span class="dropdown-icon">▼</span>
+                    </button>
+                    <div class="dropdown-menu" data-dropdown="user-menu">
+                        <a href="/pages/profile.html" class="dropdown-item">
+                            <span class="item-icon">👤</span>
+                            <span class="item-text">Profile</span>
+                        </a>
+                        <a href="/pages/dashboard.html" class="dropdown-item">
+                            <span class="item-icon">📊</span>
+                            <span class="item-text">Dashboard</span>
+                        </a>
+                        <a href="/pages/devices.html" class="dropdown-item">
+                            <span class="item-icon">📱</span>
+                            <span class="item-text">My Devices</span>
+                        </a>
+                        <a href="/pages/orders.html" class="dropdown-item">
+                            <span class="item-icon">📦</span>
+                            <span class="item-text">Orders</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" data-auth="signout">
+                            <span class="item-icon">🚪</span>
+                            <span class="item-text">Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Instructions -->
+        <div class="test-section">
+            <h3>🧪 Test Instructions</h3>
+            <ol>
+                <li><strong>Click Test:</strong> Click on any dropdown button to open/close menus</li>
+                <li><strong>Outside Click:</strong> Click outside any open dropdown to close it</li>
+                <li><strong>Keyboard Navigation:</strong> Use Arrow keys, Home, End, Tab, and Escape</li>
+                <li><strong>Multiple Menus:</strong> Only one dropdown should be open at a time</li>
+                <li><strong>Accessibility:</strong> Check ARIA attributes in browser dev tools</li>
+            </ol>
+            
+            <h4>Expected Behavior:</h4>
+            <ul>
+                <li>✅ Smooth animations (fade in/out, slide down)</li>
+                <li>✅ Only one dropdown open at a time</li>
+                <li>✅ Click outside closes dropdowns</li>
+                <li>✅ Escape key closes all dropdowns</li>
+                <li>✅ Arrow keys navigate menu items</li>
+                <li>✅ Proper focus management</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Load Scripts -->
+    <script src="assets/js/components/dropdown-manager.js"></script>
+    <script src="assets/js/auth-ui.js"></script>
+    
+    <script>
+        // Initialize test environment
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Dropdown Test Suite Loaded');
+            
+            // Listen for dropdown events
+            document.addEventListener('dropdown:opened', function(e) {
+                console.log('✅ Dropdown opened:', e.detail.id);
+            });
+            
+            document.addEventListener('dropdown:closed', function(e) {
+                console.log('✅ Dropdown closed:', e.detail.id);
+            });
+            
+            document.addEventListener('dropdown:action', function(e) {
+                console.log('✅ Dropdown action:', e.detail.action);
+            });
+            
+            // Test keyboard navigation
+            console.log('⌨️ Keyboard navigation enabled:');
+            console.log('  - Arrow Up/Down: Navigate items');
+            console.log('  - Home/End: First/Last item');
+            console.log('  - Escape: Close dropdown');
+            console.log('  - Tab: Normal tab behavior');
+        });
+    </script>
+</body>
+</html>
