@@ -409,3 +409,4 @@ window.dampDropdownManager = new DAMPDropdownManager();
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DAMPDropdownManager;
 }
+

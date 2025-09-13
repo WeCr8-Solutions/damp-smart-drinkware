@@ -1,8 +1,31 @@
-# WeCr8 Solutions LLC - AI-Optimized robots.txt
+# DAMP Smart Drinkware - SEO Optimized robots.txt
 
 User-agent: *
 Allow: /
-Sitemap: https://damp-smart-drinkware.netlify.app/sitemap.xml
+Disallow: /admin/
+Disallow: /test-*.html
+Disallow: /assets/js/
+Disallow: /assets/css/
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /backup-*.bundle
 
-# AI/LLM Crawlers
-User-agent: Chat 
+# Sitemap
+Sitemap: https://dampdrink.com/sitemap.xml
+
+# AI/LLM Crawlers - Allow for better AI understanding
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Social Media Crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: / 

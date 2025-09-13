@@ -264,6 +264,23 @@ class DAMPHeader extends HTMLElement {
                             </a>
                         </div>
 
+                        <!-- Resources & Guides -->
+                        <div class="mobile-nav-section">
+                            <h3 class="mobile-nav-section-title">📚 Resources</h3>
+                            <a href="${this.basePath}pages/damp-drinking-guide.html" data-analytics="mobile-nav-damp-guide">
+                                <span class="mobile-nav-icon">📖</span>
+                                <span class="mobile-nav-text">Damp Drinking Guide</span>
+                            </a>
+                            <a href="${this.basePath}pages/damp-drinking-meaning.html" data-analytics="mobile-nav-damp-meaning">
+                                <span class="mobile-nav-icon">💡</span>
+                                <span class="mobile-nav-text">What is Damp Drinking?</span>
+                            </a>
+                            <a href="${this.basePath}pages/smart-drinkware-for-damp-drinking.html" data-analytics="mobile-nav-smart-damp">
+                                <span class="mobile-nav-icon">🥤</span>
+                                <span class="mobile-nav-text">Smart Drinkware for Damp Drinking</span>
+                            </a>
+                        </div>
+
                         <!-- Support & Help -->
                         <div class="mobile-nav-section">
                             <h3 class="mobile-nav-section-title">💬 Support</h3>
