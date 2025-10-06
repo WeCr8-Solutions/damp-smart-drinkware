@@ -67,7 +67,7 @@
         .stat-number {
             font-size: 2rem;
             font-weight: 700;
-            color: #00ff88;
+            color: #0f8;
         }
 
         .stat-label {
@@ -112,7 +112,7 @@
             background: white;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgb(0 0 0 / 10%);
             transition: transform 0.3s ease;
         }
 
@@ -156,7 +156,7 @@
         }
 
         .product-card:hover {
-            border-color: #00ff88;
+            border-color: #0f8;
             transform: translateY(-3px);
         }
 
@@ -201,7 +201,7 @@
         }
 
         .vote-btn {
-            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            background: linear-gradient(135deg, #0f8 0%, #00cc6a 100%);
             color: white;
             border: none;
             padding: 10px 20px;
@@ -214,7 +214,7 @@
 
         .vote-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,255,136,0.3);
+            box-shadow: 0 4px 15px rgb(0 255 136 / 30%);
         }
 
         .vote-btn:active {
@@ -323,7 +323,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            background: linear-gradient(135deg, #0f8 0%, #00cc6a 100%);
             transition: width 0.3s ease;
         }
 
@@ -359,7 +359,7 @@
         }
 
         .cta-button {
-            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            background: linear-gradient(135deg, #0f8 0%, #00cc6a 100%);
             color: white;
             padding: 15px 35px;
             border: none;
@@ -373,10 +373,10 @@
 
         .cta-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,255,136,0.3);
+            box-shadow: 0 8px 25px rgb(0 255 136 / 30%);
         }
 
-        @media (max-width: 768px) {
+        @media (width <= 768px) {
             .voting-hero h1 {
                 font-size: 2rem;
             }
@@ -1022,119 +1022,4 @@
                     if (products.length > 0) {
                         const randomProduct = products[Math.floor(Math.random() * products.length)];
                         if (Math.random() < 0.1) { // 10% chance every interval
-                            this.votes[randomProduct]++;
-                            const button = document.querySelector(`[data-product="${randomProduct}"]`);
-                            if (button) {
-                                button.parentElement.querySelector('.vote-number').textContent = this.votes[randomProduct];
-                            }
-                            this.saveVotes();
-                            this.updateStats();
-                        }
-                    }
-                }, 30000); // Every 30 seconds
-            }
-        }
-
-        // Initialize voting system when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            const votingSystem = new StanleyVotingSystem();
-
-            // Start simulated growth in development
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                votingSystem.simulateGrowth();
-            }
-        });
-
-        // Add some interactive elements
-        document.addEventListener('DOMContentLoaded', () => {
-            // Smooth scrolling for internal links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
-
-            // Product card hover effects
-            document.querySelectorAll('.product-card').forEach(card => {
-                card.addEventListener('mouseenter', () => {
-                    card.style.transform = 'translateY(-5px)';
-                });
-
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'translateY(0)';
-                });
-            });
-        });
-    </script>
-
-    <!-- Analytics -->
-    <script>
-        // Track page view
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'page_view', {
-                page_title: 'Stanley Voting Page',
-                page_location: window.location.href
-            });
-        }
-    </script>
-
-    <!-- PWA Service Worker Registration -->
-    <script>
-        // Google PWA Standards Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', async () => {
-                try {
-                    const registration = await navigator.serviceWorker.register('/sw.js', {
-                        scope: '/',
-                        updateViaCache: 'none'
-                    });
-                    console.log('✅ Service Worker registered:', registration.scope);
-
-                    // Handle updates
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                showUpdateNotification();
-                            }
-                        });
-                    });
-
-                    window.dampPWA = { registration };
-                } catch (error) {
-                    console.error('❌ Service Worker failed:', error);
-                }
-            });
-        }
-
-        function showUpdateNotification() {
-            const notification = document.createElement('div');
-            notification.innerHTML = '<div style="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00d4ff,#00ff88);color:#1a1a2e;padding:15px 25px;border-radius:30px;font-weight:600;z-index:10000;display:flex;align-items:center;gap:15px;"><span>🚀</span><span>New version available!</span><button onclick="refreshApp()" style="background:rgba(26,26,46,0.2);color:#1a1a2e;border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;">Update</button><button onclick="this.parentElement.parentElement.remove()" style="background:transparent;border:none;color:#1a1a2e;cursor:pointer;padding:5px;">×</button></div>';
-            document.body.appendChild(notification);
-        }
-
-        function refreshApp() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistration().then(registration => {
-                    if (registration && registration.waiting) {
-                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-                        window.location.reload();
-                    }
-                });
-            }
-        }
-
-        // Load Mobile App Redirect Script
-        const mobileAppScript = document.createElement('script');
-        mobileAppScript.src = '/assets/js/mobile-app-redirect.js';
-        mobileAppScript.async = true;
-        document.head.appendChild(mobileAppScript);
-    </script></body>
-</html>
+                         

@@ -5,18 +5,19 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUserAccount = exports.getPersonalizedGreeting = exports.completeDeviceSetup = exports.updateNotificationPreferences = exports.getUserProfile = exports.uploadUserAvatar = exports.updateUserProfile = void 0;
-const functions = require("firebase-functions");
+const https_1 = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 const uuid_1 = require("uuid");
 const sharp = require("sharp");
 /**
  * Update user profile information
  */
-exports.updateUserProfile = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+exports.updateUserProfile = (0, https_1.onCall)(async (request) => {
+    const { auth, data } = request;
+    if (!auth) {
+        throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
     }
-    const userId = context.auth.uid;
+    const userId = auth.uid;
     const { displayName, email, phoneNumber, preferences, location, bio, dateOfBirth, } = data;
     try {
         const updateData = {
@@ -49,33 +50,34 @@ exports.updateUserProfile = functions.https.onCall(async (data, context) => {
     }
     catch (error) {
         console.error('Error updating user profile:', error);
-        throw new functions.https.HttpsError('internal', 'Failed to update profile');
+        throw new https_1.HttpsError('internal', 'Failed to update profile');
     }
 });
 /**
  * Upload and process user avatar
  */
-exports.uploadUserAvatar = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+exports.uploadUserAvatar = (0, https_1.onCall)(async (request) => {
+    const { data, auth } = request;
+    if (!auth) {
+        throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
     }
-    const userId = context.auth.uid;
+    const userId = auth.uid;
     const { imageData, mimeType } = data;
     try {
         // Validate input
         if (!imageData || !mimeType) {
-            throw new functions.https.HttpsError('invalid-argument', 'Image data and mime type are required');
+            throw new https_1.HttpsError('invalid-argument', 'Image data and mime type are required');
         }
         // Validate mime type
         const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!allowedTypes.includes(mimeType)) {
-            throw new functions.https.HttpsError('invalid-argument', 'Invalid image type');
+            throw new https_1.HttpsError('invalid-argument', 'Invalid image type');
         }
         // Decode base64 image
         const imageBuffer = Buffer.from(imageData, 'base64');
         // Validate file size (max 5MB)
         if (imageBuffer.length > 5 * 1024 * 1024) {
-            throw new functions.https.HttpsError('invalid-argument', 'Image too large (max 5MB)');
+            throw new https_1.HttpsError('invalid-argument', 'Image too large (max 5MB)');
         }
         // Process image with Sharp
         const processedImage = await sharp(imageBuffer)
@@ -155,16 +157,17 @@ exports.uploadUserAvatar = functions.https.onCall(async (data, context) => {
 /**
  * Get user profile data
  */
-exports.getUserProfile = functions.https.onCall(async (data, context) => {
+exports.getUserProfile = (0, https_1.onCall)(async (request) => {
     var _a, _b;
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    const { data, auth } = request;
+    if (!auth) {
+        throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
     }
-    const userId = context.auth.uid;
+    const userId = auth.uid;
     try {
         const userDoc = await admin.firestore().collection('users').doc(userId).get();
         if (!userDoc.exists) {
-            throw new functions.https.HttpsError('not-found', 'User profile not found');
+            throw new https_1.HttpsError('not-found', 'User profile not found');
         }
         const userData = userDoc.data();
         // Remove sensitive data
@@ -197,11 +200,12 @@ exports.getUserProfile = functions.https.onCall(async (data, context) => {
 /**
  * Update notification preferences
  */
-exports.updateNotificationPreferences = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+exports.updateNotificationPreferences = (0, https_1.onCall)(async (request) => {
+    const { data, auth } = request;
+    if (!auth) {
+        throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
     }
-    const userId = context.auth.uid;
+    const userId = auth.uid;
     const { notificationSettings } = data;
     try {
         // Validate notification settings structure
@@ -253,17 +257,18 @@ exports.updateNotificationPreferences = functions.https.onCall(async (data, cont
     }
     catch (error) {
         console.error('Error updating notification preferences:', error);
-        throw new functions.https.HttpsError('internal', 'Failed to update preferences');
+        throw new https_1.HttpsError('internal', 'Failed to update preferences');
     }
 });
 /**
  * Complete device setup wizard
  */
-exports.completeDeviceSetup = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+exports.completeDeviceSetup = (0, https_1.onCall)(async (request) => {
+    const { data, auth } = request;
+    if (!auth) {
+        throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
     }
-    const userId = context.auth.uid;
+    const userId = auth.uid;
     const { deviceType, deviceName, selectedZone, notificationsEnabled, permissionsGranted, } = data;
     try {
         // Create setup completion record
@@ -315,18 +320,19 @@ exports.completeDeviceSetup = functions.https.onCall(async (data, context) => {
     }
     catch (error) {
         console.error('Error completing device setup:', error);
-        throw new functions.https.HttpsError('internal', 'Failed to complete setup');
+        throw new https_1.HttpsError('internal', 'Failed to complete setup');
     }
 });
 /**
  * Generate personalized greeting based on time and user data
  */
-exports.getPersonalizedGreeting = functions.https.onCall(async (data, context) => {
+exports.getPersonalizedGreeting = (0, https_1.onCall)(async (request) => {
     var _a;
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    const { data, auth } = request;
+    if (!auth) {
+        throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
     }
-    const userId = context.auth.uid;
+    const userId = auth.uid;
     try {
         const userDoc = await admin.firestore().collection('users').doc(userId).get();
         const userData = userDoc.data();
@@ -377,17 +383,18 @@ exports.getPersonalizedGreeting = functions.https.onCall(async (data, context) =
     }
     catch (error) {
         console.error('Error generating greeting:', error);
-        throw new functions.https.HttpsError('internal', 'Failed to generate greeting');
+        throw new https_1.HttpsError('internal', 'Failed to generate greeting');
     }
 });
 /**
  * Delete user account and all associated data
  */
-exports.deleteUserAccount = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+exports.deleteUserAccount = (0, https_1.onCall)(async (request) => {
+    const { data, auth } = request;
+    if (!auth) {
+        throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
     }
-    const userId = context.auth.uid;
+    const userId = auth.uid;
     try {
         const batch = admin.firestore().batch();
         // Delete user document
@@ -442,7 +449,7 @@ exports.deleteUserAccount = functions.https.onCall(async (data, context) => {
     }
     catch (error) {
         console.error('Error deleting user account:', error);
-        throw new functions.https.HttpsError('internal', 'Failed to delete account');
+        throw new https_1.HttpsError('internal', 'Failed to delete account');
     }
 });
 //# sourceMappingURL=user-profile.js.map

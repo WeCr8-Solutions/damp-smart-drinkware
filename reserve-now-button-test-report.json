@@ -1,0 +1,23 @@
+{
+  "timestamp": "2025-10-04T12:58:03.661Z",
+  "testResults": {
+    "pageLoad": true,
+    "buttonPresent": true,
+    "stripeLoaded": true,
+    "clickResponse": false,
+    "errorHandling": true,
+    "backendConnection": false,
+    "stripeIntegration": true,
+    "issues": [
+      "Backend Server: Server responded with status 404",
+      "Page Testing: page.waitForTimeout is not a function"
+    ],
+    "recommendations": [
+      "Start the backend server: cd backend && node stripe-preorder-server.js"
+    ]
+  },
+  "summary": {
+    "totalTests": 7,
+    "passedTests": 5
+  }
+}

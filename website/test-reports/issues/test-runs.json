@@ -1,0 +1,233 @@
+{
+  "latestRun": {
+    "id": "2025-10-05T22-19-01-960Z",
+    "timestamp": "2025-10-05T22:19:02.007Z",
+    "totalTests": 6,
+    "failedTests": [],
+    "passedTests": [],
+    "fixesNeeded": [],
+    "endTimestamp": "2025-10-05T22:19:02.092Z",
+    "status": "passed"
+  },
+  "allRuns": [
+    {
+      "id": "2025-10-05T21-57-09-619Z",
+      "timestamp": "2025-10-05T21:57:09.724Z",
+      "totalTests": 0,
+      "failedTests": [],
+      "passedTests": [],
+      "fixesNeeded": [],
+      "endTimestamp": "2025-10-05T21:57:09.795Z",
+      "status": "failed"
+    },
+    {
+      "id": "2025-10-05T21-57-35-959Z",
+      "timestamp": "2025-10-05T21:57:36.055Z",
+      "totalTests": 0,
+      "failedTests": [],
+      "passedTests": [],
+      "fixesNeeded": [],
+      "endTimestamp": "2025-10-05T21:57:36.124Z",
+      "status": "failed"
+    },
+    {
+      "id": "2025-10-05T22-10-46-219Z",
+      "timestamp": "2025-10-05T22:10:46.337Z",
+      "totalTests": 6,
+      "failedTests": [
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "failed",
+          "duration": "22570.79ms",
+          "timestamp": "2025-10-05T22:11:18.308Z",
+          "error": "Error: expect.toBeVisible: Error: strict mode violation: locator('nav') resolved to 2 elements:\n    1) <nav class=\"damp-nav\" role=\"navigation\" aria-label=\"Main navigation\">…</nav> aka getByRole('navigation', { name: 'Main navigation' })\n    2) <nav role=\"navigation\" class=\"mobile-nav\">…</nav> aka getByLabel('Navigation Menu', { exact: true }).locator('nav')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav')\u001b[22m\n",
+          "location": "C:\\Users\\Zach\\Documents\\Projects\\damp-smart-drinkware\\website\\tests\\e2e\\test-animation-wait.test.js:4"
+        },
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "failed",
+          "duration": "21200.64ms",
+          "timestamp": "2025-10-05T22:11:40.119Z",
+          "error": "Error: expect.toBeVisible: Error: strict mode violation: locator('nav') resolved to 2 elements:\n    1) <nav class=\"damp-nav\" role=\"navigation\" aria-label=\"Main navigation\">…</nav> aka getByRole('navigation', { name: 'Main navigation' })\n    2) <nav role=\"navigation\" class=\"mobile-nav\">…</nav> aka getByLabel('Navigation Menu', { exact: true }).locator('nav')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav')\u001b[22m\n",
+          "location": "C:\\Users\\Zach\\Documents\\Projects\\damp-smart-drinkware\\website\\tests\\e2e\\test-animation-wait.test.js:4"
+        },
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "failed",
+          "duration": "15003.23ms",
+          "timestamp": "2025-10-05T22:11:55.856Z",
+          "error": "Error: expect.toBeVisible: Error: strict mode violation: locator('nav') resolved to 2 elements:\n    1) <nav class=\"damp-nav\" role=\"navigation\" aria-label=\"Main navigation\">…</nav> aka getByRole('navigation', { name: 'Main navigation' })\n    2) <nav role=\"navigation\" class=\"mobile-nav\">…</nav> aka getByLabel('Navigation Menu', { exact: true }).locator('nav')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav')\u001b[22m\n",
+          "location": "C:\\Users\\Zach\\Documents\\Projects\\damp-smart-drinkware\\website\\tests\\e2e\\test-animation-wait.test.js:4"
+        },
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "failed",
+          "duration": "9312.18ms",
+          "timestamp": "2025-10-05T22:12:05.769Z",
+          "error": "Error: expect.toBeVisible: Error: strict mode violation: locator('nav') resolved to 2 elements:\n    1) <nav class=\"damp-nav\" role=\"navigation\" aria-label=\"Main navigation\">…</nav> aka getByRole('navigation', { name: 'Main navigation' })\n    2) <nav role=\"navigation\" class=\"mobile-nav\">…</nav> aka getByLabel('Navigation Menu', { exact: true }).locator('nav')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav')\u001b[22m\n",
+          "location": "C:\\Users\\Zach\\Documents\\Projects\\damp-smart-drinkware\\website\\tests\\e2e\\test-animation-wait.test.js:4"
+        },
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "failed",
+          "duration": "20678.01ms",
+          "timestamp": "2025-10-05T22:12:27.222Z",
+          "error": "Error: expect.toBeVisible: Error: strict mode violation: locator('nav') resolved to 2 elements:\n    1) <nav class=\"damp-nav\" role=\"navigation\" aria-label=\"Main navigation\">…</nav> aka getByRole('navigation', { name: 'Main navigation' })\n    2) <nav role=\"navigation\" class=\"mobile-nav\">…</nav> aka getByLabel('Navigation Menu', { exact: true }).locator('nav')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('nav')\u001b[22m\n",
+          "location": "C:\\Users\\Zach\\Documents\\Projects\\damp-smart-drinkware\\website\\tests\\e2e\\test-animation-wait.test.js:4"
+        }
+      ],
+      "passedTests": [
+        {
+          "title": "setup test context",
+          "status": "passed",
+          "duration": "5638.42ms",
+          "timestamp": "2025-10-05T22:10:52.674Z"
+        },
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "interrupted",
+          "duration": "6965.01ms",
+          "timestamp": "2025-10-05T22:12:34.881Z"
+        }
+      ],
+      "fixesNeeded": [],
+      "endTimestamp": "2025-10-05T22:12:35.165Z",
+      "status": "interrupted"
+    },
+    {
+      "id": "2025-10-05T22-12-41-499Z",
+      "timestamp": "2025-10-05T22:12:41.577Z",
+      "totalTests": 6,
+      "failedTests": [],
+      "passedTests": [
+        {
+          "title": "setup test context",
+          "status": "passed",
+          "duration": "6045.36ms",
+          "timestamp": "2025-10-05T22:12:48.632Z"
+        },
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "interrupted",
+          "duration": "3591.24ms",
+          "timestamp": "2025-10-05T22:12:56.467Z"
+        }
+      ],
+      "fixesNeeded": [],
+      "endTimestamp": "2025-10-05T22:13:01.192Z",
+      "status": "interrupted"
+    },
+    {
+      "id": "2025-10-05T22-13-05-482Z",
+      "timestamp": "2025-10-05T22:13:05.577Z",
+      "totalTests": 2,
+      "failedTests": [],
+      "passedTests": [
+        {
+          "title": "setup test context",
+          "status": "passed",
+          "duration": "5400.16ms",
+          "timestamp": "2025-10-05T22:13:11.482Z"
+        },
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "passed",
+          "duration": "18782.50ms",
+          "timestamp": "2025-10-05T22:13:33.391Z"
+        }
+      ],
+      "fixesNeeded": [],
+      "endTimestamp": "2025-10-05T22:13:36.108Z",
+      "status": "passed"
+    },
+    {
+      "id": "2025-10-05T22-13-42-866Z",
+      "timestamp": "2025-10-05T22:13:42.942Z",
+      "totalTests": 0,
+      "failedTests": [],
+      "passedTests": [],
+      "fixesNeeded": [],
+      "endTimestamp": "2025-10-05T22:13:43.019Z",
+      "status": "failed"
+    },
+    {
+      "id": "2025-10-05T22-14-02-966Z",
+      "timestamp": "2025-10-05T22:14:03.094Z",
+      "totalTests": 6,
+      "failedTests": [],
+      "passedTests": [
+        {
+          "title": "setup test context",
+          "status": "passed",
+          "duration": "6269.45ms",
+          "timestamp": "2025-10-05T22:14:10.079Z"
+        },
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "passed",
+          "duration": "18439.80ms",
+          "timestamp": "2025-10-05T22:14:33.248Z"
+        },
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "passed",
+          "duration": "13781.73ms",
+          "timestamp": "2025-10-05T22:14:50.884Z"
+        },
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "passed",
+          "duration": "18127.86ms",
+          "timestamp": "2025-10-05T22:15:10.483Z"
+        },
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "passed",
+          "duration": "19113.84ms",
+          "timestamp": "2025-10-05T22:15:33.388Z"
+        },
+        {
+          "title": "should wait for hero animation to complete",
+          "status": "passed",
+          "duration": "18840.89ms",
+          "timestamp": "2025-10-05T22:15:54.852Z"
+        }
+      ],
+      "fixesNeeded": [],
+      "endTimestamp": "2025-10-05T22:15:57.787Z",
+      "status": "passed"
+    },
+    {
+      "id": "2025-10-05T22-16-24-819Z",
+      "timestamp": "2025-10-05T22:16:24.914Z",
+      "totalTests": 0,
+      "failedTests": [],
+      "passedTests": [],
+      "fixesNeeded": [],
+      "endTimestamp": "2025-10-05T22:16:24.987Z",
+      "status": "failed"
+    },
+    {
+      "id": "2025-10-05T22-17-22-339Z",
+      "timestamp": "2025-10-05T22:17:22.656Z",
+      "totalTests": 51,
+      "failedTests": [],
+      "passedTests": [],
+      "fixesNeeded": [],
+      "endTimestamp": "2025-10-05T22:17:22.747Z",
+      "status": "passed"
+    },
+    {
+      "id": "2025-10-05T22-19-01-960Z",
+      "timestamp": "2025-10-05T22:19:02.007Z",
+      "totalTests": 6,
+      "failedTests": [],
+      "passedTests": [],
+      "fixesNeeded": [],
+      "endTimestamp": "2025-10-05T22:19:02.092Z",
+      "status": "passed"
+    }
+  ],
+  "fixesNeeded": 0,
+  "lastUpdated": "2025-10-05T22:19:02.092Z"
+}

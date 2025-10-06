@@ -1,13 +1,35 @@
+/* global self, caches, console, URL, fetch, Response, Request, Blob, crypto, BroadcastChannel, setInterval, setTimeout, location */
+
 // DAMP Smart Drinkware - Advanced Service Worker
 // Google Engineering Standards with Hot Module Replacement & Intelligent Caching
 // Copyright 2025 WeCr8 Solutions LLC
 
-const CACHE_NAME = 'damp-v2.1.0';
-const CACHE_STRATEGY_VERSION = '2.1.0';
-const HOT_RELOAD_CHANNEL = 'damp-hot-reload';
-const PERFORMANCE_CHANNEL = 'damp-performance';
+const SW = {
+    CACHE_NAME: 'damp-v2.1.0',
+    CACHE_STRATEGY_VERSION: '2.1.0',
+    HOT_RELOAD_CHANNEL: 'damp-hot-reload',
+    PERFORMANCE_CHANNEL: 'damp-performance',
+    backgroundSyncQueues: new Map(),
+    performanceMetrics: {
+        cacheHits: 0,
+        cacheMisses: 0,
+        networkLatency: []
+    },
 
-// Google-level caching strategies
+/* global self, caches, console, URL, fetch, Response, Request, Blob, crypto, BroadcastChannel, setInterval, setTimeout, location */
+
+// DAMP Smart Drinkware - Advanced Service Worker
+// Google Engineering Standards with Hot Module Replacement & Intelligent Caching
+// Copyright 2025 WeCr8 Solutions LLC
+
+// Service Worker Configuration
+const SW = {
+    CACHE_NAME: 'damp-v2.1.0',
+    CACHE_STRATEGY_VERSION: '2.1.0',
+    HOT_RELOAD_CHANNEL: 'damp-hot-reload',
+    PERFORMANCE_CHANNEL: 'damp-performance',
+
+    // Google-level caching strategies
 const CACHE_STRATEGIES = {
     CRITICAL: 'critical-resources',     // HTML, critical CSS/JS
     STATIC: 'static-assets',           // Images, fonts, non-critical CSS/JS
@@ -21,27 +43,41 @@ const CACHE_CONFIGS = {
     [CACHE_STRATEGIES.CRITICAL]: {
         maxEntries: 50,
         maxAgeSeconds: 60 * 60 * 24,        // 24 hours
-        strategy: 'NetworkFirst'
+        strategy: 'NetworkFirst',
+        networkTimeoutSeconds: 3             // Fallback to cache after 3s
     },
     [CACHE_STRATEGIES.STATIC]: {
         maxEntries: 200,
         maxAgeSeconds: 60 * 60 * 24 * 30,   // 30 days
-        strategy: 'CacheFirst'
+        strategy: 'CacheFirst',
+        cachableResponses: {
+            statuses: [0, 200]
+        }
     },
     [CACHE_STRATEGIES.API]: {
         maxEntries: 100,
         maxAgeSeconds: 60 * 5,              // 5 minutes
-        strategy: 'NetworkFirst'
+        strategy: 'NetworkFirst',
+        networkTimeoutSeconds: 2,            // Fallback to cache after 2s
+        backgroundSync: true                 // Enable background sync
     },
     [CACHE_STRATEGIES.DYNAMIC]: {
         maxEntries: 50,
-        maxAgeSeconds: 60 * 60,             // 1 hour
-        strategy: 'StaleWhileRevalidate'
+        maxAgeSeconds: 60 * 5,              // 5 minutes for cart state
+        strategy: 'NetworkFirst',            // Changed to ensure fresh cart data
+        networkTimeoutSeconds: 2,
+        backgroundSync: true,
+        syncTag: 'cart-update'
     },
     [CACHE_STRATEGIES.OFFLINE]: {
         maxEntries: 10,
         maxAgeSeconds: 60 * 60 * 24 * 365,  // 1 year
-        strategy: 'CacheOnly'
+        strategy: 'CacheOnly',
+        staticResources: [
+            '/offline.html',
+            '/assets/css/offline.css',
+            '/assets/images/offline.svg'
+        ]
     }
 };
 
@@ -64,6 +100,14 @@ class DAMPServiceWorker {
         this.initializeEventListeners();
         this.setupPerformanceMonitoring();
         this.enableHotModuleReplacement();
+        this.initializeBackgroundSync();
+    }
+
+    async initializeBackgroundSync() {
+        this.backgroundSyncQueues = {
+            'cart-updates': new Set(),
+            'form-submissions': new Set()
+        };
     }
 
     initializeEventListeners() {
@@ -109,8 +153,14 @@ class DAMPServiceWorker {
     }
 
     async handleFetch(event) {
-        const { request } = event;
+        const request = event.request;
         const url = new URL(request.url);
+        let response = null;
+
+        // Handle cart API requests with special caching
+        if (url.pathname.includes('/api/cart')) {
+            return this.handleCartRequest(request);
+        }
 
         // Skip non-HTTP requests
         if (!url.protocol.startsWith('http')) return;
@@ -165,19 +215,18 @@ class DAMPServiceWorker {
         console.log('[DAMP SW] Background sync triggered:', event.tag);
 
         switch (event.tag) {
-            case 'analytics-sync':
-                event.waitUntil(this.syncAnalytics());
+            case 'sync-analytics':
+                await this.syncAnalytics();
                 break;
-            case 'form-submission':
-                event.waitUntil(this.syncFormSubmissions());
+            case 'sync-forms':
+                await this.syncFormSubmissions();
                 break;
-            case 'preorder-sync':
-                event.waitUntil(this.syncPreorders());
+            case 'cart-updates':
+                await this.syncCartUpdates();
                 break;
             default:
                 console.log('[DAMP SW] Unknown sync tag:', event.tag);
         }
-    }
 
     async handlePush(event) {
         const options = {
@@ -316,27 +365,39 @@ class DAMPServiceWorker {
     async preloadCriticalResources() {
         const criticalResources = [
             '/',
+            '/index.html',
+            '/offline.html',
             '/assets/css/main.css',
+            '/assets/css/offline.css',
             '/assets/js/components/header.js',
+            '/assets/js/sw-register.js',
             '/assets/js/scripts.js',
-            '/assets/images/logo/icon.png',
-            '/manifest.json'
+            '/assets/images/logo/icon-192.png',
+            '/assets/images/offline.svg',
+            '/manifest.json',
+            '/pages/damp-handle-v1.0.html',
+            '/pages/cup-sleeve-v1.0.html',
+            '/pages/silicone-bottom-v1.0.html'
         ];
 
         const cache = await caches.open(CACHE_STRATEGIES.CRITICAL);
-
-        const promises = criticalResources.map(async (url) => {
+        
+        // Preload with progress tracking
+        let loaded = 0;
+        const total = criticalResources.length;
+        
+        return Promise.all(criticalResources.map(async (url) => {
             try {
                 const response = await fetch(url);
                 if (response.ok) {
                     await cache.put(url, response);
+                    loaded++;
+                    console.log(`[DAMP SW] Preloaded ${loaded}/${total}: ${url}`);
                 }
             } catch (error) {
                 console.warn(`[DAMP SW] Failed to preload: ${url}`, error);
             }
-        });
-
-        await Promise.allSettled(promises);
+        }));
     }
 
     async cleanupOldCaches() {
@@ -358,6 +419,33 @@ class DAMPServiceWorker {
             hmrEnabled = true;
             console.log('[DAMP SW] Hot Module Replacement enabled for development');
         }
+    }
+
+    // Cart synchronization
+    async syncCartUpdates() {
+        const cartQueue = this.backgroundSyncQueues['cart-updates'];
+        if (!cartQueue.size) return;
+
+        console.log('[DAMP SW] Processing queued cart updates...');
+
+        for (const request of cartQueue) {
+            try {
+                const response = await fetch(request);
+                if (response.ok) {
+                    cartQueue.delete(request);
+                    console.log('[DAMP SW] Cart update processed successfully');
+                } else {
+                    throw new Error(`Cart update failed with status ${response.status}`);
+                }
+            } catch (error) {
+                console.warn('[DAMP SW] Failed to process cart update:', error);
+            }
+        }
+
+        // Update clients
+        this.notifyClients('cart-sync-complete', {
+            remaining: cartQueue.size
+        });
     }
 
     isHMRRequest(request) {

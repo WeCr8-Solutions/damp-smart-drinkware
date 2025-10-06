@@ -3,17 +3,19 @@
  * Guided setup for first-time users
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
+  useWindowDimensions,
   Alert,
   Animated,
 } from 'react-native';
+import { db, auth } from '@/firebase/config';
+import { doc, updateDoc } from 'firebase/firestore';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -31,9 +33,6 @@ import {
 } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
-import { auth } from '@/firebase/config';
-
-const { width: screenWidth } = Dimensions.get('window');
 
 interface WizardStep {
   id: string;
@@ -43,6 +42,8 @@ interface WizardStep {
 }
 
 export default function DeviceSetupWizard() {
+  const { width: screenWidth } = useWindowDimensions();
+  const styles = React.useMemo(() => createStyles(screenWidth), [screenWidth]);
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
@@ -176,12 +177,11 @@ export default function DeviceSetupWizard() {
   const completeWizard = async () => {
     try {
       // Mark wizard as completed for user
-      const { error } = await supabase
-        .from('user_profiles')
-        .update({ setup_completed: true, updated_at: new Date().toISOString() })
-        .eq('id', user?.id);
-
-      if (error) throw error;
+      const userDocRef = doc(db, 'user_profiles', auth.currentUser?.uid || '');
+      await updateDoc(userDocRef, {
+        setup_completed: true,
+        updated_at: new Date().toISOString()
+      });
 
       Alert.alert(
         'Setup Complete!',
@@ -560,7 +560,7 @@ export default function DeviceSetupWizard() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (screenWidth: number) => StyleSheet.create({
   container: {
     flex: 1,
   },

@@ -7,6 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>DAMP Pre-Order Checkout</title>
+    <link rel="stylesheet" href="../assets/css/checkout.css">
     <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
@@ -24,11 +25,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
             color: white;
-            padding-top: calc(80px + var(--safe-area-top));
-            padding-left: var(--safe-area-left);
-            padding-right: var(--safe-area-right);
-            padding-bottom: var(--safe-area-bottom);
-            min-height: 100vh;
+            padding: calc(80px + var(--safe-area-top)) var(--safe-area-right) var(--safe-area-bottom) var(--safe-area-left);
             min-height: 100dvh;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -40,15 +37,15 @@
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: blur(20px);
+            background: rgb(15 15 35 / 95%);
             -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
             z-index: 1000;
             padding: 15px 0;
             padding-top: calc(15px + var(--safe-area-top));
             padding-left: var(--safe-area-left);
             padding-right: var(--safe-area-right);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgb(255 255 255 / 10%);
         }
 
         .nav-container {
@@ -66,8 +63,8 @@
             gap: 10px;
             font-size: 1.8rem;
             font-weight: bold;
-            background: linear-gradient(45deg, #00d4ff, #0099cc);
-            -webkit-background-clip: text;
+            background: linear-gradient(45deg, #00d4ff, #09c);
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-decoration: none;
@@ -132,9 +129,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 15, 35, 0.98);
-            backdrop-filter: blur(20px);
+            background: rgb(15 15 35 / 98%);
             -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
             z-index: 1001;
             transform: translateX(-100%);
             transition: transform 0.3s ease;
@@ -171,7 +168,7 @@
             cursor: pointer;
         }
 
-        @media (max-width: 768px) {
+        @media (width <= 768px) {
             .hamburger {
                 display: flex;
             }
@@ -180,25 +177,28 @@
                 display: none;
             }
         }
+
         .container {
             max-width: 600px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgb(255 255 255 / 10%);
             padding: 40px;
             border-radius: 20px;
-            backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
             width: 100%;
         }
+
         .product-summary {
-            background: rgba(0, 212, 255, 0.1);
+            background: rgb(0 212 255 / 10%);
             padding: 30px;
             border-radius: 15px;
             margin-bottom: 30px;
-            border: 1px solid rgba(0, 212, 255, 0.3);
+            border: 1px solid rgb(0 212 255 / 30%);
         }
+
         .btn {
-            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            background: linear-gradient(45deg, #00d4ff, #09c);
             color: white;
             border: none;
             padding: 18px 40px;
@@ -212,22 +212,26 @@
             display: block;
             margin: 0 auto;
         }
+
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 30px rgb(0 212 255 / 30%);
         }
+
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
+
         .loading {
             display: none;
             text-align: center;
             color: #00d4ff;
         }
+
         .error {
             color: #ff6b6b;
-            background: rgba(255, 107, 107, 0.1);
+            background: rgb(255 107 107 / 10%);
             padding: 15px;
             border-radius: 10px;
             margin: 20px 0;
@@ -235,7 +239,7 @@
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
+        @media (width <= 768px) {
             body {
                 padding: calc(20px + var(--safe-area-top)) max(16px, var(--safe-area-right)) max(20px, var(--safe-area-bottom)) max(16px, var(--safe-area-left));
             }
@@ -254,7 +258,7 @@
             }
         }
 
-        @media (max-width: 480px) {
+        @media (width <= 480px) {
             body {
                 padding: calc(16px + var(--safe-area-top)) max(12px, var(--safe-area-right)) max(16px, var(--safe-area-bottom)) max(12px, var(--safe-area-left));
             }
@@ -350,37 +354,37 @@
     </nav>
 
     <div class="container">
-        <h1 style="text-align: center; margin-bottom: 30px; color: #00d4ff;">Complete Your Pre-Order</h1>
+        <h1 class="checkout-heading">Complete Your Pre-Order</h1>
 
         <div class="product-summary">
-            <h3 style="color: #00d4ff; margin-bottom: 15px;">Order Summary</h3>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <h3>Order Summary</h3>
+            <div class="product-summary-row">
                 <span id="product-name">DAMP Handle v1.0</span>
                 <span id="product-price">$49.99</span>
             </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <div class="product-summary-row">
                 <span>Quantity: <span id="quantity">1</span></span>
                 <span id="subtotal">$49.99</span>
             </div>
-            <div style="display: flex; justify-content: space-between; color: #ff6b6b; font-weight: bold;">
+            <div class="savings-row">
                 <span>Early Bird Savings</span>
                 <span id="savings">-$20.00</span>
             </div>
-            <hr style="border: 1px solid rgba(255, 255, 255, 0.2); margin: 15px 0;">
-            <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; color: #00ff88;">
+            <hr class="summary-divider">
+            <div class="total-row">
                 <span>Total</span>
                 <span id="total">$49.99</span>
             </div>
         </div>
 
-        <div style="background: rgba(255, 193, 7, 0.1); padding: 20px; border-radius: 15px; margin-bottom: 30px; border: 1px solid rgba(255, 193, 7, 0.3);">
-            <h4 style="color: #ffc107; margin-bottom: 15px;">🚀 Pre-Order Details</h4>
-            <ul style="list-style: none; padding: 0; margin: 0;">
-                <li style="margin-bottom: 8px;">✅ Payment authorized but not charged until shipping</li>
-                <li style="margin-bottom: 8px;">📅 Estimated delivery: Q3 2025</li>
-                <li style="margin-bottom: 8px;">📧 Monthly development updates</li>
-                <li style="margin-bottom: 8px;">🔒 Full refund guarantee</li>
-                <li style="margin-bottom: 8px;">🎯 Early bird pricing locked in</li>
+        <div class="pre-order-info">
+            <h4>🚀 Pre-Order Details</h4>
+            <ul class="pre-order-list">
+                <li>✅ Payment authorized but not charged until shipping</li>
+                <li>📅 Estimated delivery: Q3 2025</li>
+                <li>📧 Monthly development updates</li>
+                <li>🔒 Full refund guarantee</li>
+                <li>🎯 Early bird pricing locked in</li>
             </ul>
         </div>
 
@@ -394,9 +398,9 @@
             <p>🔄 Creating secure checkout session...</p>
         </div>
 
-        <div style="text-align: center; margin-top: 30px; font-size: 0.9rem; opacity: 0.8;">
+        <div class="checkout-footer">
             <p>🔒 Secured by Stripe • Your payment information is encrypted and secure</p>
-            <p style="margin-top: 10px;">Questions? Email us at support@dampdrink.com</p>
+            <p class="footer-contact">Questions? Email us at support@dampdrink.com</p>
         </div>
     </div>
 
@@ -404,8 +408,8 @@
     <script src="../assets/js/components/safe-area-wrapper.js"></script>
 
     <script>
-        // Replace with your actual Stripe publishable key
-        const stripe = Stripe('pk_live_51ReW7yCcrIDahSGRjE5nEx9ENwPj8uzAfCJQtmVBkuEyeS7JNq0xscaAqdUFoKos7JO1cKbJXrIscBfUU4yNRQSy00lWo3F7p2');
+        // Initialize Stripe with environment-specific key
+        const stripe = Stripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
         // Get product details from URL parameters
         const urlParams = new URLSearchParams(window.location.search);

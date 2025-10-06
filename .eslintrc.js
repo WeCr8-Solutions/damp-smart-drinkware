@@ -43,7 +43,24 @@ module.exports = {
     // Testing globals
     __DEV__: 'readonly',
     __TEST__: 'readonly',
-    __PROD__: 'readonly'
+    __PROD__: 'readonly',
+    
+    // Browser globals
+    window: 'readonly',
+    document: 'readonly',
+    Event: 'readonly',
+    KeyboardEvent: 'readonly',
+    
+    // Jest globals
+    jest: 'readonly',
+    describe: 'readonly',
+    beforeEach: 'readonly',
+    afterEach: 'readonly',
+    beforeAll: 'readonly',
+    afterAll: 'readonly',
+    it: 'readonly',
+    expect: 'readonly',
+    test: 'readonly'
   },
 
   // Parser configuration

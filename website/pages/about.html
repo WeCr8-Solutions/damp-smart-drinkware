@@ -194,18 +194,18 @@
     </section>
 
     <!-- About Content -->
-    <section class="section">
+    <section class="section about-content">
         <div class="container">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="animate-fade-in-left">
-                    <h2 class="section-title" style="color: #00d4ff;">Our Mission</h2>
+                    <h2 class="section-title about-color-primary">Our Mission</h2>
                     <p>At DAMP Smart Drinkware, we're solving a universal problem that affects millions of people daily - drink abandonment. Our mission is to create intelligent, user-friendly solutions that seamlessly integrate into your daily routine while ensuring your favorite beverages never get left behind.</p>
-                    <p style="margin-top: 15px;">We believe that technology should enhance, not complicate, your life. That's why we've developed the DAMP (Drink Abandonment Monitoring Protocol) system - a revolutionary approach to beverage tracking that's both powerful and intuitive.</p>
+                    <p class="about-mt-15">We believe that technology should enhance, not complicate, your life. That's why we've developed the DAMP (Drink Abandonment Monitoring Protocol) system - a revolutionary approach to beverage tracking that's both powerful and intuitive.</p>
                 </div>
                 <div class="animate-fade-in-right">
-                    <h2 class="section-title" style="color: #00d4ff;">The Problem We Solve</h2>
+                    <h2 class="section-title about-color-primary">The Problem We Solve</h2>
                     <p>Studies show that the average person abandons their drink 3-4 times per week, leading to:</p>
-                    <ul style="margin: 15px 0; padding-left: 20px;">
+                    <ul style="margin: 15px 0; padding-left: 20px;"> <!-- TODO: Move padding-left to class if needed elsewhere -->
                         <li>Wasted beverages and money</li>
                         <li>Missed caffeine or hydration goals</li>
                         <li>Frustration and inconvenience</li>
@@ -256,20 +256,20 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
                 <div class="team-member animate-fade-in-up animate-delay-200">
                     <div class="team-avatar">👨‍💻</div>
-                    <h3 style="color: #00d4ff; margin-bottom: 10px;">Engineering Team</h3>
-                    <p style="margin-bottom: 10px; font-weight: bold;">Hardware & Software Development</p>
+                    <h3 class="about-color-primary about-mb-10">Engineering Team</h3>
+                    <p class="about-mb-10 about-fw-bold">Hardware & Software Development</p>
                     <p>Our experienced engineers specialize in IoT device development, mobile app creation, and embedded systems design.</p>
                 </div>
                 <div class="team-member animate-fade-in-up animate-delay-300">
                     <div class="team-avatar">🎨</div>
-                    <h3 style="color: #00d4ff; margin-bottom: 10px;">Design Team</h3>
-                    <p style="margin-bottom: 10px; font-weight: bold;">Product & UX Design</p>
+                    <h3 class="about-color-primary about-mb-10">Design Team</h3>
+                    <p class="about-mb-10 about-fw-bold">Product & UX Design</p>
                     <p>Our design team focuses on creating beautiful, functional products that seamlessly integrate into your daily life.</p>
                 </div>
                 <div class="team-member animate-fade-in-up animate-delay-400">
                     <div class="team-avatar">🚀</div>
-                    <h3 style="color: #00d4ff; margin-bottom: 10px;">Innovation Team</h3>
-                    <p style="margin-bottom: 10px; font-weight: bold;">Research & Development</p>
+                    <h3 class="about-color-primary about-mb-10">Innovation Team</h3>
+                    <p class="about-mb-10 about-fw-bold">Research & Development</p>
                     <p>Our R&D team continuously explores new technologies and improvements to enhance the DAMP experience.</p>
                 </div>
             </div>
@@ -280,12 +280,12 @@
     <section class="section bg-surface">
         <div class="container">
             <h2 class="section-title">Company Information</h2>
-            <div class="card" style="max-width: 800px; margin: 0 auto;">
-                <h3 style="color: #00d4ff; margin-bottom: 20px;">WeCr8 Solutions LLC</h3>
-                <p style="margin-bottom: 15px;"><strong>Founded:</strong> 2025</p>
-                <p style="margin-bottom: 15px;"><strong>Location:</strong> San Diego, CA</p>
-                <p style="margin-bottom: 15px;"><strong>Specialty:</strong> Smart IoT Solutions for Everyday Problems</p>
-                <p style="margin-bottom: 15px;"><strong>Mission:</strong> Creating innovative technology solutions that enhance daily life through intelligent, user-friendly products.</p>
+            <div class="card about-card">
+                <h3 class="about-color-primary about-mb-20">WeCr8 Solutions LLC</h3>
+                <p class="about-mb-15"><strong>Founded:</strong> 2025</p>
+                <p class="about-mb-15"><strong>Location:</strong> San Diego, CA</p>
+                <p class="about-mb-15"><strong>Specialty:</strong> Smart IoT Solutions for Everyday Problems</p>
+                <p class="about-mb-15"><strong>Mission:</strong> Creating innovative technology solutions that enhance daily life through intelligent, user-friendly products.</p>
                 <p><strong>Vision:</strong> To become the leading provider of smart drinkware solutions, expanding into other areas of connected lifestyle products.</p>
             </div>
         </div>
@@ -295,7 +295,7 @@
     <section class="section cta-section">
         <div class="container">
             <h2 class="section-title">Join the DAMP Revolution</h2>
-            <p style="font-size: 1.2rem; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">Ready to never leave your drink behind again? Join thousands of early adopters who are already experiencing the future of smart drinkware.</p>
+            <p class="about-fs-12 about-mb-40 about-mx-auto">Ready to never leave your drink behind again? Join thousands of early adopters who are already experiencing the future of smart drinkware.</p>
             <div class="cta-buttons">
                 <a href="../pages/pre-order.html" class="btn btn-primary btn-lg">Pre-Order Now</a>
                 <a href="../pages/waitlist.html" class="btn btn-secondary btn-lg">Join Waitlist</a>
@@ -303,11 +303,19 @@
         </div>
     </section>
 
+    <!-- Learn More Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Learn More</h2>
+            <p>Discover the benefits of the <a href="/pages/damp-drinking-guide.html">Damp Drinking Lifestyle</a>.</p>
+        </div>
+    </section>
+
     <!-- Footer -->
-    <footer class="section" style="padding: 40px 0; background: rgba(0, 0, 0, 0.3); text-align: center;">
+    <footer class="section about-footer">
         <div class="container">
             <p>&copy; 2025 DAMP Smart Drinkware by WeCr8 Solutions LLC. All rights reserved.</p>
-            <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">Drink Abandonment Monitoring Protocol™</p>
+            <p class="about-mt-10 about-fs-09 about-opacity-08">Drink Abandonment Monitoring Protocol™</p>
         </div>
     </footer>
 

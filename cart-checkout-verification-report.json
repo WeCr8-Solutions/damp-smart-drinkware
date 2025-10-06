@@ -1,0 +1,222 @@
+{
+  "timestamp": "2025-10-04T12:50:28.276Z",
+  "products": {
+    "damp-handle": {
+      "id": "damp-handle",
+      "name": "DAMP Handle v1.0",
+      "price": 4999,
+      "originalPrice": 6999,
+      "estimatedDelivery": "2025-Q3",
+      "stripeKeys": {
+        "preOrder": "DAMP_HAN_V1_pre-order",
+        "default": "DAMP_HAN_V1_default"
+      },
+      "pages": [
+        "website/pages/damp-handle-v1.0-stanley-IceFlow.html",
+        "website/pages/store.html"
+      ]
+    },
+    "silicone-bottom": {
+      "id": "silicone-bottom",
+      "name": "DAMP Silicone Bottom",
+      "price": 2999,
+      "originalPrice": 3999,
+      "estimatedDelivery": "2025-Q4",
+      "stripeKeys": {
+        "preOrder": "DAMP_SIL_BTM_pre-order",
+        "default": "DAMP_SIL_BTM_default"
+      },
+      "pages": [
+        "website/pages/silicone-bottom.html",
+        "website/pages/store.html"
+      ]
+    },
+    "cup-sleeve": {
+      "id": "cup-sleeve",
+      "name": "DAMP Cup Sleeve",
+      "price": 3499,
+      "originalPrice": 4499,
+      "estimatedDelivery": "2025-Q4",
+      "stripeKeys": {
+        "preOrder": "DAMP_SLV_V1_pre-order",
+        "default": "DAMP_SLV_V1_default"
+      },
+      "pages": [
+        "website/pages/cup-sleeve.html",
+        "website/pages/store.html"
+      ]
+    },
+    "baby-bottle": {
+      "id": "baby-bottle",
+      "name": "DAMP Baby Bottle",
+      "price": 7999,
+      "originalPrice": 9999,
+      "estimatedDelivery": "2026-Q1",
+      "stripeKeys": {
+        "preOrder": "DAMP_BBB_V1_pre-order",
+        "default": "DAMP_BBB_V1_default"
+      },
+      "pages": [
+        "website/pages/baby-bottle.html",
+        "website/pages/store.html"
+      ]
+    }
+  },
+  "subscriptionPlans": {
+    "damp-plus": {
+      "id": "damp-plus",
+      "name": "DAMP+",
+      "price": 299,
+      "stripePriceId": "price_1ReWLYCcrIDahSGRUnhZ9GpV"
+    },
+    "damp-family": {
+      "id": "damp-family",
+      "name": "DAMP Family",
+      "price": 599,
+      "stripePriceId": "price_1ReWMUCcrIDahSGRJgVqS4ns"
+    }
+  },
+  "testResults": {
+    "products": {
+      "damp-handle": {
+        "pages": {
+          "website/pages/damp-handle-v1.0-stanley-IceFlow.html": {
+            "buttons": {
+              "preOrder": 16,
+              "addToCart": 0,
+              "buyNow": 0,
+              "checkout": 7
+            },
+            "totalButtons": 23,
+            "stripeIntegration": true,
+            "pricing": false
+          },
+          "website/pages/store.html": {
+            "buttons": {
+              "preOrder": 25,
+              "addToCart": 2,
+              "buyNow": 0,
+              "checkout": 11
+            },
+            "totalButtons": 38,
+            "stripeIntegration": true,
+            "pricing": true
+          }
+        },
+        "buttons": 61,
+        "stripeIntegration": true,
+        "pricing": true,
+        "issues": []
+      },
+      "silicone-bottom": {
+        "pages": {
+          "website/pages/silicone-bottom.html": {
+            "buttons": {
+              "preOrder": 0,
+              "addToCart": 0,
+              "buyNow": 0,
+              "checkout": 0
+            },
+            "totalButtons": 0,
+            "stripeIntegration": false,
+            "pricing": false
+          },
+          "website/pages/store.html": {
+            "buttons": {
+              "preOrder": 25,
+              "addToCart": 2,
+              "buyNow": 0,
+              "checkout": 11
+            },
+            "totalButtons": 38,
+            "stripeIntegration": true,
+            "pricing": true
+          }
+        },
+        "buttons": 38,
+        "stripeIntegration": true,
+        "pricing": true,
+        "issues": []
+      },
+      "cup-sleeve": {
+        "pages": {
+          "website/pages/store.html": {
+            "buttons": {
+              "preOrder": 25,
+              "addToCart": 2,
+              "buyNow": 0,
+              "checkout": 11
+            },
+            "totalButtons": 38,
+            "stripeIntegration": true,
+            "pricing": false
+          }
+        },
+        "buttons": 38,
+        "stripeIntegration": true,
+        "pricing": false,
+        "issues": [
+          "Could not read website/pages/cup-sleeve.html"
+        ]
+      },
+      "baby-bottle": {
+        "pages": {
+          "website/pages/store.html": {
+            "buttons": {
+              "preOrder": 25,
+              "addToCart": 2,
+              "buyNow": 0,
+              "checkout": 11
+            },
+            "totalButtons": 38,
+            "stripeIntegration": true,
+            "pricing": true
+          }
+        },
+        "buttons": 38,
+        "stripeIntegration": true,
+        "pricing": true,
+        "issues": [
+          "Could not read website/pages/baby-bottle.html"
+        ]
+      }
+    },
+    "cart": {
+      "addToCart": true,
+      "removeFromCart": true,
+      "updateQuantity": false,
+      "cartPersistence": true,
+      "cartTotal": true
+    },
+    "checkout": {
+      "stripeIntegration": true,
+      "sessionCreation": true,
+      "paymentFlow": true,
+      "orderCapture": true,
+      "webhookHandling": true
+    },
+    "subscriptions": {
+      "planSelection": true,
+      "checkoutFlow": true,
+      "customerCreation": true
+    },
+    "mobile": {
+      "storeModal": true,
+      "checkoutFlow": true
+    },
+    "backend": {
+      "apiEndpoints": true,
+      "stripeKeys": true,
+      "errorHandling": true
+    },
+    "issues": [
+      "Browser test for silicone-bottom.html: Execution context was destroyed, most likely because of a navigation."
+    ],
+    "recommendations": []
+  },
+  "summary": {
+    "totalProducts": 4,
+    "totalChecks": 18,
+    "passedChecks": 17
+  }
+}

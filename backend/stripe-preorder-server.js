@@ -1,18 +1,117 @@
 // DAMP Pre-Order Backend with Stripe Integration
 // This example shows how to handle pre-orders with proper authorization
 
-const express = require('express');
-const stripe = require('stripe')('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'); // Live Stripe secret key
-const cors = require('cors');
+import express from 'express';
+import Stripe from 'stripe';
+import cors from 'cors';
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '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');
 const app = express();
+
+// Configure email transport
+const transporter = nodemailer.createTransport({
+    service: process.env.EMAIL_SERVICE || 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_APP_PASSWORD // Using app-specific password for better security
+    }
+});
+
+// Admin notification emails
+const ADMIN_EMAILS = ['admin@dampdrink.com', 'admin@wecr8.info'];
+
+// Email template functions
+const sendPreOrderConfirmationEmail = async ({ email, depositAmount, remainingAmount, quantity }) => {
+    const mailOptions = {
+        from: process.env.EMAIL_FROM || 'orders@dampdrink.com',
+        to: email,
+        bcc: ADMIN_EMAILS.join(','),
+        subject: 'Your DAMP Smart Drinkware Pre-order Confirmation',
+        html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2>Thank you for your Pre-order!</h2>
+                <p>We're excited to have you as an early supporter of DAMP Smart Drinkware.</p>
+                
+                <div style="background-color: #f7f7f7; padding: 20px; border-radius: 5px; margin: 20px 0;">
+                    <h3>Order Details:</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>Quantity: ${quantity}</li>
+                        <li>Deposit Paid: $${depositAmount}</li>
+                        <li>Remaining Balance: $${remainingAmount}</li>
+                    </ul>
+                </div>
+
+                <p>What happens next:</p>
+                <ol>
+                    <li>We'll keep you updated on production progress</li>
+                    <li>When your order is ready to ship, we'll contact you to collect the remaining balance of $${remainingAmount}</li>
+                    <li>Once the remaining payment is processed, we'll ship your order</li>
+                </ol>
+
+                <p>If you have any questions, please don't hesitate to contact our support team.</p>
+            </div>
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Pre-order confirmation email sent to ${email}`);
+    } catch (error) {
+        console.error('Error sending pre-order confirmation email:', error);
+        // Don't throw error to avoid disrupting the main flow
+    }
+};
+
+const sendPaymentCompleteEmail = async ({ email, totalAmount }) => {
+    const mailOptions = {
+        from: process.env.EMAIL_FROM || 'orders@dampdrink.com',
+        to: email,
+        bcc: ADMIN_EMAILS.join(','),
+        subject: 'Payment Complete - DAMP Smart Drinkware Order',
+        html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2>Thank You for Completing Your Payment!</h2>
+                <p>We're pleased to confirm that we've received your final payment for your DAMP Smart Drinkware order.</p>
+                
+                <div style="background-color: #f7f7f7; padding: 20px; border-radius: 5px; margin: 20px 0;">
+                    <h3>Payment Details:</h3>
+                    <p>Total Amount Paid: $${totalAmount}</p>
+                </div>
+
+                <p>Next Steps:</p>
+                <ol>
+                    <li>We'll begin preparing your order for shipment</li>
+                    <li>You'll receive a shipping confirmation email with tracking information once your order is on its way</li>
+                </ol>
+
+                <p>If you have any questions about your order, please don't hesitate to reach out to our customer support team.</p>
+                
+                <p style="margin-top: 30px;">Thank you for choosing DAMP Smart Drinkware!</p>
+            </div>
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Payment complete email sent to ${email}`);
+    } catch (error) {
+        console.error('Error sending payment complete email:', error);
+        // Don't throw error to avoid disrupting the main flow
+    }
+};
 
 // Add this at the top of your server file to suppress the warning
 process.env.NODE_NO_WARNINGS = '1';
 
-// Or add this specific suppression
+// Add specific warning suppression
 process.removeAllListeners('warning');
-process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning' && warning.message.includes('_headers')) {
+process.on('warning', function(warning) {
+    if (warning.name === 'DeprecationWarning' && warning.message.indexOf('_headers') !== -1) {
         return; // Suppress the _headers deprecation warning
     }
     console.warn(warning.stack);
@@ -23,28 +122,36 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public')); // Serve your static files
 
-// Product configuration with Stripe Lookup Keys
+// Product configuration with Stripe Lookup Keys and Pre-order Settings
 const PRODUCTS = {
     'damp-handle': {
         name: 'DAMP Handle v1.0',
         price: 4999, // $49.99 in cents
         originalPrice: 6999,
+        deposit: 1999, // $19.99 deposit for pre-order
+        remainingAmount: 3000, // $30.00 remaining balance
         estimatedDelivery: '2025-Q3',
         preOrderLookupKey: 'DAMP_HAN_V1_pre-order',
-        defaultLookupKey: 'DAMP_HAN_V1_default'
+        defaultLookupKey: 'DAMP_HAN_V1_default',
+        preOrderEnabled: true
     },
     'silicone-bottom': {
         name: 'DAMP Silicone Bottom',
         price: 2999, // $29.99 in cents
         originalPrice: 3999,
+        deposit: 999, // $9.99 deposit for pre-order
+        remainingAmount: 2000, // $20.00 remaining balance
         estimatedDelivery: '2025-Q4',
         preOrderLookupKey: 'DAMP_SIL_BTM_pre-order',
-        defaultLookupKey: 'DAMP_SIL_BTM_default'
+        defaultLookupKey: 'DAMP_SIL_BTM_default',
+        preOrderEnabled: true
     },
     'cup-sleeve': {
         name: 'DAMP Cup Sleeve',
         price: 3499, // $34.99 in cents
         originalPrice: 4499,
+        deposit: 1499, // $14.99 deposit for pre-order
+        remainingAmount: 2000, // $20.00 remaining balance
         estimatedDelivery: '2025-Q4',
         preOrderLookupKey: 'DAMP_SLV_V1_pre-order',
         defaultLookupKey: 'DAMP_SLV_V1_default'
@@ -101,25 +208,53 @@ app.post('/create-checkout-session', async (req, res) => {
             success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${req.headers.origin}/cancel`,
 
+            // Pre-order specific settings
+            payment_intent_data: {
+                setup_future_usage: 'off_session',
+                capture_method: 'manual' // This allows us to authorize now and capture later
+            },
+
             // Additional metadata
             metadata: {
                 product_id: productId,
                 quantity: quantity.toString(),
-                order_type: 'pre_order'
+                order_type: 'pre_order',
+                deposit_amount: product.deposit.toString(),
+                remaining_amount: product.remainingAmount.toString(),
+                total_price: product.price.toString()
             },
+
+            // Payment schedule
+            payment_method_types: ['card'],
+            mode: 'payment',
+
+            // Add line items for deposit and remaining balance
+            line_items: [
+                {
+                    price_data: {
+                        currency: 'usd',
+                        product_data: {
+                            name: `${product.name} - Pre-order Deposit`,
+                            description: `Secure your ${product.name} with a deposit. Remaining balance will be collected before shipping.`
+                        },
+                        unit_amount: product.deposit
+                    },
+                    quantity: quantity
+                }
+            ],
 
             // Collect shipping address
             shipping_address_collection: {
                 allowed_countries: ['US', 'CA', 'GB', 'AU', 'DE', 'FR', 'JP']
             },
 
-            // Custom messaging
+            // Custom messaging for pre-order
             custom_text: {
                 shipping_address: {
-                    message: 'We\'ll ship your pre-order when it\'s ready for delivery!'
+                    message: 'We\'ll collect shipping details again before final delivery.'
                 },
                 submit: {
-                    message: 'Your payment will be authorized but not charged until we ship your order.'
+                    message: `Pay $${(product.deposit/100).toFixed(2)} deposit now. Remaining $${(product.remainingAmount/100).toFixed(2)} will be collected before shipping.`
                 }
             }
         });
@@ -132,77 +267,106 @@ app.post('/create-checkout-session', async (req, res) => {
     }
 });
 
-// Handle successful checkout
-app.get('/success', async (req, res) => {
-    try {
-        const { session_id } = req.query;
-
-        // Retrieve the session
-        const session = await stripe.checkout.sessions.retrieve(session_id);
-
-        // Get payment intent details
-        const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent);
-
-        // Store pre-order in your database (example)
-        const preOrder = {
-            id: session.id,
-            paymentIntentId: session.payment_intent,
+    // Handle successful payment
+    if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+        
+        // Store pre-order details with payment tracking
+        await db.collection('orders').add({
             productId: session.metadata.product_id,
             quantity: parseInt(session.metadata.quantity),
             customerEmail: session.customer_details.email,
-            customerName: session.customer_details.name,
-            shippingAddress: session.shipping_details.address,
-            amount: session.amount_total,
-            status: 'pre_order_confirmed',
-            createdAt: new Date(),
-            estimatedDelivery: paymentIntent.metadata.estimated_delivery
-        };
+            orderType: session.metadata.order_type,
+            status: 'deposit_paid',
+            depositAmount: parseInt(session.metadata.deposit_amount),
+            remainingAmount: parseInt(session.metadata.remaining_amount),
+            totalPrice: parseInt(session.metadata.total_price),
+            paymentIntentId: session.payment_intent,
+            depositPaidAt: admin.firestore.FieldValue.serverTimestamp(),
+            remainingBalanceDueAt: null, // Will be set when product is ready
+            remainingBalancePaidAt: null
+        });
 
-        // TODO: Save to your database
-        console.log('Pre-order created:', preOrder);
+        // Send confirmation email to customer
+        await sendPreOrderConfirmationEmail({
+            email: session.customer_details.email,
+            depositAmount: (parseInt(session.metadata.deposit_amount) / 100).toFixed(2),
+            remainingAmount: (parseInt(session.metadata.remaining_amount) / 100).toFixed(2),
+            quantity: parseInt(session.metadata.quantity)
+        });
+    }
 
-        // Send confirmation email (using your email service)
-        await sendPreOrderConfirmation(preOrder);
+    // Handle remaining balance payment
+    if (event.type === 'payment_intent.succeeded') {
+        const paymentIntent = event.data.object;
+        
+        // Only process if this is a remaining balance payment
+        if (paymentIntent.metadata.type === 'remaining_balance') {
+            const orderId = paymentIntent.metadata.orderId;
+            const orderRef = db.collection('orders').doc(orderId);
+            
+            // Update order status
+            await orderRef.update({
+                status: 'paid_in_full',
+                remainingBalancePaidAt: admin.firestore.FieldValue.serverTimestamp()
+            });
 
-        // Increment pre-order count
-        await incrementPreorderCount(session.metadata.product_id, parseInt(session.metadata.quantity));
+            // Get order details for email
+            const order = await orderRef.get();
+            const orderData = order.data();
 
-        // Return success page
-        res.send(`
-            <html>
-                <head>
-                    <title>Pre-Order Confirmed!</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-                        .success { color: #00ff88; font-size: 24px; margin-bottom: 20px; }
-                        .details { background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0; }
-                    </style>
-                </head>
-                <body>
-                    <h1 class="success">🎉 Pre-Order Confirmed!</h1>
-                    <p>Thank you for supporting DAMP development!</p>
-                    <div class="details">
-                        <h3>Order Details:</h3>
-                        <p><strong>Product:</strong> ${paymentIntent.metadata.product_name}</p>
-                        <p><strong>Quantity:</strong> ${session.metadata.quantity}</p>
-                        <p><strong>Amount:</strong> $${(session.amount_total / 100).toFixed(2)}</p>
-                        <p><strong>Estimated Delivery:</strong> ${paymentIntent.metadata.estimated_delivery}</p>
-                    </div>
-                    <p>Your payment has been authorized but won't be charged until we ship your order.</p>
-                    <p>You'll receive regular development updates via email.</p>
-                    <a href="/" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background: #007cba; color: white; text-decoration: none; border-radius: 5px;">Back to Home</a>
-                </body>
-            </html>
-        `);
+            // Send confirmation email
+            await sendPaymentCompleteEmail({
+                email: orderData.customerEmail,
+                totalAmount: ((orderData.depositAmount + orderData.remainingAmount) / 100).toFixed(2)
+            });
+        }
+    }
 
+// Webhook for handling Stripe events
+// Collect remaining balance for pre-order
+app.post('/collect-remaining-balance/:orderId', async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+        const orderRef = db.collection('orders').doc(orderId);
+        const order = await orderRef.get();
+        
+        if (!order.exists) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        const orderData = order.data();
+        
+        if (orderData.status !== 'deposit_paid') {
+            return res.status(400).json({ error: 'Invalid order status for collecting remaining balance' });
+        }
+
+        // Create a new payment intent for remaining balance
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: orderData.remainingAmount,
+            currency: 'usd',
+            customer: orderData.stripeCustomerId,
+            payment_method_types: ['card'],
+            metadata: {
+                orderId: orderId,
+                type: 'remaining_balance'
+            }
+        });
+
+        // Update order status
+        await orderRef.update({
+            status: 'remaining_balance_pending',
+            remainingBalanceDueAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+
+        res.json({ clientSecret: paymentIntent.client_secret });
     } catch (error) {
-        console.error('Error handling success:', error);
-        res.status(500).send('Error processing your order');
+        console.error('Error collecting remaining balance:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// Webhook for handling Stripe events
-app.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
+app.post('/webhook', bodyParser.raw({type: 'application/json'}), async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event;
 
@@ -379,10 +543,12 @@ app.get('/admin/preorders', async (req, res) => {
 });
 
 // Add near the top after existing imports
-const fs = require('fs').promises;
-const path = require('path');
+import { promises as fs } from 'fs';
+import path from 'path';
 
 // Simple JSON file database for counting (production: use Redis/PostgreSQL)
+// Get directory name from import.meta.url
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const COUNTS_DB_PATH = path.join(__dirname, 'data', 'preorder-counts.json');
 const CAMPAIGN_CONFIG_PATH = path.join(__dirname, 'data', 'campaign-config.json');
 
@@ -579,11 +745,7 @@ async function incrementPreorderCount(productId, quantity = 1) {
     }
 }
 
-// Add count increment to existing checkout success handler
-// Update your existing '/success' endpoint to include this:
-// ... in your existing success handler after storing the pre-order ...
-// Add this line:
-await incrementPreorderCount(session.metadata.product_id, parseInt(session.metadata.quantity));
+// Note: Count increment is handled in the /webhook endpoint for successful checkout events
 
 // Admin endpoint to manually adjust counts (for testing)
 app.post('/api/admin/adjust-count', async (req, res) => {
@@ -625,4 +787,13 @@ app.listen(PORT, () => {
     console.log(`Webhook endpoint: http://localhost:${PORT}/webhook`);
 });
 
-module.exports = app;
+export default app;
+
+// Start the server if we're running this file directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`🚀 Server is running on port ${PORT}`);
+        console.log(`✨ Ready to handle pre-orders and checkout sessions`);
+    });
+}

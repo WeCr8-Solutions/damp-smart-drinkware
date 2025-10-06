@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAMP Smart Drinkware - Navigation Demo</title>
+    <link rel="stylesheet" href="./assets/css/navigation-enhanced.css">
+</head>
+<body>
+    <!-- Enhanced Navigation -->
+    <nav class="damp-nav">
+        <!-- Brand Logo -->
+        <a href="/" class="nav-brand">
+            <img src="./assets/images/logo.svg" alt="DAMP Smart Drinkware" class="nav-logo">
+        </a>
+
+        <!-- Desktop Navigation -->
+        <div class="nav-links desktop-only">
+            <a href="/" class="nav-link active">Home</a>
+            <a href="/products" class="nav-link">Products</a>
+            <a href="/about" class="nav-link">About</a>
+            <a href="/contact" class="nav-link">Contact</a>
+            <a href="/cart" class="nav-link nav-cart">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-count">0</span>
+            </a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button class="hamburger" aria-label="Toggle navigation menu">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobile-menu">
+            <div class="nav-links">
+                <a href="/" class="nav-link active">Home</a>
+                <a href="/products" class="nav-link">Products</a>
+                <a href="/about" class="nav-link">About</a>
+                <a href="/contact" class="nav-link">Contact</a>
+                <a href="/cart" class="nav-link nav-cart">
+                    <span class="cart-icon">🛒</span>
+                    <span class="cart-count">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="content">
+        <section class="hero">
+            <h1>Welcome to DAMP Smart Drinkware</h1>
+            <p>Scroll down to see the navigation behavior</p>
+        </section>
+
+        <!-- Add more sections for scroll testing -->
+        <section class="section">
+            <h2>Our Products</h2>
+            <p>Lorem ipsum dolor sit amet...</p>
+        </section>
+
+        <!-- More sections... -->
+    </main>
+
+    <!-- Initialize Navigation -->
+    <script type="module">
+        import DAMPNavigation from './assets/js/navigation-enhanced.js';
+
+        // Initialize navigation with custom options
+        const nav = new DAMPNavigation({
+            debug: true, // Enable debug logging
+            scrollThreshold: 50, // Pixels to scroll before nav changes
+            mobileBreakpoint: 767, // Mobile breakpoint in pixels
+            animationDuration: 300 // Animation duration in milliseconds
+        });
+
+        // Example: Update active link based on current page
+        const currentPath = window.location.pathname;
+        nav.setActiveLink(currentPath);
+
+        // Example: Close menu when clicking a link (for single page apps)
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                nav.close();
+            });
+        });
+    </script>
+</body>
+</html>

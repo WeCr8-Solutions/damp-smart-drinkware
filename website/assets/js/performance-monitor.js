@@ -1,15 +1,37 @@
 // DAMP Performance Monitor - Google Engineering Best Practices
 // Monitors Core Web Vitals, performance metrics, and user experience
 
+// Ensure compatibility with Node.js environment
+if (typeof window === 'undefined') {
+    global.window = {};
+    global.document = {};
+    global.navigator = {};
+    global.performance = {};
+    global.console = console;
+    global.sessionStorage = {
+        getItem: () => null,
+        setItem: () => {}
+    };
+    global.localStorage = {
+        getItem: () => null,
+        setItem: () => {}
+    };
+}
+
 class DAMPPerformanceMonitor {
     constructor(options = {}) {
+        // Only run in browser
+        if (typeof window === 'undefined' || typeof document === 'undefined') {
+            throw new Error('DAMPPerformanceMonitor must be run in a browser environment.');
+        }
+
         this.options = {
             enableAnalytics: true,
             enableConsoleLogging: true,
             enableBeaconAPI: true,
             sampleRate: 1.0,
             endpoint: '/api/analytics/performance',
-            debug: window.location.hostname === 'localhost',
+            debug: window.location.hostname === 'localhost' && !window.navigator.userAgent.includes('Playwright'),
             ...options
         };
 
@@ -47,8 +69,8 @@ class DAMPPerformanceMonitor {
         };
 
         this.observers = [];
-        this.startTime = performance.now();
-        this.isHidden = document.hidden;
+        this.startTime = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+        this.isHidden = typeof document !== 'undefined' ? document.hidden : false;
         this.pageLoadTime = null;
 
         this.init();
@@ -72,8 +94,10 @@ class DAMPPerformanceMonitor {
 
     // Core Web Vitals Monitoring
     setupCoreWebVitals() {
-        if (!('PerformanceObserver' in window)) {
-            console.warn('PerformanceObserver not supported');
+        if (typeof window === 'undefined' || typeof PerformanceObserver === 'undefined') {
+            if (typeof console !== 'undefined') {
+                console.warn('PerformanceObserver not supported');
+            }
             return;
         }
 
@@ -158,38 +182,41 @@ class DAMPPerformanceMonitor {
             this.observers.push(fcpObserver);
 
         } catch (error) {
-            console.error('Failed to setup Core Web Vitals monitoring:', error);
+            if (typeof console !== 'undefined') {
+                console.error('Failed to setup Core Web Vitals monitoring:', error);
+            }
         }
     }
 
     // Navigation Timing
     setupNavigationTiming() {
-        if (!('performance' in window) || !performance.timing) {
+        if (typeof performance === 'undefined' || !performance.getEntriesByType) {
             return;
         }
 
         window.addEventListener('load', () => {
             setTimeout(() => {
-                const timing = performance.timing;
-                const navigation = performance.navigation;
+                const navEntries = performance.getEntriesByType('navigation');
+                if (!navEntries || navEntries.length === 0) return;
+                const nav = navEntries[0];
 
-                this.metrics.navigationStart = timing.navigationStart;
-                this.metrics.loadComplete = timing.loadEventEnd;
-                this.pageLoadTime = timing.loadEventEnd - timing.navigationStart;
+                this.metrics.navigationStart = nav.startTime;
+                this.metrics.loadComplete = nav.loadEventEnd;
+                this.pageLoadTime = nav.loadEventEnd - nav.startTime;
 
                 // Calculate TTFB
                 this.metrics.TTFB = {
-                    value: timing.responseStart - timing.navigationStart,
+                    value: nav.responseStart - nav.startTime,
                     timestamp: Date.now()
                 };
 
                 // Track navigation type
-                this.metrics.navigationType = this.getNavigationType(navigation.type);
+                this.metrics.navigationType = nav.type || 'navigate';
 
                 // Calculate additional metrics
-                this.metrics.domContentLoaded = timing.domContentLoadedEventEnd - timing.navigationStart;
-                this.metrics.domInteractive = timing.domInteractive - timing.navigationStart;
-                this.metrics.domComplete = timing.domComplete - timing.navigationStart;
+                this.metrics.domContentLoaded = nav.domContentLoadedEventEnd - nav.startTime;
+                this.metrics.domInteractive = nav.domInteractive - nav.startTime;
+                this.metrics.domComplete = nav.domComplete - nav.startTime;
 
                 this.trackMetric('PageLoad', this.pageLoadTime);
                 this.trackMetric('TTFB', this.metrics.TTFB.value);
@@ -200,7 +227,7 @@ class DAMPPerformanceMonitor {
 
     // Resource Timing
     setupResourceTiming() {
-        if (!('performance' in window) || !performance.getEntriesByType) {
+        if (typeof performance === 'undefined' || typeof PerformanceObserver === 'undefined' || !performance.getEntriesByType) {
             return;
         }
 
@@ -244,6 +271,7 @@ class DAMPPerformanceMonitor {
 
     // User Experience Monitoring
     setupUserExperience() {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return;
         let scrollDepth = 0;
         let maxScrollDepth = 0;
 
@@ -282,7 +310,7 @@ class DAMPPerformanceMonitor {
         // Click tracking
         document.addEventListener('click', (event) => {
             const target = event.target;
-            const tagName = target.tagName.toLowerCase();
+            const tagName = target.tagName?.toLowerCase();
 
             if (['a', 'button', 'input'].includes(tagName)) {
                 this.trackMetric('Click', 1, {
@@ -305,7 +333,7 @@ class DAMPPerformanceMonitor {
 
         // Time on page tracking
         setInterval(() => {
-            if (!this.isHidden) {
+            if (!this.isHidden && typeof performance !== 'undefined' && performance.now) {
                 this.metrics.timeOnPage = Math.round((performance.now() - this.startTime) / 1000);
             }
         }, 1000);
@@ -313,6 +341,7 @@ class DAMPPerformanceMonitor {
 
     // Error Tracking
     setupErrorTracking() {
+        if (typeof window === 'undefined') return;
         // JavaScript errors
         window.addEventListener('error', (event) => {
             const error = {
@@ -343,6 +372,7 @@ class DAMPPerformanceMonitor {
 
     // Visibility API
     setupVisibilityAPI() {
+        if (typeof document === 'undefined') return;
         document.addEventListener('visibilitychange', () => {
             this.isHidden = document.hidden;
 
@@ -357,6 +387,7 @@ class DAMPPerformanceMonitor {
 
     // Before Unload - Send final metrics
     setupBeforeUnload() {
+        if (typeof window === 'undefined') return;
         window.addEventListener('beforeunload', () => {
             this.sendMetrics(true);
         });
@@ -369,7 +400,8 @@ class DAMPPerformanceMonitor {
 
     // Device Detection
     detectDevice() {
-        const userAgent = navigator.userAgent;
+        if (typeof navigator === 'undefined') return;
+        const userAgent = navigator.userAgent || '';
         let deviceType = 'desktop';
 
         if (/Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)) {
@@ -381,17 +413,17 @@ class DAMPPerformanceMonitor {
         this.metrics.deviceType = deviceType;
         this.metrics.userAgent = userAgent;
         this.metrics.screen = {
-            width: screen.width,
-            height: screen.height,
-            pixelRatio: window.devicePixelRatio || 1
+            width: typeof screen !== 'undefined' ? screen.width : null,
+            height: typeof screen !== 'undefined' ? screen.height : null,
+            pixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1
         };
     }
 
     // Connection Detection
     detectConnection() {
-        if ('connection' in navigator) {
-            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-
+        if (typeof navigator === 'undefined') return;
+        const connection = navigator.connection ?? navigator.mozConnection ?? navigator.webkitConnection;
+        if (connection) {
             this.metrics.connectionType = {
                 effectiveType: connection.effectiveType,
                 downlink: connection.downlink,
@@ -403,6 +435,8 @@ class DAMPPerformanceMonitor {
 
     // Navigation Type Helper
     getNavigationType(type) {
+        // Use string type from Navigation Timing Level 2
+        if (typeof type === 'string') return type;
         switch (type) {
             case 0: return 'navigate';
             case 1: return 'reload';
@@ -415,7 +449,7 @@ class DAMPPerformanceMonitor {
     trackWebVital(name, value) {
         const rating = this.getWebVitalRating(name, value);
 
-        if (this.options.enableConsoleLogging) {
+        if (this.options.enableConsoleLogging && typeof console !== 'undefined') {
             console.log(`${name}: ${Math.round(value)}ms (${rating})`);
         }
 
@@ -446,7 +480,7 @@ class DAMPPerformanceMonitor {
             value,
             data,
             timestamp: Date.now(),
-            url: window.location.href,
+            url: typeof window !== 'undefined' ? window.location.href : '',
             ...this.getSessionInfo()
         };
 
@@ -456,7 +490,7 @@ class DAMPPerformanceMonitor {
         }
 
         // Console logging
-        if (this.options.enableConsoleLogging) {
+        if (this.options.enableConsoleLogging && typeof console !== 'undefined') {
             console.log(`Metric: ${name}`, value, data);
         }
     }
@@ -467,8 +501,8 @@ class DAMPPerformanceMonitor {
             sessionId: this.getSessionId(),
             userId: this.getUserId(),
             timestamp: Date.now(),
-            url: window.location.href,
-            referrer: document.referrer,
+            url: typeof window !== 'undefined' ? window.location.href : '',
+            referrer: typeof document !== 'undefined' ? document.referrer : '',
             deviceType: this.metrics.deviceType,
             connectionType: this.metrics.connectionType
         };
@@ -476,9 +510,10 @@ class DAMPPerformanceMonitor {
 
     // Get or create session ID
     getSessionId() {
+        if (typeof sessionStorage === 'undefined') return '';
         let sessionId = sessionStorage.getItem('damp-session-id');
         if (!sessionId) {
-            sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 11);
             sessionStorage.setItem('damp-session-id', sessionId);
         }
         return sessionId;
@@ -486,9 +521,10 @@ class DAMPPerformanceMonitor {
 
     // Get or create user ID
     getUserId() {
+        if (typeof localStorage === 'undefined') return '';
         let userId = localStorage.getItem('damp-user-id');
         if (!userId) {
-            userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            userId = 'user_' + Date.now() + '_' + Math.random().toString(36).slice(2, 11);
             localStorage.setItem('damp-user-id', userId);
         }
         return userId;
@@ -512,7 +548,7 @@ class DAMPPerformanceMonitor {
     sendMetrics(isBeforeUnload = false) {
         // Skip sending metrics if no backend endpoint is configured
         if (!this.options.endpoint || this.options.endpoint === '/api/analytics/performance') {
-            if (this.options.debug) {
+            if (this.options.debug && typeof console !== 'undefined') {
                 console.log('📊 Performance metrics collected (backend endpoint not configured):', this.metrics);
             }
             return;
@@ -524,14 +560,14 @@ class DAMPPerformanceMonitor {
             isBeforeUnload
         };
 
-        if (this.options.enableBeaconAPI && 'sendBeacon' in navigator) {
+        if (this.options.enableBeaconAPI && typeof navigator !== 'undefined' && 'sendBeacon' in navigator) {
             navigator.sendBeacon(
                 this.options.endpoint,
                 JSON.stringify(metricsData)
             );
         } else {
             // Fallback to fetch
-            if (!isBeforeUnload) {
+            if (!isBeforeUnload && typeof fetch !== 'undefined') {
                 fetch(this.options.endpoint, {
                     method: 'POST',
                     headers: {
@@ -539,7 +575,9 @@ class DAMPPerformanceMonitor {
                     },
                     body: JSON.stringify(metricsData)
                 }).catch(error => {
-                    console.error('Failed to send metrics:', error);
+                    if (typeof console !== 'undefined') {
+                        console.error('Failed to send metrics:', error);
+                    }
                 });
             }
         }
@@ -547,6 +585,7 @@ class DAMPPerformanceMonitor {
 
     // Debug Mode
     setupDebugMode() {
+        if (typeof document === 'undefined' || typeof window === 'undefined') return;
         // Add debug panel
         const debugPanel = document.createElement('div');
         debugPanel.id = 'damp-debug-panel';
@@ -669,19 +708,33 @@ class DAMPPerformanceMonitor {
     }
 }
 
+// Export the class for external use
+export default DAMPPerformanceMonitor;
+
+// Attach to window only in debug mode
+if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    if (!window.DAMPPerformanceMonitor) {
+        window.DAMPPerformanceMonitor = DAMPPerformanceMonitor;
+    }
+}
+
 // Auto-initialize performance monitoring
 let dampPerformanceMonitor;
 
 function initPerformanceMonitoring(options = {}) {
-    dampPerformanceMonitor = new DAMPPerformanceMonitor(options);
-    window.dampPerformanceMonitor = dampPerformanceMonitor;
+    if (typeof window !== 'undefined' && !window.dampPerformanceMonitor) {
+        dampPerformanceMonitor = new DAMPPerformanceMonitor(options);
+        window.dampPerformanceMonitor = dampPerformanceMonitor;
+    }
 }
 
 // Initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPerformanceMonitoring);
-} else {
-    initPerformanceMonitoring();
+if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initPerformanceMonitoring);
+    } else {
+        initPerformanceMonitoring();
+    }
 }
 
 // Export for modules
@@ -689,4 +742,6 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = DAMPPerformanceMonitor;
 }
 
-console.log('DAMP Performance Monitor initialized');
+if (typeof console !== 'undefined') {
+    console.log('DAMP Performance Monitor initialized');
+}

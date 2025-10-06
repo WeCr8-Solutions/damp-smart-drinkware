@@ -1,10 +1,10 @@
 /* DAMP Critical Animation Styles - Load First for Performance */
 :root {
     --primary-color: #00d4ff;
-    --secondary-color: #00ff88;
+    --secondary-color: #0f8;
     --bg-primary: #0f0f23;
     --bg-secondary: #1a1a2e;
-    --text-primary: #ffffff;
+    --text-primary: #fff;
 }
 
 /* Critical base styles */

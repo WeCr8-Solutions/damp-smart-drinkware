@@ -1,16 +1,20 @@
+/* eslint-env browser, node */
+/* global HTMLElement, customElements, trackEvent, fetch, console, document, module */
 /**
  * DAMP Product Card Web Component
  * Professional data-driven product display component
  * @version 1.0.0
  * @author DAMP Smart Drinkware
  */
-
-class ProductCard extends HTMLElement {
+export class ProductCard extends HTMLElement {
     constructor() {
         super();
         this.productData = null;
-        this.loading = false;
+        this.loading = true;
         this.error = null;
+        this.isInitialized = false;
+        this.classList.add('product-card--loading');
+        this.setAttribute('data-state', 'loading');
     }
 
     static get observedAttributes() {
@@ -18,8 +22,11 @@ class ProductCard extends HTMLElement {
     }
 
     async connectedCallback() {
-        this.loading = true;
-        this.render(); // Show loading state
+        if (!this.isInitialized) {
+            this.isInitialized = true;
+            this.render(); // Show initial loading state
+            await this.loadProduct();
+        }
 
         try {
             const productId = this.getAttribute('product-id');
@@ -31,6 +38,8 @@ class ProductCard extends HTMLElement {
 
             this.productData = await this.fetchProductData(productId);
             this.loading = false;
+            this.classList.remove('product-card--loading');
+            this.setAttribute('data-state', 'loaded');
             this.render();
 
             // Track component usage for analytics
@@ -39,6 +48,10 @@ class ProductCard extends HTMLElement {
         } catch (error) {
             this.error = error.message;
             this.loading = false;
+            this.classList.remove('product-card--loading');
+            this.classList.add('product-card--error');
+            this.setAttribute('data-state', 'error');
+            this.setAttribute('data-state', 'error');
             this.render();
             console.error('ProductCard Error:', error);
         }
@@ -116,14 +129,12 @@ class ProductCard extends HTMLElement {
 
     generateLoadingState() {
         return `
-            <article class="product-card product-card--loading">
-                <div class="product-skeleton">
-                    <div class="skeleton-image"></div>
-                    <div class="skeleton-text skeleton-text--title"></div>
-                    <div class="skeleton-text skeleton-text--price"></div>
-                    <div class="skeleton-text skeleton-text--features"></div>
-                </div>
-            </article>
+            <div class="product-skeleton">
+                <div class="skeleton-image"></div>
+                <div class="skeleton-text skeleton-text--title"></div>
+                <div class="skeleton-text skeleton-text--price"></div>
+                <div class="skeleton-text skeleton-text--features"></div>
+            </div>
         `;
     }
 
@@ -142,13 +153,47 @@ class ProductCard extends HTMLElement {
         `;
     }
 
+    async loadProduct() {
+        try {
+            const productId = this.getAttribute('product-id');
+            if (!productId) {
+                throw new Error('product-id attribute is required');
+            }
+
+            this.productData = await this.fetchProductData(productId);
+            this.loading = false;
+            this.classList.remove('product-card--loading');
+            this.setAttribute('data-state', 'loaded');
+            this.render();
+
+            // Track component usage for analytics
+            const variant = this.getAttribute('variant') || 'default';
+            this.trackComponentLoad(productId, variant);
+        } catch (error) {
+            this.error = error.message;
+            this.loading = false;
+            this.classList.remove('product-card--loading');
+            this.classList.add('product-card--error');
+            this.setAttribute('data-state', 'error');
+            this.render();
+        }
+    }
+
     render() {
+        // Clear any existing content first
+        this.innerHTML = '';
+        
         if (this.loading) {
+            this.classList.add('product-card--loading');
+            this.setAttribute('data-state', 'loading');
             this.innerHTML = this.generateLoadingState();
             return;
         }
 
         if (this.error) {
+            this.classList.remove('product-card--loading');
+            this.classList.add('product-card--error');
+            this.setAttribute('data-state', 'error');
             this.innerHTML = this.generateErrorState();
             return;
         }

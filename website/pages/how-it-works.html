@@ -36,11 +36,8 @@
         .how-it-works-hero::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 50% 30%, rgba(0, 212, 255, 0.15) 0%, transparent 50%);
+            inset: 0;
+            background: radial-gradient(circle at 50% 30%, rgb(0 212 255 / 15%) 0%, transparent 50%);
             pointer-events: none;
         }
 
@@ -53,8 +50,8 @@
             font-size: clamp(2.5rem, 6vw, 4rem);
             font-weight: 900;
             margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, #ffffff, #00d4ff);
-            -webkit-background-clip: text;
+            background: linear-gradient(45deg, #fff, #00d4ff);
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
@@ -67,6 +64,23 @@
             line-height: 1.6;
         }
 
+        .how-it-works-safe-zone-text {
+            color: rgb(255 255 255 / 90%);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tier-card-desc {
+            color: rgb(255 255 255 / 80%);
+            margin-bottom: 1.5rem;
+        }
+
+        .tier-card-note {
+            color: #0f8;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
         .content-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -75,10 +89,11 @@
 
         .section-block {
             margin-bottom: 4rem;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(255 255 255 / 5%);
             border-radius: 20px;
             padding: 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgb(255 255 255 / 10%);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
 
@@ -99,8 +114,8 @@
         .subsection-title {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #00ff88;
-            margin: 2rem 0 1rem 0;
+            color: #0f8;
+            margin: 2rem 0 1rem;
         }
 
         .tech-grid {
@@ -111,15 +126,15 @@
         }
 
         .tech-card {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgb(0 0 0 / 30%);
             border-radius: 15px;
             padding: 2rem;
-            border: 2px solid rgba(0, 212, 255, 0.2);
+            border: 2px solid rgb(0 212 255 / 20%);
             transition: all 0.3s ease;
         }
 
         .tech-card:hover {
-            border-color: rgba(0, 212, 255, 0.5);
+            border-color: rgb(0 212 255 / 50%);
             transform: translateY(-5px);
         }
 
@@ -136,7 +151,7 @@
 
         .feature-list li {
             padding: 0.5rem 0;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgb(255 255 255 / 90%);
             display: flex;
             align-items: flex-start;
             gap: 0.8rem;
@@ -144,7 +159,7 @@
 
         .feature-list li::before {
             content: "→";
-            color: #00ff88;
+            color: #0f8;
             font-weight: bold;
             margin-top: 0.1rem;
         }
@@ -157,22 +172,22 @@
         }
 
         .zone-card {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.05));
+            background: linear-gradient(135deg, rgb(0 255 136 / 10%), rgb(0 212 255 / 5%));
             border-radius: 15px;
             padding: 1.5rem;
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            border: 1px solid rgb(0 255 136 / 20%);
             text-align: center;
         }
 
         .zone-card h4 {
-            color: #00ff88;
+            color: #0f8;
             font-size: 1.2rem;
             margin-bottom: 1rem;
         }
 
         .zone-card ul {
             list-style: none;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgb(255 255 255 / 80%);
         }
 
         .zone-card li {
@@ -188,23 +203,23 @@
         }
 
         .tier-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(255 255 255 / 5%);
             border-radius: 20px;
             padding: 2rem;
             text-align: center;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgb(255 255 255 / 10%);
             transition: all 0.3s ease;
             position: relative;
         }
 
         .tier-card:hover {
             transform: translateY(-5px);
-            border-color: rgba(0, 212, 255, 0.3);
+            border-color: rgb(0 212 255 / 30%);
         }
 
         .tier-card.popular {
-            border-color: #00ff88;
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.05));
+            border-color: #0f8;
+            background: linear-gradient(135deg, rgb(0 255 136 / 10%), rgb(0 212 255 / 5%));
         }
 
         .tier-badge {
@@ -212,7 +227,7 @@
             top: -10px;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            background: linear-gradient(45deg, #0f8, #00cc6a);
             color: #0f0f23;
             padding: 5px 15px;
             border-radius: 20px;
@@ -231,7 +246,7 @@
         .tier-price {
             font-size: 2rem;
             font-weight: bold;
-            color: #00ff88;
+            color: #0f8;
             margin-bottom: 1rem;
         }
 
@@ -243,7 +258,7 @@
 
         .tier-features li {
             padding: 0.4rem 0;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgb(255 255 255 / 90%);
             display: flex;
             align-items: center;
             gap: 0.8rem;
@@ -251,7 +266,7 @@
 
         .tier-features li::before {
             content: "✓";
-            color: #00ff88;
+            color: #0f8;
             font-weight: bold;
         }
 
@@ -263,11 +278,11 @@
         }
 
         .step-card {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgb(0 0 0 / 20%);
             border-radius: 15px;
             padding: 1.5rem;
             text-align: center;
-            border: 2px solid rgba(0, 212, 255, 0.2);
+            border: 2px solid rgb(0 212 255 / 20%);
             position: relative;
         }
 
@@ -276,7 +291,7 @@
             top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            background: linear-gradient(45deg, #00d4ff, #09c);
             color: white;
             width: 30px;
             height: 30px;
@@ -289,18 +304,18 @@
         }
 
         .code-block {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgb(0 0 0 / 50%);
             border-radius: 10px;
             padding: 1.5rem;
             margin: 1.5rem 0;
             font-family: 'Courier New', monospace;
-            color: #00ff88;
+            color: #0f8;
             border-left: 4px solid #00d4ff;
             overflow-x: auto;
         }
 
         .daily-scenario {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 107, 53, 0.1));
+            background: linear-gradient(135deg, rgb(0 212 255 / 10%), rgb(255 107 53 / 10%));
             border-radius: 15px;
             padding: 2rem;
             margin: 2rem 0;
@@ -322,19 +337,19 @@
 
         .scenario-steps li {
             padding: 0.5rem 0;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgb(255 255 255 / 90%);
             display: flex;
             align-items: flex-start;
             gap: 1rem;
         }
 
         .scenario-steps li strong {
-            color: #00ff88;
+            color: #0f8;
             min-width: 140px;
         }
 
         .cta-section {
-            background: linear-gradient(45deg, #00d4ff, #00ff88);
+            background: linear-gradient(45deg, #00d4ff, #0f8);
             border-radius: 20px;
             padding: 3rem;
             text-align: center;
@@ -369,10 +384,10 @@
 
         .btn-cta:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(15, 15, 35, 0.3);
+            box-shadow: 0 10px 25px rgb(15 15 35 / 30%);
         }
 
-        @media (max-width: 768px) {
+        @media (width <= 768px) {
             .content-container {
                 padding: 40px 15px;
             }
@@ -499,7 +514,7 @@
                 Smart Zone Management
             </h2>
 
-            <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; margin-bottom: 2rem;">
+            <p class="how-it-works-safe-zone-text">
                 <strong>Safe Zones</strong> are approved locations where you don't want to receive abandonment alerts.
                 These are places where it's normal to leave your drink temporarily.
             </p>
@@ -586,7 +601,7 @@
                 <div class="tier-card">
                     <h3 class="tier-name">DAMP Free</h3>
                     <div class="tier-price">$0</div>
-                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem;">Perfect for trying out DAMP Smart Drinkware</p>
+                    <p class="tier-card-desc">Perfect for trying out DAMP Smart Drinkware</p>
                     <ul class="tier-features">
                         <li>1 Registered Device</li>
                         <li>2 Approved Safe Zones</li>
@@ -594,7 +609,7 @@
                         <li>Standard Battery Monitoring</li>
                         <li>Mobile App Access</li>
                     </ul>
-                    <p style="color: #00ff88; font-size: 0.9rem; margin-top: 1rem;">
+                    <p class="tier-card-note">
                         Perfect for: Single device users, students, trying out the system
                     </p>
                 </div>
@@ -603,7 +618,7 @@
                     <div class="tier-badge">Most Popular</div>
                     <h3 class="tier-name">DAMP+</h3>
                     <div class="tier-price">$2.99/month</div>
-                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem;">Enhanced features for power users</p>
+                    <p class="tier-card-desc">Enhanced features for power users</p>
                     <ul class="tier-features">
                         <li>Track up to 3 devices</li>
                         <li>5 Safe Zones</li>
@@ -611,7 +626,7 @@
                         <li>Battery Monitoring</li>
                         <li>Priority Support</li>
                     </ul>
-                    <p style="color: #00ff88; font-size: 0.9rem; margin-top: 1rem;">
+                    <p class="tier-card-note">
                         Perfect for: Multi-location users, small families, power users
                     </p>
                 </div>
@@ -619,7 +634,7 @@
                 <div class="tier-card">
                     <h3 class="tier-name">DAMP Family</h3>
                     <div class="tier-price">$5.99/month</div>
-                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem;">Complete solution for families and teams</p>
+                    <p class="tier-card-desc">Complete solution for families and teams</p>
                     <ul class="tier-features">
                         <li>Track up to 10 devices</li>
                         <li>Unlimited Safe Zones</li>
@@ -629,7 +644,7 @@
                         <li>Smart Recommendations</li>
                         <li>Priority Support</li>
                     </ul>
-                    <p style="color: #00ff88; font-size: 0.9rem; margin-top: 1rem;">
+                    <p class="tier-card-note">
                         Perfect for: Large families, offices and teams, unlimited flexibility
                     </p>
                 </div>

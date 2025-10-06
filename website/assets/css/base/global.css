@@ -1,4 +1,5 @@
 /* DAMP Smart Drinkware - Global Styles */
+
 /* Base styles that apply to the entire application */
 
 html {
@@ -11,11 +12,7 @@ body {
     color: var(--color-text-primary);
     line-height: var(--line-height-normal);
     overflow-x: hidden;
-    padding-top: calc(var(--nav-height) + var(--safe-area-top));
-    padding-left: var(--safe-area-left);
-    padding-right: var(--safe-area-right);
-    padding-bottom: var(--safe-area-bottom);
-    min-height: 100vh;
+    padding: calc(var(--nav-height) + var(--safe-area-top)) var(--safe-area-right) var(--safe-area-bottom) var(--safe-area-left);
     min-height: 100dvh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -200,11 +197,10 @@ section {
 /* Backdrop Filters */
 .backdrop-blur {
     backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
 }
 
 /* Responsive Utilities */
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .container {
         padding: 0 var(--space-4);
     }
@@ -226,7 +222,7 @@ section {
     }
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
     .grid-cols-4 {
         grid-template-columns: 1fr;
     }

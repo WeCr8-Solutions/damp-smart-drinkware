@@ -1,21 +1,22 @@
 /* DAMP Critical CSS - Inline for Performance */
+
 /* This CSS should be inlined in the HTML head for fastest rendering */
 
 /* CSS Variables - Critical */
 :root {
     --primary-color: #00d4ff;
-    --primary-dark: #0099cc;
-    --secondary-color: #00ff88;
+    --primary-dark: #09c;
+    --secondary-color: #0f8;
     --accent-color: #ff4757;
-    --text-primary: #ffffff;
-    --text-secondary: rgba(255, 255, 255, 0.85);
-    --text-muted: rgba(255, 255, 255, 0.6);
+    --text-primary: #fff;
+    --text-secondary: rgb(255 255 255 / 85%);
+    --text-muted: rgb(255 255 255 / 60%);
     --bg-primary: #0f0f23;
     --bg-secondary: #1a1a2e;
-    --card-bg: rgba(255, 255, 255, 0.08);
-    --border-color: rgba(255, 255, 255, 0.15);
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --glass-border: rgba(255, 255, 255, 0.2);
+    --card-bg: rgb(255 255 255 / 8%);
+    --border-color: rgb(255 255 255 / 15%);
+    --glass-bg: rgb(255 255 255 / 10%);
+    --glass-border: rgb(255 255 255 / 20%);
     --nav-height: 80px;
     --safe-area-top: env(safe-area-inset-top);
     --safe-area-bottom: env(safe-area-inset-bottom);
@@ -26,7 +27,7 @@
 body,h1,h2,h3,h4,p,figure,blockquote,dl,dd{margin:0}
 ul[role='list'],ol[role='list']{list-style:none}
 html:focus-within{scroll-behavior:smooth}
-body{min-height:100vh;text-rendering:optimizeSpeed;line-height:1.5}
+body{min-height:100vh;text-rendering:optimizespeed;line-height:1.5}
 a:not([class]){text-decoration-skip-ink:auto}
 img,picture{max-width:100%;display:block}
 input,button,textarea,select{font:inherit}
@@ -34,7 +35,7 @@ input,button,textarea,select{font:inherit}
 /* Critical Base Styles */
 html {
     font-display: swap;
-    text-rendering: optimizeSpeed;
+    text-rendering: optimizespeed;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -68,13 +69,13 @@ body {
     z-index: 10000;
     font-weight: 700;
 }
+
 .skip-to-content:focus {
     top: 0;
 }
 
 /* Critical Hero Section */
 .hero-section {
-    min-height: 100vh;
     min-height: 100dvh;
     display: flex;
     align-items: center;
@@ -105,7 +106,6 @@ body {
     font-weight: 900;
     margin-bottom: 30px;
     background: linear-gradient(45deg, var(--text-primary), var(--primary-color));
-    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     line-height: 1.1;
@@ -138,12 +138,12 @@ body {
 .btn-primary {
     background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
     color: white;
-    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 6px 20px rgb(0 212 255 / 30%);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+    box-shadow: 0 8px 25px rgb(0 212 255 / 40%);
 }
 
 .btn-secondary {
@@ -193,10 +193,11 @@ body.animation-complete main {
 }
 
 /* Mobile Critical Optimizations */
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .hero-section {
         padding: 100px 20px 60px;
     }
+
     .btn {
         display: block;
         margin: 10px auto;

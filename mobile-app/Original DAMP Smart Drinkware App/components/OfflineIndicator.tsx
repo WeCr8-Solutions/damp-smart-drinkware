@@ -22,7 +22,7 @@ import {
   RefreshCw,
   CheckCircle,
 } from 'lucide-react-native';
-import NetInfo from '@react-native-community/netinfo';
+import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
 
 interface NetworkStatus {
   isConnected: boolean;
@@ -56,22 +56,28 @@ export default function OfflineIndicator({
   const slideAnim = new Animated.Value(-100);
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state: NetInfoState) => {
       setNetworkStatus({
         isConnected: !!state.isConnected,
         isInternetReachable: !!state.isInternetReachable,
         type: state.type,
-        strength: state.details?.strength || 100,
+        strength:
+          state.details && typeof (state.details as any).strength === 'number'
+            ? (state.details as any).strength
+            : 100,
       });
     });
 
     // Check initial status
-    NetInfo.fetch().then(state => {
+    NetInfo.fetch().then((state: NetInfoState) => {
       setNetworkStatus({
         isConnected: !!state.isConnected,
         isInternetReachable: !!state.isInternetReachable,
         type: state.type,
-        strength: state.details?.strength || 100,
+        strength:
+          state.details && typeof (state.details as any).strength === 'number'
+            ? (state.details as any).strength
+            : 100,
       });
     });
 
@@ -272,7 +278,7 @@ export function ConnectionStatusIndicator() {
   const [isConnected, setIsConnected] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state: NetInfoState) => {
       setIsConnected(!!state.isConnected && !!state.isInternetReachable);
     });
 
@@ -299,7 +305,7 @@ export function OfflineModeBadge() {
   const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state: NetInfoState) => {
       setIsOffline(!state.isConnected || !state.isInternetReachable);
     });
 

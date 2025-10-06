@@ -18,29 +18,35 @@ import {
   Alert,
   ActivityIndicator,
   Image,
-  Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import authService from './AuthService';
 
-const { width, height } = Dimensions.get('window');
+// Define navigation screen types
+type AuthScreen = 'welcome' | 'signin' | 'signup' | 'forgot';
 
 // Main Auth Navigator Component
 export const AuthNavigator: React.FC = () => {
-  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'signin' | 'signup' | 'forgot'>('welcome');
+  const { width, height } = useWindowDimensions();
+  const [currentScreen, setCurrentScreen] = useState<AuthScreen>('welcome');
+
+  const handleNavigate = (screen: AuthScreen) => {
+    setCurrentScreen(screen);
+  };
 
   const renderScreen = () => {
     switch (currentScreen) {
       case 'welcome':
-        return <WelcomeScreen onNavigate={setCurrentScreen} />;
+        return <WelcomeScreen onNavigate={handleNavigate} />;
       case 'signin':
-        return <SignInScreen onNavigate={setCurrentScreen} />;
+        return <SignInScreen onNavigate={handleNavigate} />;
       case 'signup':
-        return <SignUpScreen onNavigate={setCurrentScreen} />;
+        return <SignUpScreen onNavigate={handleNavigate} />;
       case 'forgot':
-        return <ForgotPasswordScreen onNavigate={setCurrentScreen} />;
+        return <ForgotPasswordScreen onNavigate={handleNavigate} />;
       default:
-        return <WelcomeScreen onNavigate={setCurrentScreen} />;
+        return <WelcomeScreen onNavigate={handleNavigate} />;
     }
   };
 
@@ -52,7 +58,7 @@ export const AuthNavigator: React.FC = () => {
 };
 
 // Welcome Screen
-const WelcomeScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNavigate }) => {
+const WelcomeScreen: React.FC<{ onNavigate: (screen: AuthScreen) => void }> = ({ onNavigate }) => {
   return (
     <View style={styles.welcomeContainer}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -124,7 +130,7 @@ const WelcomeScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onN
 };
 
 // Sign In Screen
-const SignInScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNavigate }) => {
+const SignInScreen: React.FC<{ onNavigate: (screen: AuthScreen) => void }> = ({ onNavigate }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -275,7 +281,7 @@ const SignInScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
 };
 
 // Sign Up Screen
-const SignUpScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNavigate }) => {
+const SignUpScreen: React.FC<{ onNavigate: (screen: AuthScreen) => void }> = ({ onNavigate }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -538,7 +544,7 @@ const SignUpScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNa
 };
 
 // Forgot Password Screen
-const ForgotPasswordScreen: React.FC<{ onNavigate: (screen: string) => void }> = ({ onNavigate }) => {
+const ForgotPasswordScreen: React.FC<{ onNavigate: (screen: AuthScreen) => void }> = ({ onNavigate }) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -674,7 +680,7 @@ const styles = StyleSheet.create({
   },
   logoSection: {
     alignItems: 'center',
-    paddingTop: height * 0.08,
+    paddingTop: 32, // Fixed value instead of dynamic height
     paddingBottom: 40,
   },
   logo: {

@@ -4,9 +4,9 @@
  * Following user preferences for clean, well-organized code [[memory:2828105]]
  */
 
-const puppeteer = require('puppeteer');
-const fs = require('fs').promises;
-const path = require('path');
+import puppeteer from 'puppeteer';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 console.log('🔍 DAMP Smart Drinkware - Reserve Now Button Test');
 console.log('================================================');
@@ -470,13 +470,10 @@ async function runReserveNowTest() {
 }
 
 // Export for use in other scripts
-module.exports = {
-    runReserveNowTest,
-    testResults
-};
+export { runReserveNowTest, testResults };
 
 // Run test if this script is executed directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
     runReserveNowTest().then(success => {
         process.exit(success ? 0 : 1);
     }).catch(error => {

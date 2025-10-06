@@ -3,12 +3,17 @@
  * Firebase Functions for handling subscription, billing, and plan management
  */
 
-import * as functions from 'firebase-functions';
+import { onCall, onRequest, HttpsError } from 'firebase-functions/v2/https';
+import { defineString } from 'firebase-functions/params';
 import * as admin from 'firebase-admin';
 import Stripe from 'stripe';
 
-// Initialize Stripe (replace with your actual secret key)
-const stripe = new Stripe(functions.config().stripe.secret_key, {
+// Initialize config parameters
+const stripeSecretKey = defineString('STRIPE_SECRET_KEY');
+const appUrl = defineString('APP_URL');
+
+// Initialize Stripe
+const stripe = new Stripe(stripeSecretKey.value(), {
   apiVersion: '2023-10-16',
 });
 
@@ -90,20 +95,22 @@ async function getOrCreateStripeCustomer(userId: string, userEmail: string): Pro
 /**
  * Create Stripe checkout session for subscription
  */
-export const createSubscriptionCheckout = functions.https.onCall(async (data, context) => {
+export const createSubscriptionCheckout = onCall(async (request) => {
+  const { data, auth } = request;
+  
   // Verify authentication
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+  if (!auth) {
+    throw new HttpsError('unauthenticated', 'User must be authenticated');
   }
 
   const { planId, successUrl, cancelUrl } = data;
-  const userId = context.auth.uid;
-  const userEmail = context.auth.token.email || context.auth.token.firebase?.identities?.email?.[0];
+  const userId = auth.uid;
+  const userEmail = auth.token.email || auth.token.firebase?.identities?.email?.[0];
 
   try {
     // Validate plan
     if (!SUBSCRIPTION_PLANS[planId as keyof typeof SUBSCRIPTION_PLANS]) {
-      throw new functions.https.HttpsError('invalid-argument', 'Invalid subscription plan');
+      throw new HttpsError('invalid-argument', 'Invalid subscription plan');
     }
 
     const plan = SUBSCRIPTION_PLANS[planId as keyof typeof SUBSCRIPTION_PLANS];
@@ -122,8 +129,8 @@ export const createSubscriptionCheckout = functions.https.onCall(async (data, co
           quantity: 1,
         },
       ],
-      success_url: successUrl || `${functions.config().app.url}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: cancelUrl || `${functions.config().app.url}/subscription/cancel`,
+      success_url: successUrl || `${appUrl.value()}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: cancelUrl || `${appUrl.value()}/subscription/cancel`,
       metadata: {
         userId,
         planId,
@@ -147,27 +154,29 @@ export const createSubscriptionCheckout = functions.https.onCall(async (data, co
 
   } catch (error) {
     console.error('Error creating subscription checkout:', error);
-    throw new functions.https.HttpsError('internal', 'Failed to create checkout session');
+    throw new HttpsError('internal', 'Failed to create checkout session');
   }
 });
 
 /**
  * Handle successful subscription checkout
  */
-export const handleSubscriptionSuccess = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+export const handleSubscriptionSuccess = onCall(async (request) => {
+  const { data, auth } = request;
+  
+  if (!auth) {
+    throw new HttpsError('unauthenticated', 'User must be authenticated');
   }
 
   const { sessionId } = data;
-  const userId = context.auth.uid;
+  const userId = auth.uid;
 
   try {
     // Retrieve the session from Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (!session || session.metadata?.userId !== userId) {
-      throw new functions.https.HttpsError('permission-denied', 'Invalid session');
+      throw new HttpsError('permission-denied', 'Invalid session');
     }
 
     // Get subscription details from Stripe
@@ -223,20 +232,22 @@ export const handleSubscriptionSuccess = functions.https.onCall(async (data, con
 
   } catch (error) {
     console.error('Error handling subscription success:', error);
-    throw new functions.https.HttpsError('internal', 'Failed to process subscription');
+    throw new HttpsError('internal', 'Failed to process subscription');
   }
 });
 
 /**
  * Manage subscription (change plan, cancel, reactivate)
  */
-export const manageSubscription = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+export const manageSubscription = onCall(async (request) => {
+  const { data, auth } = request;
+  
+  if (!auth) {
+    throw new HttpsError('unauthenticated', 'User must be authenticated');
   }
 
-  const { action, newPlanId } = data;
-  const userId = context.auth.uid;
+  const userId = auth.uid;
+  const { action, planId } = data;
 
   try {
     // Get user's current subscription
@@ -244,101 +255,62 @@ export const manageSubscription = functions.https.onCall(async (data, context) =
     const userData = userDoc.data();
 
     if (!userData?.subscription?.stripeSubscriptionId) {
-      throw new functions.https.HttpsError('not-found', 'No active subscription found');
+      throw new HttpsError('not-found', 'No active subscription found');
     }
 
-    const stripeSubscriptionId = userData.subscription.stripeSubscriptionId;
-    let result: any;
+    const currentSubscription = await stripe.subscriptions.retrieve(userData.subscription.stripeSubscriptionId);
 
     switch (action) {
-      case 'change_plan':
-        if (!newPlanId || !SUBSCRIPTION_PLANS[newPlanId as keyof typeof SUBSCRIPTION_PLANS]) {
-          throw new functions.https.HttpsError('invalid-argument', 'Invalid plan ID');
+      case 'upgrade':
+      case 'downgrade': {
+        if (!planId) {
+          throw new HttpsError('invalid-argument', 'Invalid plan ID');
         }
 
-        const newPlan = SUBSCRIPTION_PLANS[newPlanId as keyof typeof SUBSCRIPTION_PLANS];
+        const newPlan = SUBSCRIPTION_PLANS[planId as keyof typeof SUBSCRIPTION_PLANS];
+        if (!newPlan) {
+          throw new HttpsError('invalid-argument', 'Invalid plan ID');
+        }
 
-        // Update subscription in Stripe
-        await stripe.subscriptions.update(stripeSubscriptionId, {
-          items: [
-            {
-              id: (await stripe.subscriptions.retrieve(stripeSubscriptionId)).items.data[0].id,
-              price: newPlan.stripePriceId,
-            },
-          ],
-          proration_behavior: 'create_prorations',
+        // Update subscription with new price
+        const updatedSubscription = await stripe.subscriptions.update(currentSubscription.id, {
+          items: [{
+            id: currentSubscription.items.data[0].id,
+            price: newPlan.stripePriceId,
+          }],
+          proration_behavior: action === 'upgrade' ? 'always_invoice' : 'none',
         });
 
-        // Update Firestore
+        // Update user doc
         await admin.firestore().collection('users').doc(userId).update({
-          'subscription.planId': newPlanId,
+          'subscription.planId': planId,
+          'subscription.status': updatedSubscription.status,
+          'subscription.currentPeriodStart': new Date(updatedSubscription.current_period_start * 1000),
+          'subscription.currentPeriodEnd': new Date(updatedSubscription.current_period_end * 1000),
           'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
         });
 
-        result = { action: 'plan_changed', newPlan: newPlanId };
-        break;
-
-      case 'cancel':
-        // Cancel at period end
-        const canceledSubscription = await stripe.subscriptions.update(stripeSubscriptionId, {
-          cancel_at_period_end: true,
-        });
-
-        // Update Firestore
-        await admin.firestore().collection('users').doc(userId).update({
-          'subscription.cancelAtPeriodEnd': true,
-          'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
-        });
-
-        result = { action: 'canceled', endsAt: canceledSubscription.current_period_end };
-        break;
-
-      case 'reactivate':
-        // Reactivate subscription
-        await stripe.subscriptions.update(stripeSubscriptionId, {
-          cancel_at_period_end: false,
-        });
-
-        // Update Firestore
-        await admin.firestore().collection('users').doc(userId).update({
-          'subscription.cancelAtPeriodEnd': false,
-          'subscription.status': 'active',
-          'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
-        });
-
-        result = { action: 'reactivated' };
-        break;
-
+        return { success: true, subscription: updatedSubscription };
+      }
       default:
-        throw new functions.https.HttpsError('invalid-argument', 'Invalid action');
+        throw new HttpsError('invalid-argument', 'Invalid subscription action');
     }
-
-    // Log the action
-    await admin.firestore().collection('subscription_events').add({
-      userId,
-      type: `subscription_${action}`,
-      subscriptionId: stripeSubscriptionId,
-      details: result,
-      timestamp: admin.firestore.FieldValue.serverTimestamp(),
-    });
-
-    return result;
-
   } catch (error) {
     console.error('Error managing subscription:', error);
-    throw new functions.https.HttpsError('internal', 'Failed to manage subscription');
+    throw new HttpsError('internal', 'Failed to manage subscription');
   }
-});
 
 /**
  * Get subscription status
  */
-export const getSubscriptionStatus = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+export const getSubscriptionStatus = onCall(async (request) => {
+  const { data, auth } = request;
+  
+  if (!auth) {
+    throw new HttpsError('unauthenticated', 'User must be authenticated');
   }
 
-  const userId = context.auth.uid;
+  const userId = auth.uid;
 
   try {
     const userDoc = await admin.firestore().collection('users').doc(userId).get();
@@ -400,24 +372,24 @@ export const getSubscriptionStatus = functions.https.onCall(async (data, context
 
   } catch (error) {
     console.error('Error getting subscription status:', error);
-    throw new functions.https.HttpsError('internal', 'Failed to get subscription status');
+    throw new HttpsError('internal', 'Failed to get subscription status');
   }
 });
 
 /**
  * Webhook handler for Stripe events
  */
-export const handleStripeWebhook = functions.https.onRequest(async (req, res) => {
-  const sig = req.get('Stripe-Signature') as string;
-  const webhookSecret = functions.config().stripe.webhook_secret;
+export const handleStripeWebhook = onRequest(async (request, response) => {
+  const sig = request.get('Stripe-Signature') as string;
+  const webhookSecret = defineString('STRIPE_WEBHOOK_SECRET').value();
 
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(req.rawBody, sig, webhookSecret);
+    event = stripe.webhooks.constructEvent(request.rawBody, sig, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err);
-    res.status(400).send(`Webhook Error: ${err}`);
+    response.status(400).send(`Webhook Error: ${err}`);
     return;
   }
 
@@ -440,11 +412,11 @@ export const handleStripeWebhook = functions.https.onRequest(async (req, res) =>
         console.log(`Unhandled event type: ${event.type}`);
     }
 
-    res.json({ received: true });
+    response.json({ received: true });
 
   } catch (error) {
     console.error('Error handling webhook:', error);
-    res.status(500).json({ error: 'Webhook handler failed' });
+    response.status(500).json({ error: 'Webhook handler failed' });
   }
 });
 

@@ -107,8 +107,14 @@
                     <div class="product-savings mb-8">Save $30.00 - Launch Special!</div>
 
                     <div class="hero-buttons">
-                        <a href="../pages/pre-order.html?product=baby-bottle-v1.0" class="btn btn-primary btn-lg">Pre-Order Now</a>
-                        <a href="../pages/cart.html" class="btn btn-secondary btn-lg">Add to Cart</a>
+                        <div class="quantity-selector mb-4">
+                            <label for="quantity" class="sr-only">Quantity</label>
+                            <button type="button" class="quantity-btn" onclick="updateQuantity(-1)">-</button>
+                            <input type="number" id="quantity" value="1" min="1" max="10" readonly>
+                            <button type="button" class="quantity-btn" onclick="updateQuantity(1)">+</button>
+                        </div>
+                        <button id="checkout-button" class="btn btn-primary btn-lg">Pre-Order Now</button>
+                        <button id="add-to-cart" class="btn btn-secondary btn-lg">Add to Cart</button>
                     </div>
                 </div>
 
@@ -224,6 +230,14 @@
         </div>
     </section>
 
+    <!-- Installation Guide -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Installation Guide</h2>
+            <p>For detailed installation instructions, visit the <a href="../install/damp-baby-bottle.html">DAMP Baby Bottle Installation Guide</a>.</p>
+        </div>
+    </section>
+
     <!-- Scripts -->
     <script src="../assets/js/components/safe-area-wrapper.js"></script>
     <script src="../assets/js/components/favicon-setup.js"></script>
@@ -240,34 +254,112 @@
 
     <!-- PWA Service Worker Registration -->
     <script>
-        // Google PWA Standards Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', async () => {
-                try {
-                    const registration = await navigator.serviceWorker.register('/sw.js', {
-                        scope: '/',
-                        updateViaCache: 'none'
-                    });
-                    console.log('✅ Service Worker registered:', registration.scope);
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Stripe configuration
+        const stripe = Stripe('YOUR_PUBLISHABLE_KEY');
 
-                    // Handle updates
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                showUpdateNotification();
-                            }
-                        });
-                    });
-
-                    window.dampPWA = { registration };
-                } catch (error) {
-                    console.error('❌ Service Worker failed:', error);
-                }
-            });
+        // Quantity selector logic
+        function updateQuantity(change) {
+            const quantityInput = document.getElementById('quantity');
+            let newValue = parseInt(quantityInput.value) + change;
+            newValue = Math.max(1, Math.min(10, newValue));
+            quantityInput.value = newValue;
         }
 
-        function showUpdateNotification() {
+        // Pre-order button handler
+        document.getElementById('checkout-button').addEventListener('click', async () => {
+            const quantity = document.getElementById('quantity').value;
+            
+            try {
+                const response = await fetch('/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId: 'baby-bottle-v1.0',
+                        quantity: parseInt(quantity)
+                    })
+                });
+
+                const session = await response.json();
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id
+                });
+
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error processing your request. Please try again.');
+            }
+        });
+
+        // Add to cart button handler
+        document.getElementById('add-to-cart').addEventListener('click', async () => {
+            const quantity = document.getElementById('quantity').value;
+            
+            try {
+                const response = await fetch('/add-to-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId: 'baby-bottle-v1.0',
+                        quantity: parseInt(quantity)
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Product added to cart successfully!');
+                    // Optionally update cart indicator/counter here
+                } else {
+                    alert('Failed to add product to cart. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error adding the product to cart. Please try again.');
+            }
+        });
+    </script>
+
+    <style>
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            padding: 0.25rem 0.75rem;
+            font-size: 1.25rem;
+            border: 1px solid #dee2e6;
+            background-color: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .quantity-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        #quantity {
+            width: 60px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 0.25rem;
+        }
+    </style>
+
+    <script>
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {        function showUpdateNotification() {
             const notification = document.createElement('div');
             notification.innerHTML = '<div style="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00d4ff,#00ff88);color:#1a1a2e;padding:15px 25px;border-radius:30px;font-weight:600;z-index:10000;display:flex;align-items:center;gap:15px;"><span>🚀</span><span>New version available!</span><button onclick="refreshApp()" style="background:rgba(26,26,46,0.2);color:#1a1a2e;border:none;padding:8px 16px;border-radius:20px;font-weight:600;cursor:pointer;">Update</button><button onclick="this.parentElement.parentElement.remove()" style="background:transparent;border:none;color:#1a1a2e;cursor:pointer;padding:5px;">×</button></div>';
             document.body.appendChild(notification);
@@ -289,5 +381,112 @@
         mobileAppScript.src = '/assets/js/mobile-app-redirect.js';
         mobileAppScript.async = true;
         document.head.appendChild(mobileAppScript);
-    </script></body>
+    </script>
+    
+    <style>
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            padding: 0.25rem 0.75rem;
+            font-size: 1.25rem;
+            border: 1px solid #dee2e6;
+            background-color: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .quantity-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        #quantity {
+            width: 60px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 0.25rem;
+        }
+    </style>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Stripe configuration
+        const stripe = Stripe('YOUR_PUBLISHABLE_KEY');
+
+        // Quantity selector logic
+        function updateQuantity(change) {
+            const quantityInput = document.getElementById('quantity');
+            let newValue = parseInt(quantityInput.value) + change;
+            newValue = Math.max(1, Math.min(10, newValue));
+            quantityInput.value = newValue;
+        }
+
+        // Initialize event listeners after DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Pre-order button handler
+            document.getElementById('checkout-button')?.addEventListener('click', async () => {
+                const quantity = document.getElementById('quantity')?.value || 1;
+                
+                try {
+                    const response = await fetch('/create-checkout-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            productId: 'baby-bottle-v1.0',
+                            quantity: parseInt(quantity)
+                        })
+                    });
+
+                    const session = await response.json();
+                    const result = await stripe.redirectToCheckout({
+                        sessionId: session.id
+                    });
+
+                    if (result.error) {
+                        alert(result.error.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('There was an error processing your request. Please try again.');
+                }
+            });
+
+            // Add to cart button handler
+            document.getElementById('add-to-cart')?.addEventListener('click', async () => {
+                const quantity = document.getElementById('quantity')?.value || 1;
+                
+                try {
+                    const response = await fetch('/add-to-cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            productId: 'baby-bottle-v1.0',
+                            quantity: parseInt(quantity)
+                        })
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Product added to cart successfully!');
+                        // Optionally update cart indicator/counter here
+                    } else {
+                        alert('Failed to add product to cart. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('There was an error adding the product to cart. Please try again.');
+                }
+            });
+        });
+    </script>
+</body>
 </html>

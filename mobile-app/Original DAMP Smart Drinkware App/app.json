@@ -19,6 +19,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.damp.smartdrinkware",
       "buildNumber": "1",
+      "jsEngine": "hermes",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -41,6 +42,7 @@
     "android": {
       "package": "com.damp.smartdrinkware",
       "versionCode": 1,
+      "jsEngine": "hermes",
       "permissions": [
         "android.permission.BLUETOOTH",
         "android.permission.BLUETOOTH_ADMIN",

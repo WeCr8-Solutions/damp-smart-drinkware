@@ -17,7 +17,7 @@
 /* Optimize font rendering */
 html {
     font-display: swap;
-    text-rendering: optimizeSpeed;
+    text-rendering: optimizespeed;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -148,7 +148,7 @@ html {
 
 .optimized-hover:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
+    box-shadow: 0 8px 25px rgb(0 212 255 / 20%);
 }
 
 /* ==========================================================================
@@ -204,7 +204,7 @@ html {
     position: fixed;
     top: 10px;
     right: 10px;
-    background: rgba(0, 212, 255, 0.9);
+    background: rgb(0 212 255 / 90%);
     color: white;
     padding: 5px 10px;
     border-radius: 5px;
@@ -217,9 +217,9 @@ html {
     display: block;
 }
 
-.performance-good { background: rgba(0, 255, 136, 0.9); }
-.performance-warning { background: rgba(255, 107, 53, 0.9); }
-.performance-poor { background: rgba(255, 71, 87, 0.9); }
+.performance-good { background: rgb(0 255 136 / 90%); }
+.performance-warning { background: rgb(255 107 53 / 90%); }
+.performance-poor { background: rgb(255 71 87 / 90%); }
 
 /* ==========================================================================
    MEMORY OPTIMIZATION
@@ -240,7 +240,7 @@ html {
    ========================================================================== */
 
 /* Mobile-first performance optimizations */
-@media (max-width: 768px) {
+@media (width <= 768px) {
     /* Reduce animation complexity on mobile */
     .complex-animation {
         animation: none;
@@ -248,7 +248,7 @@ html {
 
     /* Simplify shadows on mobile */
     .heavy-shadow {
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
     }
 
     /* Optimize transforms on mobile */
@@ -259,9 +259,8 @@ html {
 }
 
 /* High DPI display optimizations */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (resolution >= 2dppx), (resolution >= 192dpi) {
     .high-dpi-optimized {
-        image-rendering: -webkit-optimize-contrast;
         image-rendering: crisp-edges;
     }
 }
@@ -331,7 +330,7 @@ html {
     }
 
     /* Show URLs after links */
-    a[href]:after {
+    a[href]::after {
         content: " (" attr(href) ")";
     }
 }
@@ -369,7 +368,7 @@ html {
 .loading-spinner {
     width: 20px;
     height: 20px;
-    border: 2px solid rgba(0, 212, 255, 0.3);
+    border: 2px solid rgb(0 212 255 / 30%);
     border-top: 2px solid #00d4ff;
     border-radius: 50%;
     animation: spin 1s linear infinite;

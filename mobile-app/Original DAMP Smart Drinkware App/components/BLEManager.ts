@@ -172,6 +172,6 @@ class BLEManager implements BLEManagerInterface {
   }
 }
 
-// Only export the instance as default to avoid duplicate identifier issues
-const bleManager = new BLEManager();
-export default bleManager;
+// Export a singleton instance
+export const bleManager = new BLEManager();
+// Remove default export to avoid duplicate identifier issues

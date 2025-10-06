@@ -2,12 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Devices - DAMP Smart Drinkware</title>
-    <meta name="description" content="Manage your connected DAMP Smart Drinkware devices">
-
-    <!-- Safe Area Support -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>My Devices - DAMP Smart Drinkware | Manage Connected Drinkware</title>
+    <meta name="description" content="Manage your connected DAMP Smart Drinkware devices. Add, remove, and monitor your smart drinkware for a seamless experience.">
+    <meta name="keywords" content="DAMP devices, smart drinkware devices, manage drinkware, BLE drinkware, device dashboard, beverage tracking">
+    <meta name="author" content="WeCr8 Solutions LLC">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dampdrink.com/pages/devices.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dampdrink.com/pages/devices.html">
+    <meta property="og:title" content="My Devices - DAMP Smart Drinkware">
+    <meta property="og:description" content="Manage your connected DAMP Smart Drinkware devices. Add, remove, and monitor your smart drinkware for a seamless experience.">
+    <meta property="og:image" content="https://dampdrink.com/assets/images/og-devices.jpg">
+    <meta property="og:site_name" content="DAMP Smart Drinkware">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="My Devices - DAMP Smart Drinkware">
+    <meta name="twitter:description" content="Manage your connected DAMP Smart Drinkware devices. Add, remove, and monitor your smart drinkware for a seamless experience.">
+    <meta name="twitter:image" content="https://dampdrink.com/assets/images/og-devices.jpg">
 
     <!-- Styles -->
     <link rel="stylesheet" href="../assets/css/global.css">
@@ -30,7 +45,7 @@
             font-size: 2.5rem;
             margin-bottom: 10px;
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
@@ -38,7 +53,7 @@
         .auth-required {
             text-align: center;
             padding: 60px 20px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(255 255 255 / 5%);
             border-radius: 15px;
             margin: 20px 0;
         }
@@ -67,12 +82,12 @@
 
         .auth-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+            box-shadow: 0 8px 25px rgb(0 212 255 / 40%);
         }
 
         .device-setup-guide {
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid rgba(0, 212, 255, 0.2);
+            background: rgb(0 212 255 / 10%);
+            border: 1px solid rgb(0 212 255 / 20%);
             border-radius: 15px;
             padding: 30px;
             margin: 30px 0;
@@ -105,7 +120,7 @@
             <button class="auth-btn" data-auth="signin">Sign In</button>
         </div>
 
-        <div class="devices-content" id="devicesContent" style="display: none;">
+        <div class="devices-content" id="devicesContent">
             <div class="device-setup-guide">
                 <h3>📱 Getting Started with DAMP Devices</h3>
                 <p>Once you receive your DAMP Smart Drinkware, follow these steps to connect:</p>

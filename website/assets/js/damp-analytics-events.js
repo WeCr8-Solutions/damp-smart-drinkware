@@ -3,12 +3,59 @@
  * Business-specific event tracking for user behavior and device interactions
  */
 
-import { logEvent, logPageView, logUserAction } from './firebase-services.js';
+// Initialize firebase lazily
+let analyticsInitialized = false;
+let firebaseServices = null;
+
+const initializeAnalytics = async () => {
+  if (analyticsInitialized) return;
+  
+  try {
+    const { initializeFirebase } = await import('../js/firebase-services.js');
+    firebaseServices = await initializeFirebase();
+    analyticsInitialized = true;
+  } catch (error) {
+    console.warn('Analytics not available:', error);
+  }
+};
+
+// Wrapper functions for analytics
+const logEvent = async (eventName, params) => {
+  if (!analyticsInitialized) await initializeAnalytics();
+  if (!firebaseServices?.analytics) return;
+  
+  try {
+    const { logEvent } = await import('firebase/analytics');
+    logEvent(firebaseServices.analytics, eventName, params);
+  } catch (error) {
+    console.warn('Failed to log event:', error);
+  }
+};
+
+const logPageView = async (pageName, pageParams = {}) => {
+  if (!analyticsInitialized) await initializeAnalytics();
+  if (!firebaseServices?.analytics) return;
+
+  await logEvent('page_view', {
+    page_title: pageName,
+    ...pageParams
+  });
+};
+
+const logUserAction = async (actionName, actionParams = {}) => {
+  if (!analyticsInitialized) await initializeAnalytics();
+  if (!firebaseServices?.analytics) return;
+
+  await logEvent('user_engagement', {
+    engagement_type: actionName,
+    ...actionParams
+  });
+};
 
 // ==================== PRODUCT INTEREST TRACKING ====================
 
-export const trackProductView = (productId, productName, source = 'organic') => {
-  logEvent('view_item', {
+export const trackProductView = async (productId, productName, source = 'organic') => {
+  await logEvent('view_item', {
     item_id: productId,
     item_name: productName,
     item_category: 'smart_drinkware',
@@ -16,7 +63,7 @@ export const trackProductView = (productId, productName, source = 'organic') => 
     value: 49.99 // Default price, can be dynamic
   });
 
-  logUserAction('product_viewed', {
+  await logUserAction('product_viewed', {
     product_id: productId,
     product_name: productName,
     traffic_source: source
@@ -234,30 +281,59 @@ export const trackDevicePerformance = (deviceId, metrics) => {
 
 // ==================== HELPER FUNCTIONS ====================
 
-export const initializeAnalytics = () => {
+// Track page load and user info if analytics are available
+const trackInitialUserInfo = async () => {
+  if (!analyticsInitialized) await initializeAnalytics();
+  if (!firebaseServices?.analytics) return;
+
   // Track initial page load
-  logPageView(document.title);
+  await logPageView(document.title);
 
-  // Track user device info
-  logEvent('user_tech_info', {
-    user_agent: navigator.userAgent,
-    screen_resolution: `${screen.width}x${screen.height}`,
-    browser_language: navigator.language,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-  });
-
-  // Track if user has Bluetooth capability
-  if ('bluetooth' in navigator) {
-    logEvent('bluetooth_capability', {
-      has_bluetooth: true,
-      user_agent: navigator.userAgent
+  // Only track device info if we have access to browser APIs
+  if (typeof window !== 'undefined' && typeof navigator !== 'undefined') {
+    // Track user device info
+    await logEvent('user_tech_info', {
+      user_agent: navigator.userAgent,
+      screen_resolution: typeof screen !== 'undefined' ? `${screen.width}x${screen.height}` : 'unknown',
+      browser_language: navigator.language,
+      timezone: typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'unknown'
     });
+
+    // Track if user has Bluetooth capability
+    if ('bluetooth' in navigator) {
+      await logEvent('bluetooth_capability', {
+        has_bluetooth: true,
+        user_agent: navigator.userAgent
+      });
+    }
   }
 };
 
-// Auto-initialize on page load
+// Enable debug mode in development
+const enableDebugMode = () => {
+  const isDev = window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1';
+
+  if (isDev) {
+    console.log('🔍 Analytics Debug Mode Enabled');
+    window.debugEvents = [];
+  }
+};
+
+// Auto-initialize on page load, but only for pages that need analytics
 if (typeof window !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', initializeAnalytics);
+  const pagesToTrack = [
+    'product-voting.html',
+    'dashboard.html',
+    'orders.html',
+    'devices.html'
+  ];
+
+  const currentPage = window.location.pathname.split('/').pop();
+  if (pagesToTrack.includes(currentPage)) {
+    document.addEventListener('DOMContentLoaded', trackInitialUserInfo);
+    enableDebugMode();
+  }
 }
 
 // Export all tracking functions
@@ -280,5 +356,6 @@ export default {
   trackSubscriptionInterest,
   trackSubscriptionConversion,
   trackDevicePerformance,
-  initializeAnalytics
+  // Initialize analytics on demand through this function
+  initializeAnalytics: trackInitialUserInfo
 };

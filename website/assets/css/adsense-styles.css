@@ -26,15 +26,15 @@
 .damp-ad-unit {
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 5%);
+    background: rgb(255 255 255 / 80%);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 212, 255, 0.1);
+    border: 1px solid rgb(0 212 255 / 10%);
     transition: all 0.3s ease;
 }
 
 .damp-ad-unit:hover {
-    box-shadow: 0 8px 24px rgba(0, 212, 255, 0.15);
+    box-shadow: 0 8px 24px rgb(0 212 255 / 15%);
     transform: translateY(-2px);
 }
 
@@ -114,7 +114,7 @@
    ========================================================================== */
 
 /* Desktop (1200px+) */
-@media (min-width: 1200px) {
+@media (width >= 1200px) {
     .damp-ad-container {
         margin: 80px auto;
     }
@@ -130,7 +130,7 @@
 }
 
 /* Tablet (768px - 1199px) */
-@media (min-width: 768px) and (max-width: 1199px) {
+@media (width >= 768px) and (width <= 1199px) {
     .damp-ad-container {
         margin: 60px auto;
     }
@@ -150,7 +150,7 @@
 }
 
 /* Mobile (up to 767px) */
-@media (max-width: 767px) {
+@media (width <= 767px) {
     .damp-ad-container {
         margin: 40px auto;
         padding: 0 20px;
@@ -204,8 +204,8 @@
 
 @media (prefers-color-scheme: dark) {
     .damp-ad-unit {
-        background: rgba(20, 20, 20, 0.9);
-        border-color: rgba(0, 212, 255, 0.2);
+        background: rgb(20 20 20 / 90%);
+        border-color: rgb(0 212 255 / 20%);
         color: #fff;
     }
 
@@ -214,7 +214,7 @@
     }
 
     .damp-ad-unit:hover {
-        box-shadow: 0 8px 24px rgba(0, 212, 255, 0.25);
+        box-shadow: 0 8px 24px rgb(0 212 255 / 25%);
     }
 }
 
@@ -248,9 +248,9 @@
 .damp-ad-container:not(.loaded) {
     min-height: 90px;
     background: linear-gradient(90deg,
-        rgba(0, 212, 255, 0.05) 0%,
-        rgba(0, 255, 136, 0.05) 50%,
-        rgba(0, 212, 255, 0.05) 100%);
+        rgb(0 212 255 / 5%) 0%,
+        rgb(0 255 136 / 5%) 50%,
+        rgb(0 212 255 / 5%) 100%);
     border-radius: 12px;
     animation: shimmer 2s infinite;
 }
@@ -269,8 +269,8 @@
 }
 
 .damp-ad-container.blocked {
-    background: rgba(255, 193, 7, 0.1);
-    border: 1px solid rgba(255, 193, 7, 0.3);
+    background: rgb(255 193 7 / 10%);
+    border: 1px solid rgb(255 193 7 / 30%);
     border-radius: 8px;
     padding: 20px;
     text-align: center;

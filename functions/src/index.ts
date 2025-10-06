@@ -4,8 +4,88 @@
  * Copyright 2025 WeCr8 Solutions LLC
  */
 
-import * as functions from 'firebase-functions';
+import { onRequest, onCall, HttpsError, CallableRequest } from 'firebase-functions/v2/https';
+import { onDocumentCreated, onDocumentDeleted, onDocumentUpdated } from 'firebase-functions/v2/firestore';
+import { beforeUserCreated, beforeUserSignedIn, onUserDeleted } from 'firebase-functions/v2/auth';
+import { type UserEventContext } from 'firebase-functions/v2/auth';
 import * as admin from 'firebase-admin';
+
+// Type Definitions
+interface DeviceData {
+  deviceId: string;
+  name: string;
+  type: string;
+  userId?: string;
+  settings?: {
+    batteryWarning?: number;
+    additionalSettings?: { [key: string]: any };
+  };
+  metadata?: { [key: string]: any };
+}
+
+interface DeviceStatus {
+  deviceId: string;
+  batteryLevel?: number;
+  lastSeen?: Date;
+  isConnected?: boolean;
+  settings?: {
+    batteryWarning?: number;
+    additionalSettings?: { [key: string]: any };
+  };
+}
+
+interface VoteData {
+  productId: string;
+  vote: boolean;
+}
+
+interface FCMTokenData {
+  token: string;
+}
+
+interface NotificationData {
+  userId: string;
+  title: string;
+  body: string;
+  data?: { [key: string]: string };
+}
+
+interface ActivityData {
+  activityType: string;
+  activityData?: { [key: string]: any };
+}
+
+interface AdminDashboardData {
+  startDate?: string;
+  endDate?: string;
+  userStats?: {
+    total: number;
+    active: number;
+    new: number;
+  };
+  activityStats?: {
+    total: number;
+    byPlatform: Record<string, number>;
+    byType: Record<string, number>;
+  };
+  votingStats?: {
+    total: number;
+    byProduct: Record<string, number>;
+  };
+  deviceStats?: {
+    total: number;
+    active: number;
+    byStatus: Record<string, number>;
+  };
+}
+
+type AuthEvent = {
+  uid: string;
+  email?: string;
+  displayName?: string;
+  photoURL?: string;
+  customClaims?: { [key: string]: any };
+};
 import * as cors from 'cors';
 import * as express from 'express';
 
@@ -24,159 +104,37 @@ app.use(corsHandler);
  * Create user profile after authentication
  * Triggered when new user signs up
  */
-export const createUserProfile = functions.auth.user().onCreate(async (user) => {
-  const { uid, email, displayName, photoURL, phoneNumber } = user;
+export const createUserProfile = beforeUserCreated(async (event) => {
+  const user = event.data;
+  if (!user) {
+    throw new HttpsError('invalid-argument', 'No user data provided');
+  }
 
   try {
-    const userData = {
-      uid,
-      email: email || null,
-      displayName: displayName || null,
-      photoURL: photoURL || null,
-      phoneNumber: phoneNumber || null,
-      emailVerified: user.emailVerified,
-
-      // Platform tracking
-      platform: 'unknown', // Will be updated on first login
+    const userProfile = {
+      email: user.email || '',
+      displayName: user.displayName || '',
+      photoURL: user.photoURL || '',
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      lastSignIn: admin.firestore.FieldValue.serverTimestamp(),
-      isOnline: true,
-
-      // Default preferences
-      preferences: {
-        notifications: {
-          push: true,
-          email: true,
-          sms: false,
-          marketing: true,
-          productUpdates: true,
-          orderUpdates: true,
-          votingReminders: true,
-        },
-        app: {
-          darkMode: false,
-          language: 'en',
-          currency: 'USD',
-          units: 'fahrenheit',
-          autoSync: true,
-        },
-        privacy: {
-          shareAnalytics: true,
-          shareLocation: false,
-          profileVisibility: 'public',
-          activityVisibility: 'friends',
-        },
-        device: {
-          biometricEnabled: false,
-          autoLock: 5,
-          hapticFeedback: true,
-          soundEffects: true,
-        }
-      },
-
-      // Activity stats
-      stats: {
-        votesCount: 0,
-        ordersCount: 0,
-        reviewsCount: 0,
-        loyaltyPoints: 100, // Welcome bonus
-        referralsCount: 0,
-        streakDays: 0,
-        totalSpent: 0,
-        platformStats: {
-          web: { sessionsCount: 0, totalTimeSpent: 0 },
-          mobile: { appOpens: 0, pushNotificationClicks: 0 }
-        }
-      },
-
-      // Social & loyalty
-      social: {
-        following: [],
-        followers: [],
-        blockedUsers: [],
-        friendRequests: [],
-      },
-
-      loyalty: {
-        tier: 'bronze',
-        points: 100,
-        lifetimePoints: 100,
-        nextTierRequirement: 500,
-        rewards: [],
-        redemptions: [],
-      },
-
-      // Connected devices
-      devices: [],
-
-      // Subscription info
-      subscription: {
-        plan: 'free',
-        status: 'active',
-        startDate: admin.firestore.FieldValue.serverTimestamp(),
-        endDate: null,
-        stripeCustomerId: null,
-        paymentMethods: [],
-        billingHistory: [],
-      },
-
-      // Marketing data
-      marketing: {
-        source: null,
-        campaign: null,
-        referredBy: null,
-        utmSource: null,
-        utmMedium: null,
-        utmCampaign: null,
-      },
-
-      // Role and permissions
-      role: 'user',
-      permissions: [],
-
-      // Beta testing
-      beta: {
-        isBetaTester: false,
-        betaFeatures: [],
-        feedbackCount: 0,
-      },
-
-      // Security
-      security: {
-        lastPasswordChange: admin.firestore.FieldValue.serverTimestamp(),
-        loginAttempts: 0,
-        accountLocked: false,
-        twoFactorEnabled: false,
-        backupCodes: [],
-        ipAddress: null,
-        userAgent: null,
-      }
+      isAdmin: false,
+      devices: []
     };
 
-    // Create user document
-    await admin.firestore().collection('users').doc(uid).set(userData);
-
-    // Update global stats
-    await admin.firestore().collection('stats').doc('global').update({
-      totalUsers: admin.firestore.FieldValue.increment(1),
-      newUsersToday: admin.firestore.FieldValue.increment(1),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
-
-    console.log(`User profile created for ${uid}`);
-
+    await admin.firestore().collection('users').doc(user.uid).set(userProfile);
+    console.log(`Created profile for user ${user.uid}`);
+    
+    return { customClaims: {} };
   } catch (error) {
     console.error('Error creating user profile:', error);
-    throw error;
+    throw new HttpsError('internal', 'Error creating user profile');
   }
 });
 
 /**
  * Clean up user data when account is deleted
  */
-export const deleteUserData = functions.auth.user().onDelete(async (user) => {
-  const { uid } = user;
+export const deleteUserData = onUserDeleted(async (event: UserEventContext) => {
+  const { uid } = event.data;
 
   try {
     const batch = admin.firestore().batch();
@@ -228,150 +186,65 @@ export const deleteUserData = functions.auth.user().onDelete(async (user) => {
 /**
  * Register a new DAMP device
  */
-export const registerDevice = functions.https.onCall(async (data, context) => {
-  // Verify user authentication
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+export const registerDevice = onCall<DeviceData>(async (request) => {
+  const { auth, data } = request;
+  
+  if (!auth) {
+    throw new HttpsError('unauthenticated', 'User must be authenticated');
   }
 
-  const { deviceId, deviceType, name, macAddress, firmwareVersion } = data;
-  const userId = context.auth.uid;
+  const userId = auth.uid;
 
   try {
     // Validate device data
-    if (!deviceId || !deviceType || !macAddress) {
-      throw new functions.https.HttpsError('invalid-argument', 'Missing required device information');
+    if (!data.deviceId || !data.name || !data.type) {
+      throw new HttpsError('invalid-argument', 'Missing required device information');
     }
 
     // Check if device is already registered
-    const existingDevice = await admin.firestore()
-      .collection('devices')
-      .doc(deviceId)
-      .get();
+    const deviceRef = admin.firestore().collection('devices').doc(data.deviceId);
+    const deviceDoc = await deviceRef.get();
 
-    if (existingDevice.exists) {
-      throw new functions.https.HttpsError('already-exists', 'Device is already registered');
+    if (deviceDoc.exists) {
+      throw new HttpsError('already-exists', 'Device is already registered');
     }
-
-    const deviceData = {
-      deviceId,
-      deviceType, // 'handle', 'bottom', 'sleeve', 'bottle'
-      name: name || `DAMP ${deviceType}`,
-      macAddress,
-      firmwareVersion: firmwareVersion || '1.0.0',
-      userId,
-      registeredAt: admin.firestore.FieldValue.serverTimestamp(),
-      lastSeen: admin.firestore.FieldValue.serverTimestamp(),
-      isActive: true,
-      batteryLevel: 100,
-      settings: {
-        alertDistance: 10, // meters
-        batteryWarning: 20, // percentage
-        notificationCooldown: 15, // minutes
-        vibrationEnabled: true,
-        ledEnabled: true,
-      },
-      stats: {
-        totalAlerts: 0,
-        batteryChanges: 0,
-        connectionAttempts: 0,
-        lastFirmwareUpdate: null,
-      }
-    };
-
-    // Register device
-    await admin.firestore().collection('devices').doc(deviceId).set(deviceData);
-
-    // Add device to user's device list
-    await admin.firestore().collection('users').doc(userId).update({
-      devices: admin.firestore.FieldValue.arrayUnion({
-        deviceId,
-        deviceType,
-        name: deviceData.name,
-        registeredAt: admin.firestore.FieldValue.serverTimestamp()
-      }),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
-
-    // Update global device stats
-    await admin.firestore().collection('stats').doc('global').update({
-      totalDevices: admin.firestore.FieldValue.increment(1),
-      [`${deviceType}Count`]: admin.firestore.FieldValue.increment(1),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    });
-
-    return { success: true, deviceId };
-
-  } catch (error) {
-    console.error('Error registering device:', error);
-    throw error;
-  }
-});
 
 /**
  * Update device status (battery, location, etc.)
  */
-export const updateDeviceStatus = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+interface DeviceStatus {
+  deviceId: string;
+  batteryLevel?: number;
+  lastSeen?: Date;
+  isConnected?: boolean;
+  settings?: {
+    batteryWarning?: number;
+    [key: string]: any;
+  };
+}
+
+export const updateDeviceStatus = onCall<DeviceStatus>(async (request) => {
+  const { auth, data } = request;
+
+  if (!auth) {
+    throw new HttpsError('unauthenticated', 'User must be authenticated');
   }
 
-  const { deviceId, batteryLevel, location, temperature, isConnected } = data;
-  const userId = context.auth.uid;
+  const userId = auth.uid;
 
   try {
-    // Verify device ownership
-    const deviceDoc = await admin.firestore().collection('devices').doc(deviceId).get();
+    const deviceId = data.deviceId;
+    const deviceRef = admin.firestore().collection('devices').doc(deviceId);
+    const device = await deviceRef.get();
 
-    if (!deviceDoc.exists) {
-      throw new functions.https.HttpsError('not-found', 'Device not found');
+    if (!device.exists) {
+      throw new HttpsError('not-found', 'Device not found');
     }
 
-    const deviceData = deviceDoc.data();
-    if (deviceData?.userId !== userId) {
-      throw new functions.https.HttpsError('permission-denied', 'Access denied');
+    const deviceData = device.data() as DeviceData & { userId: string };
+    if (deviceData.userId !== userId) {
+      throw new HttpsError('permission-denied', 'Access denied');
     }
-
-    const updates: any = {
-      lastSeen: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
-    };
-
-    if (batteryLevel !== undefined) {
-      updates.batteryLevel = batteryLevel;
-
-      // Check for low battery alert
-      if (batteryLevel <= (deviceData.settings?.batteryWarning || 20)) {
-        await sendBatteryAlert(userId, deviceId, batteryLevel);
-      }
-    }
-
-    if (location !== undefined) {
-      updates.location = location;
-      updates.locationHistory = admin.firestore.FieldValue.arrayUnion({
-        ...location,
-        timestamp: admin.firestore.FieldValue.serverTimestamp()
-      });
-    }
-
-    if (temperature !== undefined) {
-      updates.temperature = temperature;
-    }
-
-    if (isConnected !== undefined) {
-      updates.isConnected = isConnected;
-      updates.isActive = isConnected;
-    }
-
-    await admin.firestore().collection('devices').doc(deviceId).update(updates);
-
-    return { success: true };
-
-  } catch (error) {
-    console.error('Error updating device status:', error);
-    throw error;
-  }
-});
 
 /**
  * Send low battery alert
@@ -429,15 +302,17 @@ async function sendBatteryAlert(userId: string, deviceId: string, batteryLevel: 
 /**
  * Cast a vote (with duplicate prevention)
  */
-export const castVote = functions.https.onCall(async (data, context) => {
-  const { productId, userId, voteType } = data;
+export const castVote = onCall<VoteData>(async (request) => {
+  const { data, auth } = request;
+  const { productId, vote } = data;
 
   try {
     // Create unique vote ID
-    const voteId = `${productId}_${userId || 'anonymous'}_${Date.now()}`;
+    const userId = auth?.uid || 'anonymous';
+    const voteId = `${productId}_${userId}_${Date.now()}`;
 
     // Check for existing vote (authenticated users only)
-    if (userId && context.auth) {
+    if (userId !== 'anonymous') {
       const existingVote = await admin.firestore()
         .collection('userVotes')
         .where('userId', '==', userId)
@@ -445,26 +320,25 @@ export const castVote = functions.https.onCall(async (data, context) => {
         .get();
 
       if (!existingVote.empty) {
-        throw new functions.https.HttpsError('already-exists', 'User has already voted for this product');
+        throw new HttpsError('already-exists', 'User has already voted for this product');
       }
     }
 
     const batch = admin.firestore().batch();
 
     // Record the vote
-    const voteData = {
+    const voteRecord = {
       voteId,
       productId,
-      userId: userId || null,
-      voteType: voteType || 'upvote',
+      userId,
+      vote,
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
-      isAuthenticated: !!userId,
-      platform: data.platform || 'web'
+      isAuthenticated: userId !== 'anonymous',
+      platform: 'web'
     };
 
-    if (userId) {
-      // Authenticated vote
-      batch.set(admin.firestore().collection('userVotes').doc(voteId), voteData);
+    // Save vote record
+    batch.set(admin.firestore().collection('userVotes').doc(voteId), voteRecord);
 
       // Update user stats
       batch.update(admin.firestore().collection('users').doc(userId), {
@@ -472,14 +346,30 @@ export const castVote = functions.https.onCall(async (data, context) => {
         'stats.loyaltyPoints': admin.firestore.FieldValue.increment(10),
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       });
-    } else {
-      // Public vote
-      batch.set(admin.firestore().collection('publicVotes').doc(voteId), voteData);
     }
+
+    // Create a batch for atomic updates
+    const batch = admin.firestore().batch();
+
+    // Create vote document
+    const voteRef = admin.firestore().collection('votes').doc();
+    const voteId = voteRef.id;
+    
+    if (!auth) {
+      throw new HttpsError('unauthenticated', 'Must be authenticated to vote');
+    }
+    
+    batch.set(voteRef, {
+      productId,
+      userId: auth.uid,
+      vote,
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    });
 
     // Update product vote count
     batch.update(admin.firestore().collection('voting').doc('productVoting'), {
       [`products.${productId}.votes`]: admin.firestore.FieldValue.increment(1),
+      [`products.${productId}.${vote ? 'up' : 'down'}votes`]: admin.firestore.FieldValue.increment(1),
       [`products.${productId}.lastVote`]: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
@@ -487,17 +377,18 @@ export const castVote = functions.https.onCall(async (data, context) => {
     // Update global stats
     batch.update(admin.firestore().collection('stats').doc('global'), {
       totalVotes: admin.firestore.FieldValue.increment(1),
+      [`${vote ? 'up' : 'down'}votes`]: admin.firestore.FieldValue.increment(1),
       votesToday: admin.firestore.FieldValue.increment(1),
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
     await batch.commit();
 
-    return { success: true, voteId };
+    return { success: true, id: voteId };
 
   } catch (error) {
     console.error('Error casting vote:', error);
-    throw error;
+    throw new HttpsError('internal', 'Failed to cast vote');
   }
 });
 
@@ -508,92 +399,106 @@ export const castVote = functions.https.onCall(async (data, context) => {
 /**
  * Store FCM token for push notifications
  */
-export const saveFCMToken = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+export const saveFCMToken = onCall<FCMTokenData>(async (request) => {
+  const { auth, data } = request;
+
+  if (!auth) {
+    throw new HttpsError('unauthenticated', 'User must be authenticated');
   }
 
-  const { token, platform } = data;
-  const userId = context.auth.uid;
-
   try {
-    await admin.firestore().collection('fcmTokens').doc(token).set({
-      token,
-      userId,
-      platform: platform || 'web',
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      lastUsed: admin.firestore.FieldValue.serverTimestamp()
-    });
+    const userId = auth.uid;
+    const { token } = data;
+
+    if (!token) {
+      throw new HttpsError('invalid-argument', 'No token provided');
+    }
+
+    // Add token to user's FCM tokens
+    await admin.firestore()
+      .collection('users')
+      .doc(userId)
+      .collection('fcm_tokens')
+      .doc(token)
+      .set({
+        token,
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
+      });
 
     return { success: true };
-
   } catch (error) {
     console.error('Error saving FCM token:', error);
-    throw error;
+    throw new HttpsError(
+      'internal',
+      error instanceof Error ? error.message : 'An error occurred while saving the FCM token'
+    );
   }
 });
 
 /**
  * Send notification to user
  */
-export const sendNotification = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+export const sendNotification = onCall<NotificationData>(async (request) => {
+  const { auth, data } = request;
+
+  if (!auth) {
+    throw new HttpsError('unauthenticated', 'User must be authenticated');
   }
 
-  const { userId, title, body, type, additionalData } = data;
-
   try {
+    const { userId, title, body, data: messageData } = data;
+
     // Get user's FCM tokens
-    const tokensQuery = await admin.firestore()
-      .collection('fcmTokens')
-      .where('userId', '==', userId)
+    const tokensSnapshot = await admin.firestore()
+      .collection('users')
+      .doc(userId)
+      .collection('fcm_tokens')
       .get();
 
-    const tokens: string[] = [];
-    tokensQuery.forEach(doc => {
-      tokens.push(doc.data().token);
-    });
-
-    if (tokens.length === 0) {
-      throw new functions.https.HttpsError('not-found', 'No FCM tokens found for user');
+    if (tokensSnapshot.empty) {
+      throw new HttpsError('not-found', 'No FCM tokens found for user');
     }
 
+    const tokens = tokensSnapshot.docs.map(doc => doc.data().token);
+
+    // Send notifications to all tokens
     const message = {
-      notification: { title, body },
-      data: {
-        type: type || 'general',
-        ...additionalData
+      notification: {
+        title,
+        body,
       },
-      tokens
+      data: messageData,
+      tokens,
     };
 
     const response = await admin.messaging().sendMulticast(message);
 
     // Clean up invalid tokens
-    const invalidTokens: string[] = [];
-    response.responses.forEach((resp, idx) => {
-      if (!resp.success) {
-        invalidTokens.push(tokens[idx]);
-      }
-    });
+    const invalidTokens = response.responses
+      .map((res, idx) => res.success ? null : tokens[idx])
+      .filter((token): token is string => token !== null);
 
-    // Remove invalid tokens
-    const batch = admin.firestore().batch();
-    invalidTokens.forEach(token => {
-      batch.delete(admin.firestore().collection('fcmTokens').doc(token));
-    });
-    await batch.commit();
+    const removePromises = invalidTokens.map(token =>
+      admin.firestore()
+        .collection('users')
+        .doc(userId)
+        .collection('fcm_tokens')
+        .doc(token)
+        .delete()
+    );
+
+    await Promise.all(removePromises);
 
     return {
-      success: true,
       successCount: response.successCount,
       failureCount: response.failureCount
     };
-
   } catch (error) {
     console.error('Error sending notification:', error);
-    throw error;
+    throw new HttpsError(
+      'internal',
+      error instanceof Error ? error.message : 'An error occurred while sending the notification'
+    );
   }
 });
 
@@ -604,34 +509,34 @@ export const sendNotification = functions.https.onCall(async (data, context) => 
 /**
  * Track user activity
  */
-export const trackActivity = functions.https.onCall(async (data, context) => {
-  const { event, properties, userId } = data;
+export const trackActivity = onCall<ActivityData>(async (request) => {
+  const { data, auth } = request;
+  const { activityType, activityData: properties } = data;
 
   try {
-    const activityData = {
-      event,
+    const timestamp = admin.firestore.FieldValue.serverTimestamp();
+    const userId = auth?.uid || null;
+    
+    const activity = {
+      activityType,
       properties: properties || {},
-      userId: userId || null,
-      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      userId,
+      timestamp,
       isAuthenticated: !!userId,
       platform: properties?.platform || 'web'
     };
 
     // Store activity
-    await admin.firestore().collection('analytics').add(activityData);
+    await admin.firestore().collection('analytics').add(activity);
 
     // Update user stats if authenticated
-    if (userId && context.auth) {
-      const updates: any = {
-        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    if (userId) {
+      const updates = {
+        lastActivityAt: timestamp,
+        updatedAt: timestamp,
+        'stats.activitiesCount': admin.firestore.FieldValue.increment(1),
+        [`stats.platformStats.${properties?.platform || 'web'}.activityCount`]: admin.firestore.FieldValue.increment(1)
       };
-
-      // Track platform-specific stats
-      if (properties?.platform === 'web') {
-        updates['stats.platformStats.web.sessionsCount'] = admin.firestore.FieldValue.increment(1);
-      } else if (properties?.platform === 'ios' || properties?.platform === 'android') {
-        updates['stats.platformStats.mobile.appOpens'] = admin.firestore.FieldValue.increment(1);
-      }
 
       await admin.firestore().collection('users').doc(userId).update(updates);
     }
@@ -651,45 +556,113 @@ export const trackActivity = functions.https.onCall(async (data, context) => {
 /**
  * Get admin dashboard data
  */
-export const getAdminDashboard = functions.https.onCall(async (data, context) => {
-  // Verify admin access
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'Authentication required');
+export const getAdminDashboard = onCall<AdminDashboardData>(async (request) => {
+  const { data, auth } = request;
+  
+  // Validate auth
+  if (!auth) {
+    throw new HttpsError('unauthenticated', 'Authentication required');
+  }
+
+  // Check admin role
+  const user = await admin.auth().getUser(auth.uid);
+  if (!user.customClaims?.admin) {
+    throw new HttpsError('permission-denied', 'Admin access required');
   }
 
   try {
-    // Check if user is admin
-    const userDoc = await admin.firestore().collection('users').doc(context.auth.uid).get();
-    const userData = userDoc.data();
-
-    if (userData?.role !== 'admin') {
-      throw new functions.https.HttpsError('permission-denied', 'Admin access required');
-    }
+    // Prepare date ranges
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const startDate = data.startDate ? new Date(data.startDate) : thirtyDaysAgo;
+    const endDate = data.endDate ? new Date(data.endDate) : new Date();
 
     // Get global stats
-    const statsDoc = await admin.firestore().collection('stats').doc('global').get();
-    const stats = statsDoc.data();
+    const globalStats = (await admin.firestore().collection('stats').doc('global').get()).data() || {};
 
-    // Get recent activity
-    const recentActivity = await admin.firestore()
-      .collection('analytics')
-      .orderBy('timestamp', 'desc')
-      .limit(50)
+    // Query user stats
+    const usersSnapshot = await admin.firestore().collection('users').get();
+    const activeUsersSnapshot = await admin.firestore()
+      .collection('users')
+      .where('lastActivityAt', '>=', startDate)
+      .get();
+    const newUsersSnapshot = await admin.firestore()
+      .collection('users')
+      .where('createdAt', '>=', startDate)
       .get();
 
-    const activities = recentActivity.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    // Query device stats
+    const devicesSnapshot = await admin.firestore().collection('devices').get();
+    const activeDevicesSnapshot = await admin.firestore()
+      .collection('devices')
+      .where('lastActiveAt', '>=', startDate)
+      .get();
 
+    // Build device status stats
+    const deviceStatusStats: Record<string, number> = {};
+    devicesSnapshot.forEach(doc => {
+      const data = doc.data();
+      const status = data.status || 'unknown';
+      deviceStatusStats[status] = (deviceStatusStats[status] || 0) + 1;
+    });
+
+    // Query activity stats within date range
+    const activitiesSnapshot = await admin.firestore()
+      .collection('analytics')
+      .where('timestamp', '>=', startDate)
+      .where('timestamp', '<=', endDate)
+      .get();
+
+    // Build activity type and platform stats
+    const activityTypeStats: Record<string, number> = {};
+    const platformStats: Record<string, number> = {};
+    activitiesSnapshot.forEach(doc => {
+      const data = doc.data();
+      const type = data.activityType || 'unknown';
+      const platform = data.platform || 'web';
+      activityTypeStats[type] = (activityTypeStats[type] || 0) + 1;
+      platformStats[platform] = (platformStats[platform] || 0) + 1;
+    });
+
+    // Get voting stats
+    const votingStats = (await admin.firestore()
+      .collection('voting')
+      .doc('productVoting')
+      .get()).data() || {};
+
+    // Build voting by product stats
+    const votesByProduct: Record<string, number> = {};
+    Object.entries(votingStats.products || {}).forEach(([productId, product]: [string, any]) => {
+      votesByProduct[productId] = product.votes || 0;
+    });
+
+    // Return aggregated dashboard data
     return {
-      stats,
-      recentActivity: activities
+      userStats: {
+        total: usersSnapshot.size,
+        active: activeUsersSnapshot.size,
+        new: newUsersSnapshot.size
+      },
+      activityStats: {
+        total: activitiesSnapshot.size,
+        byPlatform: platformStats,
+        byType: activityTypeStats
+      },
+      votingStats: {
+        total: votingStats.totalVotes || 0,
+        byProduct: votesByProduct
+      },
+      deviceStats: {
+        total: devicesSnapshot.size,
+        active: activeDevicesSnapshot.size,
+        byStatus: deviceStatusStats
+      }
     };
-
   } catch (error) {
-    console.error('Error getting admin dashboard:', error);
-    throw error;
+    console.error('Error getting dashboard data:', error);
+    throw new HttpsError(
+      'internal',
+      error instanceof Error ? error.message : 'An error occurred while getting dashboard data'
+    );
   }
 });
 
@@ -753,7 +726,7 @@ app.get('/user/:userId/devices', async (req, res) => {
 });
 
 // Export the Express app as a Firebase Function
-export const api = functions.https.onRequest(app);
+export const api = onRequest(app);
 
 // =============================================================================
 // SUBSCRIPTION MANAGEMENT FUNCTIONS

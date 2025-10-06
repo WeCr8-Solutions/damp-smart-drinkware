@@ -8,8 +8,8 @@ import {
   ActivityIndicator,
   Alert,
   StyleSheet,
+  useWindowDimensions,
 } from 'react-native';
-import Dimensions from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -56,7 +56,7 @@ interface CartItem extends Product {
   quantity: number;
 }
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth } = useWindowDimensions();
 
 export default function StoreModal({ visible, onClose }: StoreModalProps) {
   const [products, setProducts] = useState<Product[]>([]);

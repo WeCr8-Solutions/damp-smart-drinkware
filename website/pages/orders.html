@@ -2,12 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Orders - DAMP Smart Drinkware</title>
-    <meta name="description" content="View and manage your DAMP Smart Drinkware orders">
-
-    <!-- Safe Area Support -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>My Orders - DAMP Smart Drinkware | Order History & Tracking</title>
+    <meta name="description" content="View and manage your DAMP Smart Drinkware orders. Track order status, view order history, and manage your smart drinkware purchases.">
+    <meta name="keywords" content="DAMP orders, smart drinkware orders, order history, order tracking, beverage tracking, BLE drinkware">
+    <meta name="author" content="WeCr8 Solutions LLC">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dampdrink.com/pages/orders.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dampdrink.com/pages/orders.html">
+    <meta property="og:title" content="My Orders - DAMP Smart Drinkware">
+    <meta property="og:description" content="View and manage your DAMP Smart Drinkware orders. Track order status, view order history, and manage your smart drinkware purchases.">
+    <meta property="og:image" content="https://dampdrink.com/assets/images/og-orders.jpg">
+    <meta property="og:site_name" content="DAMP Smart Drinkware">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="My Orders - DAMP Smart Drinkware">
+    <meta name="twitter:description" content="View and manage your DAMP Smart Drinkware orders. Track order status, view order history, and manage your smart drinkware purchases.">
+    <meta name="twitter:image" content="https://dampdrink.com/assets/images/og-orders.jpg">
 
     <!-- Styles -->
     <link rel="stylesheet" href="../assets/css/global.css">
@@ -30,7 +45,7 @@
             font-size: 2.5rem;
             margin-bottom: 10px;
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
@@ -38,7 +53,7 @@
         .auth-required {
             text-align: center;
             padding: 60px 20px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(255 255 255 / 5%);
             border-radius: 15px;
             margin: 20px 0;
         }
@@ -67,7 +82,7 @@
 
         .auth-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+            box-shadow: 0 8px 25px rgb(0 212 255 / 40%);
         }
     </style>
 </head>
@@ -92,7 +107,7 @@
             <button class="auth-btn" data-auth="signin">Sign In</button>
         </div>
 
-        <div class="orders-content" id="ordersContent" style="display: none;">
+        <div class="orders-content" id="ordersContent">
             <!-- Orders will be loaded here when user is authenticated -->
             <div class="no-orders">
                 <h3>No Orders Yet</h3>

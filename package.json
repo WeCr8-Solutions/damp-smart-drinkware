@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "DAMP Smart Drinkware - Secure Development Environment",
   "private": true,
+  "type": "commonjs",
   "scripts": {
+    "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" jest --testPathIgnorePatterns=\"tests/e2e\"",
+    "test:unit": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" jest --testPathIgnorePatterns=\"tests/e2e\"",
+    "test:e2e": "cd website && npx playwright test",
+    "test:all": "node run-tests.js",
+    "test:single": "node run-tests.js",
     "install-security": "npm install --save-dev @commitlint/cli @commitlint/config-conventional husky lint-staged detect-secrets gitleaks",
     "setup-hooks": "husky install && npm run setup-pre-commit",
     "setup-pre-commit": "npx husky add .husky/pre-commit 'npx lint-staged'",
@@ -35,10 +41,28 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/plugin-transform-modules-commonjs": "^7.27.1",
+    "@babel/preset-env": "^7.28.3",
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
+    "@jest/globals": "^30.2.0",
+    "@playwright/test": "^1.55.1",
+    "@stripe/stripe-js": "^8.0.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "babel-jest": "^30.2.0",
+    "cross-env": "^10.1.0",
+    "firebase": "^12.3.0",
     "husky": "^8.0.3",
-    "lint-staged": "^15.2.0"
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "lint-staged": "^15.2.0",
+    "postcss-html": "^1.8.0",
+    "puppeteer": "^24.23.0",
+    "serve-handler": "^6.1.6",
+    "stylelint": "^16.24.0",
+    "stylelint-config-standard": "^39.0.0"
   },
   "husky": {
     "hooks": {
@@ -47,6 +71,20 @@
     }
   },
   "dependencies": {
-    "firebase-admin": "^13.5.0"
+    "@expo/webpack-config": "^18.0.1",
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-community/netinfo": "^11.4.1",
+    "@types/react": "~18.2.14",
+    "expo": "^49.0.23",
+    "expo-dev-client": "~2.4.13",
+    "expo-router": "^2.0.0",
+    "express": "^5.1.0",
+    "firebase-admin": "^13.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-native": "^0.72.6",
+    "react-native-web": "^0.19.6",
+    "stripe": "^19.1.0",
+    "typescript": "^5.1.3"
   }
 }

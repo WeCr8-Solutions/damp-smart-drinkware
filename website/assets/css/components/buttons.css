@@ -1,30 +1,36 @@
 /* DAMP Smart Drinkware - Button Components */
+
 /* Following Google Material Design Button Principles */
 
 /* FIXED: All buttons work and are accessible */
 .btn {
-    display: inline-block;
-    padding: 12px 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px; /* Minimum touch target size */
+    padding: clamp(12px, 3vw, 24px) clamp(24px, 5vw, 48px);
     background: #00d4ff;
     color: #0f0f23;
     text-decoration: none;
     border-radius: 8px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: clamp(14px, 2vw, 16px);
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: center;
-    min-width: 120px;
+    min-width: clamp(120px, 25vw, 200px);
     box-sizing: border-box;
     line-height: 1.4;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn:hover,
 .btn:focus {
-    background: #0099cc;
+    background: #09c;
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 4px 15px rgb(0 212 255 / 30%);
     outline: none;
 }
 
@@ -33,7 +39,7 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+    background: linear-gradient(135deg, #00d4ff 0%, #09c 100%);
     color: #0f0f23;
 }
 
@@ -50,7 +56,7 @@
 }
 
 /* FIXED: Mobile button accessibility */
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .btn {
         padding: 10px 20px;
         font-size: 13px;

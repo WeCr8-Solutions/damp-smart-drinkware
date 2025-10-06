@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#0f0f23">
+    <!-- PWA and Mobile Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-TileColor" content="#1a1a2e">
     <title>DAMP Silicone Bottom v1.0 - Smart Base for Your Drinkware | DAMP Smart Drinkware</title>
 
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/logo/icon-192.png">
+    <link rel="apple-touch-icon" href="/assets/images/logo/apple-icon-180x180.png">
+    
     <!-- SEO Meta Tags -->
     <meta name="description" content="DAMP Silicone Bottom v1.0 - Smart silicone base with BLE technology that prevents you from leaving your beverages behind. Pre-order now with early bird pricing.">
     <meta name="keywords" content="DAMP Silicone Bottom, smart silicone base, BLE tracking, beverage monitoring, drink abandonment prevention, smart drinkware accessory">
@@ -48,6 +54,80 @@
         },
         "image": "https://dampdrink.com/assets/images/products/silicone-bottom/silicone-bottom.png",
         "category": "Smart Home Technology",
+        "sku": "DAMP-SIL-BTM-V1"
+    }
+    </script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/product-page.css">
+    
+    <!-- Stripe Integration -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script type="module">
+        import { initializeStripe, handlePurchase } from '/assets/js/store/modules/stripe-module.js';
+        window.handlePurchase = handlePurchase;
+        document.addEventListener('DOMContentLoaded', initializeStripe);
+    </script>
+</head>
+<body>
+    <!-- Main Product Section -->
+    <section class="product-hero">
+        <div class="product-container">
+            <h1>DAMP Silicone Bottom v1.0</h1>
+            <div class="product-grid">
+                <div class="product-image">
+                    <img src="/assets/images/products/silicone-bottom/silicone-bottom.png" alt="DAMP Silicone Bottom v1.0">
+                </div>
+                <div class="product-info">
+                    <div class="product-price">
+                        <span class="original-price">$39.99</span>
+                        <span class="current-price">$29.99</span>
+                        <span class="save-tag">Save 25%</span>
+                    </div>
+                    <div class="product-actions">
+                        <button 
+                            class="purchase-button"
+                            onclick="handlePurchase('silicone-bottom', 1)"
+                            data-stripe-product-id="prod_TAqVOXQoSi1tVi"
+                            data-product-name="DAMP Silicone Bottom v1.0"
+                            data-price="2999">
+                            Pre-order Now
+                        </button>
+                        <div class="quantity-selector">
+                            <label for="quantity" class="sr-only">Quantity</label>
+                            <button class="qty-btn" onclick="updateQuantity('decrease')" aria-label="Decrease quantity">-</button>
+                            <input type="number" 
+                                   id="quantity" 
+                                   name="quantity"
+                                   value="1" 
+                                   min="1" 
+                                   max="10"
+                                   title="Product quantity"
+                                   aria-label="Product quantity">
+                            <button class="qty-btn" onclick="updateQuantity('increase')" aria-label="Increase quantity">+</button>
+                        </div>
+                        <script>
+                            function updateQuantity(action) {
+                                const quantityInput = document.getElementById('quantity');
+                                let currentValue = parseInt(quantityInput.value);
+                                
+                                if (action === 'increase' && currentValue < 10) {
+                                    quantityInput.value = currentValue + 1;
+                                } else if (action === 'decrease' && currentValue > 1) {
+                                    quantityInput.value = currentValue - 1;
+                                }
+                                
+                                // Update purchase button data
+                                const purchaseButton = document.querySelector('.purchase-button');
+                                purchaseButton.setAttribute('onclick', `handlePurchase('silicone-bottom', ${quantityInput.value})`);
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
         "productID": "silicone-bottom-v1.0"
     }
     </script>
@@ -190,6 +270,14 @@
                     <p>Food-grade silicone, BPA-free</p>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Installation Guide -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Installation Guide</h2>
+            <p>For detailed installation instructions, visit the <a href="../install/damp-silicone-bottom.html">DAMP Silicone Bottom Installation Guide</a>.</p>
         </div>
     </section>
 

@@ -54,11 +54,11 @@
         }
 
         .product-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(255 255 255 / 5%);
             border-radius: 16px;
             padding: 24px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgb(255 255 255 / 10%);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -66,7 +66,7 @@
 
         .product-card:hover {
             transform: translateY(-8px);
-            background: rgba(255, 255, 255, 0.08);
+            background: rgb(255 255 255 / 8%);
             border-color: var(--primary-color);
         }
 
@@ -155,11 +155,11 @@
 
         .preorder-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+            box-shadow: 0 8px 25px rgb(0 212 255 / 40%);
         }
 
         .preorder-btn.authenticated {
-            background: linear-gradient(135deg, var(--secondary-color), #00cc66);
+            background: linear-gradient(135deg, var(--secondary-color), #0c6);
         }
 
         .btn-icon {
@@ -178,11 +178,11 @@
 
         /* Personalized Recommendations */
         .recommendations-section {
-            background: rgba(0, 212, 255, 0.1);
+            background: rgb(0 212 255 / 10%);
             border-radius: 16px;
             padding: 32px;
             margin: 60px 0;
-            border: 1px solid rgba(0, 212, 255, 0.2);
+            border: 1px solid rgb(0 212 255 / 20%);
         }
 
         .recommendations-section h3 {
@@ -200,7 +200,7 @@
         }
 
         .recommendation-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(255 255 255 / 5%);
             border-radius: 12px;
             padding: 20px;
             text-align: center;
@@ -266,8 +266,8 @@
 
         /* Account Benefits */
         .account-benefits {
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            background: rgb(0 255 136 / 10%);
+            border: 1px solid rgb(0 255 136 / 20%);
             border-radius: 12px;
             padding: 20px;
             margin: 40px 0;
@@ -298,7 +298,7 @@
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
+        @media (width <= 768px) {
             .store-title {
                 font-size: 2rem;
             }

@@ -35,16 +35,75 @@
 
     <!-- PERFORMANCE OPTIMIZATION: Critical CSS Inline -->
     <style>
+        .btn-secondary.view-live-results {
+            padding: 20px 50px;
+            font-size: 1.3rem;
+        }
+
+        .footer-muted {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .footer-note {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .product-internal-link {
+            margin: 10px 0 0;
+        }
+
+        .product-internal-link a {
+            color: var(--primary-color);
+            font-size: 0.95rem;
+        }
+
+        #universal-compatibility {
+            text-align: center;
+            margin: 80px 0;
+        }
+
+        #universal-compatibility h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        #universal-compatibility p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #universal-compatibility .compatibility-list {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        #universal-compatibility .compatibility-list span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
         :root {
             --primary-color: #00d4ff;
-            --primary-dark: #0099cc;
-            --secondary-color: #00ff88;
+            --primary-dark: #09c;
+            --secondary-color: #0f8;
             --bg-primary: #0f0f23;
             --bg-secondary: #1a1a2e;
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.85);
-            --card-bg: rgba(255, 255, 255, 0.08);
-            --border-color: rgba(255, 255, 255, 0.15);
+            --text-primary: #fff;
+            --text-secondary: rgb(255 255 255 / 85%);
+            --card-bg: rgb(255 255 255 / 8%);
+            --border-color: rgb(255 255 255 / 15%);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -96,11 +155,8 @@
         .products-hero::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 50% 30%, rgba(0, 212, 255, 0.15) 0%, transparent 50%);
+            inset: 0;
+            background: radial-gradient(circle at 50% 30%, rgb(0 212 255 / 15%) 0%, transparent 50%);
             pointer-events: none;
         }
 
@@ -116,7 +172,7 @@
             font-weight: 900;
             margin-bottom: 20px;
             background: linear-gradient(45deg, var(--text-primary), var(--primary-color));
-            -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
@@ -130,7 +186,7 @@
 
         .products-section {
             padding: 80px 0;
-            background: rgba(26, 26, 46, 0.3);
+            background: rgb(26 26 46 / 30%);
         }
 
         .section-title {
@@ -168,6 +224,10 @@
             transition: all 0.3s ease;
             will-change: transform;
             overflow: hidden;
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
         }
 
         .product-card::before {
@@ -177,7 +237,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgb(255 255 255 / 10%), transparent);
             transition: left 0.6s ease;
         }
 
@@ -187,8 +247,8 @@
 
         .product-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
-            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 20px 40px rgb(0 212 255 / 20%);
+            border-color: rgb(0 212 255 / 30%);
         }
 
         .product-badge {
@@ -210,7 +270,7 @@
             margin: 0 auto 30px;
             border-radius: 15px;
             overflow: hidden;
-            background: linear-gradient(45deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.1));
+            background: linear-gradient(45deg, rgb(0 212 255 / 10%), rgb(0 255 136 / 10%));
         }
 
         .product-image img {
@@ -297,7 +357,7 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 30px rgb(0 212 255 / 30%);
         }
 
         .btn-secondary {
@@ -323,7 +383,8 @@
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(15, 15, 35, 0.95);
+            background: rgb(15 15 35 / 95%);
+            -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
             z-index: 1000;
             padding: 15px 0;
@@ -346,7 +407,7 @@
             font-size: 1.8rem;
             font-weight: bold;
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-decoration: none;
@@ -376,7 +437,7 @@
         }
 
         .hamburger:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgb(255 255 255 / 10%);
             transform: scale(1.05);
         }
 
@@ -392,7 +453,7 @@
 
         /* Footer Styles */
         .footer {
-            background: rgba(0, 0, 0, 0.6);
+            background: rgb(0 0 0 / 60%);
             padding: 80px 0 40px;
             border-top: 1px solid var(--border-color);
         }
@@ -440,7 +501,7 @@
         }
 
         /* Mobile Responsiveness */
-        @media (max-width: 768px) {
+        @media (width <= 768px) {
             .products-grid {
                 grid-template-columns: 1fr;
                 gap: 30px;
@@ -470,7 +531,7 @@
             }
         }
 
-        @media (max-width: 480px) {
+        @media (width <= 480px) {
             .container {
                 padding: 0 15px;
             }
@@ -656,11 +717,14 @@
                     <div class="product-card">
                         <div class="product-badge">Most Popular</div>
                         <div class="product-image">
-                            <img src="../assets/images/products/damp-handle/damp-handle.png" alt="DAMP Handle v1.0" loading="lazy" decoding="async">
+                            <img src="../assets/images/products/damp-handle/damp-handle.png" alt="DAMP Handle v1.0 universal smart handle for stainless steel cups, Yeti, Contigo, Stanley, Hydro Flask, tumblers, mugs, and drinkware" loading="lazy" decoding="async">
                         </div>
                         <h3 class="product-name">DAMP Handle v1.0</h3>
-                        <p class="product-description">Universal handle attachment with BLE tracking for any drinkware. Perfect for most travel mugs and tumblers.</p>
+                        <p class="product-description">Universal smart handle attachment with BLE tracking for stainless steel cups, tumblers, mugs, and drinkware. Compatible with top brands like Yeti, Contigo, Stanley, Hydro Flask, and more. Perfect for travel mugs, coffee cups, and cold drink containers.</p>
                         <div class="product-price">$69.99</div>
+                        <div class="product-internal-link">
+                            <a href="#universal-compatibility">Works with Yeti, Contigo, Stanley, Hydro Flask, and all major stainless steel cups</a>
+                        </div>
                         <ul class="product-features">
                             <li>Universal compatibility</li>
                             <li>6-month battery life</li>
@@ -678,11 +742,14 @@
                     <div class="product-card">
                         <div class="product-badge">Best Value</div>
                         <div class="product-image">
-                            <img src="../assets/images/products/silicone-bottom/silicone-bottom.png" alt="DAMP Silicone Bottom v1.0" loading="lazy" decoding="async">
+                            <img src="../assets/images/products/silicone-bottom/silicone-bottom.png" alt="DAMP Silicone Bottom v1.0 smart silicone base for stainless steel cups, Yeti, Contigo, Stanley, Hydro Flask, and drinkware" loading="lazy" decoding="async">
                         </div>
                         <h3 class="product-name">Silicone Bottom v1.0</h3>
-                        <p class="product-description">Smart silicone base that transforms any cup into a trackable smart drinkware device with non-slip grip.</p>
+                        <p class="product-description">Smart silicone base for stainless steel cups, tumblers, and drinkware. Instantly transforms any cup—including Yeti, Contigo, Stanley, Hydro Flask, and more—into a trackable smart drinkware device with non-slip grip. Ideal for coffee cups, water bottles, and cold drink containers.</p>
                         <div class="product-price">$59.99</div>
+                        <div class="product-internal-link">
+                            <a href="#universal-compatibility">Compatible with stainless steel cups, Yeti, Contigo, Stanley, Hydro Flask, and more</a>
+                        </div>
                         <ul class="product-features">
                             <li>Food-grade silicone</li>
                             <li>Anti-slip design</li>
@@ -700,11 +767,14 @@
                     <div class="product-card">
                         <div class="product-badge">Versatile</div>
                         <div class="product-image">
-                            <img src="../assets/images/products/cup-sleeve/cup-sleeve.png" alt="DAMP Cup Sleeve v1.0" loading="lazy" decoding="async">
+                            <img src="../assets/images/products/cup-sleeve/cup-sleeve.png" alt="DAMP Cup Sleeve v1.0 insulated smart sleeve for stainless steel cups, Yeti, Contigo, Stanley, Hydro Flask, coffee cups, and tumblers" loading="lazy" decoding="async">
                         </div>
                         <h3 class="product-name">Cup Sleeve v1.0</h3>
-                        <p class="product-description">Insulated smart sleeve with built-in DAMP technology for coffee cups and tumblers with thermal protection.</p>
+                        <p class="product-description">Insulated smart sleeve with built-in DAMP technology for stainless steel cups, coffee cups, tumblers, and drinkware. Compatible with Yeti, Contigo, Stanley, Hydro Flask, and other top brands. Provides thermal protection and fits most cups and mugs.</p>
                         <div class="product-price">$49.99</div>
+                        <div class="product-internal-link">
+                            <a href="#universal-compatibility">Fits Yeti, Contigo, Stanley, Hydro Flask, and all popular stainless steel cups</a>
+                        </div>
                         <ul class="product-features">
                             <li>Thermal insulation</li>
                             <li>Grip enhancement</li>
@@ -743,18 +813,24 @@
                 </div>
 
                 <!-- Universal Compatibility Section -->
-                <div style="text-align: center; margin: 80px 0;">
-                    <h3 style="font-size: 2rem; margin-bottom: 20px; color: var(--primary-color);">Universal Compatibility</h3>
-                    <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                        All DAMP products work seamlessly with your favorite drinkware brands
+                <div id="universal-compatibility">
+                    <h3>Universal Compatibility</h3>
+                    <p>
+                        All DAMP products work seamlessly with your favorite drinkware brands and types, including stainless steel cups, tumblers, water bottles, coffee cups, and more. Compatible with Yeti, Contigo, Stanley, Hydro Flask, Klean Kanteen, and other top brands. Perfect for cold drinks, hot beverages, and everyday hydration.
                     </p>
-                    <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; align-items: center;">
-                        <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-muted);">Travel Mugs</span>
-                        <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-muted);">Water Bottles</span>
-                        <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-muted);">Coffee Cups</span>
-                        <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-muted);">Contigo</span>
-                        <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-muted);">Klean Kanteen</span>
-                        <span style="font-size: 1.1rem; font-weight: 600; color: var(--text-muted);">And More</span>
+                    <div class="compatibility-list">
+                        <span>Stainless Steel Cups</span>
+                        <span>Travel Mugs</span>
+                        <span>Water Bottles</span>
+                        <span>Coffee Cups</span>
+                        <span>Yeti</span>
+                        <span>Contigo</span>
+                        <span>Stanley</span>
+                        <span>Hydro Flask</span>
+                        <span>Klean Kanteen</span>
+                        <span>Cold Drink Containers</span>
+                        <span>Hot Drink Cups</span>
+                        <span>And More</span>
                     </div>
                 </div>
             </div>
@@ -785,7 +861,7 @@
 
                 <div class="voting-actions">
                     <a href="product-voting.html" class="btn-vote">🗳️ Cast Your Vote</a>
-                    <a href="product-voting.html" class="btn btn-secondary" style="padding: 20px 50px; font-size: 1.3rem;">View Live Results</a>
+                    <a href="product-voting.html" class="btn btn-secondary view-live-results">View Live Results</a>
                 </div>
             </div>
         </section>
@@ -800,7 +876,7 @@
                         <img src="../assets/images/logo/logo.png" alt="DAMP Logo" loading="lazy">
                     </div>
                     <h3>DAMP Smart Drinkware</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 20px;">
+                    <p class="footer-muted">
                         Never leave your drink behind with revolutionary BLE technology that keeps you connected to your favorite beverage.
                     </p>
                 </div>
@@ -817,143 +893,4 @@
                 <div class="footer-section">
                     <h3>Community</h3>
                     <a href="product-voting.html">Product Voting</a>
-                    <a href="pre-sale-funnel.html">Pre-Sale Funnel</a>
-                    <a href="how-it-works.html">How It Works</a>
-                    <a href="support.html">Support Center</a>
-                    <a href="about.html">About Us</a>
-                </div>
-
-                <div class="footer-section">
-                    <h3>Legal & Support</h3>
-                    <a href="privacy.html">Privacy Policy</a>
-                    <a href="cookie-policy.html">Cookie Policy</a>
-                    <a href="terms.html">Terms of Service</a>
-                    <a href="support.html#contact">Contact Us</a>
-                    <a href="support.html#warranty">Warranty</a>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2025 WeCr8 Solutions LLC. All rights reserved.</p>
-                <p style="margin-top: 15px; font-size: 0.9rem; opacity: 0.8;">
-                    DAMP - Drink Abandonment Monitoring Protocol™
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- PERFORMANCE OPTIMIZATION: Progressive Script Loading -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.body.classList.remove('page-loading');
-            document.body.classList.add('page-ready');
-
-            // Load core scripts progressively
-            loadCoreScripts();
-
-            // Load voting data
-            setTimeout(updateVotingStats, 1000);
-
-            // Initialize FAQ if present
-            initializeFAQ();
-        });
-
-        function loadCoreScripts() {
-            const scripts = [
-                '../assets/js/navigation.js',
-                '../assets/js/cookie-policy.js',
-                '../assets/js/auth-modal.js'
-            ];
-
-            // Load modern Firebase setup as module
-            const firebaseScript = document.createElement('script');
-            firebaseScript.type = 'module';
-            firebaseScript.src = '../assets/js/firebase-modern-setup.js';
-            document.head.appendChild(firebaseScript);
-
-            scripts.forEach((src, index) => {
-                setTimeout(() => {
-                    const script = document.createElement('script');
-                    script.src = src;
-                    script.async = true;
-                    script.onload = () => console.log(`✅ Loaded: ${src}`);
-                    script.onerror = () => console.error(`❌ Failed: ${src}`);
-                    document.head.appendChild(script);
-                }, index * 100);
-            });
-        }
-
-        function updateVotingStats() {
-            // Update with real-time data if available
-            try {
-                if (window.firebaseServices && window.firebaseServices.votingService) {
-                    window.firebaseServices.votingService.onPublicVotingChange(updateVotingDisplay);
-                }
-            } catch (error) {
-                console.log('Using static voting data');
-            }
-        }
-
-        function updateVotingDisplay(data) {
-            const totalVotesEl = document.getElementById('total-votes');
-            const leadingEl = document.getElementById('leading-product');
-            const participationEl = document.getElementById('participation-rate');
-
-            if (totalVotesEl) totalVotesEl.textContent = data.totalVotes?.toLocaleString() || '2,847';
-            if (leadingEl) leadingEl.textContent = data.leadingProduct || 'Handle';
-            if (participationEl) participationEl.textContent = (data.participationRate || 68) + '%';
-        }
-
-        function initializeFAQ() {
-            // Initialize FAQ functionality if FAQ items exist on page
-            const faqItems = document.querySelectorAll('.faq-item');
-
-            faqItems.forEach(item => {
-                const question = item.querySelector('.faq-question');
-
-                if (question) {
-                    question.addEventListener('click', () => {
-                        const isActive = item.classList.contains('active');
-
-                        // Close all other FAQ items
-                        faqItems.forEach(otherItem => {
-                            otherItem.classList.remove('active');
-                        });
-
-                        // Toggle current item
-                        if (!isActive) {
-                            item.classList.add('active');
-                        }
-                    });
-                }
-            });
-        }
-
-        // Track page analytics
-        function trackPageView() {
-            if (window.gtag) {
-                gtag('event', 'page_view', {
-                    page_title: 'Products Page',
-                    page_location: window.location.href,
-                    custom_map: { dimension1: 'products_catalog' }
-                });
-            }
-        }
-
-        // Call analytics tracking
-        setTimeout(trackPageView, 2000);
-    </script>
-
-    <!-- Load Analytics Last -->
-    <script>
-        setTimeout(() => {
-            const script = document.createElement('script');
-            script.src = 'https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID';
-            script.async = true;
-            document.head.appendChild(script);
-        }, 3000);
-    </script>
-
-    <!-- Cookie Policy System loaded via cookie-policy.js -->
-</body>
-</html>
+                    <a href="pre-s

@@ -65,7 +65,7 @@
     
     <style>
         .guide-hero {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 255, 136, 0.1) 100%);
+            background: linear-gradient(135deg, rgb(0 212 255 / 10%) 0%, rgb(0 255 136 / 10%) 100%);
             padding: 120px 0 80px;
             text-align: center;
             position: relative;
@@ -81,8 +81,8 @@
             font-size: clamp(2.5rem, 5vw, 3.5rem);
             font-weight: 900;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, #00d4ff, #00ff88);
-            -webkit-background-clip: text;
+            background: linear-gradient(45deg, #00d4ff, #0f8);
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
@@ -96,7 +96,7 @@
 
         .content-section {
             padding: 60px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgb(255 255 255 / 10%);
         }
 
         .content-section:last-child {
@@ -111,8 +111,8 @@
         }
 
         .highlight-box {
-            background: rgba(0, 212, 255, 0.1);
-            border: 2px solid rgba(0, 212, 255, 0.3);
+            background: rgb(0 212 255 / 10%);
+            border: 2px solid rgb(0 212 255 / 30%);
             border-radius: 15px;
             padding: 30px;
             margin: 30px 0;
@@ -140,7 +140,7 @@
         }
 
         .cta-section {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+            background: linear-gradient(135deg, rgb(0 255 136 / 10%) 0%, rgb(0 212 255 / 10%) 100%);
             text-align: center;
             padding: 80px 0;
         }
@@ -165,7 +165,7 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+            box-shadow: 0 8px 25px rgb(0 212 255 / 40%);
         }
 
         .btn-secondary {
@@ -211,7 +211,7 @@
             color: var(--primary-color);
         }
 
-        @media (max-width: 768px) {
+        @media (width <= 768px) {
             .guide-hero {
                 padding: 100px 0 60px;
             }
@@ -225,7 +225,14 @@
 
 <body>
     <!-- Navigation Header -->
-    <damp-header></damp-header>
+    <damp-header>
+        <nav>
+            <ul>
+                <li><a href="/pages/about.html">About</a></li>
+                <li><a href="/pages/damp-drinking-guide.html">Damp Drinking Guide</a></li>
+            </ul>
+        </nav>
+    </damp-header>
 
     <!-- Main Content -->
     <main>
@@ -267,7 +274,7 @@
                 <h2 class="section-title">What is Damp Drinking? The Complete Definition</h2>
                 
                 <div class="highlight-box">
-                    <h3 style="color: var(--primary-color); margin-bottom: 15px;">🎯 Quick Definition</h3>
+                    <h3 class="damp-primary damp-mb-15">🎯 Quick Definition</h3>
                     <p><strong>Damp drinking</strong> is a mindful approach to alcohol consumption that falls between complete abstinence and regular drinking. It involves being intentional about when, how much, and why you drink alcohol, often incorporating periods of reduced consumption or alcohol-free alternatives.</p>
                 </div>
 
@@ -284,15 +291,15 @@
                 
                 <p>The concept of damp drinking has evolved from several wellness movements and cultural shifts:</p>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Historical Context</h3>
-                <ul style="margin-left: 20px; line-height: 1.8;">
+                <h3 class="damp-primary damp-mb-30-0-20">Historical Context</h3>
+                <ul class="damp-ml-20 damp-lh-18">
                     <li><strong>Dry January Movement:</strong> Started in 2013, this annual challenge encouraged people to abstain from alcohol for the entire month of January</li>
                     <li><strong>Mindful Drinking:</strong> A broader movement emphasizing awareness and intentionality around alcohol consumption</li>
                     <li><strong>Wellness Culture:</strong> Growing focus on holistic health and balanced lifestyle choices</li>
                     <li><strong>Gen Z Influence:</strong> Younger generations are drinking less and seeking more mindful approaches to alcohol</li>
                 </ul>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Key Characteristics of Damp Drinking</h3>
+                <h3 class="damp-primary damp-mb-30-0-20">Key Characteristics of Damp Drinking</h3>
                 <div class="benefits-grid">
                     <div class="benefit-card">
                         <span class="benefit-icon">🎯</span>
@@ -325,25 +332,25 @@
                 
                 <p>Adopting a damp drinking lifestyle means making conscious decisions about alcohol consumption that align with your personal values, health goals, and social needs. Here's how to embrace this approach:</p>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Core Principles</h3>
+                <h3 class="damp-primary damp-mb-30-0-20">Core Principles</h3>
                 
                 <div class="highlight-box">
-                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">1. Quality Over Quantity</h4>
+                    <h4 class="damp-primary damp-mb-15">1. Quality Over Quantity</h4>
                     <p>Choose premium, high-quality drinks that you truly enjoy rather than consuming large quantities of lower-quality alcohol. This approach naturally reduces overall consumption while increasing satisfaction.</p>
                 </div>
 
                 <div class="highlight-box">
-                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">2. Set Personal Boundaries</h4>
+                    <h4 class="damp-primary damp-mb-15">2. Set Personal Boundaries</h4>
                     <p>Establish clear guidelines for yourself, such as limiting drinks to weekends only, setting a maximum number of drinks per week, or choosing specific occasions for alcohol consumption.</p>
                 </div>
 
                 <div class="highlight-box">
-                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">3. Embrace Alcohol-Free Alternatives</h4>
+                    <h4 class="damp-primary damp-mb-15">3. Embrace Alcohol-Free Alternatives</h4>
                     <p>Develop a repertoire of sophisticated non-alcoholic drinks that you genuinely enjoy. This makes it easier to participate in social situations without feeling deprived.</p>
                 </div>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Practical Implementation</h3>
-                <ul style="margin-left: 20px; line-height: 1.8;">
+                <h3 class="damp-primary damp-mb-30-0-20">Practical Implementation</h3>
+                <ul class="damp-ml-20 damp-lh-18">
                     <li><strong>Track Your Consumption:</strong> Use apps or journals to monitor your drinking patterns and identify triggers</li>
                     <li><strong>Plan Ahead:</strong> Decide in advance when and how much you'll drink at social events</li>
                     <li><strong>Create Rituals:</strong> Develop meaningful, alcohol-free rituals that bring joy and relaxation</li>
@@ -394,7 +401,7 @@
                 </div>
 
                 <div class="highlight-box">
-                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">⚠️ Important Note</h4>
+                    <h4 class="damp-primary damp-mb-15">⚠️ Important Note</h4>
                     <p>These benefits apply to moderate, responsible consumption. Individual health conditions, medications, and personal circumstances should always be considered. Consult with healthcare professionals before making significant changes to your alcohol consumption patterns.</p>
                 </div>
             </div>
@@ -407,7 +414,7 @@
                 
                 <p>The damp drinking movement has gained massive momentum, becoming one of the most significant lifestyle trends of 2025. Here's why it's resonating with so many people:</p>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Cultural Shifts Driving the Trend</h3>
+                <h3 class="damp-primary damp-mb-30-0-20">Cultural Shifts Driving the Trend</h3>
                 
                 <div class="benefits-grid">
                     <div class="benefit-card">
@@ -432,8 +439,8 @@
                     </div>
                 </div>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Market Growth & Statistics</h3>
-                <ul style="margin-left: 20px; line-height: 1.8;">
+                <h3 class="damp-primary damp-mb-30-0-20">Market Growth & Statistics</h3>
+                <ul class="damp-ml-20 damp-lh-18">
                     <li><strong>Non-alcoholic beverage market:</strong> Growing at 7% annually, expected to reach $1.6 trillion by 2025</li>
                     <li><strong>Gen Z drinking habits:</strong> 30% of Gen Z adults don't drink alcohol at all</li>
                     <li><strong>Mindful drinking apps:</strong> Downloads increased by 200% in 2024</li>
@@ -449,7 +456,7 @@
                 
                 <p>One of the most exciting aspects of damp drinking is the incredible variety of sophisticated non-alcoholic and low-alcohol cocktails available. Here are some favorites:</p>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Signature Damp Cocktails</h3>
+                <h3 class="damp-primary damp-mb-30-0-20">Signature Damp Cocktails</h3>
                 
                 <div class="benefits-grid">
                     <div class="benefit-card">
@@ -474,8 +481,8 @@
                     </div>
                 </div>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Low-Alcohol Options</h3>
-                <ul style="margin-left: 20px; line-height: 1.8;">
+                <h3 class="damp-primary damp-mb-30-0-20">Low-Alcohol Options</h3>
+                <ul class="damp-ml-20 damp-lh-18">
                     <li><strong>Wine Spritzers:</strong> Mix wine with sparkling water for a lighter, more hydrating option</li>
                     <li><strong>Beer Shandies:</strong> Combine beer with lemonade or ginger ale</li>
                     <li><strong>Light Cocktails:</strong> Use half the usual amount of spirits in traditional cocktails</li>
@@ -491,25 +498,25 @@
                 
                 <p>One of the biggest challenges of damp drinking is navigating social situations where alcohol is the norm. Here's how to maintain your damp drinking lifestyle while staying socially connected:</p>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Social Strategies</h3>
+                <h3 class="damp-primary damp-mb-30-0-20">Social Strategies</h3>
                 
                 <div class="highlight-box">
-                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">1. Be Proactive, Not Reactive</h4>
+                    <h4 class="damp-primary damp-mb-15">1. Be Proactive, Not Reactive</h4>
                     <p>Decide in advance how you'll handle social situations. Have your responses ready for questions about why you're not drinking as much.</p>
                 </div>
 
                 <div class="highlight-box">
-                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">2. Bring Your Own Alternatives</h4>
+                    <h4 class="damp-primary damp-mb-15">2. Bring Your Own Alternatives</h4>
                     <p>Offer to bring sophisticated non-alcoholic drinks to parties. This ensures you have something you enjoy and often impresses other guests.</p>
                 </div>
 
                 <div class="highlight-box">
-                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">3. Focus on Connection, Not Consumption</h4>
+                    <h4 class="damp-primary damp-mb-15">3. Focus on Connection, Not Consumption</h4>
                     <p>Shift the focus from drinking to meaningful conversation and shared experiences. Suggest activities that don't center around alcohol.</p>
                 </div>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Handling Common Situations</h3>
-                <ul style="margin-left: 20px; line-height: 1.8;">
+                <h3 class="section-heading">Handling Common Situations</h3>
+                <ul class="guide-list">
                     <li><strong>Work Events:</strong> Arrive early, have a plan, and focus on networking rather than drinking</li>
                     <li><strong>Date Nights:</strong> Suggest activities that don't revolve around alcohol, like coffee shops or outdoor activities</li>
                     <li><strong>Family Gatherings:</strong> Be honest about your goals and ask for support from family members</li>
@@ -549,8 +556,8 @@
                 </div>
 
                 <div class="highlight-box">
-                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">DAMP Smart Drinkware Features for Damp Drinking</h4>
-                    <ul style="margin-left: 20px; line-height: 1.8;">
+                    <h4>DAMP Smart Drinkware Features for Damp Drinking</h4>
+                    <ul class="guide-list">
                         <li><strong>Smart Alerts:</strong> Get notified when you're about to leave your drink behind, preventing waste</li>
                         <li><strong>Consumption Analytics:</strong> Detailed reports on your drinking patterns and trends</li>
                         <li><strong>Hydration Tracking:</strong> Monitor water intake alongside alcohol consumption</li>
@@ -568,24 +575,24 @@
                 
                 <p>Ready to embrace the damp drinking lifestyle? Here's a step-by-step guide to help you get started:</p>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Week 1: Assessment & Planning</h3>
-                <ul style="margin-left: 20px; line-height: 1.8;">
+                <h3 class="section-heading">Week 1: Assessment & Planning</h3>
+                <ul class="guide-list">
                     <li>Track your current drinking habits for one week</li>
                     <li>Identify your triggers and patterns</li>
                     <li>Set realistic goals for your damp drinking journey</li>
                     <li>Research non-alcoholic alternatives you'd like to try</li>
                 </ul>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Week 2-3: Gradual Transition</h3>
-                <ul style="margin-left: 20px; line-height: 1.8;">
+                <h3 class="section-heading">Week 2-3: Gradual Transition</h3>
+                <ul class="guide-list">
                     <li>Start replacing some alcoholic drinks with non-alcoholic alternatives</li>
                     <li>Experiment with different low-alcohol options</li>
                     <li>Practice mindful drinking techniques</li>
                     <li>Begin building your support network</li>
                 </ul>
 
-                <h3 style="color: var(--primary-color); margin: 30px 0 20px;">Week 4+: Maintenance & Growth</h3>
-                <ul style="margin-left: 20px; line-height: 1.8;">
+                <h3 class="section-heading">Week 4+: Maintenance & Growth</h3>
+                <ul class="guide-list">
                     <li>Refine your approach based on what you've learned</li>
                     <li>Continue exploring new non-alcoholic options</li>
                     <li>Share your journey with others</li>
@@ -593,8 +600,8 @@
                 </ul>
 
                 <div class="highlight-box">
-                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">💡 Pro Tips for Success</h4>
-                    <ul style="margin-left: 20px; line-height: 1.8;">
+                    <h4 class="damp-primary damp-mb-15">💡 Pro Tips for Success</h4>
+                    <ul class="damp-ml-20 damp-lh-18">
                         <li>Start small and be patient with yourself</li>
                         <li>Focus on the positive aspects of your new lifestyle</li>
                         <li>Don't be afraid to experiment and find what works for you</li>
@@ -609,7 +616,7 @@
         <section class="cta-section">
             <div class="container">
                 <h2 class="section-title">Ready to Enhance Your Damp Drinking Journey?</h2>
-                <p style="font-size: 1.2rem; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <p class="damp-fs-12 damp-mb-40 damp-maxw-600 damp-mx-auto">
                     Discover how DAMP Smart Drinkware can support your mindful drinking goals with intelligent tracking and personalized insights.
                 </p>
                 <div class="cta-buttons">
@@ -621,10 +628,10 @@
     </main>
 
     <!-- Footer -->
-    <footer class="section" style="padding: 40px 0; background: rgba(0, 0, 0, 0.3); text-align: center;">
+    <footer class="section damp-footer">
         <div class="container">
             <p>&copy; 2025 DAMP Smart Drinkware by WeCr8 Solutions LLC. All rights reserved.</p>
-            <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">Drink Abandonment Monitoring Protocol™</p>
+            <p class="damp-mt-10 damp-fs-09 damp-opacity-08">Drink Abandonment Monitoring Protocol™</p>
         </div>
     </footer>
 

@@ -3,87 +3,126 @@
  * Enhanced with Storage, Remote Config, Analytics, and Cloud Messaging
  */
 
-import { initializeApp } from 'firebase/app';
-import { getAuth, connectAuthEmulator } from 'firebase/auth';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
-import { getStorage, connectStorageEmulator } from 'firebase/storage';
-import { getRemoteConfig } from 'firebase/remote-config';
-import { getAnalytics } from 'firebase/analytics';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+// Dynamic imports to make Firebase optional
+let auth, db, functions, storage, remoteConfig, analytics, messaging;
+let isInitialized = false;
 
 // Firebase configuration
-const firebaseConfig = {
+const getFirebaseConfig = () => ({
     apiKey: window.FIREBASE_CONFIG?.apiKey || "your_firebase_api_key_here",
-  authDomain: "damp-smart-drinkware.firebaseapp.com",
-  projectId: "damp-smart-drinkware",
-  storageBucket: "damp-smart-drinkware.firebasestorage.app",
-  messagingSenderId: "309818614427",
-  appId: "1:309818614427:web:db15a4851c05e58aa25c3e",
-  measurementId: "G-YW2BN4SVPQ",
-  databaseURL: "https://damp-smart-drinkware-default-rtdb.firebaseio.com"
+    authDomain: "damp-smart-drinkware.firebaseapp.com",
+    projectId: "damp-smart-drinkware",
+    storageBucket: "damp-smart-drinkware.firebasestorage.app",
+    messagingSenderId: "309818614427",
+    appId: "1:309818614427:web:db15a4851c05e58aa25c3e",
+    measurementId: "G-YW2BN4SVPQ",
+    databaseURL: "https://damp-smart-drinkware-default-rtdb.firebaseio.com"
+});
+
+// Initialize Firebase only when needed
+export const initializeFirebase = async (options = {}) => {
+    if (isInitialized) return { auth, db, functions, storage, remoteConfig, analytics, messaging };
+
+    try {
+        const [
+            { initializeApp },
+            { getAuth, connectAuthEmulator },
+            { getFirestore, connectFirestoreEmulator },
+            { getFunctions, connectFunctionsEmulator },
+            { getStorage, connectStorageEmulator },
+            { getRemoteConfig },
+            { getAnalytics },
+            { getMessaging }
+        ] = await Promise.all([
+            import('firebase/app'),
+            import('firebase/auth'),
+            import('firebase/firestore'),
+            import('firebase/functions'),
+            import('firebase/storage'),
+            import('firebase/remote-config'),
+            import('firebase/analytics'),
+            import('firebase/messaging')
+        ]);
+
+        const app = initializeApp(getFirebaseConfig());
+
+        // Initialize services
+        auth = getAuth(app);
+        db = getFirestore(app);
+        functions = getFunctions(app);
+        storage = getStorage(app);
+        remoteConfig = getRemoteConfig(app);
+        analytics = getAnalytics(app);
+        messaging = getMessaging(app);
+
+        // Connect to emulators in test environment if needed
+        if (options.useEmulators) {
+            connectAuthEmulator(auth, 'http://localhost:9099');
+            connectFirestoreEmulator(db, 'localhost', 8080);
+            connectFunctionsEmulator(functions, 'localhost', 5001);
+            connectStorageEmulator(storage, 'localhost', 9199);
+        }
+
+        isInitialized = true;
+        return { auth, db, functions, storage, remoteConfig, analytics, messaging };
+    } catch (error) {
+        console.error('Failed to initialize Firebase:', error);
+        return null;
+    }
 };
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-// Initialize services
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const functions = getFunctions(app);
-export const storage = getStorage(app);
-export const remoteConfig = getRemoteConfig(app);
-export const analytics = getAnalytics(app);
-export const messaging = getMessaging(app);
 
 // Remote Config settings
-remoteConfig.settings = {
-  minimumFetchIntervalMillis: 3600000, // 1 hour
+export const initializeRemoteConfig = async () => {
+    if (!remoteConfig) return null;
+
+    remoteConfig.settings = {
+        minimumFetchIntervalMillis: 3600000, // 1 hour
+    };
+
+    remoteConfig.defaultConfig = {
+        'alert_distance_threshold': 10,
+        'battery_warning_threshold': 20,
+        'notification_cooldown_minutes': 15,
+        'app_maintenance_mode': false,
+        'support_contact_email': 'support@dampdrink.com'
+    };
+
+    return remoteConfig;
 };
 
-remoteConfig.defaultConfig = {
-  'alert_distance_threshold': 10,
-  'battery_warning_threshold': 20,
-  'notification_cooldown_minutes': 15,
-  'app_maintenance_mode': false,
-  'support_contact_email': 'support@dampdrink.com'
-};
-
-// Cloud Messaging setup
+// Messaging setup
 let messagingInitialized = false;
 
 export const initializeMessaging = async () => {
-  if (messagingInitialized) return;
+    if (!messaging || messagingInitialized) return null;
 
-  try {
-    // Request notification permission
-    const permission = await Notification.requestPermission();
+    try {
+        const permission = await Notification.requestPermission();
+        
+        if (permission === 'granted') {
+            const { getToken, onMessage } = await import('firebase/messaging');
+            
+            const token = await getToken(messaging, {
+                vapidKey: 'your-vapid-key'
+            });
 
-    if (permission === 'granted') {
-      // Get FCM token
-      const token = await getToken(messaging, {
-        vapidKey: 'your-vapid-key' // Add your VAPID key
-      });
+            if (token) {
+                console.log('FCM Token:', token);
+                await storeMessagingToken(token);
+            }
 
-      if (token) {
-        console.log('FCM Token:', token);
-        // Store token in user profile
-        await storeMessagingToken(token);
-      }
+            onMessage(messaging, (payload) => {
+                console.log('Received foreground message:', payload);
+                showNotification(payload.notification);
+            });
 
-      // Handle foreground messages
-      onMessage(messaging, (payload) => {
-        console.log('Received foreground message:', payload);
-
-        // Show custom notification
-        showNotification(payload.notification);
-      });
-
-      messagingInitialized = true;
+            messagingInitialized = true;
+            return messaging;
+        }
+    } catch (error) {
+        console.error('Error initializing messaging:', error);
+        return null;
     }
-  } catch (error) {
-    console.error('Error initializing messaging:', error);
-  }
 };
 
 // Custom notification display

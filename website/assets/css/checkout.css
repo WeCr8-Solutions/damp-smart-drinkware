@@ -1,0 +1,75 @@
+/* Checkout Page Styles */
+.checkout-heading {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #00d4ff;
+}
+
+.product-summary {
+    margin-bottom: 30px;
+}
+
+.product-summary h3 {
+    color: #00d4ff;
+    margin-bottom: 15px;
+}
+
+.product-summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.savings-row {
+    display: flex;
+    justify-content: space-between;
+    color: #ff6b6b;
+    font-weight: bold;
+}
+
+.summary-divider {
+    border: 1px solid rgb(255 255 255 / 20%);
+    margin: 15px 0;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #0f8;
+}
+
+.pre-order-info {
+    background: rgb(255 193 7 / 10%);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    border: 1px solid rgb(255 193 7 / 30%);
+}
+
+.pre-order-info h4 {
+    color: #ffc107;
+    margin-bottom: 15px;
+}
+
+.pre-order-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pre-order-list li {
+    margin-bottom: 8px;
+}
+
+.checkout-footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.footer-contact {
+    margin-top: 10px;
+}

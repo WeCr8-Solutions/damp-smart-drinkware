@@ -1,0 +1,16 @@
+.dashboard-content {
+    display: none;
+}
+
+.dashboard-content.visible,
+.devices-content.visible,
+.orders-content.visible {
+    display: block;
+}
+
+.devices-content,
+.orders-content {
+    display: none;
+}
+
+/* Additional dashboard styles can be added here */

@@ -1,4 +1,5 @@
 /* DAMP Smart Drinkware - CSS Reset */
+
 /* Modern CSS Reset based on Josh Comeau's CSS Reset */
 
 /*
@@ -93,7 +94,7 @@ ol[role='list'] {
 */
 body {
     min-height: 100vh;
-    text-rendering: optimizeSpeed;
+    text-rendering: optimizespeed;
     line-height: var(--line-height-normal);
 }
 

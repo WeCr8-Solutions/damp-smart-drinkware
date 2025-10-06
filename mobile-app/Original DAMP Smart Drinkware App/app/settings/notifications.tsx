@@ -1,8 +1,3 @@
-/**
- * 🔔 DAMP Smart Drinkware - Push Notification Settings
- * Complete notification management and preferences
- */
-
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -14,8 +9,10 @@ import {
   Alert,
   Platform,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Notifications from 'expo-notifications';
 import {
   ArrowLeft,
   Bell,
@@ -33,7 +30,6 @@ import {
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { auth } from '@/firebase/config';
-import * as Notifications from 'expo-notifications';
 import { SettingsCard } from '@/components/SettingsCard';
 
 interface NotificationSettings {
@@ -52,6 +48,10 @@ interface NotificationSettings {
   vibrationEnabled: boolean;
   reminderInterval: number;
 }
+
+import { initializeApp } from 'firebase/app';
+import { getFirestore, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { firebaseConfig } from '../../config/firebase';
 
 export default function NotificationSettingsScreen() {
   const { user } = useAuth();
@@ -89,37 +89,61 @@ export default function NotificationSettingsScreen() {
 
   const checkPermissionStatus = async () => {
     try {
-      const { status } = await Notifications.getPermissionsAsync();
-      setPermissionStatus(status);
+      if (Platform.OS === 'ios') {
+        const { status } = await Notifications.getPermissionsAsync();
+        setPermissionStatus(status);
+      } else {
+        // For Android in Expo Go, we'll use a simpler approach
+        setPermissionStatus('granted');
+      }
     } catch (error) {
       console.error('Error checking notification permissions:', error);
+      setPermissionStatus('undetermined');
+    }
+  };
+
+  const saveSettings = async (newSettings: NotificationSettings) => {
+    try {
+      await AsyncStorage.setItem('notificationSettings', JSON.stringify(newSettings));
+    } catch (error) {
+      console.error('Error saving notification settings:', error);
     }
   };
 
   const loadNotificationSettings = async () => {
     if (!user) return;
-
+    
     try {
-      // TODO: Implement Firebase notification settings fetch
-      // For now, using default settings
+      const savedSettings = await AsyncStorage.getItem('notificationSettings');
+      if (savedSettings) {
+        setSettings(JSON.parse(savedSettings));
+      }
     } catch (error) {
       console.error('Error loading notification settings:', error);
     }
   };
 
   const saveNotificationSettings = async (newSettings: NotificationSettings) => {
-    if (!user) return;
+    if (!user?.uid) {
+      console.error('No user ID available');
+      Alert.alert('Error', 'Please sign in to save notification settings.');
+      return;
+    }
 
     try {
-      const { error } = await supabase
-        .from('user_preferences')
-        .upsert({
-          user_id: user.id,
-          notification_settings: newSettings,
-          updated_at: new Date().toISOString(),
-        });
+      // Save to AsyncStorage first as backup
+      await saveSettings(newSettings);
+      
+      // Get Firestore reference
+      const db = getFirestore();
+      
+      // Save to user_preferences collection
+      const userPrefsRef = doc(db, 'user_preferences', user.uid);
+      await setDoc(userPrefsRef, {
+        notification_settings: newSettings,
+        updated_at: serverTimestamp(),
+      }, { merge: true });
 
-      if (error) throw error;
     } catch (error) {
       console.error('Error saving notification settings:', error);
       Alert.alert('Error', 'Failed to save notification settings.');
@@ -144,13 +168,12 @@ export default function NotificationSettingsScreen() {
           'Notifications Enabled',
           'You\'ll now receive helpful hydration reminders and device updates.'
         );
-      } else if (status === 'denied') {
+      } else {
         Alert.alert(
           'Notifications Blocked',
-          'To enable notifications, please go to your device Settings > Notifications > DAMP Smart Drinkware and turn on notifications.',
+          'Please enable notifications in your device settings to receive hydration reminders.',
           [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Open Settings', onPress: () => Notifications.openNotificationSettingsAsync() },
+            { text: 'OK', style: 'default' },
           ]
         );
       }
@@ -172,15 +195,14 @@ export default function NotificationSettingsScreen() {
     }
 
     try {
+      // Schedule a simple local notification
       await Notifications.scheduleNotificationAsync({
         content: {
           title: '💧 Hydration Reminder',
           body: 'Time for a refreshing drink! Your DAMP device is ready.',
-          sound: settings.soundEnabled,
+          sound: true
         },
-        trigger: {
-          seconds: 1,
-        },
+        trigger: null // Send immediately
       });
 
       Alert.alert(
@@ -217,7 +239,7 @@ export default function NotificationSettingsScreen() {
         </View>
         <TouchableOpacity
           style={styles.permissionButton}
-          onPress={permissionStatus === 'denied' ? () => Notifications.openNotificationSettingsAsync() : requestNotificationPermission}
+          onPress={requestNotificationPermission}
           disabled={loading}
         >
           <Text style={styles.permissionButtonText}>

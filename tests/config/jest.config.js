@@ -3,6 +3,8 @@
  * Google Engineering Standards Testing Implementation
  */
 
+/* global module, process */
+
 module.exports = {
   // Test environment configuration
   testEnvironment: 'jsdom',
@@ -20,11 +22,13 @@ module.exports = {
   ],
 
   // Module paths and aliases
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/website/assets/js/$1',
     '^@api/(.*)$': '<rootDir>/backend/api/$1',
     '^@tests/(.*)$': '<rootDir>/tests/$1',
-    '^@components/(.*)$': '<rootDir>/website/assets/js/components/$1'
+    '^@components/(.*)$': '<rootDir>/website/assets/js/components/$1',
+    '\\.(css|less|scss|sass)$': '<rootDir>/tests/config/css-transform.js',
+    '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/tests/config/file-mock.js'
   },
 
   // Test file patterns
@@ -69,6 +73,19 @@ module.exports = {
       statements: 85
     }
   },
+
+  reporters: [
+    'default',
+    [
+      'jest-html-reporters',
+      {
+        publicPath: '<rootDir>/test-results',
+        filename: 'test-report.html',
+        expand: true,
+        hideIcon: false
+      }
+    ]
+  ],
 
   coverageReporters: [
     'text',
@@ -125,32 +142,6 @@ module.exports = {
   // Performance and timeout
   testTimeout: 10000,
   slowTestThreshold: 5,
-
-  // Reporters
-  reporters: [
-    'default',
-    [
-      'jest-junit',
-      {
-        outputDirectory: '<rootDir>/test-results',
-        outputName: 'junit.xml',
-        ancestorSeparator: ' › ',
-        uniqueOutputName: 'false',
-        suiteNameTemplate: '{filepath}',
-        classNameTemplate: '{classname}',
-        titleTemplate: '{title}'
-      }
-    ],
-    [
-      'jest-html-reporters',
-      {
-        publicPath: '<rootDir>/test-results',
-        filename: 'test-report.html',
-        expand: true,
-        hideIcon: false
-      }
-    ]
-  ],
 
   // Verbose output for CI
   verbose: process.env.CI === 'true',

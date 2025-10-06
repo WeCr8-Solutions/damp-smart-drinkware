@@ -1,0 +1,30 @@
+.section-heading {
+    color: var(--primary-color);
+    margin: 30px 0 20px;
+}
+
+.guide-list {
+    margin-left: 20px;
+    line-height: 1.8;
+}
+
+.highlight-box h4 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.highlight-box ul {
+    margin-left: 20px;
+    line-height: 1.8;
+}
+
+/* Additional styles for other sections */
+.guide-section h3 {
+    color: var(--primary-color);
+    margin: 30px 0 20px;
+}
+
+.guide-section ul {
+    margin-left: 20px;
+    line-height: 1.8;
+}

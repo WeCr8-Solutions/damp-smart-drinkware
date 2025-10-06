@@ -169,11 +169,7 @@
             color: white;
             line-height: 1.6;
             overflow-x: hidden;
-            padding-top: calc(var(--nav-height) + var(--safe-area-top));
-            padding-left: var(--safe-area-left);
-            padding-right: var(--safe-area-right);
-            padding-bottom: var(--safe-area-bottom);
-            min-height: 100vh;
+            padding: calc(var(--nav-height) + var(--safe-area-top)) var(--safe-area-right) var(--safe-area-bottom) var(--safe-area-left);
             min-height: 100dvh;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -192,15 +188,15 @@
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: blur(20px);
+            background: rgb(15 15 35 / 95%);
             -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
             z-index: 1000;
             padding: 15px 0;
             padding-top: calc(15px + var(--safe-area-top));
             padding-left: var(--safe-area-left);
             padding-right: var(--safe-area-right);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgb(255 255 255 / 10%);
         }
 
         .nav-container {
@@ -218,8 +214,8 @@
             gap: 10px;
             font-size: 1.8rem;
             font-weight: bold;
-            background: linear-gradient(45deg, #00d4ff, #0099cc);
-            -webkit-background-clip: text;
+            background: linear-gradient(45deg, #00d4ff, #09c);
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-decoration: none;
@@ -284,9 +280,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 15, 35, 0.98);
-            backdrop-filter: blur(20px);
+            background: rgb(15 15 35 / 98%);
             -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
             z-index: 1001;
             transform: translateX(-100%);
             transition: transform 0.3s ease;
@@ -323,7 +319,7 @@
             cursor: pointer;
         }
 
-        @media (max-width: 768px) {
+        @media (width <= 768px) {
             .hamburger {
                 display: flex;
             }
@@ -343,8 +339,8 @@
             font-size: 3rem;
             font-weight: 800;
             margin-bottom: 1rem;
-            background: linear-gradient(45deg, #ffffff, #00d4ff);
-            -webkit-background-clip: text;
+            background: linear-gradient(45deg, #fff, #00d4ff);
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
@@ -366,18 +362,18 @@
         }
 
         .waitlist-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgb(255 255 255 / 10%);
             border-radius: 20px;
             padding: 40px;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgb(255 255 255 / 10%);
             transition: all 0.3s ease;
         }
 
         .waitlist-card:hover {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+            background: rgb(255 255 255 / 15%);
+            box-shadow: 0 20px 40px rgb(0 212 255 / 20%);
         }
 
         .card-icon {
@@ -415,16 +411,16 @@
         .form-group textarea {
             width: 100%;
             padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgb(255 255 255 / 20%);
             border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgb(255 255 255 / 10%);
             color: white;
             font-size: 1rem;
         }
 
         .form-group input::placeholder,
         .form-group textarea::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: rgb(255 255 255 / 60%);
         }
 
         .checkbox-group {
@@ -459,17 +455,17 @@
         }
 
         .btn-primary {
-            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            background: linear-gradient(45deg, #00d4ff, #09c);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 30px rgb(0 212 255 / 30%);
         }
 
         .benefits {
-            background: rgba(0, 212, 255, 0.05);
+            background: rgb(0 212 255 / 5%);
             border-radius: 15px;
             padding: 30px;
             margin-top: 30px;
@@ -503,8 +499,8 @@
         /* Success Message */
         .success-message {
             display: none;
-            background: rgba(0, 255, 136, 0.1);
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            background: rgb(0 255 136 / 10%);
+            border: 1px solid rgb(0 255 136 / 30%);
             border-radius: 15px;
             padding: 30px;
             text-align: center;
@@ -518,13 +514,13 @@
         /* Footer */
         footer {
             padding: 60px 0 30px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgb(0 0 0 / 30%);
             text-align: center;
             margin-top: 100px;
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
+        @media (width <= 768px) {
             :root {
                 --nav-height: 70px;
             }
@@ -559,7 +555,7 @@
             }
         }
 
-        @media (max-width: 480px) {
+        @media (width <= 480px) {
             .container {
                 padding: 0 16px;
             }
@@ -788,7 +784,7 @@
 
             <!-- Success Message -->
             <div id="successMessage" class="success-message">
-                <h3 style="color: #00ff88; margin-bottom: 15px;">🎉 Welcome to the DAMP Community!</h3>
+                <h3 style="color: #0f8; margin-bottom: 15px;">🎉 Welcome to the DAMP Community!</h3>
                 <p>Thank you for joining our waitlist. You'll receive a confirmation email shortly with your next steps and exclusive updates.</p>
                 <p style="margin-top: 15px; font-size: 0.9rem; opacity: 0.8;">Check your spam folder if you don't see our email within a few minutes.</p>
             </div>

@@ -35,8 +35,8 @@
             font-size: clamp(2.5rem, 6vw, 4rem);
             font-weight: 900;
             margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, #ffffff, #00d4ff);
-            -webkit-background-clip: text;
+            background: linear-gradient(45deg, #fff, #00d4ff);
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
@@ -63,11 +63,11 @@
         }
 
         .pricing-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(255 255 255 / 5%);
             border-radius: 20px;
             padding: 2.5rem;
             text-align: center;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgb(255 255 255 / 10%);
             transition: all 0.3s ease;
             position: relative;
             backdrop-filter: blur(10px);
@@ -75,13 +75,13 @@
 
         .pricing-card:hover {
             transform: translateY(-10px);
-            border-color: rgba(0, 212, 255, 0.5);
-            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.15);
+            border-color: rgb(0 212 255 / 50%);
+            box-shadow: 0 20px 60px rgb(0 212 255 / 15%);
         }
 
         .pricing-card.popular {
-            border-color: #00ff88;
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.05));
+            border-color: #0f8;
+            background: linear-gradient(135deg, rgb(0 255 136 / 10%), rgb(0 212 255 / 5%));
         }
 
         .popular-badge {
@@ -89,7 +89,7 @@
             top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            background: linear-gradient(45deg, #0f8, #00cc6a);
             color: #0f0f23;
             padding: 8px 20px;
             border-radius: 25px;
@@ -107,7 +107,7 @@
         }
 
         .tier-description {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgb(255 255 255 / 80%);
             margin-bottom: 1.5rem;
             font-size: 0.95rem;
         }
@@ -120,11 +120,11 @@
         }
 
         .tier-price.free {
-            color: #00ff88;
+            color: #0f8;
         }
 
         .tier-interval {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgb(255 255 255 / 70%);
             font-size: 0.9rem;
             margin-bottom: 2rem;
         }
@@ -138,10 +138,10 @@
 
         .features-list li {
             padding: 0.8rem 0;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgb(255 255 255 / 90%);
             display: flex;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgb(255 255 255 / 10%);
         }
 
         .features-list li:last-child {
@@ -150,7 +150,7 @@
 
         .features-list li::before {
             content: "✓";
-            color: #00ff88;
+            color: #0f8;
             font-weight: bold;
             margin-right: 0.8rem;
             font-size: 1.1rem;
@@ -171,12 +171,12 @@
         }
 
         .btn-free {
-            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            background: linear-gradient(45deg, #0f8, #00cc6a);
             color: #0f0f23;
         }
 
         .btn-premium {
-            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            background: linear-gradient(45deg, #00d4ff, #09c);
             color: #0f0f23;
         }
 
@@ -187,12 +187,12 @@
 
         .subscription-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px rgb(0 0 0 / 30%);
         }
 
         .feature-comparison {
             margin-top: 4rem;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgb(0 0 0 / 30%);
             border-radius: 20px;
             padding: 3rem;
         }
@@ -215,17 +215,17 @@
         .comparison-table td {
             padding: 1rem;
             text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgb(255 255 255 / 10%);
         }
 
         .comparison-table th {
-            background: rgba(0, 212, 255, 0.1);
+            background: rgb(0 212 255 / 10%);
             color: #00d4ff;
             font-weight: bold;
         }
 
         .comparison-table td {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgb(255 255 255 / 90%);
         }
 
         .feature-name {
@@ -249,11 +249,11 @@
         }
 
         .faq-item {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgb(255 255 255 / 5%);
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgb(255 255 255 / 10%);
         }
 
         .faq-question {
@@ -263,11 +263,11 @@
         }
 
         .faq-answer {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgb(255 255 255 / 90%);
             line-height: 1.6;
         }
 
-        @media (max-width: 768px) {
+        @media (width <= 768px) {
             .pricing-grid {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
