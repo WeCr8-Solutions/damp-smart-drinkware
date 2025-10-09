@@ -178,11 +178,11 @@ export const uploadUserAvatar = onCall(async (request) => {
   } catch (error) {
     console.error('Error uploading avatar:', error);
 
-    if (error instanceof functions.https.HttpsError) {
+    if (error instanceof HttpsError) {
       throw error;
     }
 
-    throw new functions.https.HttpsError('internal', 'Failed to upload avatar');
+    throw new HttpsError('internal', 'Failed to upload avatar');
   }
 });
 
@@ -190,7 +190,7 @@ export const uploadUserAvatar = onCall(async (request) => {
  * Get user profile data
  */
 export const getUserProfile = onCall(async (request) => {
-  const { data, auth } = request;
+  const { auth } = request;
   if (!auth) {
     throw new HttpsError('unauthenticated', 'User must be authenticated');
   }
@@ -231,7 +231,7 @@ export const getUserProfile = onCall(async (request) => {
 
   } catch (error) {
     console.error('Error getting user profile:', error);
-    throw new functions.https.HttpsError('internal', 'Failed to get profile');
+    throw new HttpsError('internal', 'Failed to get profile');
   }
 });
 
@@ -386,7 +386,7 @@ export const completeDeviceSetup = onCall(async (request) => {
  * Generate personalized greeting based on time and user data
  */
 export const getPersonalizedGreeting = onCall(async (request) => {
-  const { data, auth } = request;
+  const { auth } = request;
   if (!auth) {
     throw new HttpsError('unauthenticated', 'User must be authenticated');
   }
@@ -456,7 +456,7 @@ export const getPersonalizedGreeting = onCall(async (request) => {
  * Delete user account and all associated data
  */
 export const deleteUserAccount = onCall(async (request) => {
-  const { data, auth } = request;
+  const { auth } = request;
   if (!auth) {
     throw new HttpsError('unauthenticated', 'User must be authenticated');
   }

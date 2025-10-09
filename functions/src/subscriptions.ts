@@ -305,7 +305,7 @@ export const manageSubscription = onCall(async (request) => {
  * Get subscription status
  */
 export const getSubscriptionStatus = onCall(async (request) => {
-  const { data, auth } = request;
+  const { auth } = request;
   
   if (!auth) {
     throw new HttpsError('unauthenticated', 'User must be authenticated');
