@@ -398,13 +398,17 @@ class DAMPHeader extends HTMLElement {
             });
         }
 
-        // Global click outside handler
+        // Global click outside handler - improved to prevent premature closing
         this.addSecureEventListener(document, 'click', (e) => {
-            if (this.isMenuOpen && !this.contains(e.target) && !e.target.closest('.mobile-menu')) {
+            // Don't close if clicking inside the mobile menu or hamburger button
+            if (this.isMenuOpen && 
+                !e.target.closest('.mobile-menu') && 
+                !e.target.closest('.hamburger') &&
+                !this.contains(e.target)) {
                 this.closeMobileMenu();
                 this.trackAnalytics('mobile_menu_close', { method: 'outside_click' });
             }
-        });
+        }, true); // Use capture phase to handle early
 
         // Escape key handler
         this.addSecureEventListener(document, 'keydown', (e) => {
@@ -414,7 +418,7 @@ class DAMPHeader extends HTMLElement {
             }
         });
 
-        // Mobile menu link handlers
+        // Mobile menu link handlers - improved to only close on actual navigation
         const mobileLinks = mobileMenu.querySelectorAll('a');
         mobileLinks.forEach(link => {
             this.addSecureEventListener(link, 'click', (e) => {
@@ -430,16 +434,18 @@ class DAMPHeader extends HTMLElement {
                 }
 
                 // Handle different link types
-                if (href.startsWith('#')) {
+                if (href && href.startsWith('#')) {
                     // Anchor link - prevent default and smooth scroll
                     e.preventDefault();
                     this.handleAnchorNavigation(href);
-                } else {
-                    // Regular link - let it navigate but close menu
+                } else if (href && href !== '#' && !href.startsWith('javascript:')) {
+                    // Only close menu for actual page navigation, not for buttons or empty hrefs
+                    // Regular link - let it navigate but close menu after delay
                     setTimeout(() => {
                         this.closeMobileMenu();
                     }, 150);
                 }
+                // Don't close menu for buttons, accordions, or non-navigation elements
             });
         });
 
