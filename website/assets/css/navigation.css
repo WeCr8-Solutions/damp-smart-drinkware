@@ -1415,30 +1415,30 @@
 /* Desktop breakpoints */
 @media (width >= 1024px) {
     .nav-links {
-        display: none; /* Keep navigation in hamburger menu for clean layout */
+        display: flex !important; /* Show desktop navigation */
     }
 
     .hamburger {
-        display: flex; /* Always show hamburger menu on all screen sizes */
+        display: flex; /* Keep hamburger for mobile menu access */
     }
 
     .auth-buttons {
-        display: none; /* Auth buttons only in hamburger menu */
+        display: none !important; /* Auth buttons only in hamburger menu */
     }
 }
 
 /* Large desktop */
 @media (width >= 1440px) {
     .nav-links {
-        display: none; /* Keep navigation in hamburger menu for clean layout */
+        display: flex !important; /* Show desktop navigation */
     }
 
     .hamburger {
-        display: flex; /* Always show hamburger menu */
+        display: flex; /* Keep hamburger for mobile menu access */
     }
 
     .auth-buttons {
-        display: none; /* Auth buttons only in hamburger menu */
+        display: none !important; /* Auth buttons only in hamburger menu */
     }
 }
 
