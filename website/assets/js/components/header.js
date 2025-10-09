@@ -152,7 +152,7 @@ class DAMPHeader extends HTMLElement {
                                 <span class="mobile-nav-icon">🛒</span>
                                 <div class="mobile-nav-content">
                                     <span class="mobile-nav-text">Pre-Order Now</span>
-                                    <span class="mobile-nav-subtitle">Starting $29.99 • Early Bird Pricing</span>
+                                    <span class="mobile-nav-subtitle">Starting at $29.99</span>
                                 </div>
                             </a>
                             <a href="${this.basePath}pages/product-voting.html" data-analytics="mobile-nav-voting-main">
@@ -894,17 +894,12 @@ class DAMPHeader extends HTMLElement {
 
     // Initialize dynamic updates
     initializeDynamicUpdates() {
-        // Simulate live updates (in real app, this would come from API)
-        setTimeout(() => {
-            this.updateLiveStats('5,289'); // Increase pre-orders
-        }, 30000); // After 30 seconds
-
         // Listen for cart updates from other components
         window.addEventListener('cart:updated', (e) => {
             this.updateCartBadge(e.detail.count);
         });
 
-        // Listen for stats updates
+        // Listen for stats updates (only from real API data)
         window.addEventListener('stats:updated', (e) => {
             this.updateLiveStats(e.detail.preOrders, e.detail.rating);
         });
