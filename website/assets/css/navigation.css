@@ -1104,12 +1104,26 @@
 
 /* Desktop Authentication Buttons */
 .auth-buttons {
-    display: none; /* Always hidden - auth is handled in hamburger menu */
+    display: none !important; /* Always hidden - auth is handled in hamburger menu */
+    visibility: hidden !important;
+    pointer-events: none !important;
     align-items: center;
     gap: 8px;
     margin-left: 15px;
     flex-shrink: 0;
     min-width: fit-content;
+}
+
+.auth-nav {
+    display: none !important; /* Always hidden */
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.auth-nav-btn {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
 }
 
 .auth-btn {

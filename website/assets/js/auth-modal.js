@@ -232,7 +232,7 @@ class DAMPAuthModal {
     if (!header) return;
 
     const authNavHTML = `
-      <div class="auth-nav">
+      <div class="auth-nav" style="display: none;"> <!-- Hidden - auth now in mobile menu only -->
         <div class="auth-buttons">
           <button class="auth-nav-btn signin" data-auth="signin">Sign In</button>
           <button class="auth-nav-btn signup" data-auth="signup">Get Started</button>
