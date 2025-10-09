@@ -61,7 +61,7 @@ export const statsService = {
       const statsDoc = await getDoc(doc(db, 'stats', 'global'));
       if (!statsDoc.exists()) {
         await setDoc(doc(db, 'stats', 'global'), {
-          preOrders: 5000,
+          preOrders: 0,
           rating: 4.9,
           countries: 50,
           totalVotes: 2847,

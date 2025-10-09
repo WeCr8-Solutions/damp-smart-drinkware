@@ -299,22 +299,8 @@ class DAMPHeader extends HTMLElement {
                         </div>
                     </nav>
 
-                    <!-- Quick Social Proof -->
-                    <div class="mobile-nav-social-proof">
-                        <div class="social-proof-item">
-                            <span class="proof-icon">👥</span>
-                            <div class="proof-content">
-                                <span class="proof-number" id="mobile-preorder-live">5,247+</span>
-                                <span class="proof-label">Pre-Orders</span>
-                            </div>
-                        </div>
-                        <div class="social-proof-item">
-                            <span class="proof-icon">⭐</span>
-                            <div class="proof-content">
-                                <span class="proof-number">4.9★</span>
-                                <span class="proof-label">Rating</span>
-                            </div>
-                        </div>
+                    <!-- Social Proof Removed -->
+                    <div class="mobile-nav-social-proof" style="display: none;">
                         <div class="social-proof-item">
                             <span class="proof-icon">🌍</span>
                             <div class="proof-content">

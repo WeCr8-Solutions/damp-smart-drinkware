@@ -11,7 +11,7 @@ class DAMPRealtimeStats {
 
         // Default fallback data
         this.defaultStats = {
-            preOrders: 5000,
+            preOrders: 0,
             rating: 4.9,
             countries: 50,
             totalVotes: 2847,
