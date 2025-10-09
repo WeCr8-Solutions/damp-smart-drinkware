@@ -299,6 +299,7 @@ export const manageSubscription = onCall(async (request) => {
     console.error('Error managing subscription:', error);
     throw new HttpsError('internal', 'Failed to manage subscription');
   }
+});
 
 /**
  * Get subscription status
