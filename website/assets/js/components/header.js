@@ -8,6 +8,7 @@ class DAMPHeader extends HTMLElement {
         this.isSubPage = false;
         this.basePath = '';
         this.isMenuOpen = false;
+        this.isToggling = false; // Flag to prevent race conditions
         this.eventListeners = new Map();
         this.touchStartY = 0;
         this.touchStartX = 0;
@@ -349,6 +350,7 @@ class DAMPHeader extends HTMLElement {
         this.addSecureEventListener(hamburger, 'click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation(); // Stop all event handlers on this element
             this.toggleMobileMenu();
             this.trackAnalytics('hamburger_click', { action: this.isMenuOpen ? 'close' : 'open' });
         });
@@ -398,17 +400,27 @@ class DAMPHeader extends HTMLElement {
             });
         }
 
-        // Global click outside handler - improved to prevent premature closing
+        // Global click outside handler - improved with delay to prevent premature closing
         this.addSecureEventListener(document, 'click', (e) => {
-            // Don't close if clicking inside the mobile menu or hamburger button
+            // Don't close if:
+            // 1. Currently toggling
+            // 2. Clicking inside the mobile menu, hamburger button, or any navigation elements
             if (this.isMenuOpen && 
+                !this.isToggling &&
                 !e.target.closest('.mobile-menu') && 
+                !e.target.closest('.safe-area-mobile-menu') &&
                 !e.target.closest('.hamburger') &&
+                !e.target.closest('.damp-nav') &&
                 !this.contains(e.target)) {
-                this.closeMobileMenu();
-                this.trackAnalytics('mobile_menu_close', { method: 'outside_click' });
+                // Use setTimeout to allow other handlers to complete first
+                setTimeout(() => {
+                    if (this.isMenuOpen && !this.isToggling) {
+                        this.closeMobileMenu();
+                        this.trackAnalytics('mobile_menu_close', { method: 'outside_click' });
+                    }
+                }, 100);
             }
-        }, true); // Use capture phase to handle early
+        }); // Don't use capture phase to let other handlers run first
 
         // Escape key handler
         this.addSecureEventListener(document, 'keydown', (e) => {
@@ -475,11 +487,20 @@ class DAMPHeader extends HTMLElement {
     }
 
     toggleMobileMenu() {
+        if (this.isToggling) return; // Prevent multiple toggles at once
+        
+        this.isToggling = true;
+        
         if (this.isMenuOpen) {
             this.closeMobileMenu();
         } else {
             this.openMobileMenu();
         }
+        
+        // Reset flag after animation completes
+        setTimeout(() => {
+            this.isToggling = false;
+        }, 300);
     }
 
     openMobileMenu() {
