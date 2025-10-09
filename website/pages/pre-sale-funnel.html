@@ -569,23 +569,8 @@
                 Clip-on accessory for Stanley, Hydro Flask, and more – Pre-order today and reserve your spot.
             </p>
 
-            <!-- Live Goal Counter -->
-            <div class="goal-counter">
-                <div class="counter-title">
-                    <span class="live-indicator"></span>
-                    <span id="current-backers"></span> of 500 Pre-Orders Reserved
-                </div>
-
-                <div class="progress-container">
-                    <div class="progress-numbers">
-                        <span class="current-count" id="progress-count"></span>
-                        <span class="goal-count">/ 500 Goal</span>
-                    </div>
-
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="progress-bar" style="width: 0"></div>
-                    </div>
-                </div>
+            <!-- Live Goal Counter - Removed false claims -->
+            <!-- Goal counter disabled until real data available -->
 
                 <!-- Countdown Timer -->
                 <div class="countdown-timer">
@@ -816,19 +801,7 @@
                 </div>
             </div>
 
-            <!-- Repeated Goal Counter for Double Push -->
-            <div class="goal-counter">
-                <div class="progress-container">
-                    <div class="progress-numbers">
-                        <span class="current-count" id="final-progress-count">326</span>
-                        <span class="goal-count">/ 500 Limited Edition</span>
-                    </div>
-
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="final-progress-bar" style="width: 65.2%"></div>
-                    </div>
-                </div>
-            </div>
+            <!-- Goal Counter removed - false claims -->
 
             <button class="cta-primary" data-analytics="final-cta" id="checkout-button" style="opacity: 0.5; cursor: not-allowed;" disabled>
                 Add Items to Cart First
@@ -839,10 +812,7 @@
                 💳 All major cards accepted • Free worldwide shipping
             </p>
 
-            <div class="recent-activity" style="margin-top: 30px;">
-                <span class="live-indicator"></span>
-                <span id="final-activity-text">Last order: 23 minutes ago from Austin, TX</span>
-            </div>
+            <!-- Recent activity removed - false claim -->
         </div>
     </section>
 
@@ -879,8 +849,8 @@
         // Pre-Sale Funnel Controller
         class PreSaleFunnel {
             constructor() {
-                this.currentCount = 326; // Starting count
-                this.goalCount = 500;
+                this.currentCount = 0; // Real count from API
+                this.goalCount = 0; // No artificial goal
                 this.countdownEndTime = new Date();
                 this.countdownEndTime.setDate(this.countdownEndTime.getDate() + 7); // 7 days from now
 
@@ -1155,24 +1125,8 @@
             }
 
             updateCounters() {
-                const percentage = (this.currentCount / this.goalCount) * 100;
-
-                // Update all counter displays
-                document.getElementById('current-backers').textContent = this.currentCount;
-                document.getElementById('progress-count').textContent = this.currentCount;
-                document.getElementById('final-count').textContent = this.currentCount;
-                document.getElementById('final-progress-count').textContent = this.currentCount;
-
-                // Update progress bars
-                document.getElementById('progress-bar').style.width = percentage + '%';
-                document.getElementById('final-progress-bar').style.width = percentage + '%';
-
-                // Add urgency messaging based on progress
-                if (percentage > 90) {
-                    this.addUrgencyMessage("🔥 Almost sold out! Only " + (this.goalCount - this.currentCount) + " spots left!");
-                } else if (percentage > 80) {
-                    this.addUrgencyMessage("⚡ Less than " + Math.ceil((this.goalCount - this.currentCount) / 10) * 10 + " spots remaining!");
-                }
+                // Disabled - no fake counters
+                // Will be enabled when real API data is available
             }
 
             startCountdown() {
@@ -1206,15 +1160,8 @@
             }
 
             startRealtimeUpdates() {
-                // Simulate realistic pre-order activity
-                setInterval(() => {
-                    // Randomly increase count (simulate real orders)
-                    if (Math.random() < 0.3 && this.currentCount < this.goalCount) { // 30% chance every 30 seconds
-                        this.currentCount += Math.floor(Math.random() * 2) + 1; // Add 1-2 orders
-                        this.updateCounters();
-                        this.trackAnalytics('simulated_order', { new_count: this.currentCount });
-                    }
-                }, 30000); // Every 30 seconds
+                // Disabled - no simulated orders
+                // Will use real Stripe webhook data when available
             }
 
             async loadLiveActivity() {
@@ -1249,13 +1196,9 @@
             }
 
             startLiveActivityUpdates() {
-                // Load initial activity
-                this.loadLiveActivity();
-
-                // Update every 30 seconds with real data
-                setInterval(() => {
-                    this.loadLiveActivity();
-                }, 30000);
+                // Disabled - no fake activity updates
+                // Load initial activity from real API when available
+                // this.loadLiveActivity();
             }
 
             addUrgencyMessage(message) {
