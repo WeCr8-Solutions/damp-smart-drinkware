@@ -1,12 +1,8 @@
 {
-  "currentCount": 326,
-  "goalCount": 500,
-  "startDate": "2025-01-01T00:00:00.000Z",
-  "endDate": "2025-09-20T13:51:57.660Z",
+  "currentCount": 0,
+  "goalCount": 0,
+  "startDate": "",
+  "endDate": "",
   "recentOrders": [],
-  "analytics": {
-    "pageViews": 0,
-    "checkoutAttempts": 0,
-    "conversionRate": 0
-  }
+  "analytics": { "pageViews": 0, "checkoutAttempts": 0, "conversionRate": 0 }
 }

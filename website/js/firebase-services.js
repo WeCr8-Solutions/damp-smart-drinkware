@@ -123,17 +123,17 @@ export const statsService = {
     }
   },
 
-  // Update product sales
-  async updateProductSales(productId, quantity = 1) {
-    try {
-      await updateDoc(doc(db, 'stats', 'global'), {
-        [`salesData.${productId}`]: increment(quantity),
-        lastUpdated: serverTimestamp()
-      });
-    } catch (error) {
-      console.error('Update product sales error:', error);
-    }
-  }
+  // Comment out sales update logic
+  // async updateProductSales(productId, quantity = 1) {
+  //   try {
+  //     await updateDoc(doc(db, 'stats', 'global'), {
+  //       [`salesData.${productId}`]: increment(quantity),
+  //       lastUpdated: serverTimestamp()
+  //     });
+  //   } catch (error) {
+  //     console.error('Update product sales error:', error);
+  //   }
+  // }
 };
 
 // Dual Voting System Services (Authenticated + Public)

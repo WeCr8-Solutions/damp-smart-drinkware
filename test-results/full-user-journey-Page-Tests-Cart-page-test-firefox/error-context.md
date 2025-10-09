@@ -1,0 +1,222 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - navigation "Main navigation" [ref=e4]:
+      - generic [ref=e5]:
+        - link "DAMP Smart Drinkware Home" [ref=e6] [cursor=pointer]:
+          - /url: ../index.html
+          - img "DAMP Logo" [ref=e7] [cursor=pointer]
+          - generic [ref=e8] [cursor=pointer]: DAMP
+        - menubar [ref=e9]:
+          - listitem [ref=e10]:
+            - link "Home" [ref=e11] [cursor=pointer]:
+              - /url: ../index.html
+          - listitem [ref=e12]:
+            - link "How It Works" [ref=e13] [cursor=pointer]:
+              - /url: ../pages/how-it-works.html
+          - listitem [ref=e14]:
+            - link "Products" [ref=e15] [cursor=pointer]:
+              - /url: ../pages/products.html
+          - listitem [ref=e16]:
+            - link "Support" [ref=e17] [cursor=pointer]:
+              - /url: ../pages/support.html
+          - listitem [ref=e18]:
+            - link "About" [ref=e19] [cursor=pointer]:
+              - /url: ../pages/about.html
+          - listitem [ref=e20]:
+            - link "Pre-Order" [ref=e21] [cursor=pointer]:
+              - /url: ../pages/pre-order.html
+        - button "Toggle mobile menu" [ref=e22]:
+          - generic [ref=e23]: Menu
+    - dialog [ref=e24]:
+      - button [ref=e26]:
+        - generic [ref=e27]: ×
+      - generic [ref=e28]:
+        - heading [level=2] [ref=e29]: Mobile Navigation Menu
+        - navigation [ref=e30]:
+          - generic [ref=e31]:
+            - heading [level=3] [ref=e32]: 🔐 Account
+            - generic [ref=e33]:
+              - generic [ref=e34]:
+                - generic [ref=e35]: 🔑
+                - generic [ref=e36]:
+                  - generic [ref=e37]: Sign In
+                  - generic [ref=e38]: Access your DAMP account
+              - generic [ref=e39]:
+                - generic [ref=e40]: 📝
+                - generic [ref=e41]:
+                  - generic [ref=e42]: Create Account
+                  - generic [ref=e43]: Join the DAMP community
+          - generic [ref=e44]:
+            - heading [level=3] [ref=e45]: 🚀 Get Started
+            - link [ref=e46] [cursor=pointer]:
+              - /url: ../pages/pre-sale-funnel.html
+              - generic [ref=e47] [cursor=pointer]: 🛒
+              - generic [ref=e48] [cursor=pointer]:
+                - generic [ref=e49] [cursor=pointer]: Pre-Order Now
+                - generic [ref=e50] [cursor=pointer]: Starting $29.99 • Early Bird Pricing
+            - link [ref=e51] [cursor=pointer]:
+              - /url: ../pages/product-voting.html
+              - generic [ref=e52] [cursor=pointer]: 🗳️
+              - generic [ref=e53] [cursor=pointer]:
+                - generic [ref=e54] [cursor=pointer]: Vote Next Product
+                - generic [ref=e55] [cursor=pointer]: Help us prioritize development
+          - generic [ref=e56]:
+            - heading [level=3] [ref=e57]: 📍 Navigate
+            - link [ref=e58] [cursor=pointer]:
+              - /url: ../index.html
+              - generic [ref=e59] [cursor=pointer]: 🏠
+              - generic [ref=e60] [cursor=pointer]: Home
+            - link [ref=e61] [cursor=pointer]:
+              - /url: ../pages/how-it-works.html
+              - generic [ref=e62] [cursor=pointer]: ⚡
+              - generic [ref=e63] [cursor=pointer]: How It Works
+            - link [ref=e64] [cursor=pointer]:
+              - /url: ../pages/products.html
+              - generic [ref=e65] [cursor=pointer]: 📦
+              - generic [ref=e66] [cursor=pointer]: All Products
+            - link [ref=e67] [cursor=pointer]:
+              - /url: ../pages/about.html
+              - generic [ref=e68] [cursor=pointer]: ℹ️
+              - generic [ref=e69] [cursor=pointer]: About DAMP
+          - generic [ref=e70]:
+            - heading [level=3] [ref=e71]: 🥤 Smart Products
+            - link [ref=e72] [cursor=pointer]:
+              - /url: ../pages/damp-handle-v1.0.html
+              - generic [ref=e73] [cursor=pointer]: 🔗
+              - generic [ref=e74] [cursor=pointer]:
+                - generic [ref=e75] [cursor=pointer]: DAMP Handle
+                - generic [ref=e76] [cursor=pointer]: Universal clip-on • $49.99
+            - link [ref=e77] [cursor=pointer]:
+              - /url: ../pages/silicone-bottom-v1.0.html
+              - generic [ref=e78] [cursor=pointer]: ⚪
+              - generic [ref=e79] [cursor=pointer]:
+                - generic [ref=e80] [cursor=pointer]: Silicone Bottom
+                - generic [ref=e81] [cursor=pointer]: Non-slip base • $29.99
+            - link [ref=e82] [cursor=pointer]:
+              - /url: ../pages/cup-sleeve-v1.0.html
+              - generic [ref=e83] [cursor=pointer]: 🥤
+              - generic [ref=e84] [cursor=pointer]:
+                - generic [ref=e85] [cursor=pointer]: Cup Sleeve
+                - generic [ref=e86] [cursor=pointer]: Adjustable fit • $39.99
+          - generic [ref=e87]:
+            - heading [level=3] [ref=e88]: 🛒 Shopping
+            - link [ref=e89] [cursor=pointer]:
+              - /url: ../pages/cart.html
+              - generic [ref=e90] [cursor=pointer]: 🛒
+              - generic [ref=e91] [cursor=pointer]: View Cart
+              - generic [ref=e92] [cursor=pointer]: "0"
+            - link [ref=e93] [cursor=pointer]:
+              - /url: ../pages/waitlist.html
+              - generic [ref=e94] [cursor=pointer]: 📝
+              - generic [ref=e95] [cursor=pointer]: Join Waitlist
+            - link [ref=e96] [cursor=pointer]:
+              - /url: ../pages/subscription.html
+              - generic [ref=e97] [cursor=pointer]: 🔄
+              - generic [ref=e98] [cursor=pointer]: Subscriptions
+          - generic [ref=e99]:
+            - heading [level=3] [ref=e100]: 📚 Resources
+            - link [ref=e101] [cursor=pointer]:
+              - /url: ../pages/damp-drinking-guide.html
+              - generic [ref=e102] [cursor=pointer]: 📖
+              - generic [ref=e103] [cursor=pointer]: Damp Drinking Guide
+            - link [ref=e104] [cursor=pointer]:
+              - /url: ../pages/damp-drinking-meaning.html
+              - generic [ref=e105] [cursor=pointer]: 💡
+              - generic [ref=e106] [cursor=pointer]: What is Damp Drinking?
+            - link [ref=e107] [cursor=pointer]:
+              - /url: ../pages/smart-drinkware-for-damp-drinking.html
+              - generic [ref=e108] [cursor=pointer]: 🥤
+              - generic [ref=e109] [cursor=pointer]: Smart Drinkware for Damp Drinking
+          - generic [ref=e110]:
+            - heading [level=3] [ref=e111]: 💬 Support
+            - link [ref=e112] [cursor=pointer]:
+              - /url: ../pages/support.html
+              - generic [ref=e113] [cursor=pointer]: 🎧
+              - generic [ref=e114] [cursor=pointer]: Help Center
+            - link [ref=e115] [cursor=pointer]:
+              - /url: ../pages/support.html#contact
+              - generic [ref=e116] [cursor=pointer]: 📧
+              - generic [ref=e117] [cursor=pointer]: Contact Us
+            - link [ref=e118] [cursor=pointer]:
+              - /url: ../pages/support.html#warranty
+              - generic [ref=e119] [cursor=pointer]: 🛡️
+              - generic [ref=e120] [cursor=pointer]: Warranty Info
+        - generic [ref=e121]:
+          - generic [ref=e122]:
+            - generic [ref=e123]: 👥
+            - generic [ref=e124]:
+              - generic [ref=e125]: 5,247+
+              - generic [ref=e126]: Pre-Orders
+          - generic [ref=e127]:
+            - generic [ref=e128]: ⭐
+            - generic [ref=e129]:
+              - generic [ref=e130]: 4.9★
+              - generic [ref=e131]: Rating
+          - generic [ref=e132]:
+            - generic [ref=e133]: 🌍
+            - generic [ref=e134]:
+              - generic [ref=e135]: 50+
+              - generic [ref=e136]: Countries
+      - generic [ref=e137]:
+        - generic [ref=e138]:
+          - link [ref=e139] [cursor=pointer]:
+            - /url: ../pages/privacy.html
+            - text: Privacy Policy
+          - generic [ref=e140]: •
+          - link [ref=e141] [cursor=pointer]:
+            - /url: ../pages/terms.html
+            - text: Terms
+          - generic [ref=e142]: •
+          - link [ref=e143] [cursor=pointer]:
+            - /url: ../pages/cookie-policy.html
+            - text: Cookies
+        - generic [ref=e144]:
+          - generic [ref=e145]: © 2025 WeCr8 Solutions LLC
+          - generic [ref=e146]: DAMP - Never Leave Your Drink Behind™
+  - generic [ref=e149]:
+    - heading "Shopping Cart" [level=1] [ref=e150]
+    - paragraph [ref=e151]: Review your items and complete your pre-order
+  - generic [ref=e154]:
+    - generic [ref=e156]:
+      - heading "Your Items" [level=2] [ref=e157]
+      - generic [ref=e158]:
+        - generic [ref=e159]: 🛒
+        - heading "Your cart is empty" [level=3] [ref=e160]
+        - paragraph [ref=e161]: Add some DAMP products to get started
+        - link "Shop Now" [ref=e162] [cursor=pointer]:
+          - /url: ../index.html#products
+    - generic [ref=e164]:
+      - heading "Order Summary" [level=2] [ref=e165]
+      - generic [ref=e166]:
+        - generic [ref=e167]:
+          - generic [ref=e168]: Subtotal
+          - generic [ref=e169]: $0.00
+        - generic [ref=e170]:
+          - generic [ref=e171]: Shipping
+          - generic [ref=e172]: $9.99
+        - generic [ref=e173]:
+          - generic [ref=e174]: Tax
+          - generic [ref=e175]: $0.00
+        - generic [ref=e177]:
+          - generic [ref=e178]: Total
+          - generic [ref=e179]: $9.99
+      - generic [ref=e180]:
+        - generic [ref=e181]: Promo Code
+        - generic [ref=e182]:
+          - textbox "Enter code" [ref=e183]
+          - button "Apply" [ref=e184]
+      - generic [ref=e185]:
+        - button "Proceed to Checkout" [ref=e186]
+        - button "Continue Shopping" [ref=e187]
+      - generic [ref=e189]:
+        - generic [ref=e190]: 🔒
+        - generic [ref=e191]: Secure checkout with Stripe
+  - button "📱 Get DAMP App ×" [ref=e192] [cursor=pointer]:
+    - text: 📱 Get DAMP App
+    - button "×" [ref=e193] [cursor=pointer]
+```

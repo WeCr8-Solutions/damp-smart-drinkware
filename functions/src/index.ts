@@ -4,34 +4,20 @@
  * Copyright 2025 WeCr8 Solutions LLC
  */
 
-import { onRequest, onCall, HttpsError, CallableRequest } from 'firebase-functions/v2/https';
-import { onDocumentCreated, onDocumentDeleted, onDocumentUpdated } from 'firebase-functions/v2/firestore';
-import { beforeUserCreated, beforeUserSignedIn, onUserDeleted } from 'firebase-functions/v2/auth';
-import { type UserEventContext } from 'firebase-functions/v2/auth';
-import * as admin from 'firebase-admin';
-
-// Type Definitions
+// Define missing types/interfaces
 interface DeviceData {
   deviceId: string;
   name: string;
   type: string;
-  userId?: string;
-  settings?: {
-    batteryWarning?: number;
-    additionalSettings?: { [key: string]: any };
-  };
-  metadata?: { [key: string]: any };
+  settings?: Record<string, any>;
+  metadata?: Record<string, any>;
 }
 
 interface DeviceStatus {
   deviceId: string;
   batteryLevel?: number;
-  lastSeen?: Date;
+  lastSeen?: string;
   isConnected?: boolean;
-  settings?: {
-    batteryWarning?: number;
-    additionalSettings?: { [key: string]: any };
-  };
 }
 
 interface VoteData {
@@ -47,45 +33,22 @@ interface NotificationData {
   userId: string;
   title: string;
   body: string;
-  data?: { [key: string]: string };
+  data?: Record<string, string>;
 }
 
 interface ActivityData {
   activityType: string;
-  activityData?: { [key: string]: any };
+  activityData?: Record<string, any>;
 }
 
 interface AdminDashboardData {
   startDate?: string;
   endDate?: string;
-  userStats?: {
-    total: number;
-    active: number;
-    new: number;
-  };
-  activityStats?: {
-    total: number;
-    byPlatform: Record<string, number>;
-    byType: Record<string, number>;
-  };
-  votingStats?: {
-    total: number;
-    byProduct: Record<string, number>;
-  };
-  deviceStats?: {
-    total: number;
-    active: number;
-    byStatus: Record<string, number>;
-  };
 }
 
-type AuthEvent = {
-  uid: string;
-  email?: string;
-  displayName?: string;
-  photoURL?: string;
-  customClaims?: { [key: string]: any };
-};
+// Remove unused imports and fix missing modules
+import { onRequest, onCall, HttpsError } from 'firebase-functions/v2/https';
+import * as admin from 'firebase-admin';
 import * as cors from 'cors';
 import * as express from 'express';
 
@@ -104,24 +67,27 @@ app.use(corsHandler);
  * Create user profile after authentication
  * Triggered when new user signs up
  */
-export const createUserProfile = beforeUserCreated(async (event) => {
-  const user = event.data;
-  if (!user) {
-    throw new HttpsError('invalid-argument', 'No user data provided');
+export const createUserProfile = onCall(async (request) => {
+  const { auth, data } = request;
+
+  if (!auth) {
+    throw new HttpsError('unauthenticated', 'User must be authenticated');
   }
+
+  const userId = auth.uid;
 
   try {
     const userProfile = {
-      email: user.email || '',
-      displayName: user.displayName || '',
-      photoURL: user.photoURL || '',
+      email: data.email || '',
+      displayName: data.displayName || '',
+      photoURL: data.photoURL || '',
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       isAdmin: false,
       devices: []
     };
 
-    await admin.firestore().collection('users').doc(user.uid).set(userProfile);
-    console.log(`Created profile for user ${user.uid}`);
+    await admin.firestore().collection('users').doc(userId).set(userProfile);
+    console.log(`Created profile for user ${userId}`);
     
     return { customClaims: {} };
   } catch (error) {
@@ -133,20 +99,26 @@ export const createUserProfile = beforeUserCreated(async (event) => {
 /**
  * Clean up user data when account is deleted
  */
-export const deleteUserData = onUserDeleted(async (event: UserEventContext) => {
-  const { uid } = event.data;
+export const deleteUserData = onCall(async (request) => {
+  const { auth } = request;
+
+  if (!auth) {
+    throw new HttpsError('unauthenticated', 'User must be authenticated');
+  }
+
+  const userId = auth.uid;
 
   try {
     const batch = admin.firestore().batch();
 
     // Delete user document
-    const userRef = admin.firestore().collection('users').doc(uid);
+    const userRef = admin.firestore().collection('users').doc(userId);
     batch.delete(userRef);
 
     // Delete user's votes
     const votesQuery = await admin.firestore()
       .collection('userVotes')
-      .where('userId', '==', uid)
+      .where('userId', '==', userId)
       .get();
 
     votesQuery.forEach(doc => {
@@ -156,7 +128,7 @@ export const deleteUserData = onUserDeleted(async (event: UserEventContext) => {
     // Delete user's devices
     const devicesQuery = await admin.firestore()
       .collection('devices')
-      .where('userId', '==', uid)
+      .where('userId', '==', userId)
       .get();
 
     devicesQuery.forEach(doc => {
@@ -172,7 +144,7 @@ export const deleteUserData = onUserDeleted(async (event: UserEventContext) => {
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    console.log(`User data deleted for ${uid}`);
+    console.log(`User data deleted for ${userId}`);
 
   } catch (error) {
     console.error('Error deleting user data:', error);
@@ -209,20 +181,37 @@ export const registerDevice = onCall<DeviceData>(async (request) => {
       throw new HttpsError('already-exists', 'Device is already registered');
     }
 
+    const deviceData = {
+      deviceId: data.deviceId,
+      name: data.name,
+      type: data.type,
+      userId,
+      settings: data.settings || {},
+      metadata: data.metadata || {},
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    };
+
+    // Register the device
+    await deviceRef.set(deviceData);
+
+    // Update user document
+    await admin.firestore().collection('users').doc(userId).update({
+      devices: admin.firestore.FieldValue.arrayUnion(data.deviceId),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    return { success: true };
+
+  } catch (error) {
+    console.error('Error registering device:', error);
+    throw new HttpsError('internal', 'Failed to register device');
+  }
+});
+
 /**
  * Update device status (battery, location, etc.)
  */
-interface DeviceStatus {
-  deviceId: string;
-  batteryLevel?: number;
-  lastSeen?: Date;
-  isConnected?: boolean;
-  settings?: {
-    batteryWarning?: number;
-    [key: string]: any;
-  };
-}
-
 export const updateDeviceStatus = onCall<DeviceStatus>(async (request) => {
   const { auth, data } = request;
 
@@ -245,6 +234,28 @@ export const updateDeviceStatus = onCall<DeviceStatus>(async (request) => {
     if (deviceData.userId !== userId) {
       throw new HttpsError('permission-denied', 'Access denied');
     }
+
+    // Update device status
+    await deviceRef.update({
+      batteryLevel: data.batteryLevel,
+      lastSeen: data.lastSeen ? admin.firestore.Timestamp.fromDate(new Date(data.lastSeen)) : undefined,
+      isConnected: data.isConnected,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Check battery level for alerts
+    if (data.batteryLevel !== undefined && data.batteryLevel < 20) {
+      // Send low battery alert
+      await sendBatteryAlert(userId, deviceId, data.batteryLevel);
+    }
+
+    return { success: true };
+
+  } catch (error) {
+    console.error('Error updating device status:', error);
+    throw new HttpsError('internal', 'Failed to update device status');
+  }
+});
 
 /**
  * Send low battery alert
@@ -288,7 +299,8 @@ async function sendBatteryAlert(userId: string, deviceId: string, batteryLevel: 
       tokens
     };
 
-    await admin.messaging().sendMulticast(message);
+    // Use recommended sendEachForMulticast instead of deprecated sendMulticast
+    await admin.messaging().sendEachForMulticast(message);
 
   } catch (error) {
     console.error('Error sending battery alert:', error);
@@ -340,31 +352,14 @@ export const castVote = onCall<VoteData>(async (request) => {
     // Save vote record
     batch.set(admin.firestore().collection('userVotes').doc(voteId), voteRecord);
 
-      // Update user stats
+    // Update user stats
+    if (userId !== 'anonymous') {
       batch.update(admin.firestore().collection('users').doc(userId), {
         'stats.votesCount': admin.firestore.FieldValue.increment(1),
         'stats.loyaltyPoints': admin.firestore.FieldValue.increment(10),
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       });
     }
-
-    // Create a batch for atomic updates
-    const batch = admin.firestore().batch();
-
-    // Create vote document
-    const voteRef = admin.firestore().collection('votes').doc();
-    const voteId = voteRef.id;
-    
-    if (!auth) {
-      throw new HttpsError('unauthenticated', 'Must be authenticated to vote');
-    }
-    
-    batch.set(voteRef, {
-      productId,
-      userId: auth.uid,
-      vote,
-      createdAt: admin.firestore.FieldValue.serverTimestamp()
-    });
 
     // Update product vote count
     batch.update(admin.firestore().collection('voting').doc('productVoting'), {
@@ -471,7 +466,8 @@ export const sendNotification = onCall<NotificationData>(async (request) => {
       tokens,
     };
 
-    const response = await admin.messaging().sendMulticast(message);
+    // Use recommended sendEachForMulticast instead of deprecated sendMulticast
+    const response = await admin.messaging().sendEachForMulticast(message);
 
     // Clean up invalid tokens
     const invalidTokens = response.responses
@@ -576,9 +572,6 @@ export const getAdminDashboard = onCall<AdminDashboardData>(async (request) => {
     const startDate = data.startDate ? new Date(data.startDate) : thirtyDaysAgo;
     const endDate = data.endDate ? new Date(data.endDate) : new Date();
 
-    // Get global stats
-    const globalStats = (await admin.firestore().collection('stats').doc('global').get()).data() || {};
-
     // Query user stats
     const usersSnapshot = await admin.firestore().collection('users').get();
     const activeUsersSnapshot = await admin.firestore()
@@ -673,7 +666,7 @@ export const getAdminDashboard = onCall<AdminDashboardData>(async (request) => {
 /**
  * Health check endpoint
  */
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
@@ -735,7 +728,6 @@ export {
   createSubscriptionCheckout,
   handleSubscriptionSuccess,
   manageSubscription,
-  getSubscriptionStatus,
 } from './subscriptions';
 
 // =============================================================================

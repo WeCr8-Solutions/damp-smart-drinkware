@@ -238,275 +238,300 @@ exports.manageSubscription = (0, https_1.onCall)(async (request) => {
                     throw new https_1.HttpsError('invalid-argument', 'Invalid plan ID');
                 }
                 const newPlan = SUBSCRIPTION_PLANS[planId];
-                /**
-                 * Get subscription status
-                 */
-                export const getSubscriptionStatus = (0, https_1.onCall)(async (request) => {
-                    const { data, auth } = request;
-                    if (!auth) {
-                        throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
-                    }
-                    const userId = auth.uid;
-                    try {
-                        const userDoc = await admin.firestore().collection('users').doc(userId).get();
-                        const userData = userDoc.data();
-                        if (!(userData === null || userData === void 0 ? void 0 : userData.subscription)) {
-                            return {
-                                hasSubscription: false,
-                                plan: 'free',
-                                status: 'inactive',
-                            };
-                        }
-                        const subscription = userData.subscription;
-                        // If there's a Stripe subscription ID, get latest status from Stripe
-                        if (subscription.stripeSubscriptionId) {
-                            try {
-                                const stripeSubscription = await stripe.subscriptions.retrieve(subscription.stripeSubscriptionId);
-                                // Update Firestore with latest Stripe data
-                                const updateData = {
-                                    'subscription.status': stripeSubscription.status,
-                                    'subscription.currentPeriodStart': new Date(stripeSubscription.current_period_start * 1000),
-                                    'subscription.currentPeriodEnd': new Date(stripeSubscription.current_period_end * 1000),
-                                    'subscription.cancelAtPeriodEnd': stripeSubscription.cancel_at_period_end,
-                                    'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
-                                };
-                                await admin.firestore().collection('users').doc(userId).update(updateData);
-                                return {
-                                    hasSubscription: true,
-                                    plan: subscription.planId || 'premium',
-                                    status: stripeSubscription.status,
-                                    currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
-                                    currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
-                                    cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
-                                };
-                            }
-                            catch (stripeError) {
-                                console.error('Error fetching from Stripe:', stripeError);
-                                // Return cached data if Stripe is unavailable
-                                return {
-                                    hasSubscription: true,
-                                    plan: subscription.planId || 'premium',
-                                    status: subscription.status || 'unknown',
-                                    currentPeriodStart: subscription.currentPeriodStart,
-                                    currentPeriodEnd: subscription.currentPeriodEnd,
-                                    cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
-                                };
-                            }
-                        }
-                        return {
-                            hasSubscription: false,
-                            plan: 'free',
-                            status: 'inactive',
-                        };
-                    }
-                    catch (error) {
-                        console.error('Error getting subscription status:', error);
-                        throw new https_1.HttpsError('internal', 'Failed to get subscription status');
-                    }
+                if (!newPlan) {
+                    throw new https_1.HttpsError('invalid-argument', 'Invalid plan ID');
+                }
+                // Update subscription with new price
+                const updatedSubscription = await stripe.subscriptions.update(currentSubscription.id, {
+                    items: [{
+                            id: currentSubscription.items.data[0].id,
+                            price: newPlan.stripePriceId,
+                        }],
+                    proration_behavior: action === 'upgrade' ? 'always_invoice' : 'none',
                 });
-                /**
-                 * Webhook handler for Stripe events
-                 */
-                export const handleStripeWebhook = (0, https_1.onRequest)(async (request, response) => {
-                    const sig = request.get('Stripe-Signature');
-                    const webhookSecret = (0, params_1.defineString)('STRIPE_WEBHOOK_SECRET').value();
-                    let event;
-                    try {
-                        event = stripe.webhooks.constructEvent(request.rawBody, sig, webhookSecret);
-                    }
-                    catch (err) {
-                        console.error('Webhook signature verification failed:', err);
-                        response.status(400).send(`Webhook Error: ${err}`);
-                        return;
-                    }
-                    try {
-                        switch (event.type) {
-                            case 'customer.subscription.updated':
-                            case 'customer.subscription.deleted':
-                                await handleSubscriptionUpdated(event.data.object);
-                                break;
-                            case 'invoice.payment_succeeded':
-                                await handlePaymentSucceeded(event.data.object);
-                                break;
-                            case 'invoice.payment_failed':
-                                await handlePaymentFailed(event.data.object);
-                                break;
-                            default:
-                                console.log(`Unhandled event type: ${event.type}`);
-                        }
-                        response.json({ received: true });
-                    }
-                    catch (error) {
-                        console.error('Error handling webhook:', error);
-                        response.status(500).json({ error: 'Webhook handler failed' });
-                    }
+                // Update user doc
+                await admin.firestore().collection('users').doc(userId).update({
+                    'subscription.planId': planId,
+                    'subscription.status': updatedSubscription.status,
+                    'subscription.currentPeriodStart': new Date(updatedSubscription.current_period_start * 1000),
+                    'subscription.currentPeriodEnd': new Date(updatedSubscription.current_period_end * 1000),
+                    'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
                 });
-                /**
-                 * Handle subscription updated webhook
-                 */
-                async function handleSubscriptionUpdated(subscription) {
-                    try {
-                        // Find user by Stripe customer ID
-                        const usersQuery = await admin.firestore()
-                            .collection('users')
-                            .where('subscription.stripeCustomerId', '==', subscription.customer)
-                            .get();
-                        if (usersQuery.empty) {
-                            console.error('No user found for customer:', subscription.customer);
-                            return;
-                        }
-                        const userDoc = usersQuery.docs[0];
-                        const userId = userDoc.id;
-                        // Update user subscription data
-                        const updateData = {
-                            'subscription.status': subscription.status,
-                            'subscription.currentPeriodStart': new Date(subscription.current_period_start * 1000),
-                            'subscription.currentPeriodEnd': new Date(subscription.current_period_end * 1000),
-                            'subscription.cancelAtPeriodEnd': subscription.cancel_at_period_end,
-                            'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
-                        };
-                        await admin.firestore().collection('users').doc(userId).update(updateData);
-                        // Update subscription document
-                        await admin.firestore().collection('subscriptions').doc(subscription.id).set({
-                            userId,
-                            stripeSubscriptionId: subscription.id,
-                            customerId: subscription.customer,
-                            status: subscription.status,
-                            currentPeriodStart: new Date(subscription.current_period_start * 1000),
-                            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-                            cancelAtPeriodEnd: subscription.cancel_at_period_end,
-                            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-                        }, { merge: true });
-                        // Log the event
-                        await admin.firestore().collection('subscription_events').add({
-                            userId,
-                            type: 'subscription_updated',
-                            subscriptionId: subscription.id,
-                            status: subscription.status,
-                            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-                        });
-                    }
-                    catch (error) {
-                        console.error('Error handling subscription update:', error);
-                    }
-                }
-                /**
-                 * Handle payment succeeded webhook
-                 */
-                async function handlePaymentSucceeded(invoice) {
-                    try {
-                        if (!invoice.subscription)
-                            return;
-                        // Find user by subscription
-                        const subscriptionDoc = await admin.firestore()
-                            .collection('subscriptions')
-                            .doc(invoice.subscription)
-                            .get();
-                        if (!subscriptionDoc.exists)
-                            return;
-                        const subscriptionData = subscriptionDoc.data();
-                        const userId = subscriptionData === null || subscriptionData === void 0 ? void 0 : subscriptionData.userId;
-                        if (!userId)
-                            return;
-                        // Log successful payment
-                        await admin.firestore().collection('subscription_events').add({
-                            userId,
-                            type: 'payment_succeeded',
-                            subscriptionId: invoice.subscription,
-                            invoiceId: invoice.id,
-                            amount: invoice.amount_paid,
-                            currency: invoice.currency,
-                            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-                        });
-                        // Update user's billing history
-                        await admin.firestore().collection('users').doc(userId).update({
-                            'subscription.billingHistory': admin.firestore.FieldValue.arrayUnion({
-                                invoiceId: invoice.id,
-                                amount: invoice.amount_paid,
-                                currency: invoice.currency,
-                                status: 'paid',
-                                paidAt: new Date(invoice.status_transitions.paid_at * 1000),
-                            }),
-                            'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
-                        });
-                    }
-                    catch (error) {
-                        console.error('Error handling payment success:', error);
-                    }
-                }
-                /**
-                 * Handle payment failed webhook
-                 */
-                async function handlePaymentFailed(invoice) {
-                    try {
-                        if (!invoice.subscription)
-                            return;
-                        // Find user by subscription
-                        const subscriptionDoc = await admin.firestore()
-                            .collection('subscriptions')
-                            .doc(invoice.subscription)
-                            .get();
-                        if (!subscriptionDoc.exists)
-                            return;
-                        const subscriptionData = subscriptionDoc.data();
-                        const userId = subscriptionData === null || subscriptionData === void 0 ? void 0 : subscriptionData.userId;
-                        if (!userId)
-                            return;
-                        // Log failed payment
-                        await admin.firestore().collection('subscription_events').add({
-                            userId,
-                            type: 'payment_failed',
-                            subscriptionId: invoice.subscription,
-                            invoiceId: invoice.id,
-                            amount: invoice.amount_due,
-                            currency: invoice.currency,
-                            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-                        });
-                        // Send notification to user about failed payment
-                        await sendPaymentFailedNotification(userId, invoice);
-                    }
-                    catch (error) {
-                        console.error('Error handling payment failure:', error);
-                    }
-                }
-                /**
-                 * Send payment failed notification
-                 */
-                async function sendPaymentFailedNotification(userId, invoice) {
-                    var _a;
-                    try {
-                        // Get user's FCM tokens
-                        const tokensQuery = await admin.firestore()
-                            .collection('fcmTokens')
-                            .where('userId', '==', userId)
-                            .get();
-                        const tokens = [];
-                        tokensQuery.forEach(doc => {
-                            tokens.push(doc.data().token);
-                        });
-                        if (tokens.length === 0)
-                            return;
-                        const message = {
-                            notification: {
-                                title: 'Payment Failed',
-                                body: 'Your subscription payment failed. Please update your payment method.',
-                            },
-                            data: {
-                                type: 'payment_failed',
-                                invoiceId: invoice.id,
-                                amount: ((_a = invoice.amount_due) === null || _a === void 0 ? void 0 : _a.toString()) || '0',
-                            },
-                            tokens,
-                        };
-                        await admin.messaging().sendMulticast(message);
-                    }
-                    catch (error) {
-                        console.error('Error sending payment failed notification:', error);
-                    }
-                }
+                return { success: true, subscription: updatedSubscription };
             }
+            default:
+                throw new https_1.HttpsError('invalid-argument', 'Invalid subscription action');
         }
     }
-    finally { }
+    catch (error) {
+        console.error('Error managing subscription:', error);
+        throw new https_1.HttpsError('internal', 'Failed to manage subscription');
+    }
+    /**
+     * Get subscription status
+     */
+    export const getSubscriptionStatus = (0, https_1.onCall)(async (request) => {
+        const { data, auth } = request;
+        if (!auth) {
+            throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
+        }
+        const userId = auth.uid;
+        try {
+            const userDoc = await admin.firestore().collection('users').doc(userId).get();
+            const userData = userDoc.data();
+            if (!(userData === null || userData === void 0 ? void 0 : userData.subscription)) {
+                return {
+                    hasSubscription: false,
+                    plan: 'free',
+                    status: 'inactive',
+                };
+            }
+            const subscription = userData.subscription;
+            // If there's a Stripe subscription ID, get latest status from Stripe
+            if (subscription.stripeSubscriptionId) {
+                try {
+                    const stripeSubscription = await stripe.subscriptions.retrieve(subscription.stripeSubscriptionId);
+                    // Update Firestore with latest Stripe data
+                    const updateData = {
+                        'subscription.status': stripeSubscription.status,
+                        'subscription.currentPeriodStart': new Date(stripeSubscription.current_period_start * 1000),
+                        'subscription.currentPeriodEnd': new Date(stripeSubscription.current_period_end * 1000),
+                        'subscription.cancelAtPeriodEnd': stripeSubscription.cancel_at_period_end,
+                        'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
+                    };
+                    await admin.firestore().collection('users').doc(userId).update(updateData);
+                    return {
+                        hasSubscription: true,
+                        plan: subscription.planId || 'premium',
+                        status: stripeSubscription.status,
+                        currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
+                        currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
+                        cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
+                    };
+                }
+                catch (stripeError) {
+                    console.error('Error fetching from Stripe:', stripeError);
+                    // Return cached data if Stripe is unavailable
+                    return {
+                        hasSubscription: true,
+                        plan: subscription.planId || 'premium',
+                        status: subscription.status || 'unknown',
+                        currentPeriodStart: subscription.currentPeriodStart,
+                        currentPeriodEnd: subscription.currentPeriodEnd,
+                        cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
+                    };
+                }
+            }
+            return {
+                hasSubscription: false,
+                plan: 'free',
+                status: 'inactive',
+            };
+        }
+        catch (error) {
+            console.error('Error getting subscription status:', error);
+            throw new https_1.HttpsError('internal', 'Failed to get subscription status');
+        }
+    });
+    /**
+     * Webhook handler for Stripe events
+     */
+    export const handleStripeWebhook = (0, https_1.onRequest)(async (request, response) => {
+        const sig = request.get('Stripe-Signature');
+        const webhookSecret = (0, params_1.defineString)('STRIPE_WEBHOOK_SECRET').value();
+        let event;
+        try {
+            event = stripe.webhooks.constructEvent(request.rawBody, sig, webhookSecret);
+        }
+        catch (err) {
+            console.error('Webhook signature verification failed:', err);
+            response.status(400).send(`Webhook Error: ${err}`);
+            return;
+        }
+        try {
+            switch (event.type) {
+                case 'customer.subscription.updated':
+                case 'customer.subscription.deleted':
+                    await handleSubscriptionUpdated(event.data.object);
+                    break;
+                case 'invoice.payment_succeeded':
+                    await handlePaymentSucceeded(event.data.object);
+                    break;
+                case 'invoice.payment_failed':
+                    await handlePaymentFailed(event.data.object);
+                    break;
+                default:
+                    console.log(`Unhandled event type: ${event.type}`);
+            }
+            response.json({ received: true });
+        }
+        catch (error) {
+            console.error('Error handling webhook:', error);
+            response.status(500).json({ error: 'Webhook handler failed' });
+        }
+    });
+    /**
+     * Handle subscription updated webhook
+     */
+    async function handleSubscriptionUpdated(subscription) {
+        try {
+            // Find user by Stripe customer ID
+            const usersQuery = await admin.firestore()
+                .collection('users')
+                .where('subscription.stripeCustomerId', '==', subscription.customer)
+                .get();
+            if (usersQuery.empty) {
+                console.error('No user found for customer:', subscription.customer);
+                return;
+            }
+            const userDoc = usersQuery.docs[0];
+            const userId = userDoc.id;
+            // Update user subscription data
+            const updateData = {
+                'subscription.status': subscription.status,
+                'subscription.currentPeriodStart': new Date(subscription.current_period_start * 1000),
+                'subscription.currentPeriodEnd': new Date(subscription.current_period_end * 1000),
+                'subscription.cancelAtPeriodEnd': subscription.cancel_at_period_end,
+                'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
+            };
+            await admin.firestore().collection('users').doc(userId).update(updateData);
+            // Update subscription document
+            await admin.firestore().collection('subscriptions').doc(subscription.id).set({
+                userId,
+                stripeSubscriptionId: subscription.id,
+                customerId: subscription.customer,
+                status: subscription.status,
+                currentPeriodStart: new Date(subscription.current_period_start * 1000),
+                currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+                cancelAtPeriodEnd: subscription.cancel_at_period_end,
+                updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            }, { merge: true });
+            // Log the event
+            await admin.firestore().collection('subscription_events').add({
+                userId,
+                type: 'subscription_updated',
+                subscriptionId: subscription.id,
+                status: subscription.status,
+                timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            });
+        }
+        catch (error) {
+            console.error('Error handling subscription update:', error);
+        }
+    }
+    /**
+     * Handle payment succeeded webhook
+     */
+    async function handlePaymentSucceeded(invoice) {
+        try {
+            if (!invoice.subscription)
+                return;
+            // Find user by subscription
+            const subscriptionDoc = await admin.firestore()
+                .collection('subscriptions')
+                .doc(invoice.subscription)
+                .get();
+            if (!subscriptionDoc.exists)
+                return;
+            const subscriptionData = subscriptionDoc.data();
+            const userId = subscriptionData === null || subscriptionData === void 0 ? void 0 : subscriptionData.userId;
+            if (!userId)
+                return;
+            // Log successful payment
+            await admin.firestore().collection('subscription_events').add({
+                userId,
+                type: 'payment_succeeded',
+                subscriptionId: invoice.subscription,
+                invoiceId: invoice.id,
+                amount: invoice.amount_paid,
+                currency: invoice.currency,
+                timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            });
+            // Update user's billing history
+            await admin.firestore().collection('users').doc(userId).update({
+                'subscription.billingHistory': admin.firestore.FieldValue.arrayUnion({
+                    invoiceId: invoice.id,
+                    amount: invoice.amount_paid,
+                    currency: invoice.currency,
+                    status: 'paid',
+                    paidAt: new Date(invoice.status_transitions.paid_at * 1000),
+                }),
+                'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
+            });
+        }
+        catch (error) {
+            console.error('Error handling payment success:', error);
+        }
+    }
+    /**
+     * Handle payment failed webhook
+     */
+    async function handlePaymentFailed(invoice) {
+        try {
+            if (!invoice.subscription)
+                return;
+            // Find user by subscription
+            const subscriptionDoc = await admin.firestore()
+                .collection('subscriptions')
+                .doc(invoice.subscription)
+                .get();
+            if (!subscriptionDoc.exists)
+                return;
+            const subscriptionData = subscriptionDoc.data();
+            const userId = subscriptionData === null || subscriptionData === void 0 ? void 0 : subscriptionData.userId;
+            if (!userId)
+                return;
+            // Log failed payment
+            await admin.firestore().collection('subscription_events').add({
+                userId,
+                type: 'payment_failed',
+                subscriptionId: invoice.subscription,
+                invoiceId: invoice.id,
+                amount: invoice.amount_due,
+                currency: invoice.currency,
+                timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            });
+            // Send notification to user about failed payment
+            await sendPaymentFailedNotification(userId, invoice);
+        }
+        catch (error) {
+            console.error('Error handling payment failure:', error);
+        }
+    }
+    /**
+     * Send payment failed notification
+     */
+    async function sendPaymentFailedNotification(userId, invoice) {
+        var _a;
+        try {
+            // Get user's FCM tokens
+            const tokensQuery = await admin.firestore()
+                .collection('fcmTokens')
+                .where('userId', '==', userId)
+                .get();
+            const tokens = [];
+            tokensQuery.forEach(doc => {
+                tokens.push(doc.data().token);
+            });
+            if (tokens.length === 0)
+                return;
+            const message = {
+                notification: {
+                    title: 'Payment Failed',
+                    body: 'Your subscription payment failed. Please update your payment method.',
+                },
+                data: {
+                    type: 'payment_failed',
+                    invoiceId: invoice.id,
+                    amount: ((_a = invoice.amount_due) === null || _a === void 0 ? void 0 : _a.toString()) || '0',
+                },
+                tokens,
+            };
+            await admin.messaging().sendMulticast(message);
+        }
+        catch (error) {
+            console.error('Error sending payment failed notification:', error);
+        }
+    }
 });
 //# sourceMappingURL=subscriptions.js.map

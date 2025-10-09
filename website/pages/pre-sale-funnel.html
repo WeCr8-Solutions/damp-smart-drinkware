@@ -54,7 +54,7 @@
         /* Pre-Sale Funnel Specific Styles */
         :root {
             --presale-accent: #ff4757;
-            --presale-success: #0f8;
+            --presale-success: #00ff88;
             --presale-warning: #ffa502;
             --urgency-pulse: #ff3838;
         }
@@ -78,8 +78,11 @@
         .presale-hero::before {
             content: '';
             position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 50% 50%, rgb(0 212 255 / 10%) 0%, transparent 50%);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
             pointer-events: none;
         }
 
@@ -107,8 +110,8 @@
         .hero-title {
             font-size: clamp(2.5rem, 8vw, 4rem);
             font-weight: 900;
-            background: linear-gradient(45deg, #fff, #00d4ff);
-            background-clip: text;
+            background: linear-gradient(45deg, #ffffff, #00d4ff);
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 20px;
@@ -117,18 +120,18 @@
 
         .hero-subtitle {
             font-size: clamp(1.1rem, 3vw, 1.4rem);
-            color: rgb(255 255 255 / 90%);
+            color: rgba(255, 255, 255, 0.9);
             margin-bottom: 40px;
             line-height: 1.4;
         }
 
         .goal-counter {
-            background: rgb(255 255 255 / 10%);
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 30px;
             margin: 40px 0;
-            border: 1px solid rgb(255 255 255 / 20%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .counter-title {
@@ -157,13 +160,13 @@
 
         .goal-count {
             font-size: 1.2rem;
-            color: rgb(255 255 255 / 70%);
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .progress-bar-container {
             width: 100%;
             height: 12px;
-            background: rgb(255 255 255 / 20%);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 6px;
             overflow: hidden;
             margin: 15px 0;
@@ -180,8 +183,11 @@
         .progress-bar::after {
             content: '';
             position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgb(255 255 255 / 30%), transparent);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             animation: shimmer 2s infinite;
         }
 
@@ -231,7 +237,7 @@
 
         .cta-primary {
             display: inline-block;
-            background: linear-gradient(45deg, #00d4ff, #09c);
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
             color: white;
             padding: 18px 40px;
             border-radius: 50px;
@@ -240,12 +246,12 @@
             text-decoration: none;
             transition: all 0.3s ease;
             margin: 20px 0;
-            box-shadow: 0 8px 25px rgb(0 212 255 / 30%);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
         }
 
         .cta-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgb(0 212 255 / 40%);
+            box-shadow: 0 12px 35px rgba(0, 212, 255, 0.4);
         }
 
         .problem-solution {
@@ -257,8 +263,8 @@
         .section-title {
             font-size: clamp(2rem, 5vw, 3rem);
             text-align: center;
-            background: linear-gradient(45deg, #fff, #00d4ff);
-            background-clip: text;
+            background: linear-gradient(45deg, #ffffff, #00d4ff);
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 60px;
@@ -273,12 +279,12 @@
         }
 
         .problem-card, .solution-card {
-            background: rgb(255 255 255 / 10%);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             padding: 40px 30px;
             text-align: center;
             backdrop-filter: blur(10px);
-            border: 1px solid rgb(255 255 255 / 10%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
         }
 
@@ -292,7 +298,7 @@
 
         .problem-card:hover, .solution-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgb(0 0 0 / 30%);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
         .card-icon {
@@ -305,17 +311,17 @@
             font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 15px;
-            color: #fff;
+            color: #ffffff;
         }
 
         .card-description {
-            color: rgb(255 255 255 / 80%);
+            color: rgba(255, 255, 255, 0.8);
             line-height: 1.6;
         }
 
         .how-it-works {
             padding: 100px 20px;
-            background: rgb(255 255 255 / 5%);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
         }
 
@@ -339,7 +345,7 @@
         .step-number {
             width: 60px;
             height: 60px;
-            background: linear-gradient(45deg, #00d4ff, #09c);
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -358,7 +364,7 @@
         }
 
         .step-description {
-            color: rgb(255 255 255 / 80%);
+            color: rgba(255, 255, 255, 0.8);
             line-height: 1.6;
         }
 
@@ -369,41 +375,9 @@
             text-align: center;
         }
 
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 60px 0;
-        }
-
-        .testimonial-card {
-            background: rgb(255 255 255 / 10%);
-            border-radius: 15px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgb(255 255 255 / 10%);
-        }
-
-        .testimonial-text {
-            font-style: italic;
-            margin-bottom: 20px;
-            color: rgb(255 255 255 / 90%);
-            line-height: 1.6;
-        }
-
-        .testimonial-author {
-            font-weight: bold;
-            color: var(--presale-success);
-        }
-
-        .testimonial-role {
-            font-size: 0.9rem;
-            color: rgb(255 255 255 / 60%);
-        }
-
         .final-cta {
             padding: 100px 20px;
-            background: linear-gradient(135deg, rgb(0 212 255 / 10%), rgb(255 71 87 / 10%));
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 71, 87, 0.1));
             text-align: center;
         }
 
@@ -413,7 +387,7 @@
         }
 
         .recent-activity {
-            background: rgb(0 255 136 / 20%);
+            background: rgba(0, 255, 136, 0.2);
             border: 1px solid var(--presale-success);
             border-radius: 10px;
             padding: 15px;
@@ -453,7 +427,6 @@
                 transform: translateX(100%);
                 opacity: 0;
             }
-
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -465,7 +438,6 @@
                 transform: translateX(0);
                 opacity: 1;
             }
-
             to {
                 transform: translateX(100%);
                 opacity: 0;
@@ -479,17 +451,17 @@
 
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgb(0 0 0 / 30%);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
         /* Button hover effects */
         .qty-btn:hover, .add-to-cart-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 5px 15px rgb(0 212 255 / 30%);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
         }
 
         /* Responsive Design */
-        @media (width <= 768px) {
+        @media (max-width: 768px) {
             .presale-hero {
                 padding: 100px 15px 40px;
             }
@@ -579,15 +551,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/logo/apple-icon-180x180.png"></head>
 
 <body class="presale-body">
-    <!-- Main Navigation: Ensure only one visible nav with clear ARIA label -->
-    <nav class="damp-nav" role="navigation" aria-label="Main navigation">
-        <a href="../index.html" class="nav-link">Home</a>
-        <a href="pre-sale-funnel.html" class="nav-link">Pre-Order</a>
-        <a href="products.html" class="nav-link">Products</a>
-        <a href="product-voting.html" class="nav-link">Vote</a>
-        <a href="how-it-works.html" class="nav-link">How It Works</a>
-        <a href="cart.html" class="nav-link">Cart</a>
-    </nav>
+    <!-- Navigation Header -->
+    <damp-header></damp-header>
 
     <!-- Hero Section with Goal Counter -->
     <section class="presale-hero" id="main-content">
@@ -608,17 +573,17 @@
             <div class="goal-counter">
                 <div class="counter-title">
                     <span class="live-indicator"></span>
-                    <span id="current-backers">326</span> of 500 Pre-Orders Reserved
+                    <span id="current-backers"></span> of 500 Pre-Orders Reserved
                 </div>
 
                 <div class="progress-container">
                     <div class="progress-numbers">
-                        <span class="current-count" id="progress-count">326</span>
+                        <span class="current-count" id="progress-count"></span>
                         <span class="goal-count">/ 500 Goal</span>
                     </div>
 
                     <div class="progress-bar-container">
-                        <div class="progress-bar" id="progress-bar" style="width: 65.2%"></div>
+                        <div class="progress-bar" id="progress-bar" style="width: 0"></div>
                     </div>
                 </div>
 
@@ -682,7 +647,7 @@
         </div>
 
         <div style="text-align: center; margin-top: 40px;">
-            <p style="font-size: 1.2rem; color: rgb(255 255 255 / 90%);">
+            <p style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9);">
                 <strong>Works with Stanley, Hydro Flask, Yeti, and virtually any cup or bottle</strong>
             </p>
         </div>
@@ -692,7 +657,7 @@
     <section class="how-it-works">
         <div class="steps-container">
             <h2 class="section-title">How DAMP Works</h2>
-            <p style="text-align: center; font-size: 1.2rem; color: rgb(255 255 255 / 80%); margin-bottom: 40px;">
+            <p style="text-align: center; font-size: 1.2rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 40px;">
                 Three simple steps to never lose your drink again
             </p>
 
@@ -730,44 +695,19 @@
     <!-- Social Proof Section -->
     <section class="social-proof">
         <h2 class="section-title">What Early Adopters Are Saying</h2>
-        <p style="font-size: 1.1rem; color: rgb(255 255 255 / 80%); margin-bottom: 40px;">
+        <p style="font-size: 1.1rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 40px;">
             Real feedback from our prototype testers and early supporters
         </p>
 
-        <div class="testimonials-grid">
-            <div class="testimonial-card">
-                <p class="testimonial-text">
-                    "I've left my Stanley at work so many times. This is exactly what I need!
-                    Can't wait to get my hands on the first version."
-                </p>
-                <div class="testimonial-author">Sarah M.</div>
-                <div class="testimonial-role">Early Prototype Tester</div>
-            </div>
+        <!-- Remove testimonials -->
+        <!-- <div class="testimonials-grid"> -->
+        <!-- Testimonials content -->
+        <!-- </div> -->
 
-            <div class="testimonial-card">
-                <p class="testimonial-text">
-                    "Finally someone is solving this universal problem. I'm pre-ordering
-                    two – one for my Hydro Flask and one for my coffee mug."
-                </p>
-                <div class="testimonial-author">Mike R.</div>
-                <div class="testimonial-role">Beta Tester</div>
-            </div>
-
-            <div class="testimonial-card">
-                <p class="testimonial-text">
-                    "Simple idea, brilliant execution. The prototype I tested worked
-                    flawlessly with my Yeti tumbler. Pre-ordering for sure."
-                </p>
-                <div class="testimonial-author">Jennifer L.</div>
-                <div class="testimonial-role">Product Reviewer</div>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 40px;">
-            <p style="color: var(--presale-success); font-weight: bold; font-size: 1.1rem;">
-                ⭐⭐⭐⭐⭐ Average rating from 47 prototype testers
-            </p>
-        </div>
+        <!-- Remove average rating -->
+        <!-- <p style="color: var(--presale-success); font-weight: bold; font-size: 1.1rem;">
+            ⭐⭐⭐⭐⭐ Average rating from 47 prototype testers
+        </p> -->
     </section>
 
     <!-- Product Selection & Cart Section -->
@@ -775,7 +715,7 @@
         <div class="cta-container">
             <h2 class="section-title">Choose Your DAMP Products</h2>
 
-            <p style="font-size: 1.2rem; color: rgb(255 255 255 / 90%); margin-bottom: 30px;">
+            <p style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); margin-bottom: 30px;">
                 Select your products and quantities. Join <span id="final-count" style="color: var(--presale-success); font-weight: bold;">326</span>
                 others who have reserved their spot.
             </p>
@@ -785,20 +725,20 @@
 
                 <!-- DAMP Silicone Bottom -->
                 <div class="product-card" data-product-id="silicone-bottom">
-                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #00d4ff, #09c); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px;">
-                        <img src="../assets/images/products/silicone-bottom/silicone-bottom.png" alt="DAMP Silicone Bottom" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%));">
+                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #00d4ff, #0099cc); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px;">
+                        <img src="../assets/images/products/silicone-bottom/silicone-bottom.png" alt="DAMP Silicone Bottom" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Silicone Bottom</h3>
                     <div class="product-pricing" style="margin-bottom: 15px;">
                         <span class="current-price" style="color: var(--presale-success); font-size: 1.4rem; font-weight: bold;">$29.99</span>
-                        <span class="original-price" style="color: rgb(255 255 255 / 60%); text-decoration: line-through; margin-left: 10px;">$39.99</span>
+                        <span class="original-price" style="color: rgba(255,255,255,0.6); text-decoration: line-through; margin-left: 10px;">$39.99</span>
                     </div>
-                    <p class="product-description" style="color: rgb(255 255 255 / 80%); font-size: 0.9rem; margin-bottom: 20px;">Smart temperature monitoring silicone bottom for any cup or bottle.</p>
+                    <p class="product-description" style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 20px;">Smart temperature monitoring silicone bottom for any cup or bottle.</p>
 
                     <div class="quantity-controls" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
-                        <button class="qty-btn minus" data-product="silicone-bottom" style="width: 40px; height: 40px; border: none; background: rgb(255 255 255 / 20%); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
+                        <button class="qty-btn minus" data-product="silicone-bottom" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
                         <span class="quantity" data-product="silicone-bottom" style="color: white; font-size: 1.2rem; font-weight: bold; min-width: 30px; text-align: center;">0</span>
-                        <button class="qty-btn plus" data-product="silicone-bottom" style="width: 40px; height: 40px; border: none; background: rgb(255 255 255 / 20%); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
+                        <button class="qty-btn plus" data-product="silicone-bottom" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
                     </div>
 
                     <button class="add-to-cart-btn" data-product-id="silicone-bottom" data-product-name="DAMP Silicone Bottom" data-product-price="29.99" style="width: 100%; background: linear-gradient(45deg, var(--presale-success), #00d4ff); color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
@@ -809,19 +749,19 @@
                 <!-- DAMP Handle v1.0 -->
                 <div class="product-card" data-product-id="damp-handle">
                     <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #ff4757, #ff6b6b); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px;">
-                        <img src="../assets/images/products/damp-handle/damp-handle.png" alt="DAMP Handle v1.0" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%));">
+                        <img src="../assets/images/products/damp-handle/damp-handle.png" alt="DAMP Handle v1.0" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Handle v1.0</h3>
                     <div class="product-pricing" style="margin-bottom: 15px;">
                         <span class="current-price" style="color: var(--presale-success); font-size: 1.4rem; font-weight: bold;">$49.99</span>
-                        <span class="original-price" style="color: rgb(255 255 255 / 60%); text-decoration: line-through; margin-left: 10px;">$69.99</span>
+                        <span class="original-price" style="color: rgba(255,255,255,0.6); text-decoration: line-through; margin-left: 10px;">$69.99</span>
                     </div>
-                    <p class="product-description" style="color: rgb(255 255 255 / 80%); font-size: 0.9rem; margin-bottom: 20px;">Smart handle attachment for Stanley IceFlow and similar bottles.</p>
+                    <p class="product-description" style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 20px;">Smart handle attachment for Stanley IceFlow and similar bottles.</p>
 
                     <div class="quantity-controls" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
-                        <button class="qty-btn minus" data-product="damp-handle" style="width: 40px; height: 40px; border: none; background: rgb(255 255 255 / 20%); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
+                        <button class="qty-btn minus" data-product="damp-handle" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
                         <span class="quantity" data-product="damp-handle" style="color: white; font-size: 1.2rem; font-weight: bold; min-width: 30px; text-align: center;">0</span>
-                        <button class="qty-btn plus" data-product="damp-handle" style="width: 40px; height: 40px; border: none; background: rgb(255 255 255 / 20%); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
+                        <button class="qty-btn plus" data-product="damp-handle" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
                     </div>
 
                     <button class="add-to-cart-btn" data-product-id="damp-handle" data-product-name="DAMP Handle v1.0" data-product-price="49.99" style="width: 100%; background: linear-gradient(45deg, var(--presale-success), #00d4ff); color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
@@ -832,19 +772,19 @@
                 <!-- DAMP Cup Sleeve -->
                 <div class="product-card" data-product-id="cup-sleeve">
                     <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #ffa502, #ff6348); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px;">
-                        <img src="../assets/images/products/cup-sleeve/cup-sleeve.png" alt="DAMP Cup Sleeve" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%));">
+                        <img src="../assets/images/products/cup-sleeve/cup-sleeve.png" alt="DAMP Cup Sleeve" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Cup Sleeve</h3>
                     <div class="product-pricing" style="margin-bottom: 15px;">
                         <span class="current-price" style="color: var(--presale-success); font-size: 1.4rem; font-weight: bold;">$34.99</span>
-                        <span class="original-price" style="color: rgb(255 255 255 / 60%); text-decoration: line-through; margin-left: 10px;">$44.99</span>
+                        <span class="original-price" style="color: rgba(255,255,255,0.6); text-decoration: line-through; margin-left: 10px;">$44.99</span>
                     </div>
-                    <p class="product-description" style="color: rgb(255 255 255 / 80%); font-size: 0.9rem; margin-bottom: 20px;">Smart sleeve for coffee cups and smaller drinkware.</p>
+                    <p class="product-description" style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 20px;">Smart sleeve for coffee cups and smaller drinkware.</p>
 
                     <div class="quantity-controls" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
-                        <button class="qty-btn minus" data-product="cup-sleeve" style="width: 40px; height: 40px; border: none; background: rgb(255 255 255 / 20%); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
+                        <button class="qty-btn minus" data-product="cup-sleeve" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
                         <span class="quantity" data-product="cup-sleeve" style="color: white; font-size: 1.2rem; font-weight: bold; min-width: 30px; text-align: center;">0</span>
-                        <button class="qty-btn plus" data-product="cup-sleeve" style="width: 40px; height: 40px; border: none; background: rgb(255 255 255 / 20%); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
+                        <button class="qty-btn plus" data-product="cup-sleeve" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
                     </div>
 
                     <button class="add-to-cart-btn" data-product-id="cup-sleeve" data-product-name="DAMP Cup Sleeve" data-product-price="34.99" style="width: 100%; background: linear-gradient(45deg, var(--presale-success), #00d4ff); color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
@@ -855,19 +795,19 @@
                 <!-- DAMP Baby Bottle -->
                 <div class="product-card" data-product-id="baby-bottle">
                     <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #a55eea, #fd79a8); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px;">
-                        <img src="../assets/images/products/baby-bottle/baby-bottle.png" alt="DAMP Baby Bottle" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%));">
+                        <img src="../assets/images/products/baby-bottle/baby-bottle.png" alt="DAMP Baby Bottle" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Baby Bottle</h3>
                     <div class="product-pricing" style="margin-bottom: 15px;">
                         <span class="current-price" style="color: var(--presale-success); font-size: 1.4rem; font-weight: bold;">$79.99</span>
-                        <span class="original-price" style="color: rgb(255 255 255 / 60%); text-decoration: line-through; margin-left: 10px;">$99.99</span>
+                        <span class="original-price" style="color: rgba(255,255,255,0.6); text-decoration: line-through; margin-left: 10px;">$99.99</span>
                     </div>
-                    <p class="product-description" style="color: rgb(255 255 255 / 80%); font-size: 0.9rem; margin-bottom: 20px;">Smart baby bottle with temperature monitoring and alerts.</p>
+                    <p class="product-description" style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 20px;">Smart baby bottle with temperature monitoring and alerts.</p>
 
                     <div class="quantity-controls" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
-                        <button class="qty-btn minus" data-product="baby-bottle" style="width: 40px; height: 40px; border: none; background: rgb(255 255 255 / 20%); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
+                        <button class="qty-btn minus" data-product="baby-bottle" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
                         <span class="quantity" data-product="baby-bottle" style="color: white; font-size: 1.2rem; font-weight: bold; min-width: 30px; text-align: center;">0</span>
-                        <button class="qty-btn plus" data-product="baby-bottle" style="width: 40px; height: 40px; border: none; background: rgb(255 255 255 / 20%); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
+                        <button class="qty-btn plus" data-product="baby-bottle" style="width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
                     </div>
 
                     <button class="add-to-cart-btn" data-product-id="baby-bottle" data-product-name="DAMP Baby Bottle" data-product-price="79.99" style="width: 100%; background: linear-gradient(45deg, var(--presale-success), #00d4ff); color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
@@ -877,17 +817,17 @@
             </div>
 
             <!-- Cart Summary -->
-            <div class="cart-summary" id="cart-summary" style="background: rgb(255 255 255 / 10%); backdrop-filter: blur(20px); border-radius: 20px; padding: 30px; margin: 40px 0; border: 1px solid rgb(255 255 255 / 20%); display: none;">
+            <div class="cart-summary" id="cart-summary" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 20px; padding: 30px; margin: 40px 0; border: 1px solid rgba(255,255,255,0.2); display: none;">
                 <h3 style="color: white; font-size: 1.4rem; font-weight: bold; margin-bottom: 20px; text-align: center;">🛒 Your Cart</h3>
                 <div id="cart-items" style="margin-bottom: 20px;"></div>
-                <div class="cart-total" style="border-top: 1px solid rgb(255 255 255 / 30%); padding-top: 15px; text-align: center;">
-                    <div style="color: rgb(255 255 255 / 80%); margin-bottom: 5px;">
+                <div class="cart-total" style="border-top: 1px solid rgba(255,255,255,0.3); padding-top: 15px; text-align: center;">
+                    <div style="color: rgba(255,255,255,0.8); margin-bottom: 5px;">
                         Items: <span id="cart-item-count">0</span>
                     </div>
                     <div style="color: var(--presale-success); font-size: 1.6rem; font-weight: bold;">
                         Total: $<span id="cart-total">0.00</span>
                     </div>
-                    <div style="color: rgb(255 255 255 / 60%); font-size: 0.9rem; margin-top: 5px;">
+                    <div style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 5px;">
                         You save: $<span id="cart-savings">0.00</span>
                     </div>
                 </div>
@@ -911,7 +851,7 @@
                 Add Items to Cart First
             </button>
 
-            <p style="font-size: 0.9rem; color: rgb(255 255 255 / 70%); margin-top: 20px;">
+            <p style="font-size: 0.9rem; color: rgba(255, 255, 255, 0.7); margin-top: 20px;">
                 🔒 Secure payment via Stripe • 30-day money-back guarantee<br>
                 💳 All major cards accepted • Free worldwide shipping
             </p>
@@ -924,20 +864,20 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer" style="background: rgb(0 0 0 / 50%); padding: 40px 20px; text-align: center;">
+    <footer class="footer" style="background: rgba(0, 0, 0, 0.5); padding: 40px 20px; text-align: center;">
         <div style="max-width: 800px; margin: 0 auto;">
-            <p style="color: rgb(255 255 255 / 70%); margin-bottom: 20px;">
+            <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 20px;">
                 Questions about your pre-order? Email us at
                 <a href="mailto:support@dampdrink.com" style="color: var(--presale-success);">support@dampdrink.com</a>
             </p>
 
             <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-bottom: 20px;">
-                <a href="../pages/privacy.html" style="color: rgb(255 255 255 / 60%); text-decoration: none;">Privacy Policy</a>
-                <a href="../pages/support.html" style="color: rgb(255 255 255 / 60%); text-decoration: none;">Support</a>
-                <a href="../pages/about.html" style="color: rgb(255 255 255 / 60%); text-decoration: none;">About Us</a>
+                <a href="../pages/privacy.html" style="color: rgba(255, 255, 255, 0.6); text-decoration: none;">Privacy Policy</a>
+                <a href="../pages/support.html" style="color: rgba(255, 255, 255, 0.6); text-decoration: none;">Support</a>
+                <a href="../pages/about.html" style="color: rgba(255, 255, 255, 0.6); text-decoration: none;">About Us</a>
             </div>
 
-            <p style="color: rgb(255 255 255 / 50%); font-size: 0.9rem;">
+            <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.9rem;">
                 &copy; 2025 WeCr8 Solutions LLC. All rights reserved.
             </p>
         </div>
@@ -953,652 +893,453 @@
 
     <!-- Pre-Sale Funnel JavaScript -->
     <script>
-        // Enhanced Pre-Sale Funnel Controller with Debugging
+        // Pre-Sale Funnel Controller
         class PreSaleFunnel {
             constructor() {
-                console.log('🚀 PreSaleFunnel: Initializing...');
-                
-                try {
-                    this.currentCount = 326; // Starting count
-                    this.goalCount = 500;
-                    this.countdownEndTime = new Date();
-                    this.countdownEndTime.setDate(this.countdownEndTime.getDate() + 7); // 7 days from now
+                this.currentCount = 326; // Starting count
+                this.goalCount = 500;
+                this.countdownEndTime = new Date();
+                this.countdownEndTime.setDate(this.countdownEndTime.getDate() + 7); // 7 days from now
 
-                    // Cart functionality
-                    this.cart = {};
-                    this.products = {
-                        'silicone-bottom': { name: 'DAMP Silicone Bottom', price: 29.99, originalPrice: 39.99 },
-                        'damp-handle': { name: 'DAMP Handle v1.0', price: 49.99, originalPrice: 69.99 },
-                        'cup-sleeve': { name: 'DAMP Cup Sleeve', price: 34.99, originalPrice: 44.99 },
-                        'baby-bottle': { name: 'DAMP Baby Bottle', price: 79.99, originalPrice: 99.99 }
-                    };
+                // Cart functionality
+                this.cart = {};
+                this.products = {
+                    'silicone-bottom': { name: 'DAMP Silicone Bottom', price: 29.99, originalPrice: 39.99 },
+                    'damp-handle': { name: 'DAMP Handle v1.0', price: 49.99, originalPrice: 69.99 },
+                    'cup-sleeve': { name: 'DAMP Cup Sleeve', price: 34.99, originalPrice: 44.99 },
+                    'baby-bottle': { name: 'DAMP Baby Bottle', price: 79.99, originalPrice: 99.99 }
+                };
 
-                    console.log('📊 PreSaleFunnel: Products loaded:', this.products);
-                    console.log('⏰ PreSaleFunnel: Countdown end time:', this.countdownEndTime);
-
-                    this.updateCounters();
-                    this.startCountdown();
-                    this.startRealtimeUpdates();
-                    this.setupAnalytics();
-                    this.startLiveActivityUpdates();
-                    this.setupCartFunctionality();
-
-                    // Setup checkout button
-                    const checkoutBtn = document.getElementById('checkout-button');
-                    if (checkoutBtn) {
-                        checkoutBtn.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            console.log('🛒 PreSaleFunnel: Checkout button clicked');
-                            this.initiateCheckout();
-                        });
-                        console.log('✅ PreSaleFunnel: Checkout button listener attached');
-                    } else {
-                        console.error('❌ PreSaleFunnel: Checkout button not found!');
-                    }
-
-                    console.log('✅ PreSaleFunnel: Initialization complete');
-                } catch (error) {
-                    console.error('❌ PreSaleFunnel: Initialization failed:', error);
-                    console.error('Stack trace:', error.stack);
-                }
+                this.init();
             }
 
+            init() {
+                this.updateCounters();
+                this.startCountdown();
+                this.startRealtimeUpdates();
+                this.setupAnalytics();
+                this.startLiveActivityUpdates(); // Use live data instead of simulated
+                this.setupCartFunctionality();
+
+                // Setup checkout button
+                document.getElementById('checkout-button').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.initiateCheckout();
+                });
+            }
+
+                // Setup checkout button (handled in init, no need to duplicate)
+
             setupCartFunctionality() {
-                console.log('🛒 PreSaleFunnel: Setting up cart functionality...');
-                
-                try {
-                    // Quantity controls
-                    const qtyBtns = document.querySelectorAll('.qty-btn');
-                    console.log(`🔢 PreSaleFunnel: Found ${qtyBtns.length} quantity buttons`);
-                    
-                    qtyBtns.forEach((btn, index) => {
-                        btn.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            const productId = btn.dataset.product;
-                            const isPlus = btn.classList.contains('plus');
-                            console.log(`🔢 PreSaleFunnel: Quantity button clicked - Product: ${productId}, Action: ${isPlus ? 'plus' : 'minus'}`);
-                            this.updateQuantity(productId, isPlus ? 1 : -1);
-                        });
+                // Quantity controls
+                document.querySelectorAll('.qty-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const productId = btn.dataset.product;
+                        const isPlus = btn.classList.contains('plus');
+                        this.updateQuantity(productId, isPlus ? 1 : -1);
                     });
+                });
 
-                    // Add to cart buttons
-                    const addBtns = document.querySelectorAll('.add-to-cart-btn');
-                    console.log(`🛒 PreSaleFunnel: Found ${addBtns.length} add-to-cart buttons`);
-                    
-                    addBtns.forEach((btn, index) => {
-                        btn.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            const productId = btn.dataset.productId;
-                            const quantityEl = document.querySelector(`[data-product="${productId}"].quantity`);
-                            
-                            if (!quantityEl) {
-                                console.error(`❌ PreSaleFunnel: Quantity element not found for product: ${productId}`);
-                                return;
-                            }
-                            
-                            const quantity = parseInt(quantityEl.textContent);
-                            console.log(`🛒 PreSaleFunnel: Add to cart clicked - Product: ${productId}, Quantity: ${quantity}`);
-
-                            if (quantity > 0) {
-                                this.addToCart(productId, quantity);
-                            } else if (this.cart[productId]) {
-                                console.log(`🛒 PreSaleFunnel: Adding 1 more of existing cart item: ${productId}`);
-                                this.addToCart(productId, 1);
-                            } else {
-                                console.warn(`⚠️ PreSaleFunnel: No quantity selected for product: ${productId}`);
-                            }
-                        });
+                // Add to cart buttons
+                document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const productId = btn.dataset.productId;
+                        const quantityEl = document.querySelector(`[data-product="${productId}"].quantity`);
+                        let quantity = 0;
+                        if (quantityEl) {
+                            quantity = parseInt(quantityEl.textContent, 10) || 0;
+                        }
+                        // Only allow adding if quantity > 0
+                        if (quantity > 0) {
+                            this.addToCart(productId, quantity);
+                        }
                     });
-
-                    console.log('✅ PreSaleFunnel: Cart functionality setup complete');
-                } catch (error) {
-                    console.error('❌ PreSaleFunnel: Cart functionality setup failed:', error);
-                }
+                });
             }
 
             updateQuantity(productId, change) {
-                console.log(`🔢 PreSaleFunnel: Updating quantity - Product: ${productId}, Change: ${change}`);
-                try {
-                    const quantityEl = document.querySelector(`[data-product="${productId}"].quantity`);
-                    if (!quantityEl) {
-                        console.error(`❌ PreSaleFunnel: Quantity element not found for: ${productId}`);
-                        return;
-                    }
-                    let currentQty = parseInt(quantityEl.textContent);
-                    if (isNaN(currentQty)) currentQty = 0;
-                    let newQty = currentQty + change;
-                    if (newQty < 0) newQty = 0;
-                    if (newQty > 10) newQty = 10;
-                    quantityEl.textContent = newQty;
-                    // Update add to cart button state
-                    const addBtn = document.querySelector(`[data-product-id="${productId}"]`);
-                    if (!addBtn) return;
-                    const isInCart = this.cart[productId] && this.cart[productId] > 0;
-                    if (newQty > 0) {
-                        addBtn.style.opacity = '1';
-                        addBtn.style.cursor = 'pointer';
-                        addBtn.textContent = `Add ${newQty} to Cart`;
-                        addBtn.disabled = false;
-                    } else if (isInCart) {
-                        addBtn.style.opacity = '1';
-                        addBtn.style.cursor = 'pointer';
-                        addBtn.textContent = 'Add More to Cart';
-                        addBtn.disabled = false;
-                    } else {
-                        addBtn.style.opacity = '0.7';
-                        addBtn.style.cursor = 'not-allowed';
-                        addBtn.textContent = 'Add to Cart';
-                        addBtn.disabled = true;
-                    }
-                    this.updateCheckoutButton();
-                } catch (error) {
-                    console.error(`❌ PreSaleFunnel: Error updating quantity for ${productId}:`, error);
+                const quantityEl = document.querySelector(`[data-product="${productId}"].quantity`);
+                if (!quantityEl) {
+                    console.error('❌ Quantity element not found for:', productId);
+                    return;
                 }
+
+                const currentQty = parseInt(quantityEl.textContent, 10) || 0;
+                const newQty = Math.max(0, Math.min(10, currentQty + change)); // Limit 0-10
+
+                quantityEl.textContent = newQty;
+
+                // Update add to cart button state
+                const addBtn = document.querySelector(`[data-product-id="${productId}"]`);
+                if (!addBtn) {
+                    return;
+                }
+
+                if (newQty > 0) {
+                    addBtn.style.opacity = '1';
+                    addBtn.style.cursor = 'pointer';
+                    addBtn.textContent = `Add ${newQty} to Cart`;
+                    addBtn.disabled = false;
+                } else {
+                    addBtn.style.opacity = '0.7';
+                    addBtn.style.cursor = 'not-allowed';
+                    addBtn.textContent = 'Add to Cart';
+                    addBtn.disabled = true;
+                }
+
+                // Update checkout button state
+                this.updateCheckoutButton();
             }
 
             updateCheckoutButton() {
-                console.log('🛒 PreSaleFunnel: Updating checkout button state...');
-                
-                try {
-                    const checkoutBtn = document.getElementById('checkout-button');
-                    if (!checkoutBtn) {
-                        console.error('❌ PreSaleFunnel: Checkout button not found!');
-                        return;
-                    }
+                const checkoutBtn = document.getElementById('checkout-button');
+                if (!checkoutBtn) return;
 
-                    const quantityElements = document.querySelectorAll('.quantity');
-                    const hasQuantitySelected = Array.from(quantityElements).some(el => parseInt(el.textContent) > 0);
-                    const hasItemsInCart = Object.keys(this.cart).length > 0;
-                    
-                    console.log(`🛒 PreSaleFunnel: Checkout state - Quantity selected: ${hasQuantitySelected}, Items in cart: ${hasItemsInCart}`);
-                    console.log(`🛒 PreSaleFunnel: Current cart:`, this.cart);
+                // Check if there are any items with quantity > 0 OR items in cart
+                const hasQuantitySelected = Array.from(document.querySelectorAll('.quantity')).some(el => parseInt(el.textContent, 10) > 0);
+                const hasItemsInCart = Object.keys(this.cart).length > 0;
 
-                    if (hasQuantitySelected || hasItemsInCart) {
-                        checkoutBtn.disabled = false;
-                        checkoutBtn.style.opacity = '1';
-                        checkoutBtn.style.cursor = 'pointer';
+                if (hasQuantitySelected || hasItemsInCart) {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.style.opacity = '1';
+                    checkoutBtn.style.cursor = 'pointer';
 
-                        if (hasItemsInCart) {
-                            const total = Object.entries(this.cart).reduce((sum, [productId, quantity]) => {
-                                const product = this.products[productId];
-                                if (!product) {
-                                    console.error(`❌ PreSaleFunnel: Product not found: ${productId}`);
-                                    return sum;
-                                }
-                                return sum + (product.price * quantity);
-                            }, 0);
-                            checkoutBtn.textContent = `Checkout - $${total.toFixed(2)}`;
-                            console.log(`✅ PreSaleFunnel: Checkout button enabled with total: $${total.toFixed(2)}`);
-                        } else {
-                            checkoutBtn.textContent = 'Add Items to Cart First';
-                            console.log('⚠️ PreSaleFunnel: Checkout button shows add items message');
-                        }
+                    if (hasItemsInCart) {
+                        const total = Object.entries(this.cart).reduce((sum, [productId, quantity]) => {
+                            return sum + (this.products[productId].price * quantity);
+                        }, 0);
+                        checkoutBtn.textContent = `Checkout - $${total.toFixed(2)}`;
                     } else {
-                        checkoutBtn.disabled = true;
-                        checkoutBtn.style.opacity = '0.5';
-                        checkoutBtn.style.cursor = 'not-allowed';
                         checkoutBtn.textContent = 'Add Items to Cart First';
-                        console.log('❌ PreSaleFunnel: Checkout button disabled');
                     }
-                } catch (error) {
-                    console.error('❌ PreSaleFunnel: Error updating checkout button:', error);
+                } else {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.style.opacity = '0.5';
+                    checkoutBtn.style.cursor = 'not-allowed';
+                    checkoutBtn.textContent = 'Add Items to Cart First';
                 }
             }
 
             addToCart(productId, quantity) {
-                console.log(`🛒 PreSaleFunnel: Adding to cart - Product: ${productId}, Quantity: ${quantity}`);
-                try {
-                    if (quantity <= 0) {
-                        console.warn(`⚠️ PreSaleFunnel: Invalid quantity ${quantity} for product ${productId}`);
-                        return;
-                    }
-                    const product = this.products[productId];
-                    if (!product) {
-                        console.error(`❌ PreSaleFunnel: Product not found: ${productId}`);
-                        return;
-                    }
-                    // Add to cart object, max 10 per product
-                    const prevQty = this.cart[productId] || 0;
-                    let newQty = prevQty + quantity;
-                    if (newQty > 10) newQty = 10;
-                    this.cart[productId] = newQty;
-                    // Reset quantity display
-                    const quantityEl = document.querySelector(`[data-product="${productId}"].quantity`);
-                    if (quantityEl) quantityEl.textContent = '0';
-                    const addBtn = document.querySelector(`[data-product-id="${productId}"]`);
-                    if (addBtn) {
-                        addBtn.style.opacity = '1';
-                        addBtn.style.cursor = 'pointer';
-                        addBtn.textContent = 'Add More to Cart';
-                        addBtn.disabled = false;
-                    }
-                    this.updateCartDisplay();
-                    this.updateCheckoutButton();
-                    const productName = product.name;
-                    this.showCartMessage(`✅ Added ${newQty}x ${productName} to cart!`);
-                    this.trackAnalytics('add_to_cart', {
-                        product_id: productId,
-                        quantity: newQty,
-                        product_name: productName
-                    });
-                } catch (error) {
-                    console.error(`❌ PreSaleFunnel: Error adding ${productId} to cart:`, error);
+                if (quantity <= 0) return;
+
+                // Add to cart object
+                if (this.cart[productId]) {
+                    this.cart[productId] += quantity;
+                } else {
+                    this.cart[productId] = quantity;
                 }
+
+                // Reset quantity display but keep button functional
+                const quantityEl = document.querySelector(`[data-product="${productId}"].quantity`);
+                if (quantityEl) quantityEl.textContent = '0';
+                const addBtn = document.querySelector(`[data-product-id="${productId}"]`);
+
+                // Keep button enabled and functional (don't disable it)
+                if (addBtn) {
+                    addBtn.style.opacity = '1';
+                    addBtn.style.cursor = 'pointer';
+                    addBtn.textContent = 'Add More to Cart';
+                }
+
+                // Update cart display
+                this.updateCartDisplay();
+
+                // Update checkout button
+                this.updateCheckoutButton();
+
+                // Show success message
+                const productName = this.products[productId].name;
+                this.showCartMessage(`✅ Added ${quantity}x ${productName} to cart!`);
+
+                // Track analytics
+                this.trackAnalytics('add_to_cart', {
+                    product_id: productId,
+                    quantity: quantity,
+                    product_name: productName
+                });
             }
 
             removeFromCart(productId, quantityToRemove = null) {
-                console.log(`🗑️ PreSaleFunnel: Removing from cart - Product: ${productId}, Quantity: ${quantityToRemove}`);
-                
-                try {
-                    if (!this.cart[productId]) {
-                        console.warn(`⚠️ PreSaleFunnel: Product ${productId} not in cart`);
-                        return;
-                    }
+                if (!this.cart[productId]) return;
 
-                    const originalQuantity = this.cart[productId];
-
-                    if (quantityToRemove === null || quantityToRemove >= this.cart[productId]) {
-                        delete this.cart[productId];
-                        console.log(`🗑️ PreSaleFunnel: Completely removed ${productId} from cart`);
-                    } else {
-                        this.cart[productId] -= quantityToRemove;
-                        console.log(`🗑️ PreSaleFunnel: Reduced ${productId} quantity: ${originalQuantity} → ${this.cart[productId]}`);
-                    }
-
-                    console.log(`🛒 PreSaleFunnel: Cart state after removal:`, this.cart);
-                    this.updateCartDisplay();
-                } catch (error) {
-                    console.error(`❌ PreSaleFunnel: Error removing ${productId} from cart:`, error);
+                if (quantityToRemove === null || quantityToRemove >= this.cart[productId]) {
+                    delete this.cart[productId];
+                } else {
+                    this.cart[productId] -= quantityToRemove;
                 }
+
+                this.updateCartDisplay();
+                this.updateCheckoutButton();
             }
 
             updateCartDisplay() {
-                console.log('🛒 PreSaleFunnel: Updating cart display...');
-                
-                try {
-                    const cartSummary = document.getElementById('cart-summary');
-                    const cartItems = document.getElementById('cart-items');
-                    const cartItemCount = document.getElementById('cart-item-count');
-                    const cartTotal = document.getElementById('cart-total');
-                    const cartSavings = document.getElementById('cart-savings');
-                    const checkoutBtn = document.getElementById('checkout-button');
+                const cartSummary = document.getElementById('cart-summary');
+                const cartItems = document.getElementById('cart-items');
+                const cartItemCount = document.getElementById('cart-item-count');
+                const cartTotal = document.getElementById('cart-total');
+                const cartSavings = document.getElementById('cart-savings');
+                const checkoutBtn = document.getElementById('checkout-button');
 
-                    if (!cartSummary || !cartItems || !cartItemCount || !cartTotal || !cartSavings) {
-                        console.error('❌ PreSaleFunnel: Cart display elements not found');
-                        return;
-                    }
+                // Check if cart is empty
+                const totalItems = Object.values(this.cart).reduce((sum, qty) => sum + qty, 0);
 
-                    const totalItems = Object.values(this.cart).reduce((sum, qty) => sum + qty, 0);
-                    console.log(`🛒 PreSaleFunnel: Total items in cart: ${totalItems}`);
-
-                    if (totalItems === 0) {
-                        cartSummary.style.display = 'none';
-                        if (checkoutBtn) {
-                            checkoutBtn.disabled = true;
-                            checkoutBtn.style.opacity = '0.5';
-                            checkoutBtn.style.cursor = 'not-allowed';
-                            checkoutBtn.textContent = 'Add Items to Cart First';
-                        }
-                        console.log('🛒 PreSaleFunnel: Cart is empty, hiding display');
-                        return;
-                    }
-
-                    cartSummary.style.display = 'block';
-                    console.log('🛒 PreSaleFunnel: Showing cart display');
-
-                    let itemsHTML = '';
-                    let total = 0;
-                    let totalSavings = 0;
-
-                    Object.entries(this.cart).forEach(([productId, quantity]) => {
-                        const product = this.products[productId];
-                        if (!product) {
-                            console.error(`❌ PreSaleFunnel: Product not found for cart item: ${productId}`);
-                            return;
-                        }
-                        
-                        const itemTotal = product.price * quantity;
-                        const itemSavings = (product.originalPrice - product.price) * quantity;
-
-                        total += itemTotal;
-                        totalSavings += itemSavings;
-
-                        console.log(`🛒 PreSaleFunnel: Cart item ${productId}: ${quantity} × $${product.price} = $${itemTotal}`);
-
-                        itemsHTML += `
-                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                <div style="flex: 1;">
-                                    <div style="color: white; font-weight: bold;">${product.name}</div>
-                                    <div style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">$${product.price.toFixed(2)} each</div>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <button class="cart-qty-btn" onclick="preSaleFunnel.removeFromCart('${productId}', 1)" style="width: 30px; height: 30px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer;">-</button>
-                                    <span style="color: white; font-weight: bold; min-width: 20px; text-align: center;">${quantity}</span>
-                                    <button class="cart-qty-btn" onclick="preSaleFunnel.addToCart('${productId}', 1)" style="width: 30px; height: 30px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer;">+</button>
-                                    <button onclick="preSaleFunnel.removeFromCart('${productId}')" style="background: rgba(255,71,87,0.3); color: #ff4757; border: none; padding: 5px 10px; border-radius: 15px; cursor: pointer; font-size: 0.8rem; margin-left: 10px;">Remove</button>
-                                </div>
-                                <div style="color: var(--presale-success); font-weight: bold; min-width: 80px; text-align: right;">
-                                    $${itemTotal.toFixed(2)}
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    cartItems.innerHTML = itemsHTML;
-                    cartItemCount.textContent = totalItems;
-                    cartTotal.textContent = total.toFixed(2);
-                    cartSavings.textContent = totalSavings.toFixed(2);
-
-                    console.log(`🛒 PreSaleFunnel: Cart totals - Items: ${totalItems}, Total: $${total.toFixed(2)}, Savings: $${totalSavings.toFixed(2)}`);
-
+                if (totalItems === 0) {
+                    if (cartSummary) cartSummary.style.display = 'none';
                     if (checkoutBtn) {
-                        checkoutBtn.disabled = false;
-                        checkoutBtn.style.opacity = '1';
-                        checkoutBtn.style.cursor = 'pointer';
-                        checkoutBtn.textContent = `Checkout - $${total.toFixed(2)} (Save $${totalSavings.toFixed(2)})`;
+                        checkoutBtn.disabled = true;
+                        checkoutBtn.style.opacity = '0.5';
+                        checkoutBtn.style.cursor = 'not-allowed';
+                        checkoutBtn.textContent = 'Add Items to Cart First';
                     }
+                    return;
+                }
 
-                    console.log('✅ PreSaleFunnel: Cart display updated successfully');
-                } catch (error) {
-                    console.error('❌ PreSaleFunnel: Error updating cart display:', error);
+                // Show cart summary
+                if (cartSummary) cartSummary.style.display = 'block';
+
+                // Build cart items HTML
+                let itemsHTML = '';
+                let total = 0;
+                let totalSavings = 0;
+
+                Object.entries(this.cart).forEach(([productId, quantity]) => {
+                    const product = this.products[productId];
+                    const itemTotal = product.price * quantity;
+                    const itemSavings = (product.originalPrice - product.price) * quantity;
+
+                    total += itemTotal;
+                    totalSavings += itemSavings;
+
+                    itemsHTML += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <div style="flex: 1;">
+                                <div style="color: white; font-weight: bold;">${product.name}</div>
+                                <div style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">$${product.price.toFixed(2)} each</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <button class="cart-qty-btn" onclick="preSaleFunnel.removeFromCart('${productId}', 1)" style="width: 30px; height: 30px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer;">-</button>
+                                <span style="color: white; font-weight: bold; min-width: 20px; text-align: center;">${quantity}</span>
+                                <button class="cart-qty-btn" onclick="preSaleFunnel.addToCart('${productId}', 1)" style="width: 30px; height: 30px; border: none; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; cursor: pointer;">+</button>
+                                <button onclick="preSaleFunnel.removeFromCart('${productId}')" style="background: rgba(255,71,87,0.3); color: #ff4757; border: none; padding: 5px 10px; border-radius: 15px; cursor: pointer; font-size: 0.8rem; margin-left: 10px;">Remove</button>
+                            </div>
+                            <div style="color: var(--presale-success); font-weight: bold; min-width: 80px; text-align: right;">
+                                $${itemTotal.toFixed(2)}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if (cartItems) cartItems.innerHTML = itemsHTML;
+                if (cartItemCount) cartItemCount.textContent = totalItems;
+                if (cartTotal) cartTotal.textContent = total.toFixed(2);
+                if (cartSavings) cartSavings.textContent = totalSavings.toFixed(2);
+
+                // Enable checkout button
+                if (checkoutBtn) {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.style.opacity = '1';
+                    checkoutBtn.style.cursor = 'pointer';
+                    checkoutBtn.textContent = `Checkout - $${total.toFixed(2)} (Save $${totalSavings.toFixed(2)})`;
                 }
             }
 
             showCartMessage(message) {
-                console.log(`💬 PreSaleFunnel: Showing cart message: ${message}`);
-                
-                try {
-                    const messageEl = document.createElement('div');
-                    messageEl.style.cssText = `
-                        position: fixed;
-                        top: 20px;
-                        right: 20px;
-                        background: linear-gradient(45deg, var(--presale-success), #00d4ff);
-                        color: white;
-                        padding: 15px 25px;
-                        border-radius: 10px;
-                        font-weight: bold;
-                        z-index: 10000;
-                        animation: slideInRight 0.3s ease;
-                    `;
-                    messageEl.textContent = message;
-                    document.body.appendChild(messageEl);
+                // Create and show a temporary success message
+                const messageEl = document.createElement('div');
+                messageEl.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(45deg, var(--presale-success), #00d4ff);
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    z-index: 10000;
+                    animation: slideInRight 0.3s ease;
+                `;
+                messageEl.textContent = message;
+                document.body.appendChild(messageEl);
 
-                    setTimeout(() => {
-                        messageEl.style.animation = 'slideOutRight 0.3s ease';
-                        setTimeout(() => messageEl.remove(), 300);
-                    }, 3000);
-
-                    console.log('✅ PreSaleFunnel: Cart message displayed');
-                } catch (error) {
-                    console.error('❌ PreSaleFunnel: Error showing cart message:', error);
-                }
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    messageEl.style.animation = 'slideOutRight 0.3s ease';
+                    setTimeout(() => messageEl.remove(), 300);
+                }, 3000);
             }
 
             updateCounters() {
-                console.log(`📊 PreSaleFunnel: Updating counters - Current: ${this.currentCount}, Goal: ${this.goalCount}`);
-                
-                try {
-                    const percentage = (this.currentCount / this.goalCount) * 100;
-                    console.log(`📊 PreSaleFunnel: Progress percentage: ${percentage.toFixed(1)}%`);
+                const percentage = (this.currentCount / this.goalCount) * 100;
 
-                    const elements = {
-                        'current-backers': this.currentCount,
-                        'progress-count': this.currentCount,
-                        'final-count': this.currentCount,
-                        'final-progress-count': this.currentCount
-                    };
+                // Update all counter displays
+                document.getElementById('current-backers').textContent = this.currentCount;
+                document.getElementById('progress-count').textContent = this.currentCount;
+                document.getElementById('final-count').textContent = this.currentCount;
+                document.getElementById('final-progress-count').textContent = this.currentCount;
 
-                    Object.entries(elements).forEach(([id, value]) => {
-                        const element = document.getElementById(id);
-                        if (element) {
-                            element.textContent = value;
-                        } else {
-                            console.warn(`⚠️ PreSaleFunnel: Element not found: ${id}`);
-                        }
-                    });
+                // Update progress bars
+                document.getElementById('progress-bar').style.width = percentage + '%';
+                document.getElementById('final-progress-bar').style.width = percentage + '%';
 
-                    const progressBars = ['progress-bar', 'final-progress-bar'];
-                    progressBars.forEach(id => {
-                        const element = document.getElementById(id);
-                        if (element) {
-                            element.style.width = percentage + '%';
-                        } else {
-                            console.warn(`⚠️ PreSaleFunnel: Progress bar not found: ${id}`);
-                        }
-                    });
-
-                    if (percentage > 90) {
-                        const remaining = this.goalCount - this.currentCount;
-                        this.addUrgencyMessage(`🔥 Almost sold out! Only ${remaining} spots left!`);
-                    } else if (percentage > 80) {
-                        const remaining = Math.ceil((this.goalCount - this.currentCount) / 10) * 10;
-                        this.addUrgencyMessage(`⚡ Less than ${remaining} spots remaining!`);
-                    }
-
-                    console.log('✅ PreSaleFunnel: Counters updated successfully');
-                } catch (error) {
-                    console.error('❌ PreSaleFunnel: Error updating counters:', error);
+                // Add urgency messaging based on progress
+                if (percentage > 90) {
+                    this.addUrgencyMessage("🔥 Almost sold out! Only " + (this.goalCount - this.currentCount) + " spots left!");
+                } else if (percentage > 80) {
+                    this.addUrgencyMessage("⚡ Less than " + Math.ceil((this.goalCount - this.currentCount) / 10) * 10 + " spots remaining!");
                 }
             }
 
             startCountdown() {
-                console.log('⏰ PreSaleFunnel: Starting countdown timer...');
-                
-                try {
-                    const updateCountdown = () => {
-                        const now = new Date().getTime();
-                        const distance = this.countdownEndTime.getTime() - now;
+                const updateCountdown = () => {
+                    const now = new Date().getTime();
+                    const distance = this.countdownEndTime.getTime() - now;
 
-                        if (distance < 0) {
-                            console.log('⏰ PreSaleFunnel: Countdown expired');
-                            this.handleCountdownExpired();
-                            return;
-                        }
+                    if (distance < 0) {
+                        this.handleCountdownExpired();
+                        return;
+                    }
 
-                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                        const timeElements = { days, hours, minutes, seconds };
-                        Object.entries(timeElements).forEach(([unit, value]) => {
-                            const element = document.getElementById(unit);
-                            if (element) {
-                                element.textContent = value;
-                            }
-                        });
+                    document.getElementById('days').textContent = days;
+                    document.getElementById('hours').textContent = hours;
+                    document.getElementById('minutes').textContent = minutes;
+                    document.getElementById('seconds').textContent = seconds;
 
-                        if (days === 0 && hours < 24) {
-                            const timer = document.querySelector('.countdown-timer');
-                            if (timer) {
-                                timer.style.animation = 'pulse 1s infinite';
-                            }
-                        }
-                    };
+                    // Add urgency styling when time is low
+                    if (days === 0 && hours < 24) {
+                        document.querySelector('.countdown-timer').style.animation = 'pulse 1s infinite';
+                    }
+                };
 
-                    updateCountdown();
-                    const intervalId = setInterval(updateCountdown, 1000);
-                    console.log('✅ PreSaleFunnel: Countdown timer started');
-                    
-                    return intervalId;
-                } catch (error) {
-                    console.error('❌ PreSaleFunnel: Error starting countdown:', error);
-                }
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
             }
 
             startRealtimeUpdates() {
-                console.log('📡 PreSaleFunnel: Starting realtime updates...');
-                
-                try {
-                    const intervalId = setInterval(() => {
-                        if (Math.random() < 0.3 && this.currentCount < this.goalCount) {
-                            const increment = Math.floor(Math.random() * 2) + 1;
-                            this.currentCount += increment;
-                            console.log(`📡 PreSaleFunnel: Simulated order - New count: ${this.currentCount} (+${increment})`);
-                            this.updateCounters();
-                            this.trackAnalytics('simulated_order', { new_count: this.currentCount });
-                        }
-                    }, 30000);
-                    
-                    console.log('✅ PreSaleFunnel: Realtime updates started');
-                    return intervalId;
-                } catch (error) {
-                    console.error('❌ PreSaleFunnel: Error starting realtime updates:', error);
-                }
+                // Simulate realistic pre-order activity
+                setInterval(() => {
+                    // Randomly increase count (simulate real orders)
+                    if (Math.random() < 0.3 && this.currentCount < this.goalCount) { // 30% chance every 30 seconds
+                        this.currentCount += Math.floor(Math.random() * 2) + 1; // Add 1-2 orders
+                        this.updateCounters();
+                        this.trackAnalytics('simulated_order', { new_count: this.currentCount });
+                    }
+                }, 30000); // Every 30 seconds
             }
 
             async loadLiveActivity() {
-                console.log('📡 PreSaleFunnel: Loading live activity...');
-                
                 try {
                     const response = await fetch('/api/recent-activity');
                     if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: Failed to fetch recent activity`);
+                        throw new Error('Failed to fetch recent activity');
                     }
 
                     const data = await response.json();
-                    console.log('📡 PreSaleFunnel: Live activity data:', data);
 
+                    // Update activity text
                     const activityText = data.activity;
-                    const elements = ['recent-activity-text', 'final-activity-text'];
-                    elements.forEach(id => {
-                        const element = document.getElementById(id);
-                        if (element) {
-                            element.textContent = activityText;
-                        }
-                    });
+                    document.getElementById('recent-activity-text').textContent = activityText;
+                    document.getElementById('final-activity-text').textContent = activityText;
 
+                    // Update current count if different
                     if (data.currentCount && data.currentCount !== this.currentCount) {
-                        console.log(`📡 PreSaleFunnel: Count update from API - ${this.currentCount} → ${data.currentCount}`);
                         this.currentCount = data.currentCount;
                         this.updateCounters();
                     }
 
-                    console.log('✅ PreSaleFunnel: Live activity updated successfully');
+                    console.log('✅ Live activity updated:', activityText);
+
                 } catch (error) {
-                    console.error('❌ PreSaleFunnel: Error loading live activity:', error);
-                    
+                    console.error('Error loading live activity:', error);
+                    // Fallback to showing a generic message
                     const fallbackMessage = "Join our growing community of early adopters!";
-                    const elements = ['recent-activity-text', 'final-activity-text'];
-                    elements.forEach(id => {
-                        const element = document.getElementById(id);
-                        if (element) {
-                            element.textContent = fallbackMessage;
-                        }
-                    });
+                    document.getElementById('recent-activity-text').textContent = fallbackMessage;
+                    document.getElementById('final-activity-text').textContent = fallbackMessage;
                 }
             }
 
             startLiveActivityUpdates() {
-                console.log('📡 PreSaleFunnel: Starting live activity updates...');
-                
-                try {
+                // Load initial activity
+                this.loadLiveActivity();
+
+                // Update every 30 seconds with real data
+                setInterval(() => {
                     this.loadLiveActivity();
-                    const intervalId = setInterval(() => {
-                        this.loadLiveActivity();
-                    }, 30000);
-                    
-                    console.log('✅ PreSaleFunnel: Live activity updates started');
-                    return intervalId;
-                } catch (error) {
-                    console.error('❌ PreSaleFunnel: Error starting live activity updates:', error);
-                }
+                }, 30000);
             }
 
             addUrgencyMessage(message) {
-                console.log(`🚨 PreSaleFunnel: Adding urgency message: ${message}`);
-                
-                try {
-                    const urgencyEl = document.querySelector('.urgency-message');
-                    if (urgencyEl) {
-                        urgencyEl.textContent = message;
-                        console.log('✅ PreSaleFunnel: Updated existing urgency message');
-                    } else {
-                        const newUrgency = document.createElement('div');
-                        newUrgency.className = 'urgency-message';
-                        newUrgency.style.cssText = `
-                            background: linear-gradient(45deg, var(--presale-accent), #ff6b6b);
-                            color: white;
-                            padding: 15px;
-                            border-radius: 10px;
-                            margin: 20px 0;
-                            text-align: center;
-                            font-weight: bold;
-                            animation: pulse 2s infinite;
-                        `;
-                        newUrgency.textContent = message;
-                        
-                        const heroContent = document.querySelector('.hero-content');
-                        if (heroContent) {
-                            heroContent.appendChild(newUrgency);
-                            console.log('✅ PreSaleFunnel: Added new urgency message');
-                        } else {
-                            console.error('❌ PreSaleFunnel: Hero content not found for urgency message');
-                        }
-                    }
-                } catch (error) {
-                    console.error('❌ PreSaleFunnel: Error adding urgency message:', error);
+                const urgencyEl = document.querySelector('.urgency-message');
+                if (urgencyEl) {
+                    urgencyEl.textContent = message;
+                } else {
+                    const newUrgency = document.createElement('div');
+                    newUrgency.className = 'urgency-message';
+                    newUrgency.style.cssText = `
+                        background: linear-gradient(45deg, var(--presale-accent), #ff6b6b);
+                        color: white;
+                        padding: 15px;
+                        border-radius: 10px;
+                        margin: 20px 0;
+                        text-align: center;
+                        font-weight: bold;
+                        animation: pulse 2s infinite;
+                    `;
+                    newUrgency.textContent = message;
+                    document.querySelector('.hero-content').appendChild(newUrgency);
                 }
             }
 
             handleCountdownExpired() {
-                console.log('⏰ PreSaleFunnel: Handling countdown expiration...');
-                
-                try {
-                    const timer = document.querySelector('.countdown-timer');
-                    if (timer) {
-                        timer.innerHTML = `
-                            <div style="color: var(--presale-accent); font-weight: bold;">
-                                🚨 Early Bird Pricing Has Ended
-                            </div>
-                            <div style="font-size: 0.9rem; margin-top: 10px;">
-                                Join waitlist for regular pricing notification
-                            </div>
-                        `;
-                    }
+                // Switch to waitlist mode
+                document.querySelector('.countdown-timer').innerHTML = `
+                    <div style="color: var(--presale-accent); font-weight: bold;">
+                        🚨 Early Bird Pricing Has Ended
+                    </div>
+                    <div style="font-size: 0.9rem; margin-top: 10px;">
+                        Join waitlist for regular pricing notification
+                    </div>
+                `;
 
-                    document.querySelectorAll('.cta-primary').forEach(btn => {
-                        btn.textContent = 'Join Waitlist - $39.99';
-                        btn.style.background = 'linear-gradient(45deg, var(--presale-warning), #ffa502)';
-                    });
-
-                    console.log('✅ PreSaleFunnel: Countdown expiration handled');
-                } catch (error) {
-                    console.error('❌ PreSaleFunnel: Error handling countdown expiration:', error);
-                }
+                // Update CTA buttons
+                document.querySelectorAll('.cta-primary').forEach(btn => {
+                    btn.textContent = 'Join Waitlist - $39.99';
+                    btn.style.background = 'linear-gradient(45deg, var(--presale-warning), #ffa502)';
+                });
             }
 
             async initiateCheckout() {
-                console.log('🚀 PreSaleFunnel: Initiating checkout...');
-                
+                // Check if cart is empty
+                const totalItems = Object.values(this.cart).reduce((sum, qty) => sum + qty, 0);
+                if (totalItems === 0) {
+                    alert('Please add items to your cart before checkout.');
+                    return;
+                }
+
+                // Track conversion attempt
+                this.trackAnalytics('checkout_initiated', {
+                    count_at_checkout: this.currentCount,
+                    time_remaining: this.countdownEndTime.getTime() - new Date().getTime(),
+                    cart_items: Object.keys(this.cart).length,
+                    cart_total_items: totalItems
+                });
+
+                // Disable checkout button and show loading
+                const checkoutButton = document.getElementById('checkout-button');
+                const originalText = checkoutButton.textContent;
+                checkoutButton.disabled = true;
+                checkoutButton.textContent = '🔄 Creating Checkout Session...';
+                checkoutButton.style.opacity = '0.7';
+
                 try {
-                    const totalItems = Object.values(this.cart).reduce((sum, qty) => sum + qty, 0);
-                    console.log(`🛒 PreSaleFunnel: Checkout initiated with ${totalItems} items`);
-                    
-                    if (totalItems === 0) {
-                        console.warn('⚠️ PreSaleFunnel: Checkout attempted with empty cart');
-                        alert('Please add items to your cart before checkout.');
-                        return;
-                    }
-
-                    console.log('🛒 PreSaleFunnel: Cart contents for checkout:', this.cart);
-
-                    this.trackAnalytics('checkout_initiated', {
-                        count_at_checkout: this.currentCount,
-                        time_remaining: this.countdownEndTime.getTime() - new Date().getTime(),
-                        cart_items: Object.keys(this.cart).length,
-                        cart_total_items: totalItems
-                    });
-
-                    const checkoutButton = document.getElementById('checkout-button');
-                    const originalText = checkoutButton.textContent;
-                    checkoutButton.disabled = true;
-                    checkoutButton.textContent = '🔄 Creating Checkout Session...';
-                    checkoutButton.style.opacity = '0.7';
-
-                    console.log('🔄 PreSaleFunnel: Preparing Stripe checkout session...');
-
+                    // Prepare line items for Stripe
                     const lineItems = [];
                     let totalAmount = 0;
 
@@ -1606,8 +1347,6 @@
                         const product = this.products[productId];
                         const itemTotal = product.price * quantity;
                         totalAmount += itemTotal;
-
-                        console.log(`💰 PreSaleFunnel: Line item - ${product.name}: ${quantity} × $${product.price} = $${itemTotal}`);
 
                         lineItems.push({
                             price_data: {
@@ -1623,39 +1362,31 @@
                         });
                     });
 
-                    console.log(`💰 PreSaleFunnel: Total checkout amount: $${totalAmount.toFixed(2)}`);
-                    console.log('📦 PreSaleFunnel: Line items prepared:', lineItems);
-
-                    const checkoutData = {
-                        line_items: lineItems,
-                        mode: 'payment',
-                        success_url: `${window.location.origin}/pages/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
-                        cancel_url: `${window.location.origin}/pages/pre-sale-funnel.html`,
-                        metadata: {
-                            campaign: 'presale_funnel',
-                            backer_number: this.currentCount + 1,
-                            early_bird: 'true',
-                            source: 'cart_checkout',
-                            cart_items: JSON.stringify(this.cart),
-                            total_amount: totalAmount.toFixed(2)
-                        },
-                        customer_email: null,
-                        shipping_address_collection: {
-                            allowed_countries: ['US', 'CA', 'GB', 'AU', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'AT', 'CH']
-                        }
-                    };
-
-                    console.log('📡 PreSaleFunnel: Sending checkout session request...');
-
+                    // Create checkout session with multiple items
                     const response = await fetch('https://dampdrink.com/api/create-checkout-session', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(checkoutData)
+                        body: JSON.stringify({
+                            line_items: lineItems,
+                            mode: 'payment',
+                            success_url: `${window.location.origin}/pages/order-success.html?session_id={CHECKOUT_SESSION_ID}`,
+                            cancel_url: `${window.location.origin}/pages/pre-sale-funnel.html`,
+                            metadata: {
+                                campaign: 'presale_funnel',
+                                backer_number: this.currentCount + 1,
+                                early_bird: 'true',
+                                source: 'cart_checkout',
+                                cart_items: JSON.stringify(this.cart),
+                                total_amount: totalAmount.toFixed(2)
+                            },
+                            customer_email: null, // Will be collected by Stripe
+                            shipping_address_collection: {
+                                allowed_countries: ['US', 'CA', 'GB', 'AU', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'AT', 'CH']
+                            }
+                        })
                     });
-
-                    console.log(`📡 PreSaleFunnel: Checkout session response status: ${response.status}`);
 
                     if (!response.ok) {
                         const errorData = await response.json().catch(() => ({}));
@@ -1663,19 +1394,18 @@
                     }
 
                     const session = await response.json();
-                    console.log('✅ PreSaleFunnel: Checkout session created:', session);
 
                     if (session.error) {
                         throw new Error(session.error);
                     }
 
-                    console.log('🔐 PreSaleFunnel: Initializing Stripe...');
-                    const stripe = Stripe('pk_live_51ReW7yCcrIDahSGRjE5nEx9ENwPj8uzAfCJQtmVBkuEyeS7JNq0xscaAqdUFoKos7JO1cKbJXrIscBfUU4yNRQSy00lWo3F7p2');
+                    // Initialize Stripe with proper public key
+                    const stripe = Stripe('pk_live_51ReW7yCcrIDahSGRjE5nEx9ENwPj8uzAfCJQtmVBkuEyeS7JNq0xscaAqdUFoKos7JO1cKbJXrIscBfUU4yNRQSy00lWo3F7p2'); // Your actual live key
 
+                    // Save cart to localStorage before redirect (in case user comes back)
                     localStorage.setItem('dampPreOrderCart', JSON.stringify(this.cart));
-                    console.log('💾 PreSaleFunnel: Cart saved to localStorage');
 
-                    console.log('🔄 PreSaleFunnel: Redirecting to Stripe Checkout...');
+                    // Redirect to Stripe Checkout
                     const { error } = await stripe.redirectToCheckout({
                         sessionId: session.sessionId || session.id
                     });
@@ -1685,9 +1415,9 @@
                     }
 
                 } catch (error) {
-                    console.error('❌ PreSaleFunnel: Checkout error:', error);
-                    console.error('Stack trace:', error.stack);
+                    console.error('Checkout error:', error);
 
+                    // Show more helpful error message
                     let errorMessage = 'We\'re experiencing technical difficulties with our payment system.\n\n';
 
                     if (error.message.includes('404') || error.message.includes('Failed to fetch')) {
@@ -1708,128 +1438,85 @@
 
                     alert(errorMessage);
 
-                    const checkoutButton = document.getElementById('checkout-button');
-                    if (checkoutButton) {
-                        checkoutButton.disabled = false;
-                        checkoutButton.textContent = originalText;
-                        checkoutButton.style.opacity = '1';
-                    }
+                    // Re-enable button
+                    checkoutButton.disabled = false;
+                    checkoutButton.textContent = originalText;
+                    checkoutButton.style.opacity = '1';
                 }
             }
 
             setupAnalytics() {
-                console.log('📊 PreSaleFunnel: Setting up analytics...');
-                
-                try {
-                    this.trackAnalytics('presale_funnel_view', {
-                        current_count: this.currentCount,
-                        progress_percentage: (this.currentCount / this.goalCount) * 100
-                    });
+                // Track page view
+                this.trackAnalytics('presale_funnel_view', {
+                    current_count: this.currentCount,
+                    progress_percentage: (this.currentCount / this.goalCount) * 100
+                });
 
-                    let maxScroll = 0;
-                    window.addEventListener('scroll', () => {
-                        const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-                        if (scrollPercent > maxScroll) {
-                            maxScroll = scrollPercent;
-                            if (maxScroll % 25 === 0) {
-                                this.trackAnalytics('scroll_depth', { depth: maxScroll });
-                            }
+                // Track scroll depth
+                let maxScroll = 0;
+                window.addEventListener('scroll', () => {
+                    const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+                    if (scrollPercent > maxScroll) {
+                        maxScroll = scrollPercent;
+                        if (maxScroll % 25 === 0) { // Track at 25%, 50%, 75%, 100%
+                            this.trackAnalytics('scroll_depth', { depth: maxScroll });
                         }
-                    });
+                    }
+                });
 
-                    let timeOnPage = 0;
-                    setInterval(() => {
-                        timeOnPage += 30;
-                        if (timeOnPage % 60 === 0) {
-                            this.trackAnalytics('time_on_page', { seconds: timeOnPage });
-                        }
-                    }, 30000);
-
-                    console.log('✅ PreSaleFunnel: Analytics setup complete');
-                } catch (error) {
-                    console.error('❌ PreSaleFunnel: Error setting up analytics:', error);
-                }
+                // Track time on page
+                let timeOnPage = 0;
+                setInterval(() => {
+                    timeOnPage += 30;
+                    if (timeOnPage % 60 === 0) { // Every minute
+                        this.trackAnalytics('time_on_page', { seconds: timeOnPage });
+                    }
+                }, 30000);
             }
 
             trackAnalytics(event, data = {}) {
                 try {
                     if (window.gtag && this.hasAnalyticsConsent()) {
-                        console.log(`📊 PreSaleFunnel: Tracking analytics event: ${event}`, data);
                         gtag('event', event, {
                             event_category: 'presale_funnel',
                             event_label: JSON.stringify(data),
                             custom_map: { dimension1: 'presale_conversion' }
                         });
-                    } else {
-                        console.log(`📊 PreSaleFunnel: Analytics tracking skipped (no consent or gtag): ${event}`);
                     }
                 } catch (error) {
-                    console.warn('⚠️ PreSaleFunnel: Analytics tracking error:', error);
+                    console.warn('Analytics tracking error:', error);
                 }
             }
 
             hasAnalyticsConsent() {
-                const consent = localStorage.getItem('cookieAccepted') === 'true';
-                console.log(`🍪 PreSaleFunnel: Analytics consent: ${consent}`);
-                return consent;
+                return localStorage.getItem('cookieAccepted') === 'true';
             }
         }
 
         // Initialize funnel when DOM is ready
         let preSaleFunnel;
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 DOM Content Loaded - Initializing PreSaleFunnel...');
-            try {
-                preSaleFunnel = new PreSaleFunnel();
-                window.preSaleFunnel = preSaleFunnel; // Make globally available
-                console.log('✅ PreSaleFunnel initialized and available globally');
-            } catch (error) {
-                console.error('❌ Failed to initialize PreSaleFunnel:', error);
-                console.error('Stack trace:', error.stack);
-            }
+            preSaleFunnel = new PreSaleFunnel();
+            window.preSaleFunnel = preSaleFunnel; // Make globally available
         });
 
-        // Enhanced smooth scrolling with debugging
+        // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const target = document.querySelector(targetId);
-                
-                console.log(`🔗 Smooth scroll triggered for: ${targetId}`);
-                
+                const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
                     target.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                     });
-                    console.log(`✅ Smooth scroll completed for: ${targetId}`);
-                } else {
-                    console.warn(`⚠️ Scroll target not found: ${targetId}`);
                 }
             });
         });
-
-        // Global error handling
-        window.addEventListener('error', (event) => {
-            console.error('🚨 Global JavaScript Error:', {
-                message: event.message,
-                filename: event.filename,
-                lineno: event.lineno,
-                colno: event.colno,
-                error: event.error
-            });
-        });
-
-        window.addEventListener('unhandledrejection', (event) => {
-            console.error('🚨 Unhandled Promise Rejection:', event.reason);
-        });
-
-        console.log('✅ PreSaleFunnel script loaded successfully');
     </script>
 
     <!-- Cookie Notice -->
-    <div class="cookie-notice" id="cookieNotice" style="position: fixed; bottom: 20px; left: 20px; right: 20px; background: rgb(15 15 35 / 95%); backdrop-filter: blur(20px); border-radius: 10px; padding: 15px; color: white; font-size: 0.9rem; z-index: 1000; display: none;">
+    <div class="cookie-notice" id="cookieNotice" style="position: fixed; bottom: 20px; left: 20px; right: 20px; background: rgba(15, 15, 35, 0.95); backdrop-filter: blur(20px); border-radius: 10px; padding: 15px; color: white; font-size: 0.9rem; z-index: 1000; display: none;">
         🍪 We use cookies to track pre-order progress and improve your experience.
         <a href="../pages/privacy.html" style="color: var(--presale-success);">Privacy Policy</a>
         <button onclick="acceptCookies()" style="background: var(--presale-success); color: white; border: none; padding: 8px 15px; border-radius: 5px; margin-left: 10px; cursor: pointer;">Accept</button>
@@ -1911,6 +1598,5 @@
         mobileAppScript.src = '/assets/js/mobile-app-redirect.js';
         mobileAppScript.async = true;
         document.head.appendChild(mobileAppScript);
-    </script>
-</body>
+    </script></body>
 </html>

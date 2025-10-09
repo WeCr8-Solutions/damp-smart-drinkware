@@ -1,0 +1,109 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]: 📡 Connected to Firebase database
+  - generic:
+    - generic:
+      - generic: ✅
+      - generic: Vote Recorded!
+      - generic: Your vote has been successfully recorded and added to our database.
+      - button "Continue"
+  - navigation "Main navigation" [ref=e4]:
+    - generic [ref=e5]:
+      - link "DAMP Smart Drinkware Home" [ref=e6] [cursor=pointer]:
+        - /url: ../index.html
+        - img "DAMP Logo" [ref=e7] [cursor=pointer]
+        - generic [ref=e8] [cursor=pointer]: DAMP
+      - button "Toggle mobile menu" [ref=e9] [cursor=pointer]:
+        - generic [ref=e13] [cursor=pointer]: Menu
+  - generic [ref=e15]:
+    - generic [ref=e16]: 🗳️ LIVE COMMUNITY VOTING
+    - heading "Help Shape DAMP's Future" [level=1] [ref=e17]
+    - paragraph [ref=e18]: Your vote directly influences our product development roadmap. Choose between verified customer insights or join the open community vote. All votes are recorded in real-time and stored permanently in our database.
+    - generic [ref=e19]:
+      - button "🔐 Customer Vote Verified DAMP users" [ref=e20] [cursor=pointer]:
+        - generic [ref=e21] [cursor=pointer]: 🔐
+        - generic [ref=e22] [cursor=pointer]: Customer Vote
+        - generic [ref=e23] [cursor=pointer]: Verified DAMP users
+      - button "🌍 Public Vote Open community" [ref=e24] [cursor=pointer]:
+        - generic [ref=e25] [cursor=pointer]: 🌍
+        - generic [ref=e26] [cursor=pointer]: Public Vote
+        - generic [ref=e27] [cursor=pointer]: Open community
+    - generic [ref=e28]:
+      - generic [ref=e29]: "0"
+      - generic [ref=e30]: total votes recorded in database
+  - generic [ref=e31]:
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - generic [ref=e34]: "1"
+        - img "DAMP Handle v1.0" [ref=e36]
+        - heading "DAMP Handle v1.0" [level=3] [ref=e37]
+        - paragraph [ref=e38]: Universal attachment for any drinkware
+        - generic [ref=e41]: DAMP
+        - generic [ref=e42]: "0"
+        - generic [ref=e43]: 0.0% of votes
+        - button "🌍 Vote Now" [ref=e44] [cursor=pointer]
+      - generic [ref=e45]:
+        - generic [ref=e46]: "2"
+        - img "Silicone Bottom v1.0" [ref=e48]
+        - heading "Silicone Bottom v1.0" [level=3] [ref=e49]
+        - paragraph [ref=e50]: Non-slip silicone base
+        - generic [ref=e53]: DAMP
+        - generic [ref=e54]: "0"
+        - generic [ref=e55]: 0.0% of votes
+        - button "🌍 Vote Now" [ref=e56] [cursor=pointer]
+      - generic [ref=e57]:
+        - generic [ref=e58]: "3"
+        - img "Cup Sleeve v1.0" [ref=e60]
+        - heading "Cup Sleeve v1.0" [level=3] [ref=e61]
+        - paragraph [ref=e62]: Adjustable fit for most cups
+        - generic [ref=e65]: DAMP
+        - generic [ref=e66]: "0"
+        - generic [ref=e67]: 0.0% of votes
+        - button "🌍 Vote Now" [ref=e68] [cursor=pointer]
+      - generic [ref=e69]:
+        - img "Baby Bottle v1.0" [ref=e71]
+        - heading "Baby Bottle v1.0" [level=3] [ref=e72]
+        - paragraph [ref=e73]: BPA-free smart bottle
+        - generic [ref=e76]: DAMP
+        - generic [ref=e77]: "0"
+        - generic [ref=e78]: 0.0% of votes
+        - button "🌍 Vote Now" [ref=e79] [cursor=pointer]
+    - generic [ref=e80]:
+      - button "📊 Export Results" [ref=e81] [cursor=pointer]
+      - button "🔄 Refresh Data" [ref=e82] [cursor=pointer]
+    - generic [ref=e83]: ✅ Voting system ready - Choose your preferred mode above
+    - generic [ref=e84]:
+      - generic [ref=e85]: 📈 Real-Time Database Statistics
+      - paragraph [ref=e86]: Live data from Firebase database with automatic updates every time someone votes
+      - generic [ref=e87]:
+        - generic [ref=e88]:
+          - generic [ref=e89]: "0"
+          - generic [ref=e90]: Total Votes
+        - generic [ref=e91]:
+          - generic [ref=e92]: —
+          - generic [ref=e93]: Leading Product
+        - generic [ref=e94]:
+          - generic [ref=e95]: 0.0%
+          - generic [ref=e96]: Participation Rate
+        - generic [ref=e97]:
+          - generic [ref=e98]: "0"
+          - generic [ref=e99]: Database Records
+  - contentinfo [ref=e100]:
+    - generic [ref=e101]:
+      - paragraph [ref=e102]: Your vote is permanently stored in our Firebase database and helps shape DAMP's development priorities!
+      - generic [ref=e103]:
+        - link "View All Products" [ref=e104] [cursor=pointer]:
+          - /url: products.html
+        - link "About DAMP" [ref=e105] [cursor=pointer]:
+          - /url: about.html
+        - link "Support" [ref=e106] [cursor=pointer]:
+          - /url: support.html
+      - paragraph [ref=e107]: © 2025 WeCr8 Solutions LLC. All rights reserved. | Real-time voting powered by Firebase
+  - button "📱 Get DAMP App ×" [ref=e109] [cursor=pointer]:
+    - text: 📱 Get DAMP App
+    - button "×" [ref=e110] [cursor=pointer]
+```

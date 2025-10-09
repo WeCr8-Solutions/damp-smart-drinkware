@@ -33,16 +33,12 @@ app.use(express.json({ limit: '10mb' }));
 
 // Data storage (in production, use proper database)
 let presaleData = {
-    currentCount: 326,
-    goalCount: 500,
-    startDate: new Date('2025-01-01').toISOString(),
-    endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+    currentCount: 0,
+    goalCount: 0,
+    startDate: new Date(),
+    endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     recentOrders: [],
-    analytics: {
-        pageViews: 0,
-        checkoutAttempts: 0,
-        conversionRate: 0
-    }
+    analytics: { pageViews: 0, checkoutAttempts: 0, conversionRate: 0 }
 };
 
 // Load data from file (persistent storage)
@@ -363,7 +359,7 @@ app.use((req, res) => {
 async function startServer() {
     try {
         await loadData();
-        simulateRealisticGrowth();
+        if (process.env.ENABLE_SIM === '1') simulateRealisticGrowth();
 
         app.listen(PORT, () => {
             console.log(`🚀 DAMP Pre-Sale Tracker API running on port ${PORT}`);

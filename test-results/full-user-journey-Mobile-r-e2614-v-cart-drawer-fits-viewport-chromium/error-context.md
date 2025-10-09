@@ -1,0 +1,213 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation "Main navigation" [ref=e3]:
+    - link "Home" [ref=e4] [cursor=pointer]:
+      - /url: index.html
+    - link "Pre-Order" [ref=e5] [cursor=pointer]:
+      - /url: pages/pre-sale-funnel.html
+    - link "Products" [ref=e6] [cursor=pointer]:
+      - /url: pages/products.html
+    - link "Vote" [ref=e7] [cursor=pointer]:
+      - /url: pages/product-voting.html
+    - link "How It Works" [ref=e8] [cursor=pointer]:
+      - /url: pages/how-it-works.html
+    - link "Cart" [ref=e9] [cursor=pointer]:
+      - /url: pages/cart.html
+    - generic [ref=e11]:
+      - button "Sign In" [ref=e12] [cursor=pointer]
+      - button "Get Started" [ref=e13] [cursor=pointer]
+  - main [ref=e14]:
+    - generic [ref=e17]:
+      - img "DAMP Logo" [ref=e19]
+      - heading "Never Leave Your Drink Behind" [level=1] [ref=e20]
+      - paragraph [ref=e21]: Transform any cup into a smart device with DAMP. Get instant alerts when you're about to abandon your favorite beverage. Perfect for coffee lovers, office workers, and anyone who wants to track their drinks. Works with major brands and most drinkware.
+      - generic [ref=e22]:
+        - link "Pre-Order Now - Starting $29.99" [ref=e23] [cursor=pointer]:
+          - /url: pages/pre-sale-funnel.html
+        - link "How It Works" [ref=e24] [cursor=pointer]:
+          - /url: pages/how-it-works.html
+        - link "View All Products" [ref=e25] [cursor=pointer]:
+          - /url: pages/products.html
+    - generic [ref=e27]:
+      - heading "We Know the Frustration" [level=2] [ref=e28]
+      - paragraph [ref=e29]: Every coffee lover, office worker, and busy parent has been there. Don't let these moments ruin your day.
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]: 😫
+          - heading "Left Coffee at Home" [level=3] [ref=e33]
+          - paragraph [ref=e34]: Rushing out the door, only to realize your full mug is sitting on the kitchen counter getting cold.
+        - generic [ref=e35]:
+          - generic [ref=e36]: 💸
+          - heading "Wasted Money" [level=3] [ref=e37]
+          - paragraph [ref=e38]: That $6 specialty drink forgotten in the conference room. Again. Your wallet feels the pain every time.
+        - generic [ref=e39]:
+          - generic [ref=e40]: 🏃‍♂️
+          - heading "The Panic Run" [level=3] [ref=e41]
+          - paragraph [ref=e42]: Sprinting back to retrieve your drink, hoping it's still there and hasn't been thrown away.
+        - generic [ref=e43]:
+          - generic [ref=e44]: 🤦‍♀️
+          - heading "Meeting Room Mishaps" [level=3] [ref=e45]
+          - paragraph [ref=e46]: Walking into the next meeting only to realize your drink is still in the previous room.
+        - generic [ref=e47]:
+          - generic [ref=e48]: 😴
+          - heading "Afternoon Crash" [level=3] [ref=e49]
+          - paragraph [ref=e50]: Missing your afternoon caffeine boost because you forgot where you left your energy drink.
+        - generic [ref=e51]:
+          - generic [ref=e52]: 🚗
+          - heading "Car Cup Casualties" [level=3] [ref=e53]
+          - paragraph [ref=e54]: Leaving your travel mug in the car cupholder, discovering it hours later when it's too late.
+    - generic [ref=e56]:
+      - heading "Smart Solution, Simple Setup" [level=2] [ref=e57]
+      - paragraph [ref=e58]: DAMP uses advanced BLE technology to keep you connected to your favorite beverages. Never experience drink abandonment again.
+      - generic [ref=e59]:
+        - generic [ref=e60]:
+          - generic [ref=e61]: 📱
+          - heading "Instant Phone Alerts" [level=3] [ref=e62]
+          - paragraph [ref=e63]: Get immediate notifications when you move too far from your drink. Customizable distance settings.
+        - generic [ref=e64]:
+          - generic [ref=e65]: 🔋
+          - heading "6-Month Battery Life" [level=3] [ref=e66]
+          - paragraph [ref=e67]: Long-lasting battery with low-power BLE technology. Charge once, forget for months.
+        - generic [ref=e68]:
+          - generic [ref=e69]: 💧
+          - heading "Waterproof Design" [level=3] [ref=e70]
+          - paragraph [ref=e71]: IP67 rated protection. Works perfectly with hot drinks, cold beverages, and dishwasher safe.
+        - generic [ref=e72]:
+          - generic [ref=e73]: 🌍
+          - heading "Universal Compatibility" [level=3] [ref=e74]
+          - paragraph [ref=e75]: Works with any cup, mug, or bottle. Universal design that attaches to most drinkware.
+        - generic [ref=e76]:
+          - generic [ref=e77]: 🎯
+          - heading "Smart Detection" [level=3] [ref=e78]
+          - paragraph [ref=e79]: Advanced sensors know when you're intentionally leaving vs. accidentally forgetting your drink.
+        - generic [ref=e80]:
+          - generic [ref=e81]: 📊
+          - heading "Hydration Tracking" [level=3] [ref=e82]
+          - paragraph [ref=e83]: Monitor your daily fluid intake and build healthy drinking habits with detailed analytics.
+    - generic [ref=e85]:
+      - heading "Choose Your DAMP Device" [level=2] [ref=e86]
+      - paragraph [ref=e87]: Four different form factors to match your lifestyle and drinkware preferences.
+      - generic [ref=e88]:
+        - generic [ref=e89] [cursor=pointer]:
+          - img "DAMP Handle" [ref=e91] [cursor=pointer]
+          - heading "DAMP Handle" [level=3] [ref=e92] [cursor=pointer]
+          - generic [ref=e93] [cursor=pointer]: $49.99
+          - paragraph [ref=e94] [cursor=pointer]: Universal handle attachment. Perfect for most travel mugs and drinkware.
+          - link "Learn More" [ref=e95] [cursor=pointer]:
+            - /url: pages/damp-handle-v1.0.html
+        - generic [ref=e96] [cursor=pointer]:
+          - img "Silicone Bottom" [ref=e98] [cursor=pointer]
+          - heading "Silicone Bottom" [level=3] [ref=e99] [cursor=pointer]
+          - generic [ref=e100] [cursor=pointer]: $29.99
+          - paragraph [ref=e101] [cursor=pointer]: Non-slip silicone base that makes any cup smart. Dishwasher safe and durable.
+          - link "Learn More" [ref=e102] [cursor=pointer]:
+            - /url: pages/silicone-bottom-v1.0.html
+        - generic [ref=e103] [cursor=pointer]:
+          - img "Cup Sleeve" [ref=e105] [cursor=pointer]
+          - heading "Cup Sleeve" [level=3] [ref=e106] [cursor=pointer]
+          - generic [ref=e107] [cursor=pointer]: $39.99
+          - paragraph [ref=e108] [cursor=pointer]: Adjustable sleeve with thermal insulation. Great for coffee cups and standard mugs.
+          - link "Learn More" [ref=e109] [cursor=pointer]:
+            - /url: pages/cup-sleeve-v1.0.html
+      - generic [ref=e110]:
+        - link "View All Products" [ref=e111] [cursor=pointer]:
+          - /url: pages/products.html
+        - link "Vote on Future Products" [ref=e112] [cursor=pointer]:
+          - /url: pages/product-voting.html
+    - generic [ref=e114]:
+      - heading "Help Us Build the Future of Smart Drinkware" [level=2] [ref=e115]
+      - paragraph [ref=e116]: We're in active development and need your support to bring DAMP to life. Your pre-order helps fund manufacturing and ensures you get the best possible product.
+      - generic [ref=e117]:
+        - generic [ref=e118]:
+          - paragraph [ref=e119]: "\"The concept is brilliant! As someone who constantly forgets my coffee, I can't wait for this to become reality. Happy to support the development.\""
+          - generic [ref=e120]: "- Early Supporter Feedback"
+        - generic [ref=e121]:
+          - paragraph [ref=e122]: "\"Finally, someone is solving the drink abandonment problem! The technology sounds promising and I'm excited to be part of making this happen.\""
+          - generic [ref=e123]: "- Development Community"
+        - generic [ref=e124]:
+          - paragraph [ref=e125]: "\"Love the vision of universal compatibility. Pre-ordering because I believe in the mission and want to help fund this innovation.\""
+          - generic [ref=e126]: "- Pre-Order Supporter"
+    - generic [ref=e128]:
+      - heading "Stay in the Loop" [level=2] [ref=e129]
+      - paragraph [ref=e130]: Get exclusive updates on DAMP development, early access to new products, and insider tips to never lose your drink again.
+      - generic [ref=e131]:
+        - generic [ref=e132]:
+          - generic [ref=e133]:
+            - generic [ref=e134]: ⚡
+            - heading "Early Access" [level=4] [ref=e135]
+            - paragraph [ref=e136]: Be first to know about new products and pre-order opportunities
+          - generic [ref=e137]:
+            - generic [ref=e138]: 💡
+            - heading "Insider Tips" [level=4] [ref=e139]
+            - paragraph [ref=e140]: Expert advice on smart drinkware and hydration habits
+          - generic [ref=e141]:
+            - generic [ref=e142]: 🎁
+            - heading "Exclusive Deals" [level=4] [ref=e143]
+            - paragraph [ref=e144]: Subscriber-only discounts and limited-time offers
+        - generic [ref=e145]:
+          - generic [ref=e146]:
+            - generic [ref=e147]: 📧
+            - generic [ref=e148]: Join 12,000+ DAMP enthusiasts
+          - generic [ref=e149]:
+            - generic [ref=e150]:
+              - generic [ref=e151]:
+                - textbox "Email address for newsletter subscription" [ref=e152]
+                - generic: 📧
+              - button "Subscribe →" [ref=e153]:
+                - generic [ref=e154]: Subscribe
+                - generic [ref=e155]: →
+            - generic [ref=e156]:
+              - generic [ref=e157] [cursor=pointer]:
+                - generic [ref=e158] [cursor=pointer]: ✓
+                - text: Product development updates
+              - generic [ref=e159] [cursor=pointer]:
+                - generic [ref=e160] [cursor=pointer]: ✓
+                - text: New product launch alerts
+            - paragraph [ref=e161]:
+              - text: We respect your privacy. Unsubscribe at any time.
+              - link "Privacy Policy" [ref=e162] [cursor=pointer]:
+                - /url: pages/privacy-policy.html
+    - generic [ref=e164]:
+      - heading "Help Us Launch DAMP Smart Drinkware" [level=2] [ref=e165]
+      - paragraph [ref=e166]: We're building something amazing and need your support. Pre-order now to help fund development and secure your early bird pricing.
+      - generic [ref=e167]:
+        - generic [ref=e168]:
+          - generic [ref=e169]: R&D
+          - generic [ref=e170]: Phase Active
+        - generic [ref=e171]:
+          - generic [ref=e172]: Q2 2025
+          - generic [ref=e173]: Target Launch
+        - generic [ref=e174]:
+          - generic [ref=e175]: $29.99
+          - generic [ref=e176]: Pre-Order Price
+        - generic [ref=e177]:
+          - generic [ref=e178]: Limited
+          - generic [ref=e179]: Early Bird Spots
+      - group "Pre-order and cart actions" [ref=e180]:
+        - button "Support Development - Pre-Order Now" [ref=e181] [cursor=pointer]:
+          - generic [ref=e182] [cursor=pointer]: 🚀
+          - generic [ref=e183] [cursor=pointer]: Support Development - Pre-Order Now
+        - generic [ref=e184]: Help fund development • Early bird pricing • Be first to receive DAMP
+        - button "View Cart" [ref=e185] [cursor=pointer]
+  - generic [ref=e188]:
+    - button "×" [ref=e189] [cursor=pointer]
+    - generic [ref=e190]:
+      - heading "Welcome Back" [level=2] [ref=e191]
+      - paragraph [ref=e192]: Sign in to your DAMP account
+      - generic [ref=e193]:
+        - textbox "Email" [active] [ref=e195]
+        - textbox "Password" [ref=e197]
+        - button "Sign In" [ref=e198] [cursor=pointer]:
+          - generic [ref=e199] [cursor=pointer]: Sign In
+      - generic [ref=e200]: or
+      - button "🌐 Continue with Google" [ref=e202] [cursor=pointer]
+      - generic [ref=e203]:
+        - paragraph [ref=e204]:
+          - text: Don't have an account?
+          - button "Sign up" [ref=e205] [cursor=pointer]
+        - button "Forgot password?" [ref=e206] [cursor=pointer]
+```
