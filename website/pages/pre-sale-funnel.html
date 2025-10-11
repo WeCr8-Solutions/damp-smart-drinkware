@@ -947,6 +947,84 @@
         </div>
     </section>
 
+    <!-- Newsletter Signup Section -->
+    <section style="background: linear-gradient(135deg, rgb(0 212 255 / 10%), rgb(153 0 255 / 10%)); padding: 60px 20px; text-align: center; border-top: 1px solid rgb(255 255 255 / 10%); border-bottom: 1px solid rgb(255 255 255 / 10%);">
+        <div style="max-width: 600px; margin: 0 auto;">
+            <h2 style="color: white; font-size: 2rem; font-weight: bold; margin-bottom: 15px;">
+                📧 Stay in the Loop
+            </h2>
+            <p style="color: rgb(255 255 255 / 80%); font-size: 1.1rem; margin-bottom: 30px;">
+                Get exclusive updates on production progress, early-bird deals, and be the first to know when we hit our goals!
+            </p>
+            
+            <div style="display: flex; gap: 10px; max-width: 500px; margin: 0 auto 30px; flex-wrap: wrap; justify-content: center;">
+                <input type="email" id="newsletter-email" placeholder="Enter your email address" style="flex: 1; min-width: 250px; padding: 15px 20px; border-radius: 25px; border: 2px solid rgb(0 212 255 / 50%); background: rgb(255 255 255 / 10%); color: white; font-size: 1rem; outline: none;" />
+                <button id="newsletter-submit" style="padding: 15px 30px; border-radius: 25px; border: none; background: linear-gradient(45deg, var(--presale-success), #00d4ff); color: white; font-weight: bold; cursor: pointer; font-size: 1rem; transition: all 0.3s ease;">
+                    Subscribe →
+                </button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-top: 30px;">
+                <div style="padding: 15px; background: rgb(255 255 255 / 5%); border-radius: 10px; border: 1px solid rgb(255 255 255 / 10%);">
+                    <div style="font-size: 1.5rem; margin-bottom: 5px;">⚡</div>
+                    <div style="color: rgb(255 255 255 / 90%); font-size: 0.9rem;">Early Access</div>
+                </div>
+                <div style="padding: 15px; background: rgb(255 255 255 / 5%); border-radius: 10px; border: 1px solid rgb(255 255 255 / 10%);">
+                    <div style="font-size: 1.5rem; margin-bottom: 5px;">💡</div>
+                    <div style="color: rgb(255 255 255 / 90%); font-size: 0.9rem;">Progress Updates</div>
+                </div>
+                <div style="padding: 15px; background: rgb(255 255 255 / 5%); border-radius: 10px; border: 1px solid rgb(255 255 255 / 10%);">
+                    <div style="font-size: 1.5rem; margin-bottom: 5px;">🎁</div>
+                    <div style="color: rgb(255 255 255 / 90%); font-size: 0.9rem;">Exclusive Deals</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Development Disclaimer -->
+    <section style="background: rgb(255 255 255 / 5%); padding: 40px 20px; text-align: center; border-bottom: 1px solid rgb(255 255 255 / 10%);">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <h3 style="color: rgb(255 255 255 / 90%); font-size: 1.3rem; font-weight: bold; margin-bottom: 20px;">
+                ⚠️ Important Product Development Disclaimer
+            </h3>
+            
+            <div style="text-align: left; color: rgb(255 255 255 / 70%); font-size: 0.95rem; line-height: 1.6; padding: 20px; background: rgb(0 0 0 / 30%); border-radius: 10px; border: 1px solid rgb(255 255 255 / 10%);">
+                <p style="margin-bottom: 15px;">
+                    <strong style="color: rgb(0 212 255);">This is a reservation campaign for products currently in development.</strong> By reserving a DAMP device, you acknowledge and agree to the following:
+                </p>
+                
+                <ul style="list-style-position: inside; margin-bottom: 15px; padding-left: 20px;">
+                    <li style="margin-bottom: 10px;">
+                        <strong>Production Contingency:</strong> Each product requires a minimum of 500 reservations before manufacturing begins. If a product does not reach its goal, reservations may be refunded or transferred to other products.
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <strong>Development Timeline:</strong> Products are currently in the prototype/development phase. Design, features, and specifications may change during final production.
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <strong>Estimated Delivery:</strong> Delivery timelines will be provided once production goals are met and manufacturing begins. Delays may occur due to supply chain, quality testing, or manufacturing challenges.
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <strong>Product Priority:</strong> Products that reach 500 reservations first will be manufactured and shipped first.
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <strong>No Guarantees:</strong> While we are committed to delivering high-quality products, we cannot guarantee specific features, delivery dates, or final product specifications until manufacturing is complete.
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <strong>Reservation vs. Purchase:</strong> Your payment secures a reservation spot at early-bird pricing. You are supporting product development and will be first in line for delivery.
+                    </li>
+                </ul>
+                
+                <p style="margin-bottom: 15px;">
+                    <strong style="color: rgb(255 165 2);">Refund Policy:</strong> If we are unable to manufacture a product due to insufficient reservations, full refunds will be issued. For other refund requests, please contact support@dampdrink.com.
+                </p>
+                
+                <p style="margin-bottom: 0; font-size: 0.85rem; color: rgb(255 255 255 / 60%);">
+                    By completing your reservation, you agree to these terms and acknowledge that you are supporting a product development campaign. Thank you for being an early supporter! 🙏
+                </p>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer" style="background: rgb(0 0 0 / 50%); padding: 40px 20px; text-align: center;">
         <div style="max-width: 800px; margin: 0 auto;">
@@ -1986,6 +2064,73 @@
                 }
             });
         });
+
+        // Newsletter signup functionality
+        const newsletterSubmit = document.getElementById('newsletter-submit');
+        const newsletterEmail = document.getElementById('newsletter-email');
+        
+        if (newsletterSubmit && newsletterEmail) {
+            newsletterSubmit.addEventListener('click', async function() {
+                const email = newsletterEmail.value.trim();
+                
+                // Basic email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email || !emailRegex.test(email)) {
+                    alert('⚠️ Please enter a valid email address.');
+                    newsletterEmail.focus();
+                    return;
+                }
+                
+                // Disable button and show loading state
+                const originalText = newsletterSubmit.textContent;
+                newsletterSubmit.textContent = 'Subscribing...';
+                newsletterSubmit.disabled = true;
+                newsletterSubmit.style.opacity = '0.7';
+                
+                try {
+                    console.log('📧 Newsletter signup:', email);
+                    
+                    // TODO: Integrate with your email service (Mailchimp, SendGrid, etc.)
+                    // For now, we'll simulate success
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Success feedback
+                    newsletterSubmit.textContent = '✅ Subscribed!';
+                    newsletterSubmit.style.background = 'linear-gradient(45deg, #10b981, #059669)';
+                    newsletterEmail.value = '';
+                    
+                    // Show success message
+                    alert('🎉 Thank you for subscribing! You\'ll be the first to know about production updates and exclusive deals.');
+                    
+                    // Reset button after 3 seconds
+                    setTimeout(() => {
+                        newsletterSubmit.textContent = originalText;
+                        newsletterSubmit.disabled = false;
+                        newsletterSubmit.style.opacity = '1';
+                        newsletterSubmit.style.background = 'linear-gradient(45deg, var(--presale-success), #00d4ff)';
+                    }, 3000);
+                    
+                } catch (error) {
+                    console.error('❌ Newsletter signup error:', error);
+                    newsletterSubmit.textContent = '❌ Error';
+                    alert('⚠️ There was an error subscribing. Please try again or email us directly at support@dampdrink.com');
+                    
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        newsletterSubmit.textContent = originalText;
+                        newsletterSubmit.disabled = false;
+                        newsletterSubmit.style.opacity = '1';
+                    }, 2000);
+                }
+            });
+            
+            // Allow Enter key to submit
+            newsletterEmail.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    newsletterSubmit.click();
+                }
+            });
+        }
 
         // Global error handling
         window.addEventListener('error', (event) => {
