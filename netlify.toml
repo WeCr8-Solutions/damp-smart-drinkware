@@ -3,23 +3,27 @@
 [build]
   command = "echo 'Building website directory - no build needed for static site'"
   publish = "website"
+  functions = "netlify/functions"
   
 [build.environment]
   NODE_VERSION = "18"
-  NETLIFY_NEXT_PLUGIN_SKIP = "true"
   # Firebase configuration
   FIREBASE_PROJECT_ID = "damp-smart-drinkware"
   FIREBASE_API_KEY = "AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w"
   FIREBASE_AUTH_DOMAIN = "damp-smart-drinkware.firebaseapp.com"
 
+# Netlify Dev configuration for local testing
+[dev]
+  command = ""
+  targetPort = 8888
+  port = 8888
+  publish = "website"
+  functionsPort = 34567
+  framework = "#static"
+
 # Production-ready plugins with latest versions
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
-  
-# Updated Next.js plugin to latest version (5.13.0)
-# Note: Plugin is included but skipped via NETLIFY_NEXT_PLUGIN_SKIP for static site optimization
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
 
 # Enhanced security headers with comprehensive Firebase and Google services support
 [[headers]]
@@ -165,6 +169,12 @@
   [context.branch-deploy.environment]
     ENVIRONMENT = "development"
 
+# API redirects for serverless functions (MUST BE FIRST)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
 # Force HTTPS and www redirect
 [[redirects]]
   from = "http://dampdrink.com/*"
@@ -184,20 +194,14 @@
   status = 301
   force = true
 
-# SPA routing fallback (should be last)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-# API redirects for serverless functions
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
 # Legacy redirects
 [[redirects]]
   from = "/old-page"
   to = "/new-page"
   status = 301
+
+# SPA routing fallback (MUST BE LAST)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
