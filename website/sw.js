@@ -326,16 +326,20 @@ class DAMPServiceWorker {
         try {
             const networkResponse = await fetch(request);
 
-            if (networkResponse.ok) {
+            // Only cache GET requests (POST/PUT/DELETE should never be cached)
+            if (networkResponse.ok && request.method === 'GET') {
                 const cache = await caches.open(cacheName);
                 cache.put(request, networkResponse.clone());
             }
 
             return networkResponse;
         } catch (error) {
-            const cachedResponse = await caches.match(request);
-            if (cachedResponse) {
-                return cachedResponse;
+            // Only try cache for GET requests
+            if (request.method === 'GET') {
+                const cachedResponse = await caches.match(request);
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
             }
 
             return this.getOfflineFallback(request);

@@ -46,6 +46,9 @@
     <link rel="preconnect" href="https://js.stripe.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
+    <!-- Load Stripe.js early to ensure it's available -->
+    <script src="https://js.stripe.com/v3/" async></script>
+
     <!-- CSS Architecture -->
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/navigation.css">
@@ -915,8 +918,7 @@
     <script src="../assets/js/components/header.js"></script>
     <script src="../assets/js/auth-modal.js"></script>
 
-    <!-- Stripe JavaScript SDK -->
-    <script src="https://js.stripe.com/v3/"></script>
+    <!-- Stripe.js is loaded in <head> for early availability -->
 
     <!-- Pre-Sale Funnel JavaScript -->
     <script>
