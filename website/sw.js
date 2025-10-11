@@ -4,32 +4,15 @@
 // Google Engineering Standards with Hot Module Replacement & Intelligent Caching
 // Copyright 2025 WeCr8 Solutions LLC
 
-const SW = {
-    CACHE_NAME: 'damp-v2.1.0',
-    CACHE_STRATEGY_VERSION: '2.1.0',
-    HOT_RELOAD_CHANNEL: 'damp-hot-reload',
-    PERFORMANCE_CHANNEL: 'damp-performance',
-    backgroundSyncQueues: new Map(),
-    performanceMetrics: {
-        cacheHits: 0,
-        cacheMisses: 0,
-        networkLatency: []
-    },
-
-/* global self, caches, console, URL, fetch, Response, Request, Blob, crypto, BroadcastChannel, setInterval, setTimeout, location */
-
-// DAMP Smart Drinkware - Advanced Service Worker
-// Google Engineering Standards with Hot Module Replacement & Intelligent Caching
-// Copyright 2025 WeCr8 Solutions LLC
-
 // Service Worker Configuration
 const SW = {
     CACHE_NAME: 'damp-v2.1.0',
     CACHE_STRATEGY_VERSION: '2.1.0',
     HOT_RELOAD_CHANNEL: 'damp-hot-reload',
-    PERFORMANCE_CHANNEL: 'damp-performance',
+    PERFORMANCE_CHANNEL: 'damp-performance'
+};
 
-    // Google-level caching strategies
+// Google-level caching strategies
 const CACHE_STRATEGIES = {
     CRITICAL: 'critical-resources',     // HTML, critical CSS/JS
     STATIC: 'static-assets',           // Images, fonts, non-critical CSS/JS
@@ -121,7 +104,7 @@ class DAMPServiceWorker {
     }
 
     async handleInstall(event) {
-        console.log('[DAMP SW] Installing advanced service worker v' + CACHE_STRATEGY_VERSION);
+        console.log('[DAMP SW] Installing advanced service worker v' + SW.CACHE_STRATEGY_VERSION);
 
         event.waitUntil(
             this.preloadCriticalResources()
@@ -147,7 +130,7 @@ class DAMPServiceWorker {
                 self.clients.claim()
             ]).then(() => {
                 console.log('[DAMP SW] Activation complete');
-                this.notifyClients('sw-activated', { version: CACHE_STRATEGY_VERSION });
+                this.notifyClients('sw-activated', { version: SW.CACHE_STRATEGY_VERSION });
             })
         );
     }
@@ -227,12 +210,21 @@ class DAMPServiceWorker {
             default:
                 console.log('[DAMP SW] Unknown sync tag:', event.tag);
         }
+    }
 
     async handlePush(event) {
-        const options = {
-            body: event.data ? event.data.text() : 'New update available!',
-            icon: '/assets/images/logo/icon.png',
-            badge: '/assets/images/logo/icon.png',
+            let bodyText = 'New update available!';
+            if (event.data) {
+                try {
+                    bodyText = await event.data.text();
+                } catch (e) {
+                    // fallback to default if error in parsing push data
+                }
+            }
+            const options = {
+                body: bodyText,
+                icon: '/assets/images/logo/icon.png',
+                badge: '/assets/images/logo/icon.png',
             tag: 'damp-notification',
             actions: [
                 { action: 'view', title: 'View Update' },
@@ -243,6 +235,43 @@ class DAMPServiceWorker {
         event.waitUntil(
             self.registration.showNotification('DAMP Smart Drinkware', options)
         );
+    }
+
+    async handleNotificationClick(event) {
+        event.notification.close();
+
+        if (event.action === 'view') {
+            event.waitUntil(
+                clients.openWindow('/')
+            );
+        }
+    }
+
+    async handleFetchError(request, error) {
+        console.error('[DAMP SW] Fetch error:', request.url, error);
+        
+        // Return offline page for navigation requests
+        if (request.mode === 'navigate') {
+            const cache = await caches.open(CACHE_STRATEGIES.OFFLINE);
+            const offlinePage = await cache.match('/offline.html');
+            if (offlinePage) {
+                return offlinePage;
+            }
+        }
+        
+        // Return a basic error response
+        return new Response('Network error occurred', {
+            status: 408,
+            headers: { 'Content-Type': 'text/plain' }
+        });
+    }
+
+    reportDetailedMetric(type, url) {
+        // Performance metric reporting
+        if (self.performance && self.performance.now) {
+            const timestamp = self.performance.now();
+            console.log(`[DAMP SW] Performance - ${type}: ${url} at ${timestamp.toFixed(2)}ms`);
+        }
     }
 
     getCachingStrategy(request) {

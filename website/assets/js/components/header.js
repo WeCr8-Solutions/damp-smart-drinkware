@@ -359,12 +359,16 @@ class DAMPHeader extends HTMLElement {
         // Clear any existing listeners to prevent conflicts
         this.removeAllEventListeners();
 
-        // Hamburger menu toggle with enhanced security
+        // Hamburger click handler for both mobile AND desktop
         this.addSecureEventListener(hamburger, 'click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             this.toggleMobileMenu();
-            this.trackAnalytics('hamburger_click', { action: this.isMenuOpen ? 'close' : 'open' });
+            this.trackAnalytics('mobile_menu_toggle', { 
+                action: this.isMenuOpen ? 'close' : 'open',
+                viewport: window.innerWidth >= 1024 ? 'desktop' : 'mobile'
+            });
         });
 
         // Touch events for better mobile responsiveness
@@ -406,14 +410,22 @@ class DAMPHeader extends HTMLElement {
         // Backdrop click to close
         if (backdrop) {
             this.addSecureEventListener(backdrop, 'click', (e) => {
-                e.preventDefault();
-                this.closeMobileMenu();
-                this.trackAnalytics('mobile_menu_close', { method: 'backdrop_click' });
+                // Only handle clicks directly on the backdrop, not on links inside the menu
+                if (e.target === backdrop) {
+                    e.preventDefault();
+                    this.closeMobileMenu();
+                    this.trackAnalytics('mobile_menu_close', { method: 'backdrop_click' });
+                }
             });
         }
 
         // Global click outside handler
         this.addSecureEventListener(document, 'click', (e) => {
+            // Don't close if clicking a link inside the menu - let it navigate first
+            if (e.target.closest('.mobile-menu a')) {
+                return;
+            }
+            
             if (this.isMenuOpen && !this.contains(e.target) && !e.target.closest('.mobile-menu')) {
                 this.closeMobileMenu();
                 this.trackAnalytics('mobile_menu_close', { method: 'outside_click' });
@@ -430,10 +442,20 @@ class DAMPHeader extends HTMLElement {
 
         // Mobile menu link handlers
         const mobileLinks = mobileMenu.querySelectorAll('a');
+        console.log(`[DAMP Navigation] Setting up ${mobileLinks.length} mobile menu links`);
         mobileLinks.forEach(link => {
             this.addSecureEventListener(link, 'click', (e) => {
                 const href = link.getAttribute('href');
                 const analyticsAction = link.getAttribute('data-analytics');
+                const authAction = link.getAttribute('data-auth');
+
+                console.log(`[DAMP Navigation] Link clicked: href="${href}", auth="${authAction}"`);
+
+                // Skip auth buttons - they're handled separately
+                if (authAction) {
+                    console.log(`[DAMP Navigation] Auth button detected, skipping link handler`);
+                    return;
+                }
 
                 // Track the click
                 if (analyticsAction) {
@@ -444,15 +466,19 @@ class DAMPHeader extends HTMLElement {
                 }
 
                 // Handle different link types
-                if (href.startsWith('#')) {
+                if (href && href.startsWith('#')) {
                     // Anchor link - prevent default and smooth scroll
+                    console.log(`[DAMP Navigation] Anchor link detected: ${href}`);
                     e.preventDefault();
                     this.handleAnchorNavigation(href);
-                } else {
+                } else if (href) {
                     // Regular link - let it navigate but close menu
+                    console.log(`[DAMP Navigation] Regular link detected: ${href}, allowing navigation`);
                     setTimeout(() => {
                         this.closeMobileMenu();
                     }, 150);
+                } else {
+                    console.warn(`[DAMP Navigation] Link has no href attribute:`, link);
                 }
             });
         });
@@ -495,9 +521,21 @@ class DAMPHeader extends HTMLElement {
         const mobileMenu = this.querySelector('.mobile-menu');
         const backdrop = this.querySelector('.mobile-menu-backdrop');
 
-        if (!hamburger || !mobileMenu) return;
+        if (!hamburger || !mobileMenu) {
+            console.warn('[DAMP Header] Cannot open mobile menu - elements not found:', {
+                hamburger: !!hamburger,
+                mobileMenu: !!mobileMenu
+            });
+            return;
+        }
 
         this.securityLog('Opening mobile menu');
+        console.log('[DAMP Header] Mobile menu elements:', {
+            menu: mobileMenu,
+            classList: Array.from(mobileMenu.classList),
+            computedDisplay: window.getComputedStyle(mobileMenu).display,
+            computedTransform: window.getComputedStyle(mobileMenu).transform
+        });
 
         this.isMenuOpen = true;
 
@@ -810,7 +848,10 @@ class DAMPHeader extends HTMLElement {
     securityLog(message, level = 'info') {
         const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         if (isDev) {
-            console[level](`[DAMP Navigation Security] ${message}`);
+            // Ensure level is a valid console method
+            const validLevels = ['log', 'info', 'warn', 'error', 'debug'];
+            const safeLevel = validLevels.includes(level) ? level : 'log';
+            console[safeLevel](`[DAMP Navigation Security] ${message}`);
         }
     }
 
@@ -929,21 +970,47 @@ class DAMPHeader extends HTMLElement {
     setupAuthEventHandlers() {
         // Set up auth button event delegation
         this.addEventListener('click', (e) => {
-            const authAction = e.target.closest('[data-auth]')?.getAttribute('data-auth');
+            const authElement = e.target.closest('[data-auth]');
+            const authAction = authElement?.getAttribute('data-auth');
 
-            if (authAction && window.dampAuth) {
+            if (authAction) {
+                console.log(`[DAMP Navigation] Auth action requested: ${authAction}`);
                 e.preventDefault();
+                e.stopPropagation();
+
+                if (!window.dampAuth) {
+                    console.error('[DAMP Navigation] dampAuth not available, auth modal may not be loaded');
+                    // Try to load auth modal dynamically
+                    if (!document.querySelector('script[src*="auth-modal.js"]')) {
+                        console.log('[DAMP Navigation] Attempting to load auth modal...');
+                        const script = document.createElement('script');
+                        script.src = this.basePath + 'assets/js/auth-modal.js';
+                        script.onload = () => {
+                            console.log('[DAMP Navigation] Auth modal loaded, retrying action');
+                            authElement.click();
+                        };
+                        document.head.appendChild(script);
+                    }
+                    return;
+                }
 
                 switch (authAction) {
                     case 'signin':
+                        console.log('[DAMP Navigation] Opening sign in modal');
                         window.dampAuth.showSignIn();
                         this.trackAnalytics('nav_signin_clicked');
+                        // Close mobile menu after opening auth
+                        setTimeout(() => this.closeMobileMenu(), 300);
                         break;
                     case 'signup':
+                        console.log('[DAMP Navigation] Opening sign up modal');
                         window.dampAuth.showSignUp();
                         this.trackAnalytics('nav_signup_clicked');
+                        // Close mobile menu after opening auth
+                        setTimeout(() => this.closeMobileMenu(), 300);
                         break;
                     case 'signout':
+                        console.log('[DAMP Navigation] Signing out');
                         this.handleSignOut();
                         break;
                 }

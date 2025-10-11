@@ -189,6 +189,82 @@
     line-height: 1.6;
 }
 
+/* Pain Point Cards */
+.pain-point-card {
+    background: rgb(255 255 255 / 10%);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid rgb(255 255 255 / 10%);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.pain-point-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgb(255 87 87 / 20%);
+    border-color: rgb(255 87 87 / 50%);
+}
+
+.pain-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.pain-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 0.75rem;
+}
+
+.pain-point-card p {
+    color: rgb(255 255 255 / 80%);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Newsletter Benefits Cards */
+.benefit-item {
+    background: rgb(255 255 255 / 10%);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid rgb(255 255 255 / 10%);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.benefit-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgb(0 212 255 / 20%);
+    border-color: rgb(0 212 255 / 50%);
+}
+
+.benefit-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.benefit-item h4 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 0.75rem;
+}
+
+.benefit-item p {
+    color: rgb(255 255 255 / 80%);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
 /* Info Cards */
 .info-card {
     background: rgb(255 255 255 / 10%);
@@ -217,6 +293,20 @@
     display: grid;
     gap: 2rem;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.pain-points-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.newsletter-benefits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
 }
 
 .product-grid {

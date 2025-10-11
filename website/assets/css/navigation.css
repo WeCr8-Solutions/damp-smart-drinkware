@@ -803,8 +803,6 @@
 /* Body States */
 .mobile-menu-open {
     overflow: hidden !important;
-    position: fixed;
-    width: 100%;
 }
 
 /* Device-Specific Classes */
@@ -1479,5 +1477,17 @@
     .auth-buttons,
     .mobile-auth-buttons {
         display: none !important;
+    }
+}
+
+/* Ensure hamburger is visible on desktop */
+.hamburger {
+    display: flex !important;
+    z-index: 1100; /* Ensure it's on top */
+}
+
+@media (min-width: 1024px) {
+    .hamburger {
+        display: flex !important;
     }
 }

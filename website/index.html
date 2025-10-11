@@ -159,12 +159,15 @@
     <!-- Preload Critical Resources -->
     <link rel="preload" href="assets/css/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="assets/css/navigation.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="assets/css/components/hero-animation.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="assets/images/logo/logo.png" as="image">
+    <link rel="preload" href="assets/images/logo/icon.png" as="image">
 
     <!-- Load Non-Critical Styles Asynchronously -->
     <noscript>
         <link rel="stylesheet" href="assets/css/main.css">
         <link rel="stylesheet" href="assets/css/navigation.css">
+        <link rel="stylesheet" href="assets/css/components/hero-animation.css">
         <link rel="stylesheet" href="assets/css/styles.css">
         <link rel="stylesheet" href="assets/css/auth-styles.css">
         <link rel="stylesheet" href="assets/css/adsense-styles.css">
@@ -185,16 +188,7 @@
     <a href="#main-content" class="skip-to-content">Skip to main content</a>
 
     <!-- Navigation Header -->
-            <!-- Main Navigation: Ensure only one visible nav with clear ARIA label -->
-            <nav class="damp-nav" role="navigation" aria-label="Main navigation">
-                <!-- Navigation links -->
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="pages/pre-sale-funnel.html" class="nav-link">Pre-Order</a>
-                <a href="pages/products.html" class="nav-link">Products</a>
-                <a href="pages/product-voting.html" class="nav-link">Vote</a>
-                <a href="pages/how-it-works.html" class="nav-link">How It Works</a>
-                <a href="pages/cart.html" class="nav-link">Cart</a>
-            </nav>
+    <damp-header></damp-header>
 
     <!-- Main Content -->
     <main id="main-content">
@@ -521,22 +515,7 @@
                 </p>
 
                 <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-number">R&D</span>
-                        <span class="stat-label">Phase Active</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">Q2 2025</span>
-                        <span class="stat-label">Target Launch</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">$29.99</span>
-                        <span class="stat-label">Pre-Order Price</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">Limited</span>
-                        <span class="stat-label">Early Bird Spots</span>
-                    </div>
+                    <!-- Misleading stat-item entries removed -->
                 </div>
 
                 <div class="text-center mt-40" role="group" aria-label="Pre-order and cart actions">

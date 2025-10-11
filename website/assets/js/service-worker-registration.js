@@ -33,8 +33,26 @@ class ServiceWorkerManager {
 
     async registerMainServiceWorker() {
         try {
+            // First, unregister any existing service workers with errors
+            const existingRegistrations = await navigator.serviceWorker.getRegistrations();
+            for (let registration of existingRegistrations) {
+                if (registration.scope.includes('/')) {
+                    await registration.unregister();
+                    console.log('🗑️ Unregistered old service worker:', registration.scope);
+                }
+            }
+            
+            // Clear all caches
+            const cacheNames = await caches.keys();
+            for (let cacheName of cacheNames) {
+                await caches.delete(cacheName);
+                console.log('🗑️ Deleted cache:', cacheName);
+            }
+            
+            // Now register the fixed service worker
             this.swRegistration = await navigator.serviceWorker.register('/sw.js', {
-                scope: '/'
+                scope: '/',
+                updateViaCache: 'none'
             });
 
             console.log('✅ Main Service Worker registered with scope:', this.swRegistration.scope);

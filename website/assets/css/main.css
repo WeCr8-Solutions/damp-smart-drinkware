@@ -196,14 +196,17 @@
 }
 
 /* Section Styles */
-.section-title {
-    font-size: clamp(2rem, 6vw, 2.5rem);
-    font-weight: var(--font-weight-bold);
+.section-title,
+h2 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 900;
     text-align: center;
     margin-bottom: var(--space-12);
-    background: linear-gradient(45deg, var(--color-text-primary), var(--color-primary-500));
-    -webkit-text-fill-color: transparent;
+    background: linear-gradient(45deg, #fff, #00d4ff);
     background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.1;
 }
 
 .section-subtitle {
@@ -436,18 +439,16 @@
 }
 
 /* Enhanced Hero Title */
-.hero-title {
+.hero-title,
+h1 {
     font-size: clamp(2.5rem, 8vw, 4rem);
-    font-weight: var(--font-weight-black);
-    margin-bottom: var(--space-4);
-    background: linear-gradient(135deg,
-        var(--color-text-primary) 0%,
-        var(--color-primary-500) 50%,
-        var(--color-primary-600) 100%);
-    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+    background: linear-gradient(45deg, #fff, #00d4ff);
     background-clip: text;
-    line-height: var(--line-height-tight);
-    text-shadow: 0 0 40px rgb(0 212 255 / 30%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+    line-height: 1.1;
 }
 
 /* Enhanced Hero Subtitle */

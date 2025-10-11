@@ -276,7 +276,9 @@
   "capture_links": "existing-client-navigate",
 
   "scope_extensions": [
-    {"origin": "*.dampdrink.com"}
+    {
+      "origin": "https://*.dampdrink.com"
+    }
   ],
 
   "note_taking": {

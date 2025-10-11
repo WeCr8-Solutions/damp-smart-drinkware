@@ -769,3 +769,41 @@ export {
 export {
   handleStripeWebhook,
 } from './stripe-webhooks';
+
+// =============================================================================
+// STRIPE SALES STATISTICS
+// =============================================================================
+/**
+ * Get real-time sales statistics from Firestore
+ * This provides accurate pre-order counts without fake data
+ */
+export const getSalesStats = onCall(async (request: CallableRequest<{}>) => {
+  try {
+    // Count completed checkout sessions
+    const checkoutEventsSnapshot = await admin.firestore()
+      .collection('subscription_events')
+      .where('type', '==', 'checkout_completed')
+      .get();
+
+    const totalSales = checkoutEventsSnapshot.size;
+
+    // Get recent activity (last 24 hours)
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const recentSalesSnapshot = await admin.firestore()
+      .collection('subscription_events')
+      .where('type', '==', 'checkout_completed')
+      .where('timestamp', '>=', oneDayAgo)
+      .get();
+
+    const recentSales = recentSalesSnapshot.size;
+
+    return {
+      totalSales,
+      recentSales,
+      lastUpdated: new Date().toISOString(),
+    };
+  } catch (error) {
+    console.error('Error getting sales stats:', error);
+    throw new HttpsError('internal', 'Failed to get sales statistics');
+  }
+});

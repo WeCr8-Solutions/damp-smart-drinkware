@@ -33,9 +33,11 @@ class DAMPHeroAnimation {
         return isMobile ? 80 : 150; // Fewer bubbles for better mobile performance
     }
 
-    initializeAnimation() {
+    async initializeAnimation() {
         if (this.shouldPlayAnimation()) {
             console.log('DAMP: Starting sequential animation');
+            // Wait for CSS to be loaded
+            await this.waitForCSS();
             this.createAnimationElements();
             this.startAnimation();
         } else {
@@ -44,14 +46,49 @@ class DAMPHeroAnimation {
         }
     }
 
+    async waitForCSS() {
+        // Wait for the hero-animation.css to load
+        return new Promise((resolve) => {
+            // Check if CSS is already loaded
+            const checkCSS = () => {
+                const styleSheets = Array.from(document.styleSheets);
+                const hasAnimationCSS = styleSheets.some(sheet => {
+                    try {
+                        return sheet.href && sheet.href.includes('hero-animation.css');
+                    } catch (e) {
+                        return false;
+                    }
+                });
+
+                if (hasAnimationCSS) {
+                    console.log('DAMP: Animation CSS loaded');
+                    resolve();
+                } else {
+                    // Wait a bit and check again
+                    setTimeout(checkCSS, 50);
+                }
+            };
+
+            // Start checking after a small delay
+            setTimeout(checkCSS, 10);
+        });
+    }
+
     shouldPlayAnimation() {
         // Check URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('skip-animation') === 'true') return false;
-        if (urlParams.get('play-animation') === 'true') return true;
+        if (urlParams.get('skip-animation') === 'true') {
+            console.log('DAMP: Animation skipped via URL parameter');
+            return false;
+        }
+        if (urlParams.get('play-animation') === 'true') {
+            console.log('DAMP: Animation forced via URL parameter');
+            return true;
+        }
 
         // Check for reduced motion
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            console.log('DAMP: Animation skipped due to reduced motion preference');
             return false;
         }
 
@@ -59,9 +96,11 @@ class DAMPHeroAnimation {
         const hardwareConcurrency = navigator.hardwareConcurrency || 4;
         const deviceMemory = navigator.deviceMemory || 4;
         if (hardwareConcurrency <= 1 || deviceMemory <= 1) {
+            console.log('DAMP: Animation skipped due to low-end device');
             return false;
         }
 
+        console.log('DAMP: Animation will play');
         return true;
     }
 
