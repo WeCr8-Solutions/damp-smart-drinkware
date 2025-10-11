@@ -782,12 +782,58 @@
         <div class="cta-container">
             <h2 class="section-title">Choose Your DAMP Products</h2>
 
-            <p style="font-size: 1.2rem; color: rgb(255 255 255 / 90%); margin-bottom: 30px;">
-                <strong>Reserve your devices now</strong> and help us reach 500 to start production. Lock in early-bird pricing today!
+            <p style="font-size: 1.2rem; color: rgb(255 255 255 / 90%); margin-bottom: 15px;">
+                <strong>Reserve your devices now</strong> and help us reach our production goals. Lock in early-bird pricing today!
             </p>
+            
+            <div style="text-align: center; margin-bottom: 30px; padding: 15px; background: rgb(255 255 255 / 5%); border-radius: 10px; border: 1px solid rgb(0 212 255 / 20%);">
+                <p style="font-size: 0.95rem; color: rgb(0 212 255 / 90%); margin: 0;">
+                    <strong>📦 Each product needs 500 reservations to begin production</strong><br>
+                    <span style="font-size: 0.85rem; color: rgb(255 255 255 / 70%);">
+                        Products that reach the goal first will be manufactured and shipped first
+                    </span>
+                </p>
+            </div>
 
             <!-- Product Selection Grid -->
             <div class="product-selection-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 40px 0;">
+
+                <!-- DAMP Cup Sleeve (PRIMARY PRODUCT) -->
+                <div class="product-card" data-product="cup-sleeve" style="border: 2px solid rgb(255 165 2 / 50%); box-shadow: 0 0 20px rgb(255 165 2 / 30%);">
+                    <div style="background: linear-gradient(45deg, #ffa502, #ff6348); color: white; padding: 5px; border-radius: 10px 10px 0 0; margin: -15px -15px 15px -15px; text-align: center; font-weight: bold; font-size: 0.85rem;">
+                        ⭐ MOST POPULAR
+                    </div>
+                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #ffa502, #ff6348); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px; pointer-events: none;">
+                        <img src="../assets/images/products/cup-sleeve/cup-sleeve.png" alt="DAMP Cup Sleeve" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%)); pointer-events: none;">
+                    </div>
+                    <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Cup Sleeve</h3>
+                    
+                    <!-- Product Goal Counter -->
+                    <div style="margin-bottom: 15px; padding: 10px; background: rgb(255 165 2 / 10%); border-radius: 8px; border: 1px solid rgb(255 165 2 / 30%);">
+                        <div style="font-size: 0.85rem; color: rgb(255 255 255 / 80%); margin-bottom: 5px;">
+                            <span class="product-goal-count" data-product="cup-sleeve">0</span> / 500 Reserved
+                        </div>
+                        <div style="background: rgb(255 255 255 / 20%); height: 6px; border-radius: 3px; overflow: hidden;">
+                            <div class="product-goal-bar" data-product="cup-sleeve" style="width: 0%; height: 100%; background: linear-gradient(45deg, #ffa502, #ff6348); transition: width 0.3s ease;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-pricing" style="margin-bottom: 15px;">
+                        <span class="current-price" style="color: var(--presale-success); font-size: 1.4rem; font-weight: bold;">$34.99</span>
+                        <span class="original-price" style="color: rgb(255 255 255 / 60%); text-decoration: line-through; margin-left: 10px;">$44.99</span>
+                    </div>
+                    <p class="product-description" style="color: rgb(255 255 255 / 80%); font-size: 0.9rem; margin-bottom: 20px;">Smart sleeve for coffee cups and smaller drinkware. Works with most standard cups.</p>
+
+                    <div class="quantity-controls" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+                        <button class="qty-btn minus" data-product="cup-sleeve" style="width: 40px; height: 40px; border: none; background: rgb(255 255 255 / 20%); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
+                        <span class="quantity" data-product="cup-sleeve" style="color: white; font-size: 1.2rem; font-weight: bold; min-width: 30px; text-align: center;">0</span>
+                        <button class="qty-btn plus" data-product="cup-sleeve" style="width: 40px; height: 40px; border: none; background: rgb(255 255 255 / 20%); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
+                    </div>
+
+                    <button class="add-to-cart-btn" data-product-id="cup-sleeve" data-product-name="DAMP Cup Sleeve" data-product-price="34.99" style="width: 100%; background: linear-gradient(45deg, var(--presale-success), #00d4ff); color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
+                        Add to Cart
+                    </button>
+                </div>
 
                 <!-- DAMP Silicone Bottom -->
                 <div class="product-card" data-product="silicone-bottom">
@@ -795,6 +841,17 @@
                         <img src="../assets/images/products/silicone-bottom/silicone-bottom.png" alt="DAMP Silicone Bottom" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%)); pointer-events: none;">
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Silicone Bottom</h3>
+                    
+                    <!-- Product Goal Counter -->
+                    <div style="margin-bottom: 15px; padding: 10px; background: rgb(0 212 255 / 10%); border-radius: 8px; border: 1px solid rgb(0 212 255 / 30%);">
+                        <div style="font-size: 0.85rem; color: rgb(255 255 255 / 80%); margin-bottom: 5px;">
+                            <span class="product-goal-count" data-product="silicone-bottom">0</span> / 500 Reserved
+                        </div>
+                        <div style="background: rgb(255 255 255 / 20%); height: 6px; border-radius: 3px; overflow: hidden;">
+                            <div class="product-goal-bar" data-product="silicone-bottom" style="width: 0%; height: 100%; background: linear-gradient(45deg, #00d4ff, #09c); transition: width 0.3s ease;"></div>
+                        </div>
+                    </div>
+                    
                     <div class="product-pricing" style="margin-bottom: 15px;">
                         <span class="current-price" style="color: var(--presale-success); font-size: 1.4rem; font-weight: bold;">$29.99</span>
                         <span class="original-price" style="color: rgb(255 255 255 / 60%); text-decoration: line-through; margin-left: 10px;">$39.99</span>
@@ -818,6 +875,17 @@
                         <img src="../assets/images/products/damp-handle/damp-handle.png" alt="DAMP Handle v1.0" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%)); pointer-events: none;">
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Handle v1.0</h3>
+                    
+                    <!-- Product Goal Counter -->
+                    <div style="margin-bottom: 15px; padding: 10px; background: rgb(255 71 87 / 10%); border-radius: 8px; border: 1px solid rgb(255 71 87 / 30%);">
+                        <div style="font-size: 0.85rem; color: rgb(255 255 255 / 80%); margin-bottom: 5px;">
+                            <span class="product-goal-count" data-product="damp-handle">0</span> / 500 Reserved
+                        </div>
+                        <div style="background: rgb(255 255 255 / 20%); height: 6px; border-radius: 3px; overflow: hidden;">
+                            <div class="product-goal-bar" data-product="damp-handle" style="width: 0%; height: 100%; background: linear-gradient(45deg, #ff4757, #ff6b6b); transition: width 0.3s ease;"></div>
+                        </div>
+                    </div>
+                    
                     <div class="product-pricing" style="margin-bottom: 15px;">
                         <span class="current-price" style="color: var(--presale-success); font-size: 1.4rem; font-weight: bold;">$49.99</span>
                         <span class="original-price" style="color: rgb(255 255 255 / 60%); text-decoration: line-through; margin-left: 10px;">$69.99</span>
@@ -831,29 +899,6 @@
                     </div>
 
                     <button class="add-to-cart-btn" data-product-id="damp-handle" data-product-name="DAMP Handle v1.0" data-product-price="49.99" style="width: 100%; background: linear-gradient(45deg, var(--presale-success), #00d4ff); color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
-                        Add to Cart
-                    </button>
-                </div>
-
-                <!-- DAMP Cup Sleeve -->
-                <div class="product-card" data-product="cup-sleeve">
-                    <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #ffa502, #ff6348); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px; pointer-events: none;">
-                        <img src="../assets/images/products/cup-sleeve/cup-sleeve.png" alt="DAMP Cup Sleeve" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%)); pointer-events: none;">
-                    </div>
-                    <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Cup Sleeve</h3>
-                    <div class="product-pricing" style="margin-bottom: 15px;">
-                        <span class="current-price" style="color: var(--presale-success); font-size: 1.4rem; font-weight: bold;">$34.99</span>
-                        <span class="original-price" style="color: rgb(255 255 255 / 60%); text-decoration: line-through; margin-left: 10px;">$44.99</span>
-                    </div>
-                    <p class="product-description" style="color: rgb(255 255 255 / 80%); font-size: 0.9rem; margin-bottom: 20px;">Smart sleeve for coffee cups and smaller drinkware.</p>
-
-                    <div class="quantity-controls" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
-                        <button class="qty-btn minus" data-product="cup-sleeve" style="width: 40px; height: 40px; border: none; background: rgb(255 255 255 / 20%); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">-</button>
-                        <span class="quantity" data-product="cup-sleeve" style="color: white; font-size: 1.2rem; font-weight: bold; min-width: 30px; text-align: center;">0</span>
-                        <button class="qty-btn plus" data-product="cup-sleeve" style="width: 40px; height: 40px; border: none; background: rgb(255 255 255 / 20%); color: white; border-radius: 50%; cursor: pointer; font-size: 1.2rem;">+</button>
-                    </div>
-
-                    <button class="add-to-cart-btn" data-product-id="cup-sleeve" data-product-name="DAMP Cup Sleeve" data-product-price="34.99" style="width: 100%; background: linear-gradient(45deg, var(--presale-success), #00d4ff); color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
                         Add to Cart
                     </button>
                 </div>
