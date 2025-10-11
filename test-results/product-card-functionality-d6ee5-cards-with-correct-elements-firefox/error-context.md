@@ -1,0 +1,150 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - navigation "Main navigation" [ref=e2]:
+    - link "Home" [ref=e3] [cursor=pointer]:
+      - /url: ../index.html
+    - link "Pre-Order" [ref=e4] [cursor=pointer]:
+      - /url: pre-sale-funnel.html
+    - link "Products" [ref=e5] [cursor=pointer]:
+      - /url: products.html
+    - link "Vote" [ref=e6] [cursor=pointer]:
+      - /url: product-voting.html
+    - link "How It Works" [ref=e7] [cursor=pointer]:
+      - /url: how-it-works.html
+    - link "Cart" [ref=e8] [cursor=pointer]:
+      - /url: cart.html
+  - generic [ref=e10]:
+    - generic [ref=e11]: 🚀 PRE-SALE NOW LIVE
+    - heading "Turn Your Favorite Cup Smart – Never Lose It Again" [level=1] [ref=e12]
+    - paragraph [ref=e13]: Clip-on accessory for Stanley, Hydro Flask, and more – Pre-order today to be one of the first 500 owners.
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - generic [ref=e17]: "0"
+        - text: Pre-Orders
+      - generic [ref=e18]:
+        - generic [ref=e19]: "Early Bird Pricing Closes In:"
+        - generic [ref=e20]:
+          - generic [ref=e21]:
+            - generic [ref=e22]: "30"
+            - generic [ref=e23]: Days
+          - generic [ref=e24]:
+            - generic [ref=e25]: "14"
+            - generic [ref=e26]: Hours
+          - generic [ref=e27]:
+            - generic [ref=e28]: "29"
+            - generic [ref=e29]: Minutes
+          - generic [ref=e30]:
+            - generic [ref=e31]: "27"
+            - generic [ref=e32]: Seconds
+    - link "Pre-Order Now" [ref=e33] [cursor=pointer]:
+      - /url: "#checkout"
+  - generic [ref=e34]:
+    - heading "The Problem We're Solving" [level=2] [ref=e35]
+    - generic [ref=e36]:
+      - generic [ref=e37]:
+        - generic [ref=e38]: 😫
+        - heading "You Keep Losing Your Drinks" [level=3] [ref=e39]
+        - paragraph [ref=e40]: Left your Stanley at the coffee shop? Forgot your Hydro Flask at the gym? We've all been there – expensive drinks abandoned everywhere.
+      - generic [ref=e41]:
+        - generic [ref=e42]: 📱
+        - heading "Smart Phone Alerts" [level=3] [ref=e43]
+        - paragraph [ref=e44]: DAMP clips onto any cup and alerts your phone when you're about to leave it behind. Works with Stanley, Hydro Flask, Yeti, and more.
+    - paragraph [ref=e46]:
+      - strong [ref=e47]: Works with Stanley, Hydro Flask, Yeti, and virtually any cup or bottle
+  - generic [ref=e49]:
+    - heading "How DAMP Works" [level=2] [ref=e50]
+    - paragraph [ref=e51]: Three simple steps to never lose your drink again
+    - generic [ref=e52]:
+      - generic [ref=e53]:
+        - generic [ref=e54]: "1"
+        - heading "Clip DAMP Onto Your Cup" [level=3] [ref=e55]
+        - paragraph [ref=e56]: Universal clip design works with Stanley tumblers, Hydro Flask bottles, Yeti mugs, and virtually any drinkware. Installs in seconds.
+      - generic [ref=e57]:
+        - generic [ref=e58]: "2"
+        - heading "Pair With Phone Via App" [level=3] [ref=e59]
+        - paragraph [ref=e60]: Download the DAMP app and pair your device via Bluetooth. Simple one-time setup works with iOS and Android.
+      - generic [ref=e61]:
+        - generic [ref=e62]: "3"
+        - heading "Get Notified Before You Lose It" [level=3] [ref=e63]
+        - paragraph [ref=e64]: Walk away from your drink? Get an instant alert on your phone before you leave it behind. Never lose another cup.
+  - generic [ref=e65]:
+    - heading "What Early Adopters Are Saying" [level=2] [ref=e66]
+    - paragraph [ref=e67]: Real feedback from our prototype testers and early supporters
+    - generic [ref=e68]:
+      - generic [ref=e69]:
+        - paragraph [ref=e70]: "\"I've left my Stanley at work so many times. This is exactly what I need! Can't wait to get my hands on the first version.\""
+        - generic [ref=e71]: Sarah M.
+        - generic [ref=e72]: Early Prototype Tester
+      - generic [ref=e73]:
+        - paragraph [ref=e74]: "\"Finally someone is solving this universal problem. I'm pre-ordering two – one for my Hydro Flask and one for my coffee mug.\""
+        - generic [ref=e75]: Mike R.
+        - generic [ref=e76]: Beta Tester
+      - generic [ref=e77]:
+        - paragraph [ref=e78]: "\"Simple idea, brilliant execution. The prototype I tested worked flawlessly with my Yeti tumbler. Pre-ordering for sure.\""
+        - generic [ref=e79]: Jennifer L.
+        - generic [ref=e80]: Product Reviewer
+    - paragraph [ref=e82]: ⭐⭐⭐⭐⭐ Average rating from 47 prototype testers
+  - generic [ref=e84]:
+    - heading "Choose Your DAMP Products" [level=2] [ref=e85]
+    - paragraph [ref=e86]: Select your products and quantities. Be among the first to secure your DAMP device at early bird pricing.
+    - generic [ref=e87]:
+      - generic [ref=e88]:
+        - generic:
+          - img "DAMP Silicone Bottom"
+        - heading "DAMP Silicone Bottom" [level=3] [ref=e89]
+        - generic [ref=e90]:
+          - generic [ref=e91]: $29.99
+          - generic [ref=e92]: $39.99
+        - paragraph [ref=e93]: Smart temperature monitoring silicone bottom for any cup or bottle.
+        - generic [ref=e94]:
+          - button "-" [ref=e95] [cursor=pointer]
+          - generic [ref=e96]: "0"
+          - button "+" [ref=e97] [cursor=pointer]
+        - button "Add to Cart" [ref=e98] [cursor=pointer]
+      - generic [ref=e99]:
+        - generic:
+          - img "DAMP Handle v1.0"
+        - heading "DAMP Handle v1.0" [level=3] [ref=e100]
+        - generic [ref=e101]:
+          - generic [ref=e102]: $49.99
+          - generic [ref=e103]: $69.99
+        - paragraph [ref=e104]: Smart handle attachment for Stanley IceFlow and similar bottles.
+        - generic [ref=e105]:
+          - button "-" [ref=e106] [cursor=pointer]
+          - generic [ref=e107]: "0"
+          - button "+" [ref=e108] [cursor=pointer]
+        - button "Add to Cart" [ref=e109] [cursor=pointer]
+      - generic [ref=e110]:
+        - generic:
+          - img "DAMP Cup Sleeve"
+        - heading "DAMP Cup Sleeve" [level=3] [ref=e111]
+        - generic [ref=e112]:
+          - generic [ref=e113]: $34.99
+          - generic [ref=e114]: $44.99
+        - paragraph [ref=e115]: Smart sleeve for coffee cups and smaller drinkware.
+        - generic [ref=e116]:
+          - button "-" [ref=e117] [cursor=pointer]
+          - generic [ref=e118]: "0"
+          - button "+" [ref=e119] [cursor=pointer]
+        - button "Add to Cart" [ref=e120] [cursor=pointer]
+    - button "Add Items to Cart First" [disabled] [ref=e121]
+    - paragraph [ref=e122]:
+      - text: 🔒 Secure payment via Stripe • 30-day money-back guarantee
+      - text: 💳 All major cards accepted • Free worldwide shipping
+  - contentinfo [ref=e123]:
+    - generic [ref=e124]:
+      - paragraph [ref=e125]:
+        - text: Questions about your pre-order? Email us at
+        - link "support@dampdrink.com" [ref=e126] [cursor=pointer]:
+          - /url: mailto:support@dampdrink.com
+      - generic [ref=e127]:
+        - link "Privacy Policy" [ref=e128] [cursor=pointer]:
+          - /url: ../pages/privacy.html
+        - link "Support" [ref=e129] [cursor=pointer]:
+          - /url: ../pages/support.html
+        - link "About Us" [ref=e130] [cursor=pointer]:
+          - /url: ../pages/about.html
+      - paragraph [ref=e131]: © 2025 WeCr8 Solutions LLC. All rights reserved.
+```
