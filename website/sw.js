@@ -140,6 +140,22 @@ class DAMPServiceWorker {
         const url = new URL(request.url);
         let response = null;
 
+        // Bypass Service Worker for third-party services (Stripe, payment processors, etc.)
+        const bypassDomains = [
+            'stripe.com',
+            'js.stripe.com',
+            'checkout.stripe.com',
+            'api.stripe.com',
+            'm.stripe.com',
+            'pay.google.com',
+            'apple.com'
+        ];
+        
+        if (bypassDomains.some(domain => url.hostname.includes(domain))) {
+            console.log(`[DAMP SW] Bypassing SW for third-party: ${url.hostname}`);
+            return; // Let browser handle it directly
+        }
+
         // Handle cart API requests with special caching
         if (url.pathname.includes('/api/cart')) {
             return this.handleCartRequest(request);
