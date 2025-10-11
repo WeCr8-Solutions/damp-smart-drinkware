@@ -629,9 +629,14 @@
                     </div>
                 </div>
 
+                <!-- Early Bird Pricing Badge -->
+                <div style="display: inline-block; padding: 10px 20px; background: linear-gradient(45deg, #ffa502, #ff6348); border-radius: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgb(255 165 2 / 40%);">
+                    <span style="font-size: 1.1rem; font-weight: bold; color: white;">🎯 EARLY BIRD PRICING ACTIVE</span>
+                </div>
+
                 <!-- Countdown Timer -->
                 <div class="countdown-timer">
-                    <div class="countdown-label">Early Bird Pricing Closes In:</div>
+                    <div class="countdown-label">⏰ Early Bird Pricing Ends:</div>
                     <div class="countdown-display">
                         <div class="countdown-item">
                             <span class="countdown-number" id="days">6</span>
@@ -934,6 +939,11 @@
             <button class="cta-primary" data-analytics="final-cta" id="checkout-button" style="opacity: 0.5; cursor: not-allowed;" disabled>
                 Add Items to Cart First
             </button>
+            
+            <!-- Disclaimer Button -->
+            <a href="#disclaimer-section" style="display: inline-block; margin-top: 15px; padding: 12px 30px; background: rgb(255 255 255 / 10%); color: rgb(255 255 255 / 80%); text-decoration: none; border-radius: 25px; font-size: 0.9rem; font-weight: 500; border: 1px solid rgb(255 255 255 / 20%); transition: all 0.3s ease;" onmouseover="this.style.background='rgb(255 255 255 / 20%)'; this.style.borderColor='rgb(255 255 255 / 40%)'" onmouseout="this.style.background='rgb(255 255 255 / 10%)'; this.style.borderColor='rgb(255 255 255 / 20%)'">
+                ⚠️ Read Important Product Disclaimer
+            </a>
 
             <p style="font-size: 0.9rem; color: rgb(255 255 255 / 70%); margin-top: 20px;">
                 🔒 Secure reservation via Stripe<br>
@@ -982,7 +992,7 @@
     </section>
 
     <!-- Product Development Disclaimer -->
-    <section style="background: rgb(255 255 255 / 5%); padding: 40px 20px; text-align: center; border-bottom: 1px solid rgb(255 255 255 / 10%);">
+    <section id="disclaimer-section" style="background: rgb(255 255 255 / 5%); padding: 40px 20px; text-align: center; border-bottom: 1px solid rgb(255 255 255 / 10%); scroll-margin-top: 80px;">
         <div style="max-width: 900px; margin: 0 auto;">
             <h3 style="color: rgb(255 255 255 / 90%); font-size: 1.3rem; font-weight: bold; margin-bottom: 20px;">
                 ⚠️ Important Product Development Disclaimer
@@ -1105,11 +1115,10 @@
                     console.log('📊 PreSaleFunnel: Products loaded:', this.products);
                     console.log('⏰ PreSaleFunnel: Countdown end time:', this.countdownEndTime);
 
-                    // this.updateCounters(); // Disabled - using real Stripe data
+                    // Fetch real sales data from Stripe
+                    this.fetchRealSalesData();
                     this.startCountdown();
-                    // this.startRealtimeUpdates(); // Disabled - no fake counters
                     this.setupAnalytics();
-                    // this.startLiveActivityUpdates(); // Disabled - no fake activity
                     this.setupCartFunctionality();
 
                     // Setup checkout button
@@ -1129,6 +1138,61 @@
                 } catch (error) {
                     console.error('❌ PreSaleFunnel: Initialization failed:', error);
                     console.error('Stack trace:', error.stack);
+                }
+            }
+
+            async fetchRealSalesData() {
+                console.log('📊 PreSaleFunnel: Fetching real sales data from Stripe...');
+                
+                try {
+                    // For now, fetch from Netlify function (will implement Stripe webhook data)
+                    const response = await fetch('/.netlify/functions/get-sales-stats');
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('✅ PreSaleFunnel: Sales data received:', data);
+                        
+                        // Update overall counter
+                        const currentBackers = document.getElementById('current-backers');
+                        if (currentBackers && data.totalSales !== undefined) {
+                            currentBackers.textContent = data.totalSales;
+                            this.currentCount = data.totalSales;
+                        }
+                        
+                        // Update product-specific counters
+                        if (data.productSales) {
+                            Object.keys(data.productSales).forEach(productId => {
+                                const count = data.productSales[productId];
+                                const countElement = document.querySelector(`.product-goal-count[data-product="${productId}"]`);
+                                const barElement = document.querySelector(`.product-goal-bar[data-product="${productId}"]`);
+                                
+                                if (countElement) {
+                                    countElement.textContent = count;
+                                }
+                                
+                                if (barElement) {
+                                    const percentage = Math.min((count / 500) * 100, 100);
+                                    barElement.style.width = `${percentage}%`;
+                                }
+                                
+                                console.log(`📊 Product ${productId}: ${count} / 500 (${percentage.toFixed(1)}%)`);
+                            });
+                        }
+                        
+                        // Update progress bar
+                        const progressBar = document.getElementById('progress-bar');
+                        if (progressBar && data.totalSales !== undefined) {
+                            const percentage = Math.min((data.totalSales / 500) * 100, 100);
+                            progressBar.style.width = `${percentage}%`;
+                        }
+                        
+                    } else {
+                        console.warn('⚠️ PreSaleFunnel: Could not fetch sales data, using 0 as default');
+                        // Keep counters at 0
+                    }
+                } catch (error) {
+                    console.warn('⚠️ PreSaleFunnel: Error fetching sales data:', error);
+                    // Keep counters at 0
                 }
             }
 
