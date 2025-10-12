@@ -131,14 +131,15 @@ class DAMPAdSenseManager {
         adUnit.className = 'adsbygoogle damp-ad-unit';
         adUnit.style.display = 'block';
         adUnit.dataset.adClient = this.config.clientId;
-        adUnit.dataset.adFormat = format === 'responsive' ? 'auto' : formatSize;
+        adUnit.dataset.adFormat = format === 'responsive' ? 'auto' : 'auto';
         adUnit.dataset.fullWidthResponsive = 'true';
 
         // Set dimensions for fixed formats
-        if (format !== 'responsive' && formatSize.includes('x')) {
-            const [width, height] = formatSize.split('x');
-            adUnit.style.width = `${width}px`;
-            adUnit.style.height = `${height}px`;
+        if (format !== 'responsive' && formatSize && typeof formatSize === 'object') {
+            if (formatSize.width && formatSize.height) {
+                adUnit.style.width = `${formatSize.width}px`;
+                adUnit.style.height = `${formatSize.height}px`;
+            }
         }
 
         // Add subtle label

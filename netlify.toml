@@ -62,7 +62,8 @@
         https://tpc.googlesyndication.com
         https://ep1.adtrafficquality.google
         https://ep2.adtrafficquality.google
-        https://*.adtrafficquality.google
+        https://ep1.adtrafficquality.google/sodar
+        https://ep2.adtrafficquality.google/sodar
         https://js.stripe.com
         https://checkout.stripe.com;
 
