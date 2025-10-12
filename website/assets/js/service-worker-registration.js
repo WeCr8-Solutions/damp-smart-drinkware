@@ -100,10 +100,14 @@ class ServiceWorkerManager {
     }
 
     notifyUserOfUpdate() {
-        // Simple notification - can be enhanced with custom UI
-        if (confirm('A new version of the app is available. Refresh to update?')) {
-            window.location.reload();
-        }
+        // PWA update notifications temporarily disabled
+        // Users will get updates on next manual page refresh
+        console.log('[Service Worker] New version available - will update on next page load');
+        
+        // DISABLED: Auto-prompt for updates
+        // if (confirm('A new version of the app is available. Refresh to update?')) {
+        //     window.location.reload();
+        // }
     }
 
     async unregisterAll() {
