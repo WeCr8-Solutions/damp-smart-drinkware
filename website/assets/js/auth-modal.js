@@ -9,7 +9,17 @@ class DAMPAuthModal {
     this.authService = null;
     this.isOpen = false;
     this.currentForm = 'signin';
+    
+    // Initialize debug logger
+    this.logger = window.debugLogger?.createModuleLogger('auth') || {
+      error: (...args) => console.error('[AUTH-MODAL]', ...args),
+      warn: (...args) => console.warn('[AUTH-MODAL]', ...args),
+      info: (...args) => console.log('[AUTH-MODAL]', ...args),
+      debug: (...args) => console.log('[AUTH-MODAL]', ...args),
+      trace: (...args) => console.log('[AUTH-MODAL]', ...args)
+    };
 
+    this.logger.info('AuthModal initializing...');
     this.init();
   }
 
@@ -313,33 +323,42 @@ class DAMPAuthModal {
     const email = document.getElementById('signinEmail').value;
     const password = document.getElementById('signinPassword').value;
 
+    this.logger.info('Sign in form submitted', { email });
+
     if (!this.validateEmail(email)) {
+      this.logger.warn('Invalid email format', { email });
       this.showError('Please enter a valid email address');
       return;
     }
 
+    this.logger.debug('Starting sign in process...');
     this.setLoading('signin', true);
 
     try {
+      this.logger.debug('Calling authService.signInWithEmail...');
       const result = await this.authService.signInWithEmail(email, password);
 
       if (result.success) {
+        this.logger.info('Sign in successful, showing success message');
         this.showMessage('success', 'Welcome back!', result.message);
         setTimeout(() => this.close(), 1500);
       } else {
+        this.logger.warn('Sign in failed', { error: result.error, message: result.message });
         this.showMessage('error', 'Sign In Failed', result.message);
       }
     } catch (error) {
+      this.logger.error('Sign in error caught', { error: error.message, code: error.code });
       this.showMessage('error', 'Sign In Failed', 'Please try again');
     } finally {
       this.setLoading('signin', false);
+      this.logger.debug('Sign in process completed');
     }
   }
 
   async handleSignUp(e) {
     e.preventDefault();
 
-    console.log('🔄 Sign up form submitted');
+    this.logger.info('Sign up form submitted');
 
     const firstName = document.getElementById('signupFirstName').value;
     const lastName = document.getElementById('signupLastName').value;
@@ -348,26 +367,26 @@ class DAMPAuthModal {
     const newsletter = document.getElementById('signupNewsletter').checked;
     const terms = document.getElementById('signupTerms').checked;
 
-    console.log('📝 Form data:', { firstName, lastName, email, newsletter, terms });
+    this.logger.debug('Form data collected', { firstName, lastName, email, newsletter, terms });
 
     if (!this.validateSignUp(firstName, lastName, email, password, terms)) {
-      console.log('❌ Form validation failed');
+      this.logger.warn('Form validation failed');
       return;
     }
 
-    console.log('✅ Form validation passed');
+    this.logger.debug('Form validation passed');
 
     if (!this.authService) {
-      console.error('❌ Auth service not available');
+      this.logger.error('Auth service not available');
       this.showMessage('error', 'Service Error', 'Authentication service is not available. Please refresh the page.');
       return;
     }
 
-    console.log('✅ Auth service available');
+    this.logger.debug('Auth service available, starting sign up...');
     this.setLoading('signup', true);
 
     try {
-      console.log('🔄 Calling authService.signUpWithEmail...');
+      this.logger.debug('Calling authService.signUpWithEmail...');
       const result = await this.authService.signUpWithEmail(email, password, {
         firstName,
         lastName,
@@ -376,19 +395,22 @@ class DAMPAuthModal {
         source: 'website'
       });
 
-      console.log('📋 Sign up result:', result);
+      this.logger.info('Sign up result received', { success: result.success, message: result.message });
 
       if (result.success) {
+        this.logger.info('Sign up successful');
         this.showMessage('success', 'Account Created!', result.message);
         setTimeout(() => this.close(), 3000);
       } else {
+        this.logger.warn('Sign up failed', { error: result.error, message: result.message });
         this.showMessage('error', 'Sign Up Failed', result.message);
       }
     } catch (error) {
-      console.error('❌ Sign up error:', error);
+      this.logger.error('Sign up error caught', { error: error.message, code: error.code });
       this.showMessage('error', 'Sign Up Failed', `Error: ${error.message || 'An unexpected error occurred. Please try again.'}`);
     } finally {
       this.setLoading('signup', false);
+      this.logger.debug('Sign up process completed');
     }
   }
 

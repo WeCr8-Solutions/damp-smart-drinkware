@@ -45,6 +45,19 @@ class DAMPAuthService {
     this.analytics = analytics;
     this.currentUser = null;
     this.authStateListeners = [];
+    
+    // Initialize debug logger
+    this.logger = window.debugLogger?.createModuleLogger('auth') || {
+      error: (...args) => console.error('[AUTH]', ...args),
+      warn: (...args) => console.warn('[AUTH]', ...args),
+      info: (...args) => console.log('[AUTH]', ...args),
+      debug: (...args) => console.log('[AUTH]', ...args),
+      trace: (...args) => console.log('[AUTH]', ...args),
+      time: (label) => console.time(label),
+      timeEnd: (label) => console.timeEnd(label)
+    };
+
+    this.logger.info('AuthService initializing...');
 
     // Initialize auth state listener
     this.initializeAuthState();
@@ -53,28 +66,43 @@ class DAMPAuthService {
     this.googleProvider = new GoogleAuthProvider();
     this.googleProvider.addScope('email');
     this.googleProvider.addScope('profile');
+    this.logger.debug('Google provider configured', { scopes: ['email', 'profile'] });
 
     this.facebookProvider = new FacebookAuthProvider();
     this.facebookProvider.addScope('email');
+    this.logger.debug('Facebook provider configured', { scopes: ['email'] });
+    
+    this.logger.info('AuthService initialized successfully');
   }
 
   /**
    * Initialize authentication state monitoring
    */
   initializeAuthState() {
+    this.logger.debug('Setting up auth state listener');
+    
     onAuthStateChanged(this.auth, async (user) => {
+      this.logger.info('Auth state changed', { 
+        authenticated: !!user,
+        uid: user?.uid,
+        email: user?.email 
+      });
+      
       this.currentUser = user;
 
       if (user) {
         // User is signed in
+        this.logger.debug('User signed in, handling sign-in flow', { uid: user.uid });
         await this.handleUserSignIn(user);
         this.trackAnalytics('user_sign_in', { method: 'state_change' });
       } else {
         // User is signed out
+        this.logger.debug('User signed out, handling sign-out flow');
         this.handleUserSignOut();
       }
 
       // Notify all listeners
+      this.logger.trace(`Notifying ${this.authStateListeners.length} auth state listeners`);
       this.authStateListeners.forEach(callback => callback(user));
     });
   }
@@ -232,26 +260,46 @@ class DAMPAuthService {
    * Sign up with email and password
    */
   async signUpWithEmail(email, password, additionalData = {}) {
+    const timerKey = this.logger.time('signUpWithEmail');
+    
+    this.logger.info('Sign up attempt started', { 
+      email, 
+      hasPassword: !!password,
+      passwordLength: password?.length,
+      additionalData: Object.keys(additionalData)
+    });
+    
     try {
+      this.logger.debug('Creating user with Firebase Auth...');
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
       const user = userCredential.user;
+      
+      this.logger.info('User created successfully', { uid: user.uid, email: user.email });
 
       // Update display name if provided
       if (additionalData.displayName) {
+        this.logger.debug('Updating display name', { displayName: additionalData.displayName });
         await updateProfile(user, {
           displayName: additionalData.displayName
         });
       }
 
       // Create user profile
+      this.logger.debug('Creating user profile in Firestore...');
       await this.createUserProfile(user, {
         ...additionalData,
         signInMethod: 'email'
       });
+      
+      this.logger.info('User profile created successfully');
 
       // Send email verification
+      this.logger.debug('Sending email verification...');
       await this.sendEmailVerification();
+      this.logger.info('Email verification sent');
 
+      this.logger.timeEnd(timerKey);
+      
       return {
         success: true,
         user: user,
@@ -259,6 +307,14 @@ class DAMPAuthService {
       };
 
     } catch (error) {
+      this.logger.error('Sign up failed', { 
+        code: error.code,
+        message: error.message,
+        email 
+      });
+      
+      this.logger.timeEnd(timerKey);
+      
       return {
         success: false,
         error: error.code,
@@ -271,10 +327,27 @@ class DAMPAuthService {
    * Sign in with email and password
    */
   async signInWithEmail(email, password) {
+    const timerKey = this.logger.time('signInWithEmail');
+    
+    this.logger.info('Sign in attempt started', { 
+      email,
+      hasPassword: !!password,
+      passwordLength: password?.length
+    });
+    
     try {
+      this.logger.debug('Authenticating with Firebase...');
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      
+      this.logger.info('Sign in successful', { 
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+        emailVerified: userCredential.user.emailVerified
+      });
 
       this.trackAnalytics('user_sign_in', { method: 'email' });
+      
+      this.logger.timeEnd(timerKey);
 
       return {
         success: true,
@@ -283,8 +356,16 @@ class DAMPAuthService {
       };
 
     } catch (error) {
+      this.logger.error('Sign in failed', { 
+        code: error.code,
+        message: error.message,
+        email 
+      });
+      
       // Track failed login attempt
       await this.trackFailedLogin(email, error.code);
+      
+      this.logger.timeEnd(timerKey);
 
       return {
         success: false,
