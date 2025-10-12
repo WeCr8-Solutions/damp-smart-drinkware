@@ -65,22 +65,36 @@ class DAMPSEOOptimizer {
     // Get Page Data
     getPageData() {
         const path = window.location.pathname;
+        
+        // Comprehensive keyword sets
+        const coreKeywords = 'DAMP Smart Drinkware, drink abandonment monitor, never leave your drink behind, connected drinkware, Bluetooth cup sleeve, smart hydration tracker, drink tracking technology';
+        
+        const brandKeywords = 'YETI tumbler tracker, Stanley cup monitor, Hydro Flask smart lid, Starbucks cup tracker, Contigo travel mug, Ember mug alternative, CamelBak smart bottle, Corkcicle tumbler, BrüMate cup, Thermos smart lid, Simple Modern tracker';
+        
+        const useCaseKeywords = 'smart coffee mug, business travel drinkware, gym smart bottle, office desk mug reminder, airport travel mug, commuter lifestyle cup, fitness smart bottle, camping smart mug, mindful drinking gadget, tech-savvy coffee lovers';
+        
+        const technologyKeywords = 'Bluetooth-enabled drinkware, IoT mug, wireless drink monitor, BLE tracking, RFID smart cup, temperature-sensing mug, smart mug app integration, rechargeable smart mug, USB rechargeable bottle, wireless charging mug';
+        
+        const lifestyleKeywords = 'mindful coffee drinking, coffee lovers smart cup, hydration tracker athletes, wellness drink tracker, business professional mug, executive coffee mug, portable smart mug, eco-friendly smart drinkware, travel-friendly drink tracker, workplace hydration tech';
+        
+        const allKeywords = `${coreKeywords}, ${brandKeywords}, ${useCaseKeywords}, ${technologyKeywords}, ${lifestyleKeywords}`;
+        
         const baseData = {
             title: document.title || 'DAMP Smart Drinkware',
-            description: 'Revolutionary smart drinkware with temperature control and health monitoring',
-            keywords: 'smart drinkware, temperature control, health monitoring, leak protection',
+            description: 'Bluetooth-enabled smart drink tracker for YETI, Stanley, Hydro Flask, Starbucks, and all drinkware brands. Never lose your coffee cup or water bottle again.',
+            keywords: allKeywords,
             url: window.location.href,
             image: `${this.options.baseUrl}/assets/images/logo/icon-512.png`,
             type: 'website'
         };
 
         // Page-specific data
-        if (path.includes('product') || path.includes('baby-bottle') || path.includes('cup-sleeve')) {
+        if (path.includes('product') || path.includes('baby-bottle') || path.includes('cup-sleeve') || path.includes('handle') || path.includes('silicone')) {
             return {
                 ...baseData,
                 type: 'product',
-                description: 'Advanced smart drinkware with temperature control, health monitoring, and leak protection technology',
-                keywords: 'smart bottle, smart cup, temperature control, health monitoring, leak protection, baby bottle'
+                description: 'Smart drinkware tracker compatible with YETI, Stanley, Hydro Flask, Starbucks cups, Contigo, and all drinkware brands. Perfect for business travel, gym, office, and daily commuting.',
+                keywords: `${allKeywords}, smart cup for students, hydration monitoring device, travel mug with alert, never lose your travel mug again, gadget for preventing forgotten drinks, techie travel mug, modern drink accessory, smart beverage container`
             };
         }
 
