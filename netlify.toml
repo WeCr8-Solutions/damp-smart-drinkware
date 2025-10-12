@@ -1,16 +1,13 @@
 # Netlify configuration for DAMP Smart Drinkware - Professional Security
 
 [build]
-  command = "echo 'Static site - no build needed'"
+  # No build command needed for static site
   publish = "website"
   functions = "netlify/functions"
   
 [build.environment]
-  NODE_VERSION = "18"
-  # Firebase configuration
-  FIREBASE_PROJECT_ID = "damp-smart-drinkware"
-  FIREBASE_API_KEY = "AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w"
-  FIREBASE_AUTH_DOMAIN = "damp-smart-drinkware.firebaseapp.com"
+  NODE_VERSION = "18.19.0"
+  NPM_FLAGS = "--legacy-peer-deps"
 
 # Netlify Dev configuration for local testing
 [dev]
