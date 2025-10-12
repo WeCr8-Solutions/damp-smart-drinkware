@@ -838,7 +838,17 @@
                     <div class="product-card">
                         <div class="product-badge">Premium</div>
                         <div class="product-image">
-                            <img src="../assets/images/products/baby-bottle/baby-bottle.png" alt="DAMP Baby Bottle v1.0" loading="lazy" decoding="async">
+                            <picture>
+                                <source 
+                                    type="image/avif" 
+                                    srcset="../assets/images/optimized/products/baby-bottle/baby-bottle-medium.avif 400w, ../assets/images/optimized/products/baby-bottle/baby-bottle-large.avif 800w"
+                                    sizes="(max-width: 768px) 400px, 800px">
+                                <source 
+                                    type="image/webp" 
+                                    srcset="../assets/images/optimized/products/baby-bottle/baby-bottle-medium.webp 400w, ../assets/images/optimized/products/baby-bottle/baby-bottle-large.webp 800w"
+                                    sizes="(max-width: 768px) 400px, 800px">
+                                <img src="../assets/images/optimized/products/baby-bottle/baby-bottle-medium.png" alt="DAMP Baby Bottle v1.0" loading="lazy" decoding="async">
+                            </picture>
                         </div>
                         <h3 class="product-name">Baby Bottle v1.0</h3>
                         <p class="product-description">Smart baby bottle with feeding tracking, temperature monitoring, and safety alerts for new parents.</p>
