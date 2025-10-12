@@ -561,7 +561,7 @@ class DAMPServiceWorker {
 
     reportPerformanceMetrics() {
         if (self.BroadcastChannel) {
-            const channel = new BroadcastChannel(PERFORMANCE_CHANNEL);
+            const channel = new BroadcastChannel(SW.PERFORMANCE_CHANNEL);
             channel.postMessage({
                 type: 'SW_PERFORMANCE',
                 metrics: { ...performanceMetrics },
