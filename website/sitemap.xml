@@ -168,6 +168,14 @@
         <priority>0.85</priority>
     </url>
     
+    <!-- Press redirect URL for SEO -->
+    <url>
+        <loc>https://dampdrink.com/press</loc>
+        <lastmod>2025-01-12</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.85</priority>
+    </url>
+    
     <url>
         <loc>https://dampdrink.com/pages/support.html</loc>
         <lastmod>2025-01-15</lastmod>

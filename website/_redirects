@@ -1,0 +1,14 @@
+# Netlify redirects for DAMP Smart Drinkware
+
+# Press page consistency
+/press/* /pages/press.html 200
+/press /pages/press.html 200
+
+# Product redirects for SEO consistency
+/products/* /pages/products.html 200
+/about /pages/about.html 200
+
+# Legacy redirects
+/pre-order /pages/pre-order.html 301
+/pre-sale /pages/pre-sale-funnel.html 301
+
