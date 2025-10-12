@@ -180,22 +180,12 @@
     </style>
 
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="assets/css/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="assets/css/navigation.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="assets/css/components/hero-animation.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/navigation.css">
+    <link rel="stylesheet" href="assets/css/components/hero-animation.css">
     <link rel="preload" href="assets/images/logo/logo.png" as="image">
     <link rel="preload" href="assets/images/logo/icon.png" as="image">
 
-    <!-- Load Non-Critical Styles Asynchronously -->
-    <noscript>
-        <link rel="stylesheet" href="assets/css/main.css">
-        <link rel="stylesheet" href="assets/css/navigation.css">
-        <link rel="stylesheet" href="assets/css/components/hero-animation.css">
-        <link rel="stylesheet" href="assets/css/styles.css">
-        <link rel="stylesheet" href="assets/css/auth-styles.css">
-        <link rel="stylesheet" href="assets/css/adsense-styles.css">
-        <link rel="stylesheet" href="assets/css/performance-optimizations.css">
-    </noscript>
 
     <!-- Enhanced Visual Styles with Animations -->
     <!-- Removed duplicate CSS variables and base styles; all styles are consolidated in #critical-css above for performance and maintainability. -->
