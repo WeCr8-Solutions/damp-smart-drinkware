@@ -1,12 +1,15 @@
-# Netlify configuration for DAMP Smart Drinkware - Professional Security
+# Netlify configuration for DAMP Smart Drinkware
+# Optimized for static site with serverless functions
 
 [build]
-  # No build command needed for static site
+  # Static site - no build step required
   publish = "website"
   functions = "netlify/functions"
   
 [build.environment]
+  # Use Node 18 LTS for functions
   NODE_VERSION = "18.19.0"
+  # Handle peer dependency warnings
   NPM_FLAGS = "--legacy-peer-deps"
 
 # Netlify Dev configuration for local testing
@@ -17,11 +20,6 @@
   publish = "website"
   functionsPort = 34567
   framework = "#static"
-
-# Production-ready plugins with latest versions
-# Temporarily disabled to fix build issues
-# [[plugins]]
-#   package = "@netlify/plugin-lighthouse"
 
 # Enhanced security headers with comprehensive Firebase and Google services support
 [[headers]]
@@ -121,6 +119,19 @@
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
 
+# JavaScript module files - correct MIME type for ES6 modules
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/js/*.js"
+  [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
+    Cache-Control = "public, max-age=31536000, immutable"
+
 # Static assets - Long cache with immutable
 [[headers]]
   for = "/assets/*"
@@ -144,13 +155,13 @@
   for = "/sw.js"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
-    Content-Type = "application/javascript"
+    Content-Type = "application/javascript; charset=utf-8"
 
 [[headers]]
   for = "/firebase-messaging-sw.js"
   [headers.values]
     Cache-Control = "no-cache, no-store, must-revalidate"
-    Content-Type = "application/javascript"
+    Content-Type = "application/javascript; charset=utf-8"
 
 # Staging environment
 [context.deploy-preview]
@@ -198,8 +209,10 @@
   to = "/new-page"
   status = 301
 
-# SPA routing fallback (MUST BE LAST)
+# SPA routing fallback - ONLY for actual 404s
+# This should NOT redirect existing HTML files
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  conditions = {exceptions = ["*.js", "*.css", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.svg", "*.ico", "*.woff", "*.woff2", "*.ttf", "*.eot", "*.json", "*.xml", "*.txt", "*.webp", "*.html"]}
