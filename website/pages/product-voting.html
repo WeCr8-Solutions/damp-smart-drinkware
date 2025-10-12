@@ -1032,11 +1032,11 @@
 
         <!-- Voting Controls -->
         <div class="voting-controls">
-            <button class="control-button" onclick="exportResults()">📊 Export Results</button>
-            <button class="control-button" onclick="refreshData()">🔄 Refresh Data</button>
-            <button class="control-button admin-only pv-display-none" onclick="resetVotes()">🔄 Reset Current Mode</button>
-            <button class="control-button admin-only pv-display-none" onclick="resetAllVotes()">🔄🔄 Reset Both Systems</button>
-            <button class="control-button admin-only pv-display-none" onclick="toggleVotingStatus()">⏸️ Toggle Current Mode</button>
+            <button class="control-button" id="exportResultsBtn">📊 Export Results</button>
+            <button class="control-button" id="refreshDataBtn">🔄 Refresh Data</button>
+            <button class="control-button admin-only pv-display-none" id="resetVotesBtn">🔄 Reset Current Mode</button>
+            <button class="control-button admin-only pv-display-none" id="resetAllVotesBtn">🔄🔄 Reset Both Systems</button>
+            <button class="control-button admin-only pv-display-none" id="toggleVotingStatusBtn">⏸️ Toggle Current Mode</button>
         </div>
 
         <!-- Voting Status Indicator -->
@@ -1121,7 +1121,7 @@
                 </div>
 
                 <!-- Dismiss button -->
-                <button class="capture-dismiss" onclick="dismissEmailCapture()" aria-label="Dismiss email capture">×</button>
+                <button class="capture-dismiss" id="dismissEmailCaptureBtn" aria-label="Dismiss email capture">×</button>
             </div>
         </div>
     </section>
@@ -1535,7 +1535,8 @@
                             <div class="vote-percentage">${percentage.toFixed(1)}% of votes</div>
 
                             <button class="vote-button ${buttonClass}"
-                                    onclick="votingSystem.vote('${product.id}')"
+                                    data-product-id="${product.id}"
+                                    data-vote-action="vote"
                                     ${buttonDisabled === 'disabled' ? 'disabled' : ''}>
                                 ${buttonText}
                             </button>
@@ -2135,6 +2136,32 @@
                     }
                 });
             }
+
+            // Event delegation for vote buttons (dynamically generated)
+            document.addEventListener('click', (e) => {
+                const voteBtn = e.target.closest('[data-vote-action="vote"]');
+                if (voteBtn && !voteBtn.disabled) {
+                    const productId = voteBtn.dataset.productId;
+                    if (productId && fixedVotingSystem) {
+                        fixedVotingSystem.vote(productId);
+                    }
+                }
+            });
+
+            // Control buttons
+            const exportBtn = document.getElementById('exportResultsBtn');
+            const refreshBtn = document.getElementById('refreshDataBtn');
+            const resetBtn = document.getElementById('resetVotesBtn');
+            const resetAllBtn = document.getElementById('resetAllVotesBtn');
+            const toggleBtn = document.getElementById('toggleVotingStatusBtn');
+            const dismissEmailBtn = document.getElementById('dismissEmailCaptureBtn');
+
+            if (exportBtn) exportBtn.addEventListener('click', exportResults);
+            if (refreshBtn) refreshBtn.addEventListener('click', () => fixedVotingSystem?.refreshData());
+            if (resetBtn) resetBtn.addEventListener('click', resetVotes);
+            if (resetAllBtn) resetAllBtn.addEventListener('click', resetAllVotes);
+            if (toggleBtn) toggleBtn.addEventListener('click', toggleVotingStatus);
+            if (dismissEmailBtn) dismissEmailBtn.addEventListener('click', dismissEmailCapture);
         });
 
         function resetVotes() {
