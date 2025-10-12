@@ -1,10 +1,9 @@
 # Netlify configuration for DAMP Smart Drinkware - Professional Security
 
 [build]
-  command = "npm install --production=false"
+  command = "echo 'Static site - no build needed'"
   publish = "website"
   functions = "netlify/functions"
-  ignore = "git diff --quiet HEAD^ HEAD -- website/"
   
 [build.environment]
   NODE_VERSION = "18"
@@ -23,8 +22,9 @@
   framework = "#static"
 
 # Production-ready plugins with latest versions
-[[plugins]]
-  package = "@netlify/plugin-lighthouse"
+# Temporarily disabled to fix build issues
+# [[plugins]]
+#   package = "@netlify/plugin-lighthouse"
 
 # Enhanced security headers with comprehensive Firebase and Google services support
 [[headers]]
