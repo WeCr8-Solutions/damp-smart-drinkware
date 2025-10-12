@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f23">
+    
+    <!-- SEO Meta Tags -->
+    <title>Press & Media | DAMP Smart Drinkware - Latest News & Announcements</title>
+    <meta name="description" content="Latest press releases, media mentions, and announcements about DAMP Smart Drinkware. Featured in Half Baked Newsletter and leading tech publications.">
+    <meta name="keywords" content="DAMP press, smart drinkware news, tech announcements, media coverage, Half Baked Newsletter">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dampdrink.com/pages/press.html">
+    <meta property="og:title" content="Press & Media | DAMP Smart Drinkware">
+    <meta property="og:description" content="Latest press releases, media mentions, and announcements about DAMP Smart Drinkware.">
+    <meta property="og:image" content="https://dampdrink.com/assets/images/logo/logo.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../assets/images/logo/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/logo/icon.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/navigation.css">
+    
+    <style>
+        .press-hero {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            padding: 120px 20px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .press-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgb(0 212 255 / 10%) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+        
+        .press-hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .press-hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .press-section {
+            padding: 80px 20px;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--text-primary);
+        }
+        
+        .timeline {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #00d4ff 0%, rgb(0 212 255 / 20%) 100%);
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            display: flex;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+        
+        .timeline-content {
+            width: calc(50% - 40px);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgb(0 212 255 / 20%);
+            border-color: rgb(0 212 255 / 50%);
+        }
+        
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            background: #00d4ff;
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px rgb(0 212 255 / 50%);
+            z-index: 2;
+        }
+        
+        .timeline-date {
+            font-size: 0.875rem;
+            color: #00d4ff;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .timeline-title {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .timeline-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-link:hover {
+            gap: 12px;
+        }
+        
+        .media-logo {
+            max-width: 120px;
+            height: 40px;
+            object-fit: contain;
+            filter: grayscale(100%) brightness(150%);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        
+        .media-logo:hover {
+            filter: grayscale(0%) brightness(100%);
+            opacity: 1;
+        }
+        
+        .press-category {
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgb(0 212 255 / 10%);
+            border: 1px solid rgb(0 212 255 / 30%);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #00d4ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+        }
+        
+        .testimonial-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid #00d4ff;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .testimonial-quote {
+            font-size: 1.125rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .author-info h4 {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .author-info p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        .press-kit-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            max-width: 800px;
+            margin: 60px auto 0;
+        }
+        
+        .press-kit-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        
+        .press-kit-section p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        
+        .press-kit-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            color: #fff;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgb(0 212 255 / 40%);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #00d4ff;
+            border: 2px solid #00d4ff;
+        }
+        
+        .btn-secondary:hover {
+            background: rgb(0 212 255 / 10%);
+        }
+        
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 0;
+            }
+            
+            .timeline-item {
+                flex-direction: column !important;
+            }
+            
+            .timeline-content {
+                width: 100%;
+                margin-left: 30px;
+            }
+            
+            .timeline-dot {
+                left: 0;
+                transform: translateX(0);
+            }
+            
+            .press-hero {
+                padding: 100px 20px 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Header -->
+    <damp-header></damp-header>
+
+    <!-- Hero Section -->
+    <section class="press-hero">
+        <div class="container">
+            <h1>Press & Media</h1>
+            <p>Latest news, announcements, and media coverage about DAMP Smart Drinkware</p>
+        </div>
+    </section>
+
+    <!-- Press Timeline -->
+    <section class="press-section">
+        <div class="container">
+            <h2 class="section-title">Latest News & Announcements</h2>
+            
+            <div class="timeline">
+                <!-- Half Baked Newsletter Feature -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <img src="../assets/images/press/half-baked-logo.png" alt="Half Baked Newsletter" class="media-logo" onerror="this.style.display='none'">
+                        <span class="press-category">Media Mention</span>
+                        <div class="timeline-date">August 25, 2025</div>
+                        <h3 class="timeline-title">Featured in Half Baked Newsletter</h3>
+                        <p class="timeline-description">
+                            DAMP was featured in Half Baked Newsletter's "Reader Spotlight" section, reaching over 100,000+ subscribers. 
+                            Highlighted as an innovative solution to never leave your bottle behind again.
+                        </p>
+                        <a href="https://www.gethalfbaked.com/p/startup-ideas-429-cloud-calendar" target="_blank" rel="noopener" class="timeline-link">
+                            Read Article →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product Launch -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="press-category">Product Launch</span>
+                        <div class="timeline-date">October 2025</div>
+                        <h3 class="timeline-title">DAMP Handle v1.0 Pre-Sale Launch</h3>
+                        <p class="timeline-description">
+                            Official launch of our flagship product, the DAMP Handle v1.0. Universal compatibility with Yeti, Stanley, 
+                            Hydro Flask, and all major drinkware brands. Features 6-month battery life and IP67 waterproof rating.
+                        </p>
+                        <a href="pre-sale-funnel.html" class="timeline-link">
+                            Learn More →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Company Founded -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="press-category">Announcement</span>
+                        <div class="timeline-date">2025</div>
+                        <h3 class="timeline-title">WeCr8 Solutions LLC Launches DAMP</h3>
+                        <p class="timeline-description">
+                            Zach Goodbody founded DAMP Smart Drinkware under WeCr8 Solutions LLC with a mission to eliminate 
+                            the frustration of lost or forgotten drinkware through innovative smart technology.
+                        </p>
+                        <a href="about.html" class="timeline-link">
+                            Our Story →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product Voting Launch -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="press-category">Community</span>
+                        <div class="timeline-date">October 2025</div>
+                        <h3 class="timeline-title">Community Product Voting Opens</h3>
+                        <p class="timeline-description">
+                            DAMP launches community-driven product development voting, allowing customers to choose which 
+                            products get prioritized. Options include Handle, Silicone Bottom, Cup Sleeve, and Baby Bottle.
+                        </p>
+                        <a href="product-voting.html" class="timeline-link">
+                            Vote Now →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="press-section" style="background: var(--bg-secondary);">
+        <div class="container">
+            <h2 class="section-title">What People Are Saying</h2>
+            
+            <div style="max-width: 900px; margin: 0 auto;">
+                <div class="testimonial-box">
+                    <p class="testimonial-quote">
+                        "💧DAMP: Zach Goodbody is building a device to never leave your bottle behind again."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">HB</div>
+                        <div class="author-info">
+                            <h4>Half Baked Newsletter</h4>
+                            <p>Featured Startup - Reader Spotlight</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-box">
+                    <p class="testimonial-quote">
+                        "Finally, a solution to one of life's most annoying problems. I can't count how many water bottles I've left behind at the gym, coffee shop, or office. DAMP is exactly what we needed."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">EW</div>
+                        <div class="author-info">
+                            <h4>Early Adopter</h4>
+                            <p>Beta Tester</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-box">
+                    <p class="testimonial-quote">
+                        "The universal compatibility is genius. I have multiple water bottles and tumblers from different brands, 
+                        and DAMP works with all of them. Game changer for anyone who's tired of buying expensive smart bottles that only work with one brand."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MC</div>
+                        <div class="author-info">
+                            <h4>Tech Enthusiast</h4>
+                            <p>Pre-Order Customer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Press Kit Section -->
+    <section class="press-section">
+        <div class="container">
+            <div class="press-kit-section">
+                <h2>Press Kit & Media Resources</h2>
+                <p>Download our press kit for high-resolution images, logos, product specifications, and company information.</p>
+                
+                <div class="press-kit-buttons">
+                    <a href="mailto:zach@wecr8.info?subject=DAMP Press Inquiry" class="btn btn-primary">
+                        📧 Contact Press
+                    </a>
+                    <a href="../index.html#contact" class="btn btn-secondary">
+                        💬 General Inquiries
+                    </a>
+                </div>
+                
+                <p style="margin-top: 30px; font-size: 0.875rem;">
+                    For press inquiries, partnership opportunities, or media requests, please contact:<br>
+                    <strong>Zach Goodbody</strong> - Founder, DAMP Smart Drinkware<br>
+                    <a href="mailto:zach@wecr8.info" style="color: #00d4ff;">zach@wecr8.info</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--bg-primary); padding: 60px 20px 30px; border-top: 1px solid var(--border-color);">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px;">
+                <div>
+                    <h3 style="color: var(--text-primary); margin-bottom: 20px;">DAMP Smart Drinkware</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        Never leave your drink behind with our smart tracking technology for any drinkware.
+                    </p>
+                </div>
+                
+                <div>
+                    <h3 style="color: var(--text-primary); margin-bottom: 20px;">Products</h3>
+                    <a href="damp-handle-v1.0.html" style="display: block; color: var(--text-secondary); margin-bottom: 10px;">DAMP Handle</a>
+                    <a href="silicone-bottom-v1.0.html" style="display: block; color: var(--text-secondary); margin-bottom: 10px;">Silicone Bottom</a>
+                    <a href="cup-sleeve-v1.0.html" style="display: block; color: var(--text-secondary); margin-bottom: 10px;">Cup Sleeve</a>
+                    <a href="pre-sale-funnel.html" style="display: block; color: var(--text-secondary);">Pre-Order</a>
+                </div>
+                
+                <div>
+                    <h3 style="color: var(--text-primary); margin-bottom: 20px;">Company</h3>
+                    <a href="about.html" style="display: block; color: var(--text-secondary); margin-bottom: 10px;">About Us</a>
+                    <a href="press.html" style="display: block; color: var(--text-secondary); margin-bottom: 10px;">Press & Media</a>
+                    <a href="product-voting.html" style="display: block; color: var(--text-secondary); margin-bottom: 10px;">Product Voting</a>
+                    <a href="../index.html#contact" style="display: block; color: var(--text-secondary);">Contact</a>
+                </div>
+                
+                <div>
+                    <h3 style="color: var(--text-primary); margin-bottom: 20px;">Connect</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 10px;">📧 zach@wecr8.info</p>
+                    <p style="color: var(--text-secondary);">🌐 dampdrink.com</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; padding-top: 30px; border-top: 1px solid var(--border-color);">
+                <p style="color: var(--text-secondary); font-size: 0.875rem;">&copy; 2025 WeCr8 Solutions LLC. All rights reserved. DAMP™ is a trademark of WeCr8 Solutions LLC.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../assets/js/components/header.js"></script>
+    <script src="../assets/js/debug-logger.js"></script>
+    <script src="../assets/js/smoke-test.js"></script>
+    
+    <!-- Page Loading Handler -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Smooth scroll for internal links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+            
+            // Analytics
+            if (window.gtag) {
+                gtag('event', 'page_view', {
+                    page_title: 'Press & Media',
+                    page_location: window.location.href,
+                    page_path: window.location.pathname
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
