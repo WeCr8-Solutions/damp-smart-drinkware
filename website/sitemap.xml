@@ -176,6 +176,29 @@
         <priority>0.85</priority>
     </url>
     
+    <!-- Investor Relations -->
+    <url>
+        <loc>https://dampdrink.com/pages/investor-relations.html</loc>
+        <lastmod>2025-01-12</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <!-- Investor redirect URLs -->
+    <url>
+        <loc>https://dampdrink.com/investors</loc>
+        <lastmod>2025-01-12</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://dampdrink.com/invest</loc>
+        <lastmod>2025-01-12</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
     <url>
         <loc>https://dampdrink.com/pages/support.html</loc>
         <lastmod>2025-01-15</lastmod>

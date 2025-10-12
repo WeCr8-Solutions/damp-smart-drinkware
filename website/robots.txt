@@ -30,6 +30,12 @@ Sitemap: https://dampdrink.com/sitemap.xml
 Sitemap: https://dampdrink.com/sitemap-products.xml
 Sitemap: https://dampdrink.com/sitemap-pages.xml
 
+# Priority Pages for Investors & Partners
+# High-value pages for business development
+Allow: /pages/investor-relations.html
+Allow: /pages/about.html
+Allow: /pages/press.html
+
 # ----------------------------------------------------------------------------
 # AI & LLM Crawlers (Enhanced for ChatGPT, Claude, Perplexity, etc.)
 # ----------------------------------------------------------------------------

@@ -75,6 +75,18 @@ http://www.dampdrink.com/*   https://dampdrink.com/:splat  301!
 /mindful-drinking               /pages/damp-drinking-meaning.html      200
 
 # ----------------------------------------------------------------------------
+# 6b. Investor Relations & Partnerships
+# ----------------------------------------------------------------------------
+/investors                      /pages/investor-relations.html         200
+/investor                       /pages/investor-relations.html         200
+/invest                         /pages/investor-relations.html         200
+/investment                     /pages/investor-relations.html         200
+/partnerships                   /pages/investor-relations.html#partnerships   200
+/partner                        /pages/investor-relations.html#partnerships   200
+/co-brand                       /pages/investor-relations.html#partnerships   200
+/cobranding                     /pages/investor-relations.html#partnerships   200
+
+# ----------------------------------------------------------------------------
 # 7. Voting & Engagement
 # ----------------------------------------------------------------------------
 /vote                           /pages/product-voting.html             200
