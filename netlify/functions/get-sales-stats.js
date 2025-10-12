@@ -1,4 +1,8 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Initialize Stripe only if secret key is available
+let stripe = null;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+}
 
 exports.handler = async (event, context) => {
   // CORS headers
@@ -24,6 +28,25 @@ exports.handler = async (event, context) => {
       statusCode: 405,
       headers,
       body: JSON.stringify({ error: 'Method not allowed' }),
+    };
+  }
+
+  // Check if Stripe is configured
+  if (!stripe || !process.env.STRIPE_SECRET_KEY) {
+    console.warn('⚠️ Stripe not configured - returning mock data');
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        totalSales: 0,
+        productSales: {
+          'cup-sleeve': 0,
+          'silicone-bottom': 0,
+          'damp-handle': 0,
+        },
+        lastUpdated: new Date().toISOString(),
+        message: 'Stripe integration pending - showing mock data'
+      }),
     };
   }
 
