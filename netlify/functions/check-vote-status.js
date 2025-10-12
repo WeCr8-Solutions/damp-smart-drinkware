@@ -1,10 +1,9 @@
 /**
  * Netlify Function: Check Vote Status
- * Checks if a user/device has already voted
+ * Checks if a user/device has already voted using shared storage
  */
 
-// Shared voting data (in production, this would be in a database)
-const votes = new Map();
+const { hasVoted, getVote } = require('./voting-data-store');
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -40,15 +39,16 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const existingVote = votes.get(voterId);
+    const voted = await hasVoted(voterId);
+    const existingVote = voted ? await getVote(voterId) : null;
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        hasVoted: !!existingVote,
-        vote: existingVote || null
+        hasVoted: voted,
+        vote: existingVote
       })
     };
 

@@ -1,21 +1,10 @@
 /**
  * Netlify Function: Submit Vote
  * Handles both public and authenticated voting with duplicate prevention
- * Firebase is ONLY used for auth verification, NOT for vote storage
+ * Uses shared file-based storage for vote persistence
  */
 
-// In-memory voting data (will be replaced with a database in production)
-// For production, use: Netlify Blob Storage, Redis, or external DB
-const votingData = {
-  products: {
-    handle: { votes: 0, name: 'DAMP Handle v1.0' },
-    siliconeBottom: { votes: 0, name: 'Silicone Bottom v1.0' },
-    cupSleeve: { votes: 0, name: 'Cup Sleeve v1.0' },
-    babyBottle: { votes: 0, name: 'Baby Bottle v1.0' }
-  },
-  votes: new Map(), // fingerprint/userId -> { productId, timestamp, type }
-  totalVotes: 0
-};
+const { recordVote, getVote } = require('./voting-data-store');
 
 exports.handler = async (event, context) => {
   // CORS headers
@@ -71,45 +60,59 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Check for duplicate vote
-    if (votingData.votes.has(voterId)) {
-      const existingVote = votingData.votes.get(voterId);
+    // Check for duplicate vote using shared storage
+    const existingVote = await getVote(voterId);
+    if (existingVote) {
+      const productNames = {
+        handle: 'DAMP Handle v1.0',
+        siliconeBottom: 'Silicone Bottom v1.0',
+        cupSleeve: 'Cup Sleeve v1.0',
+        babyBottle: 'Baby Bottle v1.0'
+      };
+      
       return {
         statusCode: 409,
         headers,
         body: JSON.stringify({
           error: 'Already voted',
-          message: `You already voted for ${votingData.products[existingVote.productId].name}`,
+          message: `You already voted for ${productNames[existingVote.productId]}`,
           existingVote
         })
       };
     }
 
-    // Record the vote
-    const voteRecord = {
-      productId,
-      timestamp: Date.now(),
-      type: voteType,
-      userAgent: event.headers['user-agent'] || 'unknown'
+    // Record the vote in shared storage
+    const result = await recordVote(voterId, productId, voteType);
+
+    if (!result.success) {
+      return {
+        statusCode: 409,
+        headers,
+        body: JSON.stringify({
+          error: result.error,
+          message: 'Vote could not be recorded',
+          existingVote: result.existingVote
+        })
+      };
+    }
+
+    console.log(`✅ Vote recorded: ${productId} (${voteType}) - Total: ${result.stats.totalVotes}`);
+
+    const productNames = {
+      handle: 'DAMP Handle v1.0',
+      siliconeBottom: 'Silicone Bottom v1.0',
+      cupSleeve: 'Cup Sleeve v1.0',
+      babyBottle: 'Baby Bottle v1.0'
     };
-
-    votingData.votes.set(voterId, voteRecord);
-    votingData.products[productId].votes += 1;
-    votingData.totalVotes += 1;
-
-    console.log(`✅ Vote recorded: ${productId} (${voteType}) - Total: ${votingData.totalVotes}`);
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        message: `Vote recorded for ${votingData.products[productId].name}`,
-        vote: voteRecord,
-        stats: {
-          productVotes: votingData.products[productId].votes,
-          totalVotes: votingData.totalVotes
-        }
+        message: `Vote recorded for ${productNames[productId]}`,
+        vote: result.vote,
+        stats: result.stats
       })
     };
 

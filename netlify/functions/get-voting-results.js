@@ -1,19 +1,9 @@
 /**
  * Netlify Function: Get Voting Results
- * Returns current voting statistics
+ * Returns current voting statistics from shared storage
  */
 
-// Shared voting data (in production, this would be in a database)
-// This is a simple in-memory store for now
-const votingData = {
-  products: {
-    handle: { votes: 0, name: 'DAMP Handle v1.0' },
-    siliconeBottom: { votes: 0, name: 'Silicone Bottom v1.0' },
-    cupSleeve: { votes: 0, name: 'Cup Sleeve v1.0' },
-    babyBottle: { votes: 0, name: 'Baby Bottle v1.0' }
-  },
-  totalVotes: 0
-};
+const { getResults: getResultsFromStore } = require('./voting-data-store');
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -39,27 +29,15 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Calculate percentages
-    const results = Object.entries(votingData.products).map(([id, data]) => ({
-      id,
-      name: data.name,
-      votes: data.votes,
-      percentage: votingData.totalVotes > 0 
-        ? Math.round((data.votes / votingData.totalVotes) * 100) 
-        : 0
-    }));
-
-    // Sort by votes (descending)
-    results.sort((a, b) => b.votes - a.votes);
+    // Get results from shared storage
+    const data = await getResultsFromStore();
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        results,
-        totalVotes: votingData.totalVotes,
-        lastUpdated: new Date().toISOString()
+        ...data
       })
     };
 
