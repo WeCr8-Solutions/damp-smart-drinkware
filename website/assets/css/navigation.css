@@ -74,7 +74,7 @@
     background: var(--nav-bg);
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
-    z-index: 1000;
+    z-index: 9999;
     padding: 15px 0;
     padding-top: calc(15px + var(--safe-area-top));
     border-bottom: 1px solid var(--border-color);
@@ -320,7 +320,7 @@
     backdrop-filter: blur(30px);
     display: flex;
     flex-direction: column;
-    z-index: 1000;
+    z-index: 10000;
     transform: translateX(-100%);
     transition: transform var(--transition-standard);
     overflow-y: auto;
@@ -358,7 +358,7 @@
     width: 100%;
     height: 100vh;
     background: rgb(0 0 0 / 50%);
-    z-index: 999;
+    z-index: 9998;
     opacity: 0;
     visibility: hidden;
     transition: all var(--transition-standard);
