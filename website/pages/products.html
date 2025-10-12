@@ -957,6 +957,21 @@
     <script src="../assets/js/debug-logger.js"></script>
     <script src="../assets/js/smoke-test.js"></script>
     
+    <!-- Page Loading Handler -->
+    <script>
+        // Remove page-loading class to show content
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.remove('page-loading');
+            document.body.classList.add('page-ready');
+        });
+        
+        // Fallback in case DOMContentLoaded already fired
+        if (document.readyState === 'interactive' || document.readyState === 'complete') {
+            document.body.classList.remove('page-loading');
+            document.body.classList.add('page-ready');
+        }
+    </script>
+    
     <!-- JavaScript -->
     <script src="../assets/js/components/header.js"></script>
     <script src="../assets/js/auth-modal.js"></script>
