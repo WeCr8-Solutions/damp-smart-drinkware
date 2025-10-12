@@ -75,6 +75,9 @@ class FixedVotingSystem {
                 this.setupFallbackData();
             }
 
+            // Load initial voting data from Netlify Functions
+            await this.refreshData();
+
             // Render the voting interface
             this.renderVotingInterface();
 
