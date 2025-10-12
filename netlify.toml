@@ -70,6 +70,8 @@
       connect-src 'self'
         https://www.google-analytics.com
         https://www.googletagmanager.com
+        https://www.gstatic.com
+        https://*.gstatic.com
         https://firestore.googleapis.com
         https://firebasestorage.googleapis.com
         https://fcm.googleapis.com

@@ -136,24 +136,9 @@
         .skip-to-content:focus { top: 0; }
     </style>
 
-    <!-- PERFORMANCE OPTIMIZATION: CSS Loading -->
-    <link rel="preload" href="../assets/css/main.css" as="style" id="main-css-preload">
-    <link rel="preload" href="../assets/css/navigation.css" as="style" id="nav-css-preload">
-    <noscript>
-        <link rel="stylesheet" href="../assets/css/main.css">
-        <link rel="stylesheet" href="../assets/css/navigation.css">
-    </noscript>
-    <script>
-        // Convert preload to stylesheet (CSP-compliant)
-        document.getElementById('main-css-preload').onload = function() {
-            this.onload = null;
-            this.rel = 'stylesheet';
-        };
-        document.getElementById('nav-css-preload').onload = function() {
-            this.onload = null;
-            this.rel = 'stylesheet';
-        };
-    </script>
+    <!-- PERFORMANCE OPTIMIZATION: CSS Loading (CSP-compliant) -->
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/navigation.css">
 
     <!-- Page Specific Optimized Styles -->
     <style>
