@@ -60,6 +60,7 @@ class DAMPHeader extends HTMLElement {
                         <li><a href="${this.basePath}pages/products.html" data-analytics="nav-products">Products</a></li>
                         <li><a href="${this.basePath}pages/support.html" data-analytics="nav-support">Support</a></li>
                         <li><a href="${this.basePath}pages/about.html" data-analytics="nav-about">About</a></li>
+                        <li><a href="${this.basePath}pages/press.html" data-analytics="nav-press">Press</a></li>
                         <li><a href="${this.basePath}pages/pre-order.html" class="nav-cta" data-analytics="nav-preorder">Pre-Order</a></li>
                     </ul>
 
@@ -181,6 +182,10 @@ class DAMPHeader extends HTMLElement {
                             <a href="${this.basePath}pages/about.html" data-analytics="mobile-nav-about">
                                 <span class="mobile-nav-icon">ℹ️</span>
                                 <span class="mobile-nav-text">About DAMP</span>
+                            </a>
+                            <a href="${this.basePath}pages/press.html" data-analytics="mobile-nav-press">
+                                <span class="mobile-nav-icon">📰</span>
+                                <span class="mobile-nav-text">Press & Media</span>
                             </a>
                         </div>
 
