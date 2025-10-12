@@ -179,7 +179,12 @@
     <link rel="apple-touch-icon" sizes="144x144" href="/assets/images/logo/icon-144.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/logo/icon-152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/logo/apple-icon-180x180.png"></head>
-<body>
+<body style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) fixed; background-color: #0f0f23; min-height: 100vh;">
+    <!-- Animated Background Bubbles -->
+    <div class="floating-bubble floating-bubble-1"></div>
+    <div class="floating-bubble floating-bubble-2"></div>
+    <div class="floating-bubble floating-bubble-3"></div>
+
     <!-- Navigation Header -->
     <damp-header></damp-header>
 
@@ -380,10 +385,10 @@
             }
         }
 
-        // Load Mobile App Redirect Script
-        const mobileAppScript = document.createElement('script');
-        mobileAppScript.src = '/assets/js/mobile-app-redirect.js';
-        mobileAppScript.async = true;
-        document.head.appendChild(mobileAppScript);
+        // Mobile App Redirect DISABLED per user request
+        // const mobileAppScript = document.createElement('script');
+        // mobileAppScript.src = '/assets/js/mobile-app-redirect.js';
+        // mobileAppScript.async = true;
+        // document.head.appendChild(mobileAppScript);
     </script></body>
 </html>
