@@ -205,7 +205,7 @@ class DAMPSEOOptimizer {
         let productData = {
             name: "DAMP Smart Drinkware",
             description: "Revolutionary smart drinkware with temperature control and health monitoring",
-            image: `${this.options.baseUrl}/assets/images/products/damp-handle/damp-handle.png`,
+            image: `${this.options.baseUrl}/assets/images/optimized/products/damp-handle/damp-handle-large.png`,
             price: "69.99",
             currency: "USD"
         };
@@ -214,7 +214,7 @@ class DAMPSEOOptimizer {
             productData = {
                 name: "DAMP Baby Bottle v1.0",
                 description: "Smart baby bottle with temperature monitoring and health tracking",
-                image: `${this.options.baseUrl}/assets/images/products/baby-bottle/baby-bottle.png`,
+                image: `${this.options.baseUrl}/assets/images/optimized/products/baby-bottle/baby-bottle-large.png`,
                 price: "99.99",
                 currency: "USD"
             };
@@ -222,7 +222,7 @@ class DAMPSEOOptimizer {
             productData = {
                 name: "DAMP Cup Sleeve v1.0",
                 description: "Smart cup sleeve with temperature control and leak protection",
-                image: `${this.options.baseUrl}/assets/images/products/cup-sleeve/cup-sleeve.png?v=2`,
+                image: `${this.options.baseUrl}/assets/images/optimized/products/cup-sleeve/cup-sleeve-large.png`,
                 price: "44.99",
                 currency: "USD"
             };
@@ -230,7 +230,7 @@ class DAMPSEOOptimizer {
             productData = {
                 name: "DAMP Silicone Bottom v1.0",
                 description: "Smart silicone bottom with temperature control and stability",
-                image: `${this.options.baseUrl}/assets/images/products/silicone-bottom/silicone-bottome.png`,
+                image: `${this.options.baseUrl}/assets/images/optimized/products/silicone-bottom/silicone-bottom-large.png`,
                 price: "39.99",
                 currency: "USD"
             };

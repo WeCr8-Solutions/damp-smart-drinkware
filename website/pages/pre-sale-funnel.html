@@ -766,7 +766,17 @@
                         ⭐ MOST POPULAR
                     </div>
                     <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #ffa502, #ff6348); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px; pointer-events: none;">
-                        <img src="../assets/images/products/cup-sleeve/cup-sleeve.png?v=2" alt="DAMP Cup Sleeve" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%)); pointer-events: none;">
+                        <picture style="max-width: 100%; max-height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <source 
+                                type="image/avif" 
+                                srcset="../assets/images/optimized/products/cup-sleeve/cup-sleeve-medium.avif 400w, ../assets/images/optimized/products/cup-sleeve/cup-sleeve-large.avif 800w"
+                                sizes="(max-width: 768px) 400px, 800px">
+                            <source 
+                                type="image/webp" 
+                                srcset="../assets/images/optimized/products/cup-sleeve/cup-sleeve-medium.webp 400w, ../assets/images/optimized/products/cup-sleeve/cup-sleeve-large.webp 800w"
+                                sizes="(max-width: 768px) 400px, 800px">
+                            <img src="../assets/images/optimized/products/cup-sleeve/cup-sleeve-medium.png" alt="DAMP Cup Sleeve" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%)); pointer-events: none;">
+                        </picture>
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Cup Sleeve</h3>
                     
@@ -800,7 +810,17 @@
                 <!-- DAMP Silicone Bottom -->
                 <div class="product-card" data-product="silicone-bottom">
                     <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #00d4ff, #09c); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px; pointer-events: none;">
-                        <img src="../assets/images/products/silicone-bottom/silicone-bottom.png?v=2" alt="DAMP Silicone Bottom" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%)); pointer-events: none;">
+                        <picture style="max-width: 100%; max-height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <source 
+                                type="image/avif" 
+                                srcset="../assets/images/optimized/products/silicone-bottom/silicone-bottom-medium.avif 400w, ../assets/images/optimized/products/silicone-bottom/silicone-bottom-large.avif 800w"
+                                sizes="(max-width: 768px) 400px, 800px">
+                            <source 
+                                type="image/webp" 
+                                srcset="../assets/images/optimized/products/silicone-bottom/silicone-bottom-medium.webp 400w, ../assets/images/optimized/products/silicone-bottom/silicone-bottom-large.webp 800w"
+                                sizes="(max-width: 768px) 400px, 800px">
+                            <img src="../assets/images/optimized/products/silicone-bottom/silicone-bottom-medium.png" alt="DAMP Silicone Bottom" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%)); pointer-events: none;">
+                        </picture>
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Silicone Bottom</h3>
                     
@@ -834,7 +854,17 @@
                 <!-- DAMP Handle v1.0 -->
                 <div class="product-card" data-product="damp-handle">
                     <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #ff4757, #ff6b6b); border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; padding: 20px; pointer-events: none;">
-                        <img src="../assets/images/products/damp-handle/damp-handle.png?v=2" alt="DAMP Handle v1.0" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%)); pointer-events: none;">
+                        <picture style="max-width: 100%; max-height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <source 
+                                type="image/avif" 
+                                srcset="../assets/images/optimized/products/damp-handle/damp-handle-medium.avif 400w, ../assets/images/optimized/products/damp-handle/damp-handle-large.avif 800w"
+                                sizes="(max-width: 768px) 400px, 800px">
+                            <source 
+                                type="image/webp" 
+                                srcset="../assets/images/optimized/products/damp-handle/damp-handle-medium.webp 400w, ../assets/images/optimized/products/damp-handle/damp-handle-large.webp 800w"
+                                sizes="(max-width: 768px) 400px, 800px">
+                            <img src="../assets/images/optimized/products/damp-handle/damp-handle-medium.png" alt="DAMP Handle v1.0" style="max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 30%)); pointer-events: none;">
+                        </picture>
                     </div>
                     <h3 class="product-title" style="color: white; font-size: 1.3rem; font-weight: bold; margin-bottom: 10px;">DAMP Handle v1.0</h3>
                     
@@ -1816,7 +1846,7 @@
                                 product_data: {
                                     name: product.name,
                                     description: `Pre-order - Early bird pricing`,
-                                    images: [`https://dampdrink.com/assets/images/products/${productId}/${productId}.png?v=2`]
+                                    images: [`https://dampdrink.com/assets/images/optimized/products/${productId}/${productId}-large.png`]
                                 },
                                 unit_amount: Math.round(product.price * 100) // Convert to cents
                             },

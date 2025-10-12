@@ -1,0 +1,52 @@
+{
+  "generated": "2025-10-12T18:28:23.684Z",
+  "formats": [
+    "webp",
+    "avif",
+    "png"
+  ],
+  "breakpoints": {
+    "product-large": 800,
+    "product-medium": 400,
+    "product-small": 200,
+    "product-thumb": 150,
+    "logo-large": 256,
+    "logo-medium": 128,
+    "logo-small": 64,
+    "logo-icon": 32,
+    "logo-favicon": 16,
+    "hero-desktop": 1200,
+    "hero-tablet": 768,
+    "hero-mobile": 480
+  },
+  "products": {
+    "damp-handle": {
+      "large": "assets/images/optimized/products/damp-handle/damp-handle-large",
+      "medium": "assets/images/optimized/products/damp-handle/damp-handle-medium",
+      "small": "assets/images/optimized/products/damp-handle/damp-handle-small",
+      "thumb": "assets/images/optimized/products/damp-handle/damp-handle-thumb"
+    },
+    "silicone-bottom": {
+      "large": "assets/images/optimized/products/silicone-bottom/silicone-bottom-large",
+      "medium": "assets/images/optimized/products/silicone-bottom/silicone-bottom-medium",
+      "small": "assets/images/optimized/products/silicone-bottom/silicone-bottom-small",
+      "thumb": "assets/images/optimized/products/silicone-bottom/silicone-bottom-thumb"
+    },
+    "cup-sleeve": {
+      "large": "assets/images/optimized/products/cup-sleeve/cup-sleeve-large",
+      "medium": "assets/images/optimized/products/cup-sleeve/cup-sleeve-medium",
+      "small": "assets/images/optimized/products/cup-sleeve/cup-sleeve-small",
+      "thumb": "assets/images/optimized/products/cup-sleeve/cup-sleeve-thumb"
+    },
+    "baby-bottle": {
+      "large": "assets/images/optimized/products/baby-bottle/baby-bottle-large",
+      "medium": "assets/images/optimized/products/baby-bottle/baby-bottle-medium",
+      "small": "assets/images/optimized/products/baby-bottle/baby-bottle-small",
+      "thumb": "assets/images/optimized/products/baby-bottle/baby-bottle-thumb"
+    }
+  },
+  "logos": {
+    "icon": "assets/images/optimized/logo/icon",
+    "favicon": "assets/images/optimized/logo/favicon"
+  }
+}

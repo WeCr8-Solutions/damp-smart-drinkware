@@ -13,7 +13,7 @@ class DAMPPricingSystem {
                     id: 'damp-handle',
                     name: 'DAMP Handle v1.0',
                     description: 'Universal BLE attachment for existing mugs',
-                    image: '/assets/images/products/damp-handle/damp-handle.png',
+                    image: '/assets/images/optimized/products/damp-handle/damp-handle-large.png',
                     category: 'hardware',
                     inventory: 500,
                     pricing: {
@@ -35,7 +35,7 @@ class DAMPPricingSystem {
                     id: 'silicone-bottom',
                     name: 'DAMP Silicone Bottom',
                     description: 'Smart silicone base for any cup or mug',
-                    image: '/assets/images/products/silicone-bottom/silicone-bottome.png',
+                    image: '/assets/images/optimized/products/silicone-bottom/silicone-bottom-large.png',
                     category: 'hardware',
                     inventory: 800,
                     pricing: {
@@ -57,7 +57,7 @@ class DAMPPricingSystem {
                     id: 'cup-sleeve',
                     name: 'DAMP Cup Sleeve',
                     description: 'Flexible smart sleeve for multiple cup sizes',
-                    image: '/assets/images/products/cup-sleeve/cup-sleeve.png?v=2',
+                    image: '/assets/images/optimized/products/cup-sleeve/cup-sleeve-large.png',
                     category: 'hardware',
                     inventory: 600,
                     pricing: {
@@ -79,7 +79,7 @@ class DAMPPricingSystem {
                     id: 'baby-bottle',
                     name: 'DAMP Baby Bottle',
                     description: 'BPA-free smart baby bottle with monitoring',
-                    image: '/assets/images/products/baby-bottle/baby-bottle.png',
+                    image: '/assets/images/optimized/products/baby-bottle/baby-bottle-large.png',
                     category: 'hardware',
                     inventory: 300,
                     pricing: {

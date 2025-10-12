@@ -20,7 +20,7 @@
     <meta property="og:url" content="https://dampdrink.com/pages/cup-sleeve-v1.0.html">
     <meta property="og:title" content="DAMP Cup Sleeve v1.0 - Smart Cup Sleeve">
     <meta property="og:description" content="Smart cup sleeve with adjustable fit for both disposable and reusable cups. Pre-order now with launch special pricing.">
-    <meta property="og:image" content="https://dampdrink.com/assets/images/products/cup-sleeve/cup-sleeve.png?v=2">
+    <meta property="og:image" content="https://dampdrink.com/assets/images/optimized/products/cup-sleeve/cup-sleeve-large.png">
     <meta property="og:site_name" content="DAMP Smart Drinkware">
 
     <!-- Structured Data - Product -->
@@ -46,7 +46,7 @@
             "url": "https://dampdrink.com/pages/cup-sleeve-v1.0.html",
             "priceValidUntil": "2025-12-31"
         },
-        "image": "https://dampdrink.com/assets/images/products/cup-sleeve/cup-sleeve.png?v=2",
+        "image": "https://dampdrink.com/assets/images/optimized/products/cup-sleeve/cup-sleeve-large.png",
         "category": "Smart Home Technology",
         "productID": "cup-sleeve-v1.0"
     }
@@ -125,7 +125,17 @@
 
                 <div class="animate-fade-in-right">
                     <div class="product-image">
-                        <img src="../assets/images/products/cup-sleeve/cup-sleeve.png?v=2" alt="DAMP Cup Sleeve v1.0" loading="lazy">
+                        <picture>
+                            <source 
+                                type="image/avif" 
+                                srcset="../assets/images/optimized/products/cup-sleeve/cup-sleeve-medium.avif 400w, ../assets/images/optimized/products/cup-sleeve/cup-sleeve-large.avif 800w"
+                                sizes="(max-width: 768px) 400px, 800px">
+                            <source 
+                                type="image/webp" 
+                                srcset="../assets/images/optimized/products/cup-sleeve/cup-sleeve-medium.webp 400w, ../assets/images/optimized/products/cup-sleeve/cup-sleeve-large.webp 800w"
+                                sizes="(max-width: 768px) 400px, 800px">
+                            <img src="../assets/images/optimized/products/cup-sleeve/cup-sleeve-large.png" alt="DAMP Cup Sleeve v1.0" loading="lazy">
+                        </picture>
                     </div>
                 </div>
             </div>

@@ -213,7 +213,7 @@ class DAMPCartManager {
         const cartHTML = this.cart.map(item => `
             <div class="cart-item" data-product-id="${item.id}">
                 <div class="flex items-center gap-4 p-4 border rounded-lg">
-                    <img src="${item.image || '../assets/images/products/' + item.id + '/' + item.id + '.png'}"
+                    <img src="${item.image || '../assets/images/optimized/products/' + item.id + '/' + item.id + '-medium.png'}"
                          alt="${item.name}"
                          class="w-20 h-20 object-cover rounded">
 
@@ -283,7 +283,7 @@ class DAMPCartManager {
                     product_data: {
                         name: item.name,
                         description: item.description || 'DAMP Smart Drinkware Product',
-                        images: [item.image || `https://dampdrink.com/assets/images/products/${item.id}/${item.id}.png`]
+                        images: [item.image || `https://dampdrink.com/assets/images/optimized/products/${item.id}/${item.id}-large.png`]
                     },
                     unit_amount: Math.round(item.price * 100) // Convert to cents
                 },

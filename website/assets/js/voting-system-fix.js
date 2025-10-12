@@ -25,7 +25,7 @@ class FixedVotingSystem {
             {
                 id: 'handle',
                 name: 'DAMP Handle v1.0',
-                image: '../assets/images/products/damp-handle/damp-handle.png',
+                image: '../assets/images/optimized/products/damp-handle/damp-handle-medium.png',
                 description: 'Universal attachment for any drinkware',
                 votes: 0,
                 percentage: 0
@@ -33,7 +33,7 @@ class FixedVotingSystem {
             {
                 id: 'siliconeBottom',
                 name: 'Silicone Bottom v1.0',
-                image: '../assets/images/products/silicone-bottom/silicone-bottom.png',
+                image: '../assets/images/optimized/products/silicone-bottom/silicone-bottom-medium.png',
                 description: 'Non-slip silicone base',
                 votes: 0,
                 percentage: 0
@@ -41,7 +41,7 @@ class FixedVotingSystem {
             {
                 id: 'cupSleeve',
                 name: 'Cup Sleeve v1.0',
-                image: '../assets/images/products/cup-sleeve/cup-sleeve.png?v=2',
+                image: '../assets/images/optimized/products/cup-sleeve/cup-sleeve-medium.png',
                 description: 'Adjustable fit for most cups',
                 votes: 0,
                 percentage: 0
@@ -49,7 +49,7 @@ class FixedVotingSystem {
             {
                 id: 'babyBottle',
                 name: 'Baby Bottle v1.0',
-                image: '../assets/images/products/baby-bottle/baby-bottle.png',
+                image: '../assets/images/optimized/products/baby-bottle/baby-bottle-medium.png',
                 description: 'BPA-free smart bottle',
                 votes: 0,
                 percentage: 0

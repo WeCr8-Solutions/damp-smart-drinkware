@@ -246,7 +246,7 @@ class DAMPStoreAuth {
 
           <div class="preorder-header">
             <div class="product-preview">
-              <img src="/assets/images/products/${productId}/${productId}.png" alt="${productName}" class="product-image">
+              <img src="/assets/images/optimized/products/${productId}/${productId}-medium.png" alt="${productName}" class="product-image">
               <div class="product-info">
                 <h3>${productName}</h3>
                 <p class="product-price">$${productPrice}</p>
@@ -461,7 +461,7 @@ class DAMPStoreAuth {
             currency: 'usd',
             product_data: {
               name: item.name,
-              images: [`https://dampdrink.com/assets/images/products/${item.id}/${item.id}.png`]
+              images: [`https://dampdrink.com/assets/images/optimized/products/${item.id}/${item.id}-large.png`]
             },
             unit_amount: Math.round(item.price * 100) // Convert to cents
           },
@@ -588,7 +588,7 @@ class DAMPStoreAuth {
             <div class="recommendations-grid">
               ${recommendations.map(product => `
                 <div class="recommendation-card">
-                  <img src="/assets/images/products/${product.id}/${product.id}.png" alt="${product.name}">
+                  <img src="/assets/images/optimized/products/${product.id}/${product.id}-small.png" alt="${product.name}">
                   <h4>${product.name}</h4>
                   <p class="price">$${product.price}</p>
                   <p class="reason">${product.reason}</p>
