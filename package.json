@@ -47,6 +47,7 @@
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
     "@jest/globals": "^30.2.0",
+    "@netlify/plugin-lighthouse": "^6.0.3",
     "@playwright/test": "^1.55.1",
     "@stripe/stripe-js": "^8.0.0",
     "@testing-library/jest-dom": "^6.9.1",

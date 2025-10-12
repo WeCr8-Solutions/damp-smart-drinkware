@@ -1,9 +1,10 @@
 # Netlify configuration for DAMP Smart Drinkware - Professional Security
 
 [build]
-  command = "echo 'Building website directory - no build needed for static site'"
+  command = "npm install --production=false"
   publish = "website"
   functions = "netlify/functions"
+  ignore = "git diff --quiet HEAD^ HEAD -- website/"
   
 [build.environment]
   NODE_VERSION = "18"
