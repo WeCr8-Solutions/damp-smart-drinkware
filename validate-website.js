@@ -57,7 +57,7 @@ requiredPages.forEach(page => {
 console.log('\n🔥 Checking Firebase Configuration...');
 if (fs.existsSync('website/assets/js/firebase-modern-setup.js')) {
     const firebaseSetup = fs.readFileSync('website/assets/js/firebase-modern-setup.js', 'utf8');
-    test('Firebase API key configured', firebaseSetup.includes('AIzaSyCGXLp2Xm1UtPZmjFBKjQDLNGz8J3tZQxs'));
+    test('Firebase API key configured', firebaseSetup.includes('apiKey:') && firebaseSetup.includes('AIza'));
     test('Firebase project ID configured', firebaseSetup.includes('damp-smart-drinkware'));
     test('Firebase auth service class exists', firebaseSetup.includes('ModernFirebaseAuthService'));
     test('Firebase services globally available', firebaseSetup.includes('window.firebaseServices'));

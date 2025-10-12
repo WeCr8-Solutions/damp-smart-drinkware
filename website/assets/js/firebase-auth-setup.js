@@ -8,9 +8,10 @@
 // Import Firebase CDN (loaded via script tags)
 // This file assumes Firebase is loaded via CDN in HTML
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCGXLp2Xm1UtPZmjFBKjQDLNGz8J3tZQxs",
+// Firebase configuration (loaded from env-config.js)
+const firebaseConfig = window.FIREBASE_CONFIG || {
+  // Fallback config if env-config.js not loaded
+  apiKey: process.env.FIREBASE_API_KEY || "AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w",
   authDomain: "damp-smart-drinkware.firebaseapp.com",
   projectId: "damp-smart-drinkware",
   storageBucket: "damp-smart-drinkware.firebasestorage.app",
