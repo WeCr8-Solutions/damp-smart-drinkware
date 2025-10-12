@@ -476,11 +476,9 @@ class FixedVotingSystem {
     }
 
     async submitCustomerVote(productId) {
-        // Check authentication
+        // Check authentication (Firebase Auth)
         if (!this.currentUser) {
-            // Show sign-in modal or redirect
             this.showMessage('info', 'Sign In Required', 'Please sign in to participate in customer voting.');
-            // In a real implementation, show sign-in modal here
             return;
         }
 
@@ -490,10 +488,31 @@ class FixedVotingSystem {
         }
 
         try {
-            if (this.firebaseInitialized && window.firebaseServices?.votingService?.submitVote) {
-                // Use Firebase
-                await window.firebaseServices.votingService.submitVote(productId, this.currentUser);
-                this.userVote = await window.firebaseServices.votingService.getUserVote(this.currentUser);
+            // Use Netlify Functions for voting (Firebase only for auth)
+            if (window.NetlifyVotingService) {
+                const votingService = new window.NetlifyVotingService();
+                const result = await votingService.submitVote(
+                    productId, 
+                    this.browserFingerprint, 
+                    this.currentUser.uid, 
+                    'authenticated'
+                );
+
+                if (result.success) {
+                    // Store vote locally
+                    this.userVote = {
+                        productId,
+                        hasVoted: true,
+                        votedAt: Date.now(),
+                        voteType: 'authenticated'
+                    };
+                    localStorage.setItem('damp_customer_vote', JSON.stringify(this.userVote));
+
+                    // Refresh voting data
+                    await this.refreshVotingData();
+                } else {
+                    throw new Error(result.error || 'Vote submission failed');
+                }
             } else {
                 // Fallback to localStorage
                 this.submitFallbackVote(productId, 'customer');
@@ -509,7 +528,7 @@ class FixedVotingSystem {
     }
 
     async submitPublicVote(productId) {
-        // Check if device already voted
+        // Check if device already voted (client-side check)
         const localVote = localStorage.getItem('damp_public_vote');
         if (localVote) {
             try {
@@ -521,10 +540,29 @@ class FixedVotingSystem {
         }
 
         try {
-            if (this.firebaseInitialized && window.firebaseServices?.votingService?.submitPublicVote) {
-                // Use Firebase
-                await window.firebaseServices.votingService.submitPublicVote(productId, this.browserFingerprint);
-                this.publicVote = await window.firebaseServices.votingService.getPublicVote(this.browserFingerprint);
+            // Use Netlify Functions for voting (Firebase only for auth)
+            if (window.NetlifyVotingService) {
+                const votingService = new window.NetlifyVotingService();
+                const result = await votingService.submitVote(
+                    productId, 
+                    this.browserFingerprint, 
+                    null, 
+                    'public'
+                );
+
+                if (result.success) {
+                    // Store vote locally to prevent duplicate votes
+                    localStorage.setItem('damp_public_vote', JSON.stringify({
+                        productId,
+                        votedAt: Date.now(),
+                        sessionId: this.browserFingerprint
+                    }));
+
+                    // Refresh voting data
+                    await this.refreshVotingData();
+                } else {
+                    throw new Error(result.error || 'Vote submission failed');
+                }
             } else {
                 // Fallback to localStorage
                 this.submitFallbackVote(productId, 'public');
@@ -742,18 +780,28 @@ class FixedVotingSystem {
     }
 
     async refreshData() {
-        console.log('🔄 Refreshing voting data...');
+        console.log('🔄 Refreshing voting data from Netlify...');
 
         try {
-            if (this.firebaseInitialized) {
-                // Refresh Firebase data
-                if (this.currentUser && window.firebaseServices?.votingService?.getUserVote) {
-                    this.userVote = await window.firebaseServices.votingService.getUserVote(this.currentUser);
-                }
+            // Use Netlify Functions to get latest voting data
+            if (window.NetlifyVotingService) {
+                const votingService = new window.NetlifyVotingService();
+                const result = await votingService.getResults();
 
-                if (window.firebaseServices?.votingService?.getPublicVote) {
-                    this.publicVote = await window.firebaseServices.votingService.getPublicVote(this.browserFingerprint);
+                if (result.success && result.data.results) {
+                    // Update products with new data from Netlify
+                    result.data.results.forEach(product => {
+                        const localProduct = this.products.find(p => p.id === product.id);
+                        if (localProduct) {
+                            localProduct.votes = product.votes;
+                            localProduct.percentage = product.percentage;
+                        }
+                    });
+                    console.log('✅ Voting data refreshed from Netlify');
                 }
+            } else {
+                // Fallback to localStorage
+                this.loadFallbackData();
             }
 
             // Re-render everything
