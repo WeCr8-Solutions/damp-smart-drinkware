@@ -980,7 +980,7 @@
             <div class="message-icon" id="messageIcon">✅</div>
             <div class="message-title" id="messageTitle">Vote Recorded!</div>
             <div class="message-text" id="messageText">Your vote has been successfully recorded and added to our database.</div>
-            <button class="message-button" onclick="hideMessage()">Continue</button>
+            <button class="message-button" id="messageCloseBtn">Continue</button>
         </div>
     </div>
 
@@ -1005,12 +1005,12 @@
 
             <!-- Voting Mode Toggle -->
             <div class="voting-mode-toggle">
-                <button class="mode-toggle-btn active" id="customerModeBtn" onclick="switchVotingMode('customer')">
+                <button class="mode-toggle-btn active" id="customerModeBtn">
                     <span class="mode-icon">🔐</span>
                     <span class="mode-text">Customer Vote</span>
                     <span class="mode-desc">Verified DAMP users</span>
                 </button>
-                <button class="mode-toggle-btn" id="publicModeBtn" onclick="switchVotingMode('public')">
+                <button class="mode-toggle-btn" id="publicModeBtn">
                     <span class="mode-icon">🌍</span>
                     <span class="mode-text">Public Vote</span>
                     <span class="mode-desc">Open community</span>
@@ -2099,31 +2099,43 @@
             }
         });
 
-        // Global utility functions
-        function switchVotingMode(mode) {
-            if (votingSystem) {
-                votingSystem.switchMode(mode);
-
-                // Update UI toggle buttons
-                const customerBtn = document.getElementById('customerModeBtn');
-                const publicBtn = document.getElementById('publicModeBtn');
-
-                if (mode === 'customer') {
-                    customerBtn.classList.add('active');
-                    publicBtn.classList.remove('active');
-                } else {
-                    publicBtn.classList.add('active');
-                    customerBtn.classList.remove('active');
-                }
+        // CSP-compliant event listeners (no inline onclick)
+        document.addEventListener('DOMContentLoaded', () => {
+            // Message close button
+            const messageCloseBtn = document.getElementById('messageCloseBtn');
+            if (messageCloseBtn) {
+                messageCloseBtn.addEventListener('click', () => {
+                    const overlay = document.getElementById('messageOverlay');
+                    if (overlay) {
+                        overlay.classList.remove('show');
+                    }
+                });
             }
-        }
 
-        function hideMessage() {
-            const overlay = document.getElementById('messageOverlay');
-            if (overlay) {
-                overlay.classList.remove('show');
+            // Voting mode toggle buttons
+            const customerBtn = document.getElementById('customerModeBtn');
+            const publicBtn = document.getElementById('publicModeBtn');
+
+            if (customerBtn) {
+                customerBtn.addEventListener('click', () => {
+                    if (votingSystem) {
+                        votingSystem.switchMode('customer');
+                        customerBtn.classList.add('active');
+                        publicBtn.classList.remove('active');
+                    }
+                });
             }
-        }
+
+            if (publicBtn) {
+                publicBtn.addEventListener('click', () => {
+                    if (votingSystem) {
+                        votingSystem.switchMode('public');
+                        publicBtn.classList.add('active');
+                        customerBtn.classList.remove('active');
+                    }
+                });
+            }
+        });
 
         function resetVotes() {
             if (votingSystem) {
