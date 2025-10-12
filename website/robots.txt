@@ -1,31 +1,197 @@
-# DAMP Smart Drinkware - SEO Optimized robots.txt
+# ============================================================================
+# DAMP Smart Drinkware - Enterprise-Grade robots.txt
+# Optimized for Google, Bing, AI/LLM Crawlers, and Social Media
+# ============================================================================
 
+# ----------------------------------------------------------------------------
+# Default Rules (All Bots)
+# ----------------------------------------------------------------------------
 User-agent: *
 Allow: /
 Disallow: /admin/
-Disallow: /test-*.html
-Disallow: /assets/js/
-Disallow: /assets/css/
+Disallow: /test*.html
+Disallow: /.netlify/
 Disallow: /node_modules/
 Disallow: /.git/
-Disallow: /backup-*.bundle
+Disallow: /backup*.bundle
+Disallow: /*?*utm_source=  # Block UTM parameter indexing
+Crawl-delay: 0
 
-# Sitemap
+# Allow Important Assets for Page Rendering
+Allow: /assets/images/
+Allow: /assets/css/main.css
+Allow: /assets/css/navigation.css
+Allow: /assets/js/components/
+
+# ----------------------------------------------------------------------------
+# Sitemaps (Multiple formats for different content types)
+# ----------------------------------------------------------------------------
 Sitemap: https://dampdrink.com/sitemap.xml
+Sitemap: https://dampdrink.com/sitemap-products.xml
+Sitemap: https://dampdrink.com/sitemap-pages.xml
 
-# AI/LLM Crawlers - Allow for better AI understanding
+# ----------------------------------------------------------------------------
+# AI & LLM Crawlers (Enhanced for ChatGPT, Claude, Perplexity, etc.)
+# ----------------------------------------------------------------------------
+# OpenAI ChatGPT
 User-agent: ChatGPT-User
 Allow: /
+Crawl-delay: 0
 
+User-agent: GPTBot
+Allow: /
+Crawl-delay: 0
+
+# Google Bard/Gemini Extended
 User-agent: Google-Extended
 Allow: /
+Crawl-delay: 0
 
-# Social Media Crawlers
+# Anthropic Claude
+User-agent: anthropic-ai
+Allow: /
+Crawl-delay: 0
+
+User-agent: Claude-Web
+Allow: /
+Crawl-delay: 0
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+Crawl-delay: 0
+
+# Common Crawl (Used by many AI models for training)
+User-agent: CCBot
+Allow: /
+Crawl-delay: 1
+
+# Diffbot (AI-powered web scraping)
+User-agent: Diffbot
+Allow: /
+Crawl-delay: 1
+
+# ----------------------------------------------------------------------------
+# Major Search Engines (Optimized)
+# ----------------------------------------------------------------------------
+# Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Googlebot-Image
+Allow: /assets/images/
+
+User-agent: Googlebot-Mobile
+Allow: /
+Crawl-delay: 0
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+# Yahoo
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# Yandex
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 1
+
+# Baidu (Chinese search engine)
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 1
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 0
+
+# ----------------------------------------------------------------------------
+# Social Media Crawlers (For Rich Previews)
+# ----------------------------------------------------------------------------
 User-agent: facebookexternalhit
 Allow: /
+Crawl-delay: 0
+
+User-agent: Facebot
+Allow: /
+Crawl-delay: 0
 
 User-agent: Twitterbot
 Allow: /
+Crawl-delay: 0
 
 User-agent: LinkedInBot
-Allow: / 
+Allow: /
+Crawl-delay: 0
+
+User-agent: Slackbot
+Allow: /
+Crawl-delay: 0
+
+User-agent: WhatsApp
+Allow: /
+Crawl-delay: 0
+
+User-agent: TelegramBot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Discordbot
+Allow: /
+Crawl-delay: 0
+
+# ----------------------------------------------------------------------------
+# E-commerce & Shopping Bots
+# ----------------------------------------------------------------------------
+User-agent: Shopify-Partner
+Allow: /
+
+User-agent: PriceGrabber
+Allow: /products/
+
+User-agent: Slackbot-LinkExpanding
+Allow: /
+
+# ----------------------------------------------------------------------------
+# SEO & Analytics Tools
+# ----------------------------------------------------------------------------
+User-agent: AhrefsBot
+Allow: /
+Crawl-delay: 2
+
+User-agent: SemrushBot
+Allow: /
+Crawl-delay: 2
+
+User-agent: MJ12bot
+Allow: /
+Crawl-delay: 2
+
+# ----------------------------------------------------------------------------
+# Block Bad Bots & Scrapers
+# ----------------------------------------------------------------------------
+User-agent: magpie-crawler
+Disallow: /
+
+User-agent: ScreamingFrog
+Disallow: /
+
+User-agent: dotbot
+Disallow: /
+
+User-agent: Flamingo_SearchEngine
+Disallow: /
+
+# ============================================================================
+# Additional Information
+# ============================================================================
+# Last Updated: 2025-01-12
+# Contact: zach@wecr8.info
+# Website: https://dampdrink.com
+# ============================================================================ 

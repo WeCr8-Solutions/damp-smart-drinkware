@@ -1,0 +1,16 @@
+# Security Policy for DAMP Smart Drinkware
+# https://securitytxt.org/
+
+Contact: mailto:zach@wecr8.info
+Expires: 2026-01-12T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://dampdrink.com/.well-known/security.txt
+
+# Vulnerability Disclosure
+# If you discover a security vulnerability, please email us at zach@wecr8.info
+# We appreciate responsible disclosure and will respond promptly.
+
+# Company Information
+Organization: WeCr8 Solutions LLC
+Website: https://dampdrink.com
+

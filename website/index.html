@@ -96,39 +96,130 @@
     <!-- AdSense Meta (script deferred to improve performance) -->
     <meta name="google-adsense-account" content="ca-pub-3639153716376265">
 
-    <!-- Structured Data for Organization and Product -->
+    <!-- Structured Data: Enhanced Schema.org JSON-LD for Google & LLMs -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "DAMP Smart Drinkware",
-        "alternateName": "WeCr8 Solutions LLC",
-        "url": "https://dampdrink.com",
-        "logo": "https://dampdrink.com/assets/images/logo/logo.png",
-        "description": "Revolutionary smart drinkware technology for drink tracking and beverage monitoring",
-        "foundingDate": "2024",
-        "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "San Diego",
-            "addressRegion": "CA",
-            "addressCountry": "US"
-        },
-        "sameAs": [
-            "https://dampdrink.com"
-        ],
-        "makesOffer": [
+        "@graph": [
             {
-                "@type": "Offer",
-                "itemOffered": {
-                    "@type": "Product",
-                    "name": "DAMP Smart Drinkware Collection",
-                    "description": "Smart drinkware technology for drink tracking and beverage monitoring",
-                    "category": "Smart Drinkware",
-                    "brand": {
-                        "@type": "Brand",
-                        "name": "DAMP"
+                "@type": "Organization",
+                "@id": "https://dampdrink.com/#organization",
+                "name": "DAMP Smart Drinkware",
+                "legalName": "WeCr8 Solutions LLC",
+                "alternateName": ["DAMP", "Drink Abandonment Monitoring Protocol"],
+                "url": "https://dampdrink.com",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://dampdrink.com/assets/images/logo/logo.png",
+                    "width": 512,
+                    "height": 512
+                },
+                "description": "Revolutionary smart drinkware technology for drink tracking and beverage monitoring. Compatible with YETI, Stanley, Hydro Flask, Starbucks cups, and all drinkware brands.",
+                "foundingDate": "2024",
+                "foundingLocation": {
+                    "@type": "Place",
+                    "address": {
+                        "@type": "PostalAddress",
+                        "addressLocality": "San Diego",
+                        "addressRegion": "CA",
+                        "addressCountry": "US"
                     }
+                },
+                "founder": {
+                    "@type": "Person",
+                    "name": "Zach Goodbody",
+                    "email": "zach@wecr8.info",
+                    "jobTitle": "Founder & CEO"
+                },
+                "contactPoint": {
+                    "@type": "ContactPoint",
+                    "contactType": "Customer Service",
+                    "email": "zach@wecr8.info",
+                    "availableLanguage": ["English"]
+                },
+                "sameAs": [
+                    "https://dampdrink.com",
+                    "https://www.gethalfbaked.com/p/startup-ideas-429-cloud-calendar"
+                ],
+                "slogan": "Never Leave Your Drink Behind",
+                "knowsAbout": ["Smart Drinkware", "IoT Technology", "BLE Tracking", "Drink Monitoring", "Mindful Drinking", "Hydration Technology"],
+                "areaServed": {
+                    "@type": "Place",
+                    "name": "Worldwide"
+                },
+                "brand": {
+                    "@type": "Brand",
+                    "name": "DAMP",
+                    "description": "Smart drinkware tracking technology",
+                    "logo": "https://dampdrink.com/assets/images/logo/logo.png"
                 }
+            },
+            {
+                "@type": "WebSite",
+                "@id": "https://dampdrink.com/#website",
+                "url": "https://dampdrink.com",
+                "name": "DAMP Smart Drinkware",
+                "description": "Bluetooth-enabled drink tracker for YETI, Stanley, Hydro Flask, Starbucks cups, and all drinkware brands",
+                "publisher": {
+                    "@id": "https://dampdrink.com/#organization"
+                },
+                "inLanguage": "en-US",
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": {
+                        "@type": "EntryPoint",
+                        "urlTemplate": "https://dampdrink.com/search?q={search_term_string}"
+                    },
+                    "query-input": "required name=search_term_string"
+                }
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": "https://dampdrink.com/#breadcrumb",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://dampdrink.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Products",
+                        "item": "https://dampdrink.com/products"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "About",
+                        "item": "https://dampdrink.com/about"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 4,
+                        "name": "Press",
+                        "item": "https://dampdrink.com/press"
+                    }
+                ]
+            },
+            {
+                "@type": "WebPage",
+                "@id": "https://dampdrink.com/#webpage",
+                "url": "https://dampdrink.com/",
+                "name": "DAMP Smart Drinkware - Never Leave Your Coffee Cup Behind",
+                "isPartOf": {
+                    "@id": "https://dampdrink.com/#website"
+                },
+                "about": {
+                    "@id": "https://dampdrink.com/#organization"
+                },
+                "primaryImageOfPage": {
+                    "@type": "ImageObject",
+                    "url": "https://dampdrink.com/assets/images/og-image.jpg"
+                },
+                "description": "DAMP Smart Drinkware: Bluetooth-enabled drink tracker for coffee mugs and water bottles. Works with YETI, Stanley, Hydro Flask, Starbucks, and all drinkware brands.",
+                "inLanguage": "en-US"
             }
         ]
     }
