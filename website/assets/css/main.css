@@ -1,3 +1,33 @@
+/* DAMP Smart Drinkware - Main CSS Entry Point */
+
+/* This file imports all CSS modules in the correct order */
+
+/* 1. CSS Reset and Base Styles */
+@import url('./base/reset.css');
+
+/* 2. Design Tokens (CSS Variables) */
+@import url('./utilities/design-tokens.css');
+
+/* 3. Base Typography and Global Styles */
+@import url('./base/typography.css');
+@import url('./base/global.css');
+
+/* 4. Component Styles */
+@import url('./components/skeleton.css');
+@import url('./components/buttons.css');
+@import url('./components/cards.css');
+@import url('./components/hero-animation.css');
+
+/* 5. Layout Styles */
+@import url('./navigation.css');
+@import url('./pricing-system.css');
+
+/* 6. Utility Classes */
+@import url('./utilities/animations.css');
+
+/* 7. Legacy Styles (to be phased out) */
+@import url('./styles.css');
+
 /* === More classes for damp-drinking-guide.html inline styles === */
 .damp-mb-40 { margin-bottom: 40px !important; }
 .damp-mt-10 { margin-top: 10px !important; }
@@ -28,7 +58,7 @@
 .text-light-muted { color: rgb(255 255 255 / 80%) !important; }
 .text-sm { font-size: 0.9rem !important; }
 .btn-large { font-size: 1.3rem !important; padding: 20px 50px !important; }
-```
+
 .pv-mb-20 { margin-bottom: 20px !important; }
 .pv-bg-footer { background: rgb(0 0 0 / 50%) !important; }
 .pv-py-40-20 { padding: 40px 20px !important; }
@@ -56,35 +86,6 @@
 .about-mt-10 { margin-top: 10px !important; }
 .about-fs-09 { font-size: 0.9rem !important; }
 .about-opacity-08 { opacity: 0.8 !important; }
-/* DAMP Smart Drinkware - Main CSS Entry Point */
-
-/* This file imports all CSS modules in the correct order */
-
-/* 1. CSS Reset and Base Styles */
-@import url('./base/reset.css');
-
-/* 2. Design Tokens (CSS Variables) */
-@import url('./utilities/design-tokens.css');
-
-/* 3. Base Typography and Global Styles */
-@import url('./base/typography.css');
-@import url('./base/global.css');
-
-/* 4. Component Styles */
-@import url('./components/skeleton.css');
-@import url('./components/buttons.css');
-@import url('./components/cards.css');
-@import url('./components/hero-animation.css');
-
-/* 5. Layout Styles */
-@import url('./navigation.css');
-@import url('./pricing-system.css');
-
-/* 6. Utility Classes */
-@import url('./utilities/animations.css');
-
-/* 7. Legacy Styles (to be phased out) */
-@import url('./styles.css');
 
 /* Critical Above-the-Fold Styles */
 
