@@ -1,14 +1,156 @@
-# Netlify redirects for DAMP Smart Drinkware
+# ============================================================================
+# DAMP Smart Drinkware - Netlify Redirects & Rewrites
+# ============================================================================
+# Best practices for SEO, UX, and performance
+# Status Codes: 200 (rewrite), 301 (permanent), 302 (temporary), 404 (not found)
+# ============================================================================
 
-# Press page consistency
-/press/* /pages/press.html 200
-/press /pages/press.html 200
+# ----------------------------------------------------------------------------
+# 1. HTTPS & WWW Canonicalization (Force HTTPS + Non-WWW)
+# ----------------------------------------------------------------------------
+https://www.dampdrink.com/*  https://dampdrink.com/:splat  301!
+http://dampdrink.com/*       https://dampdrink.com/:splat  301!
+http://www.dampdrink.com/*   https://dampdrink.com/:splat  301!
 
-# Product redirects for SEO consistency
-/products/* /pages/products.html 200
-/about /pages/about.html 200
+# ----------------------------------------------------------------------------
+# 2. Clean URLs - Remove .html Extensions (SEO-Friendly)
+# ----------------------------------------------------------------------------
+/about.html              /about                301!
+/products.html           /products             301!
+/press.html              /press                301!
+/support.html            /support              301!
+/how-it-works.html       /how-it-works         301!
+/pre-order.html          /pre-order            301!
+/privacy.html            /privacy              301!
+/terms.html              /terms                301!
+/cookie-policy.html      /cookie-policy        301!
 
-# Legacy redirects
-/pre-order /pages/pre-order.html 301
-/pre-sale /pages/pre-sale-funnel.html 301
+# ----------------------------------------------------------------------------
+# 3. Trailing Slash Consistency (Always add trailing slash for directories)
+# ----------------------------------------------------------------------------
+/about                   /about/               301!
+/products                /products/            301!
+/press                   /press/               301!
+/support                 /support/             301!
+/how-it-works            /how-it-works/        301!
 
+# ----------------------------------------------------------------------------
+# 4. Clean URL Rewrites (Map clean URLs to actual files)
+# ----------------------------------------------------------------------------
+/about/                  /pages/about.html                200
+/products/               /pages/products.html             200
+/press/                  /pages/press.html                200
+/support/                /pages/support.html              200
+/how-it-works/           /pages/how-it-works.html         200
+/pre-order/              /pages/pre-order.html            200
+/pre-sale/               /pages/pre-sale-funnel.html      200
+/waitlist/               /pages/waitlist.html             200
+/cart/                   /pages/cart.html                 200
+/privacy/                /pages/privacy.html              200
+/terms/                  /pages/terms.html                200
+/cookie-policy/          /pages/cookie-policy.html        200
+
+# ----------------------------------------------------------------------------
+# 5. Product Detail Pages (Clean URLs)
+# ----------------------------------------------------------------------------
+/product/damp-handle            /pages/damp-handle-v1.0.html           200
+/product/cup-sleeve             /pages/cup-sleeve-v1.0.html            200
+/product/silicone-bottom        /pages/silicone-bottom-v1.0.html       200
+/products/damp-handle           /pages/damp-handle-v1.0.html           200
+/products/cup-sleeve            /pages/cup-sleeve-v1.0.html            200
+/products/silicone-bottom       /pages/silicone-bottom-v1.0.html       200
+
+# Product variant pages
+/product/damp-handle/stanley-quencher    /pages/damp-handle-v1.0-stanley-Quencher-H2.0.html    200
+/product/damp-handle/stanley-iceflow    /pages/damp-handle-v1.0-stanley-IceFlow.html          200
+
+# ----------------------------------------------------------------------------
+# 6. Content Pages (DAMP Lifestyle)
+# ----------------------------------------------------------------------------
+/damp-drinking                  /pages/damp-drinking-meaning.html      200
+/damp-drinking-meaning          /pages/damp-drinking-meaning.html      200
+/what-is-damp-drinking          /pages/damp-drinking-meaning.html      200
+/damp-lifestyle                 /pages/damp-drinking-meaning.html      200
+/damp-guide                     /pages/damp-drinking-guide.html        200
+/mindful-drinking               /pages/damp-drinking-meaning.html      200
+
+# ----------------------------------------------------------------------------
+# 7. Voting & Engagement
+# ----------------------------------------------------------------------------
+/vote                           /pages/product-voting.html             200
+/voting                         /pages/product-voting.html             200
+/product-vote                   /pages/product-voting.html             200
+
+# ----------------------------------------------------------------------------
+# 8. Commerce & Checkout
+# ----------------------------------------------------------------------------
+/checkout                       /pages/stripe-checkout.html            200
+/success                        /pages/success.html                    200
+/subscribe                      /pages/subscription.html               200
+/subscription                   /pages/subscription.html               200
+
+# ----------------------------------------------------------------------------
+# 9. Legacy URLs (Permanent Redirects for Old Structure)
+# ----------------------------------------------------------------------------
+/old-about                      /about/                                301
+/company                        /about/                                301
+/shop                           /products/                             301
+/store                          /products/                             301
+/news                           /press/                                301
+/media                          /press/                                301
+/help                           /support/                              301
+/contact                        /support/                              301
+/faq                            /support/#faq                          301
+
+# ----------------------------------------------------------------------------
+# 10. Marketing & Campaign URLs
+# ----------------------------------------------------------------------------
+/buy                            /pre-order/                            302
+/get                            /pre-order/                            302
+/reserve                        /pre-order/                            302
+/join                           /waitlist/                             302
+/signup                         /waitlist/                             302
+/newsletter                     /#newsletter                           302
+/halfbaked                      /press/                                302
+/featured                       /press/                                302
+
+# ----------------------------------------------------------------------------
+# 11. Social Media & UTM Parameter Handling (Preserve query strings)
+# ----------------------------------------------------------------------------
+/facebook                       /about/                                302
+/twitter                        /about/                                302
+/instagram                      /about/                                302
+/linkedin                       /about/                                302
+
+# ----------------------------------------------------------------------------
+# 12. API & Function Routes (Netlify Functions)
+# ----------------------------------------------------------------------------
+/api/*                          /.netlify/functions/:splat             200
+
+# ----------------------------------------------------------------------------
+# 13. Asset Optimization (Optional - if moving assets)
+# ----------------------------------------------------------------------------
+/images/*                       /assets/images/:splat                  200
+/css/*                          /assets/css/:splat                     200
+/js/*                           /assets/js/:splat                      200
+
+# ----------------------------------------------------------------------------
+# 14. Sitemap & SEO Files (Ensure accessibility)
+# ----------------------------------------------------------------------------
+/sitemap                        /sitemap.xml                           200
+/robots                         /robots.txt                            200
+/ads.txt                        /ads.txt                               200
+
+# ----------------------------------------------------------------------------
+# 15. Error Handling & Fallbacks
+# ----------------------------------------------------------------------------
+# Custom 404 - Must be last
+/*                              /404.html                              404
+
+# ============================================================================
+# Notes:
+# - ! means "force" (override other rules)
+# - :splat captures everything after the path
+# - Order matters: first match wins
+# - Query parameters are preserved by default
+# ============================================================================
