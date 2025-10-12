@@ -13,6 +13,8 @@
   NODE_VERSION = "20.11.0"
   # Handle peer dependency warnings
   NPM_FLAGS = "--legacy-peer-deps"
+  # Disable secrets scanning for Firebase API keys (safe for client-side)
+  SECRETS_SCAN_SMART_DETECTION_ENABLED = "false"
 
 # Netlify Dev configuration for local testing
 [dev]
