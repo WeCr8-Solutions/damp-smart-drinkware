@@ -1,0 +1,7 @@
+# ads.txt for DAMP Smart Drinkware
+# Authorized Digital Sellers Declaration
+# https://dampdrink.com/ads.txt
+
+# Google AdSense
+google.com, pub-3639153716376265, DIRECT, f08c47fec0942fa0
+
