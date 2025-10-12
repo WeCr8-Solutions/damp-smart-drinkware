@@ -10,6 +10,10 @@
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../assets/images/logo/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/logo/icon.png">
+
     <!-- SEO Meta Tags -->
     <title>DAMP Smart Drinkware Products - Complete Product Ecosystem | Smart BLE Tracking</title>
     <meta name="description" content="Explore our complete DAMP Smart Drinkware ecosystem: Handle, Silicone Bottom, Cup Sleeve with BLE technology. Universal compatibility for most drinkware brands.">
@@ -133,12 +137,23 @@
     </style>
 
     <!-- PERFORMANCE OPTIMIZATION: CSS Loading -->
-    <link rel="preload" href="../assets/css/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="../assets/css/navigation.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="../assets/css/main.css" as="style" id="main-css-preload">
+    <link rel="preload" href="../assets/css/navigation.css" as="style" id="nav-css-preload">
     <noscript>
         <link rel="stylesheet" href="../assets/css/main.css">
         <link rel="stylesheet" href="../assets/css/navigation.css">
     </noscript>
+    <script>
+        // Convert preload to stylesheet (CSP-compliant)
+        document.getElementById('main-css-preload').onload = function() {
+            this.onload = null;
+            this.rel = 'stylesheet';
+        };
+        document.getElementById('nav-css-preload').onload = function() {
+            this.onload = null;
+            this.rel = 'stylesheet';
+        };
+    </script>
 
     <!-- Page Specific Optimized Styles -->
     <style>
