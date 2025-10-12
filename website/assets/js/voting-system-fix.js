@@ -509,7 +509,7 @@ class FixedVotingSystem {
                     localStorage.setItem('damp_customer_vote', JSON.stringify(this.userVote));
 
                     // Refresh voting data
-                    await this.refreshVotingData();
+                    await this.refreshData();
                 } else {
                     throw new Error(result.error || 'Vote submission failed');
                 }
@@ -559,7 +559,7 @@ class FixedVotingSystem {
                     }));
 
                     // Refresh voting data
-                    await this.refreshVotingData();
+                    await this.refreshData();
                 } else {
                     throw new Error(result.error || 'Vote submission failed');
                 }
