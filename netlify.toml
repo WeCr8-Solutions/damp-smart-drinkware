@@ -5,6 +5,8 @@
   # Static site - no build step required
   publish = "website"
   functions = "netlify/functions"
+  # Ignore Firebase API keys (they're safe for client-side use)
+  ignore_secrets = true
   
 [build.environment]
   # Use Node 20 LTS for functions (Firebase requires Node 20+)
