@@ -222,7 +222,7 @@ class DAMPSEOOptimizer {
             productData = {
                 name: "DAMP Cup Sleeve v1.0",
                 description: "Smart cup sleeve with temperature control and leak protection",
-                image: `${this.options.baseUrl}/assets/images/products/cup-sleeve/cup-sleeve.png`,
+                image: `${this.options.baseUrl}/assets/images/products/cup-sleeve/cup-sleeve.png?v=2`,
                 price: "44.99",
                 currency: "USD"
             };

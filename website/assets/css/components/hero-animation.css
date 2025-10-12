@@ -585,11 +585,11 @@
 /* Enhanced skip button */
 .hero-skip-button {
     font-family: inherit;
-    outline: none;
+    z-index: 10002; /* Higher than navigation and auth elements */
 }
 
 .hero-skip-button:focus {
-    outline: 3px solid rgb(255 255 255 / 80%);
+    outline: 3px solid var(--primary-color);
     outline-offset: 3px;
 }
 
@@ -918,7 +918,7 @@
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 9999;
+    z-index: 10002; /* Higher than navigation and auth elements */
     background: rgb(255 255 255 / 20%);
     color: white;
     border: 1px solid rgb(255 255 255 / 30%);
@@ -933,6 +933,11 @@
 .animation-skip-button:hover {
     background: rgb(255 255 255 / 30%);
     transform: scale(1.05);
+}
+
+.animation-skip-button:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
 }
 
 /* ==================== SEQUENTIAL ANIMATION KEYFRAMES ==================== */

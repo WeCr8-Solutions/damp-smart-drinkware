@@ -57,7 +57,7 @@ class DAMPPricingSystem {
                     id: 'cup-sleeve',
                     name: 'DAMP Cup Sleeve',
                     description: 'Flexible smart sleeve for multiple cup sizes',
-                    image: '/assets/images/products/cup-sleeve/cup-sleeve.png',
+                    image: '/assets/images/products/cup-sleeve/cup-sleeve.png?v=2',
                     category: 'hardware',
                     inventory: 600,
                     pricing: {

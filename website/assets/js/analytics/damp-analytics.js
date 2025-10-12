@@ -10,6 +10,11 @@
 
 import { AnalyticsModule, AnalyticsEventType } from '../store/modules/analytics-module.js';
 import { Logger } from '../store/utils/logger.js';
+import enhancedEcommerce, { EcommerceEventType } from './enhanced-ecommerce.js';
+import inAppPurchaseAnalytics, { IAPEventType } from './in-app-purchase-tracking.js';
+import adRevenueAnalytics, { AdRevenueEventType, AdNetworkType, AdFormatType } from './ad-revenue-tracking.js';
+import advancedTracking, { AdvancedEventType } from './advanced-tracking.js';
+import iotDeviceTracking, { IoTEventType, DeviceType, ZoneType } from './iot-device-tracking.js';
 
 /**
  * Global Analytics Service Class
@@ -31,6 +36,46 @@ class DAMPAnalyticsService {
         } else {
             setTimeout(() => this.#autoInitialize(), 0);
         }
+    }
+
+    /**
+     * Get enhanced ecommerce tracking instance
+     * @returns {EnhancedEcommerceAnalytics}
+     */
+    get ecommerce() {
+        return enhancedEcommerce;
+    }
+
+    /**
+     * Get in-app purchase tracking instance
+     * @returns {InAppPurchaseAnalytics}
+     */
+    get iap() {
+        return inAppPurchaseAnalytics;
+    }
+
+    /**
+     * Get ad revenue tracking instance
+     * @returns {AdRevenueAnalytics}
+     */
+    get adRevenue() {
+        return adRevenueAnalytics;
+    }
+
+    /**
+     * Get advanced tracking instance
+     * @returns {AdvancedTracking}
+     */
+    get advanced() {
+        return advancedTracking;
+    }
+
+    /**
+     * Get IoT device tracking instance
+     * @returns {IoTDeviceTracking}
+     */
+    get iot() {
+        return iotDeviceTracking;
     }
 
     /**
@@ -593,7 +638,18 @@ window.dampAnalytics = dampAnalytics;
 
 // Export for module usage
 export default dampAnalytics;
-export { AnalyticsEventType };
+export { 
+    AnalyticsEventType, 
+    EcommerceEventType, 
+    IAPEventType, 
+    AdRevenueEventType,
+    AdNetworkType,
+    AdFormatType,
+    AdvancedEventType,
+    IoTEventType,
+    DeviceType,
+    ZoneType
+};
 
 // Helper functions for easy tracking
 export const trackPageView = (data) => dampAnalytics.trackPageView(data);
@@ -611,3 +667,70 @@ export const trackError = (error, context) => dampAnalytics.trackError(error, co
 export const setUserProperties = (properties) => dampAnalytics.setUserProperties(properties);
 export const setUserId = (userId) => dampAnalytics.setUserId(userId);
 export const updateConsent = (settings) => dampAnalytics.updateConsent(settings);
+
+// Export enhanced ecommerce tracking
+export { enhancedEcommerce };
+export { 
+    trackViewItemList, 
+    trackViewItem as trackEcommerceViewItem,
+    trackSelectItem,
+    trackAddToCart as trackEcommerceAddToCart,
+    trackRemoveFromCart,
+    trackViewCart,
+    trackBeginCheckout,
+    trackAddShippingInfo,
+    trackAddPaymentInfo,
+    trackPurchase as trackEcommercePurchase,
+    trackRefund,
+    trackAddToWishlist,
+    trackViewPromotion,
+    trackSelectPromotion
+} from './enhanced-ecommerce.js';
+
+// Export in-app purchase tracking
+export { inAppPurchaseAnalytics };
+export {
+    trackIAPInitiated,
+    trackIAPCompleted,
+    trackIAPFailed,
+    trackIAPCancelled,
+    trackSubscriptionStarted as trackIAPSubscriptionStarted,
+    trackSubscriptionRenewed,
+    trackSubscriptionCancelled as trackIAPSubscriptionCancelled,
+    trackTrialStarted,
+    trackTrialConverted
+} from './in-app-purchase-tracking.js';
+
+// Export ad revenue tracking
+export { adRevenueAnalytics };
+export {
+    trackAdImpression,
+    trackAdClick,
+    trackAdRevenue as trackAdRevenueEvent,
+    trackRewardedAdWatched,
+    trackRewardedAdEarned,
+    trackAdMobRevenue,
+    trackAdSenseRevenue,
+    getCumulativeAdRevenue
+} from './ad-revenue-tracking.js';
+
+// Export advanced tracking
+export { advancedTracking };
+
+// Export IoT device tracking
+export { iotDeviceTracking };
+export {
+    trackDevicePaired,
+    trackDeviceConnection,
+    trackBatteryEvent,
+    trackFirmwareUpdate,
+    trackAbandonAlert,
+    trackAlertDismissed,
+    trackFindDevice,
+    trackZoneCreated,
+    trackZoneUpdated,
+    trackZoneTransition,
+    trackDeviceUsage,
+    trackFeatureUsed as trackIoTFeatureUsed,
+    trackSettingsChanged
+} from './iot-device-tracking.js';

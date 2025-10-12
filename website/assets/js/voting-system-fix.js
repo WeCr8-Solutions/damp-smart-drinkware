@@ -41,7 +41,7 @@ class FixedVotingSystem {
             {
                 id: 'cupSleeve',
                 name: 'Cup Sleeve v1.0',
-                image: '../assets/images/products/cup-sleeve/cup-sleeve.png',
+                image: '../assets/images/products/cup-sleeve/cup-sleeve.png?v=2',
                 description: 'Adjustable fit for most cups',
                 votes: 0,
                 percentage: 0

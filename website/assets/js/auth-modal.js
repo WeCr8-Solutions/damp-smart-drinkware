@@ -207,54 +207,46 @@ class DAMPAuthModal {
   }
 
   updateUI(user) {
-    // Create auth navigation if it doesn't exist
-    if (!document.querySelector('.auth-nav')) {
-      this.createAuthNav();
-    }
-
-    const authButtons = document.querySelector('.auth-buttons');
-    const userMenu = document.querySelector('.user-menu');
-
-    if (user) {
-      if (authButtons) authButtons.style.display = 'none';
-      if (userMenu) {
-        userMenu.style.display = 'flex';
-        this.updateUserMenu(user);
-      }
-    } else {
-      if (authButtons) authButtons.style.display = 'flex';
-      if (userMenu) userMenu.style.display = 'none';
-    }
-  }
-
-  createAuthNav() {
-    const header = document.querySelector('header, nav, .header');
-    if (!header) return;
-
-    const authNavHTML = `
-      <div class="auth-nav">
-        <div class="auth-buttons">
-          <button class="auth-nav-btn signin" data-auth="signin">Sign In</button>
-          <button class="auth-nav-btn signup" data-auth="signup">Get Started</button>
-        </div>
-        <div class="user-menu" style="display: none;">
-          <div class="user-avatar">👤</div>
-          <div class="user-info">
-            <span class="user-name">User</span>
-            <span class="user-email">user@example.com</span>
+    // Auth buttons are now only in the hamburger menu
+    // Update mobile auth section if user is signed in
+    const mobileAuthSection = document.getElementById('mobileAuthSection');
+    const mobileAuthButtons = document.getElementById('mobileAuthButtons');
+    
+    if (user && mobileAuthSection) {
+      // User is signed in - show user profile in mobile menu
+      mobileAuthSection.innerHTML = `
+        <h3 class="mobile-nav-section-title">👤 Account</h3>
+        <div class="mobile-auth-user-info">
+          <div class="mobile-user-avatar">
+            <span>${user.displayName ? user.displayName.charAt(0).toUpperCase() : '👤'}</span>
           </div>
-          <button class="user-menu-btn" onclick="dampAuth.toggleUserMenu()">▼</button>
-          <div class="user-dropdown" style="display: none;">
-            <a href="/pages/profile.html">Profile</a>
-            <a href="/pages/orders.html">Orders</a>
-            <a href="/pages/devices.html">My Devices</a>
-            <button data-auth="signout">Sign Out</button>
+          <div class="mobile-user-details">
+            <div class="mobile-user-name">${user.displayName || 'DAMP User'}</div>
+            <div class="mobile-user-email">${user.email}</div>
           </div>
         </div>
-      </div>
-    `;
-
-    header.insertAdjacentHTML('beforeend', authNavHTML);
+        <a class="mobile-nav-link" href="pages/profile.html">
+          <span class="mobile-nav-icon">⚙️</span>
+          <span class="mobile-nav-text">Profile Settings</span>
+        </a>
+        <a class="mobile-nav-link" href="pages/orders.html">
+          <span class="mobile-nav-icon">📦</span>
+          <span class="mobile-nav-text">My Orders</span>
+        </a>
+        <a class="mobile-nav-link" href="pages/devices.html">
+          <span class="mobile-nav-icon">📱</span>
+          <span class="mobile-nav-text">My Devices</span>
+        </a>
+        <a class="mobile-nav-link" data-auth="signout">
+          <span class="mobile-nav-icon">🚪</span>
+          <span class="mobile-nav-text">Sign Out</span>
+        </a>
+      `;
+    } else if (!user && mobileAuthButtons) {
+      // User is signed out - auth buttons are already in the hamburger menu from header.js
+      // No need to do anything, just ensure they're visible
+      mobileAuthButtons.style.display = '';
+    }
   }
 
   updateUserMenu(user) {

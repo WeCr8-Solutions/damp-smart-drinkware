@@ -287,21 +287,26 @@ html {
 }
 
 /* Skip links for performance */
-.skip-link {
+.skip-link,
+.skip-to-content {
     position: absolute;
     top: -40px;
     left: 6px;
     background: #00d4ff;
     color: #0f0f23;
-    padding: 8px;
+    padding: 8px 12px;
     text-decoration: none;
     border-radius: 4px;
-    z-index: 10000;
+    z-index: 10001; /* Higher than auth modal and navigation */
     transition: top 0.2s ease;
+    font-weight: 700;
 }
 
-.skip-link:focus {
+.skip-link:focus,
+.skip-to-content:focus {
     top: 6px;
+    outline: 3px solid white;
+    outline-offset: 2px;
 }
 
 /* ==========================================================================

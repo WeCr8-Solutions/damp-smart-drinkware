@@ -1,6 +1,15 @@
 /**
  * DAMP Smart Drinkware - Cart Management System
+ * Enhanced with GA4 Ecommerce Tracking
  */
+
+// Import enhanced ecommerce tracking
+import { 
+    trackAddToCart, 
+    trackRemoveFromCart,
+    trackViewCart,
+    trackBeginCheckout 
+} from './analytics/enhanced-ecommerce.js';
 
 class DAMPCartManager {
     constructor() {
@@ -51,30 +60,35 @@ class DAMPCartManager {
 
     addItem(product) {
         const existingItem = this.cart.find(item => item.id === product.id);
+        const quantityAdded = 1;
 
         if (existingItem) {
-            existingItem.quantity += 1;
+            existingItem.quantity += quantityAdded;
         } else {
-            this.cart.push({ ...product, quantity: 1 });
+            this.cart.push({ ...product, quantity: quantityAdded });
         }
 
         this.saveCart();
         this.renderCart();
         this.updateOrderSummary();
 
-        // Track add to cart event
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'add_to_cart', {
-                currency: 'USD',
-                value: product.price,
-                items: [{
-                    item_id: product.id,
-                    item_name: product.name,
-                    category: 'Smart Drinkware',
-                    quantity: 1,
-                    price: product.price
-                }]
+        // Track add to cart event with enhanced ecommerce
+        try {
+            trackAddToCart({
+                value: product.price * quantityAdded,
+                item: {
+                    id: product.id,
+                    itemId: product.id,
+                    itemName: product.name,
+                    name: product.name,
+                    price: product.price,
+                    quantity: quantityAdded,
+                    category: product.category || 'Smart Drinkware',
+                    brand: 'DAMP'
+                }
             });
+        } catch (error) {
+            console.warn('Failed to track add to cart:', error);
         }
     }
 
@@ -86,24 +100,48 @@ class DAMPCartManager {
 
         const itemIndex = this.cart.findIndex(item => item.id === productId);
         if (itemIndex !== -1) {
-            this.cart[itemIndex].quantity = newQuantity;
+            const item = this.cart[itemIndex];
+            const oldQuantity = item.quantity;
+            item.quantity = newQuantity;
+            
             this.saveCart();
             this.renderCart();
             this.updateOrderSummary();
 
-            // Track quantity update
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'modify_cart', {
-                    currency: 'USD',
-                    value: this.cart[itemIndex].price * newQuantity,
-                    items: [{
-                        item_id: productId,
-                        item_name: this.cart[itemIndex].name,
-                        category: 'Smart Drinkware',
-                        quantity: newQuantity,
-                        price: this.cart[itemIndex].price
-                    }]
-                });
+            // Track quantity change - if increased, track as add_to_cart, if decreased, track as remove_from_cart
+            try {
+                const quantityDiff = newQuantity - oldQuantity;
+                if (quantityDiff > 0) {
+                    trackAddToCart({
+                        value: item.price * quantityDiff,
+                        item: {
+                            id: item.id,
+                            itemId: item.id,
+                            itemName: item.name,
+                            name: item.name,
+                            price: item.price,
+                            quantity: quantityDiff,
+                            category: item.category || 'Smart Drinkware',
+                            brand: 'DAMP'
+                        }
+                    });
+                } else if (quantityDiff < 0) {
+                    trackRemoveFromCart({
+                        value: item.price * Math.abs(quantityDiff),
+                        item: {
+                            id: item.id,
+                            itemId: item.id,
+                            itemName: item.name,
+                            name: item.name,
+                            price: item.price,
+                            quantity: Math.abs(quantityDiff),
+                            category: item.category || 'Smart Drinkware',
+                            brand: 'DAMP'
+                        }
+                    });
+                }
+            } catch (error) {
+                console.warn('Failed to track quantity update:', error);
             }
         }
     }
@@ -117,19 +155,23 @@ class DAMPCartManager {
             this.renderCart();
             this.updateOrderSummary();
 
-            // Track remove from cart
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'remove_from_cart', {
-                    currency: 'USD',
+            // Track remove from cart with enhanced ecommerce
+            try {
+                trackRemoveFromCart({
                     value: item.price * item.quantity,
-                    items: [{
-                        item_id: item.id,
-                        item_name: item.name,
-                        category: 'Smart Drinkware',
+                    item: {
+                        id: item.id,
+                        itemId: item.id,
+                        itemName: item.name,
+                        name: item.name,
+                        price: item.price,
                         quantity: item.quantity,
-                        price: item.price
-                    }]
+                        category: item.category || 'Smart Drinkware',
+                        brand: 'DAMP'
+                    }
                 });
+            } catch (error) {
+                console.warn('Failed to track remove from cart:', error);
             }
         }
     }
@@ -148,6 +190,25 @@ class DAMPCartManager {
 
         emptyCart.classList.add('hidden');
         cartContainer.classList.remove('hidden');
+
+        // Track view cart event
+        try {
+            trackViewCart({
+                value: this.getCartTotal(),
+                items: this.cart.map(item => ({
+                    id: item.id,
+                    itemId: item.id,
+                    itemName: item.name,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    category: item.category || 'Smart Drinkware',
+                    brand: 'DAMP'
+                }))
+            });
+        } catch (error) {
+            console.warn('Failed to track view cart:', error);
+        }
 
         const cartHTML = this.cart.map(item => `
             <div class="cart-item" data-product-id="${item.id}">
@@ -254,19 +315,23 @@ class DAMPCartManager {
 
             const { sessionId } = await response.json();
 
-            // Track checkout initiation
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'begin_checkout', {
-                    currency: 'USD',
-                    value: this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+            // Track checkout initiation with enhanced ecommerce
+            try {
+                trackBeginCheckout({
+                    value: this.getCartTotal(),
                     items: this.cart.map(item => ({
-                        item_id: item.id,
-                        item_name: item.name,
-                        category: 'Smart Drinkware',
+                        id: item.id,
+                        itemId: item.id,
+                        itemName: item.name,
+                        name: item.name,
+                        price: item.price,
                         quantity: item.quantity,
-                        price: item.price
+                        category: item.category || 'Smart Drinkware',
+                        brand: 'DAMP'
                     }))
                 });
+            } catch (error) {
+                console.warn('Failed to track begin checkout:', error);
             }
 
             // Redirect to Stripe Checkout
