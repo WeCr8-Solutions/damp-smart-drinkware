@@ -107,17 +107,27 @@ exports.handler = async (event, context) => {
     };
   } catch (error) {
     console.error('❌ Error fetching sales stats:', error);
+    console.error('Error details:', {
+      message: error.message,
+      type: error.type,
+      code: error.code,
+      statusCode: error.statusCode
+    });
+    
+    // Return graceful fallback instead of 500
     return {
-      statusCode: 500,
+      statusCode: 200,  // Changed from 500 to 200 for graceful degradation
       headers,
       body: JSON.stringify({ 
         error: 'Failed to fetch sales statistics',
+        errorMessage: error.message || 'Unknown error',
         totalSales: 0,
         productSales: {
           'cup-sleeve': 0,
           'silicone-bottom': 0,
           'damp-handle': 0,
         },
+        lastUpdated: new Date().toISOString(),
       }),
     };
   }
