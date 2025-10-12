@@ -5,7 +5,19 @@
 
 class DAMPAdSenseManager {
     constructor() {
-        this.config = window.DAMP_CONFIG?.adsense || {};
+        // Default configuration
+        const defaultConfig = {
+            enabled: false,
+            clientId: '',
+            adFormats: {
+                banner: { width: 728, height: 90 },
+                rectangle: { width: 336, height: 280 },
+                leaderboard: { width: 728, height: 90 },
+                mobile: { width: 320, height: 100 }
+            }
+        };
+        
+        this.config = Object.assign({}, defaultConfig, window.DAMP_CONFIG?.adsense || {});
         this.initialized = false;
         this.adUnits = new Map();
         this.lazyLoadObserver = null;

@@ -709,7 +709,13 @@ class DAMPPerformanceMonitor {
 }
 
 // Export the class for external use
-export default DAMPPerformanceMonitor;
+// Export for module usage
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = DAMPPerformanceMonitor;
+}
+
+// Make available globally
+window.DAMPPerformanceMonitor = DAMPPerformanceMonitor;
 
 // Attach to window only in debug mode
 if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
