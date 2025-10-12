@@ -6,8 +6,8 @@
 
 // Service Worker Configuration
 const SW = {
-    CACHE_NAME: 'damp-v2.1.1',
-    CACHE_STRATEGY_VERSION: '2.1.1',
+    CACHE_NAME: 'damp-v2.1.2',
+    CACHE_STRATEGY_VERSION: '2.1.2',
     HOT_RELOAD_CHANNEL: 'damp-hot-reload',
     PERFORMANCE_CHANNEL: 'damp-performance'
 };
