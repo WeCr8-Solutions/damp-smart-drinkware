@@ -58,9 +58,10 @@ class DAMPHeader extends HTMLElement {
                         <li><a href="${homeHref}" data-analytics="nav-home">Home</a></li>
                         <li><a href="${this.basePath}pages/how-it-works.html" data-analytics="nav-how-it-works">How It Works</a></li>
                         <li><a href="${this.basePath}pages/products.html" data-analytics="nav-products">Products</a></li>
-                        <li><a href="${this.basePath}pages/support.html" data-analytics="nav-support">Support</a></li>
                         <li><a href="${this.basePath}pages/about.html" data-analytics="nav-about">About</a></li>
+                        <li><a href="${this.basePath}pages/damp-drinking-meaning.html" data-analytics="nav-damp-meaning">DAMP Lifestyle</a></li>
                         <li><a href="${this.basePath}pages/press.html" data-analytics="nav-press">Press</a></li>
+                        <li><a href="${this.basePath}pages/support.html" data-analytics="nav-support">Support</a></li>
                         <li><a href="${this.basePath}pages/pre-order.html" class="nav-cta" data-analytics="nav-preorder">Pre-Order</a></li>
                     </ul>
 
