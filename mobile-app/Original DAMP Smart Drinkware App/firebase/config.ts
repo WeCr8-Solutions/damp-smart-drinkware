@@ -48,8 +48,15 @@ let db: any = mockDb;
 let functions: any = mockFunctions;
 let storage: any = mockStorage;
 
+// Import Firebase modules statically (required for Expo)
+import { initializeApp, getApps } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getFunctions } from 'firebase/functions';
+import { getStorage } from 'firebase/storage';
+
 // Simple Firebase initialization for web
-const initializeFirebaseForWeb = async () => {
+const initializeFirebaseForWeb = () => {
   console.log('Firebase Feature Flag Debug:', {
     FIREBASE: FeatureFlags.FIREBASE,
     EXPO_PUBLIC_FIREBASE_ENABLED: process.env.EXPO_PUBLIC_FIREBASE_ENABLED,
@@ -63,12 +70,7 @@ const initializeFirebaseForWeb = async () => {
   }
 
   try {
-    // Try to import Firebase modules
-    const { initializeApp, getApps } = await import('firebase/app');
-    const { getAuth } = await import('firebase/auth');
-    const { getFirestore } = await import('firebase/firestore');
-    const { getFunctions } = await import('firebase/functions');
-    const { getStorage } = await import('firebase/storage');
+    // Use statically imported modules
 
     // Firebase configuration
     const firebaseConfig = {
@@ -106,9 +108,10 @@ const initializeFirebaseForWeb = async () => {
     functions = getFunctions(app);
     storage = getStorage(app);
 
-    console.info('Firebase initialized successfully');
+    console.info('✅ Firebase initialized successfully');
+    console.log('Firebase Auth:', { hasAuth: !!auth, authType: typeof auth });
   } catch (error) {
-    console.warn('Firebase initialization failed - using mocks:', error);
+    console.error('❌ Firebase initialization failed - using mocks:', error);
     app = null;
     auth = mockAuth;
     db = mockDb;
@@ -117,14 +120,9 @@ const initializeFirebaseForWeb = async () => {
   }
 };
 
-// Initialize Firebase when module loads
-if (typeof window !== 'undefined') {
-  // Web environment
-  initializeFirebaseForWeb();
-} else {
-  // Server-side or other environment - use mocks
-  console.info('Non-web environment detected - using mocks');
-}
+// Initialize Firebase immediately
+console.log('🔥 Starting Firebase initialization...');
+initializeFirebaseForWeb();
 
 // Export services with fallbacks
 export const firebaseApp = app;
