@@ -533,11 +533,15 @@
             <h3 style="font-size: 2rem; color: var(--text-primary); margin-bottom: 20px;">📊 Current Pre-Sale Traction</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-top: 30px;">
                 <div>
-                    <div style="font-size: 2.5rem; color: #00ff88; font-weight: 700; margin-bottom: 10px;" id="investor-presale-count">Loading...</div>
+                    <div style="font-size: 2.5rem; color: #00ff88; font-weight: 700; margin-bottom: 10px;" id="investor-presale-count">
+                        <span style="display: inline-block; animation: pulse 2s infinite;">⏳</span>
+                    </div>
                     <p style="color: var(--text-secondary); font-size: 1.1rem;">Pre-Sale Units Reserved</p>
                 </div>
                 <div>
-                    <div style="font-size: 2.5rem; color: #00d4ff; font-weight: 700; margin-bottom: 10px;">450+</div>
+                    <div style="font-size: 2.5rem; color: #00d4ff; font-weight: 700; margin-bottom: 10px;" id="investor-waitlist-count">
+                        <span style="display: inline-block; animation: pulse 2s infinite;">⏳</span>
+                    </div>
                     <p style="color: var(--text-secondary); font-size: 1.1rem;">Waitlist Signups</p>
                 </div>
                 <div>
@@ -546,34 +550,66 @@
                 </div>
             </div>
             <p style="margin-top: 30px; color: var(--text-secondary); font-size: 1rem;">
-                <em>Data updated in real-time from Stripe checkout sessions</em>
+                <em>Real-time data from Stripe checkout sessions and waitlist database</em>
             </p>
         </div>
     </div>
     
     <!-- Fetch Real Pre-Sale Data -->
     <script>
-        async function loadPreSaleData() {
+        async function loadInvestorMetrics() {
+            console.log('📊 Loading investor metrics...');
+            
+            // Load pre-sale count from Stripe
             try {
-                const response = await fetch('/.netlify/functions/get-sales-stats');
-                if (response.ok) {
-                    const data = await response.json();
-                    const countElement = document.getElementById('investor-presale-count');
-                    if (countElement && data.totalSales !== undefined) {
-                        countElement.textContent = data.totalSales > 0 ? data.totalSales : '0';
-                        countElement.style.color = data.totalSales > 0 ? '#00ff88' : '#00d4ff';
+                const salesResponse = await fetch('/.netlify/functions/get-sales-stats');
+                if (salesResponse.ok) {
+                    const salesData = await salesResponse.json();
+                    const presaleElement = document.getElementById('investor-presale-count');
+                    
+                    if (presaleElement && salesData.totalSales !== undefined) {
+                        const count = salesData.totalSales || 0;
+                        presaleElement.textContent = count;
+                        presaleElement.style.color = count > 0 ? '#00ff88' : '#00d4ff';
+                        console.log(`✅ Pre-sale count: ${count}`);
                     }
+                } else {
+                    console.warn('⚠️ Sales stats not available');
+                    document.getElementById('investor-presale-count').textContent = '0';
                 }
             } catch (error) {
-                console.warn('Could not load pre-sale data:', error);
+                console.warn('❌ Could not load pre-sale data:', error);
                 document.getElementById('investor-presale-count').textContent = '0';
+            }
+            
+            // Load waitlist count
+            try {
+                const waitlistResponse = await fetch('/.netlify/functions/get-waitlist-count');
+                if (waitlistResponse.ok) {
+                    const waitlistData = await waitlistResponse.json();
+                    const waitlistElement = document.getElementById('investor-waitlist-count');
+                    
+                    if (waitlistElement && waitlistData.count !== undefined) {
+                        const count = waitlistData.count || 0;
+                        // Display with "+" if count > 0
+                        waitlistElement.textContent = count > 0 ? `${count}+` : '0';
+                        waitlistElement.style.color = count > 0 ? '#00d4ff' : '#00ff88';
+                        console.log(`✅ Waitlist count: ${count}`);
+                    }
+                } else {
+                    console.warn('⚠️ Waitlist count not available');
+                    document.getElementById('investor-waitlist-count').textContent = '0';
+                }
+            } catch (error) {
+                console.warn('❌ Could not load waitlist data:', error);
+                document.getElementById('investor-waitlist-count').textContent = '0';
             }
         }
         
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadPreSaleData);
+            document.addEventListener('DOMContentLoaded', loadInvestorMetrics);
         } else {
-            loadPreSaleData();
+            loadInvestorMetrics();
         }
     </script>
     
