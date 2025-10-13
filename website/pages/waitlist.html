@@ -851,66 +851,110 @@
         }
 
         // Handle App Waitlist Form
-        document.getElementById('appWaitlistForm').addEventListener('submit', function(e) {
+        document.getElementById('appWaitlistForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const formData = new FormData(this);
+            const name = formData.get('name');
+            const email = formData.get('email');
             const data = {
                 type: 'app_waitlist',
-                name: formData.get('name'),
-                email: formData.get('email'),
+                name: name,
+                email: email,
                 platform: formData.get('platform'),
                 interests: formData.get('interests'),
                 beta: formData.get('beta') === 'yes',
                 updates: formData.get('updates') === 'yes'
             };
 
-            // Track form submission
-            trackFormSubmit('app_waitlist', {
-                platform: data.platform,
-                beta_interested: data.beta
-            });
+            try {
+                console.log('📧 Saving to Netlify waitlist...');
+                
+                // Save to Netlify function
+                const response = await fetch('/.netlify/functions/save-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        name: name,
+                        source: 'app_waitlist',
+                        metadata: data
+                    })
+                });
 
-            // In a real implementation, this would send to your backend
-            console.log('App Waitlist Signup:', data);
+                const result = await response.json();
+                console.log('✅ Waitlist saved:', result);
 
-            // Show success message
-            showSuccessMessage('app');
+                // Track form submission
+                trackFormSubmit('app_waitlist', {
+                    platform: data.platform,
+                    beta_interested: data.beta
+                });
 
-            // Reset form
-            this.reset();
+                // Show success message
+                showSuccessMessage('app');
+
+                // Reset form
+                this.reset();
+
+            } catch (error) {
+                console.error('❌ Waitlist submission error:', error);
+                alert('⚠️ There was an error saving your information. Please try again or email us at zach@wecr8.info');
+            }
         });
 
         // Handle Product Waitlist Form
-        document.getElementById('productWaitlistForm').addEventListener('submit', function(e) {
+        document.getElementById('productWaitlistForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const formData = new FormData(this);
+            const name = formData.get('name');
+            const email = formData.get('email');
             const data = {
                 type: 'product_waitlist',
-                name: formData.get('name'),
-                email: formData.get('email'),
+                name: name,
+                email: email,
                 products: formData.get('products'),
                 useCase: formData.get('useCase'),
                 preorder: formData.get('preorder') === 'yes',
                 events: formData.get('events') === 'yes'
             };
 
-            // Track form submission
-            trackFormSubmit('product_waitlist', {
-                product_interest: data.products,
-                use_case: data.useCase,
-                preorder_interested: data.preorder
-            });
+            try {
+                console.log('📧 Saving to Netlify waitlist...');
+                
+                // Save to Netlify function
+                const response = await fetch('/.netlify/functions/save-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        name: name,
+                        source: 'product_waitlist',
+                        metadata: data
+                    })
+                });
 
-            // In a real implementation, this would send to your backend
-            console.log('Product Waitlist Signup:', data);
+                const result = await response.json();
+                console.log('✅ Waitlist saved:', result);
 
-            // Show success message
-            showSuccessMessage('product');
+                // Track form submission
+                trackFormSubmit('product_waitlist', {
+                    product_interest: data.products,
+                    use_case: data.useCase,
+                    preorder_interested: data.preorder
+                });
 
-            // Reset form
-            this.reset();
+                // Show success message
+                showSuccessMessage('product');
+
+                // Reset form
+                this.reset();
+
+            } catch (error) {
+                console.error('❌ Waitlist submission error:', error);
+                alert('⚠️ There was an error saving your information. Please try again or email us at zach@wecr8.info');
+            }
         });
 
         function showSuccessMessage(type = '') {
