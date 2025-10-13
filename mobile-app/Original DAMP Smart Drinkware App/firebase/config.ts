@@ -9,31 +9,155 @@ import { getStorage } from 'firebase/storage';
 
 // Simple Firebase configuration without complex imports
 // Mock implementations for when Firebase is disabled or fails
+// This provides a working auth system for development/testing
+const mockUsers = new Map<string, { email: string; password: string; uid: string }>();
+let mockCurrentUser: any = null;
+const mockAuthCallbacks: Array<(user: any) => void> = [];
+
+class MockFirebaseUser {
+  uid: string;
+  email: string;
+  emailVerified: boolean = false;
+  displayName: string | null = null;
+  photoURL: string | null = null;
+  
+  constructor(email: string, uid: string) {
+    this.email = email;
+    this.uid = uid;
+  }
+}
+
 const mockAuth = {
-  currentUser: null,
-  signInWithEmailAndPassword: () => Promise.reject(new Error('Firebase disabled')),
-  createUserWithEmailAndPassword: () => Promise.reject(new Error('Firebase disabled')),
-  signOut: () => Promise.resolve(),
-  onAuthStateChanged: (callback: (user: any) => void) => {
-    // Call callback with null user immediately for mocks
-    setTimeout(() => callback(null), 0);
-    // Return unsubscribe function
-    return () => {};
+  get currentUser() {
+    return mockCurrentUser;
   },
-  sendPasswordResetEmail: () => Promise.reject(new Error('Firebase disabled')),
+  
+  signInWithEmailAndPassword: async (email: string, password: string) => {
+    console.log('🔐 Mock Auth: Attempting sign in', { email });
+    
+    if (!email || !email.includes('@')) {
+      const error: any = new Error('Invalid email format');
+      error.code = 'auth/invalid-email';
+      throw error;
+    }
+    
+    const user = mockUsers.get(email);
+    if (!user) {
+      const error: any = new Error('User not found');
+      error.code = 'auth/user-not-found';
+      throw error;
+    }
+    
+    if (user.password !== password) {
+      const error: any = new Error('Wrong password');
+      error.code = 'auth/wrong-password';
+      throw error;
+    }
+    
+    mockCurrentUser = new MockFirebaseUser(email, user.uid);
+    mockAuthCallbacks.forEach(cb => cb(mockCurrentUser));
+    
+    console.log('✅ Mock Auth: Sign in successful', { email });
+    return { user: mockCurrentUser, operationType: 'signIn' };
+  },
+  
+  createUserWithEmailAndPassword: async (email: string, password: string) => {
+    console.log('📝 Mock Auth: Creating user', { email });
+    
+    if (!email || !email.includes('@')) {
+      const error: any = new Error('Invalid email format');
+      error.code = 'auth/invalid-email';
+      throw error;
+    }
+    
+    if (password.length < 6) {
+      const error: any = new Error('Password too weak');
+      error.code = 'auth/weak-password';
+      throw error;
+    }
+    
+    if (mockUsers.has(email)) {
+      const error: any = new Error('Email already in use');
+      error.code = 'auth/email-already-in-use';
+      throw error;
+    }
+    
+    const uid = `mock-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    mockUsers.set(email, { email, password, uid });
+    mockCurrentUser = new MockFirebaseUser(email, uid);
+    mockAuthCallbacks.forEach(cb => cb(mockCurrentUser));
+    
+    console.log('✅ Mock Auth: User created successfully', { email, uid });
+    return { user: mockCurrentUser, operationType: 'signIn' };
+  },
+  
+  signOut: async () => {
+    console.log('👋 Mock Auth: Signing out');
+    mockCurrentUser = null;
+    mockAuthCallbacks.forEach(cb => cb(null));
+    return Promise.resolve();
+  },
+  
+  onAuthStateChanged: (callback: (user: any) => void) => {
+    console.log('👂 Mock Auth: Registering auth state observer');
+    mockAuthCallbacks.push(callback);
+    setTimeout(() => callback(mockCurrentUser), 0);
+    
+    return () => {
+      const index = mockAuthCallbacks.indexOf(callback);
+      if (index > -1) mockAuthCallbacks.splice(index, 1);
+    };
+  },
+  
+  sendPasswordResetEmail: async (email: string) => {
+    console.log('📧 Mock Auth: Sending password reset', { email });
+    
+    if (!email || !email.includes('@')) {
+      const error: any = new Error('Invalid email format');
+      error.code = 'auth/invalid-email';
+      throw error;
+    }
+    
+    console.log('✅ Mock Auth: Password reset email sent');
+    return Promise.resolve();
+  },
 };
 
 const mockDb = {
-  collection: () => ({
-    doc: () => ({
-      get: () => Promise.resolve({ exists: false }),
-      set: () => Promise.resolve(),
-      update: () => Promise.resolve(),
+  collection: (collectionPath: string) => ({
+    doc: (docId?: string) => ({
+      get: () => Promise.resolve({ 
+        exists: false,
+        data: () => null,
+        id: docId || 'mock-doc-id'
+      }),
+      set: (data: any) => {
+        console.log(`📝 Mock DB: Set document in ${collectionPath}/${docId}`, data);
+        return Promise.resolve();
+      },
+      update: (data: any) => {
+        console.log(`✏️ Mock DB: Update document in ${collectionPath}/${docId}`, data);
+        return Promise.resolve();
+      },
+      delete: () => {
+        console.log(`🗑️ Mock DB: Delete document in ${collectionPath}/${docId}`);
+        return Promise.resolve();
+      },
     }),
-    add: () => Promise.resolve({ id: 'mock_id' }),
-    where: () => ({
-      get: () => Promise.resolve({ docs: [] })
-    })
+    add: (data: any) => {
+      console.log(`➕ Mock DB: Add document to ${collectionPath}`, data);
+      return Promise.resolve({ id: `mock-${Date.now()}` });
+    },
+    where: (field: string, op: string, value: any) => ({
+      get: () => {
+        console.log(`🔍 Mock DB: Query ${collectionPath} where ${field} ${op} ${value}`);
+        return Promise.resolve({ docs: [], empty: true });
+      }
+    }),
+    get: () => {
+      console.log(`📋 Mock DB: Get all documents from ${collectionPath}`);
+      return Promise.resolve({ docs: [], empty: true });
+    }
   }),
 };
 
@@ -103,10 +227,10 @@ const initializeFirebaseForWeb = () => {
     }
 
     // Initialize services
-    auth = getAuth(app);
-    db = getFirestore(app);
-    functions = getFunctions(app);
-    storage = getStorage(app);
+    auth = getAuth(app!);
+    db = getFirestore(app!);
+    functions = getFunctions(app!);
+    storage = getStorage(app!);
 
     console.info('✅ Firebase initialized successfully');
     console.log('Firebase Auth:', { hasAuth: !!auth, authType: typeof auth });

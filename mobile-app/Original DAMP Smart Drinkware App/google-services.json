@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "309818614427",
+    "firebase_url": "https://damp-smart-drinkware-default-rtdb.firebaseio.com",
+    "project_id": "damp-smart-drinkware",
+    "storage_bucket": "damp-smart-drinkware.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309818614427:android:e86583da5ab9eb93a25c3e",
+        "android_client_info": {
+          "package_name": "com.dampdrink.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309818614427-hp1buem29ukcvrgf6me2iun5fo3mj95h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgNSRDLaMOhzWsp7yZS-VT-8KY0Sah9YU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309818614427-hp1buem29ukcvrgf6me2iun5fo3mj95h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -15,6 +15,8 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ArrowLeft } from 'lucide-react-native';
+import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { VotingService } from '@/lib';
 import type { VotingData, ProductVote } from '@/services/voting-service';
@@ -183,6 +185,22 @@ export default function VotingScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Header with Back Button */}
+      <View style={styles.navigationHeader}>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+          accessible
+          accessibilityLabel="Go back"
+          accessibilityHint="Return to previous screen"
+        >
+          <ArrowLeft size={24} color="#0277BD" />
+          <Text style={styles.backButtonText}>Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Product Voting</Text>
+        <View style={styles.headerSpacer} />
+      </View>
+
       <ScrollView
         style={styles.scrollView}
         refreshControl={
@@ -244,6 +262,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
+  },
+  navigationHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E1F5FE',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    minWidth: 80,
+    minHeight: 44, // WCAG tap target
+  },
+  backButtonText: {
+    fontSize: 16,
+    fontFamily: 'Inter-Medium',
+    color: '#0277BD',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontFamily: 'Inter-SemiBold',
+    color: '#0277BD',
+    flex: 1,
+    textAlign: 'center',
+  },
+  headerSpacer: {
+    width: 80, // Balance the back button
   },
   scrollView: {
     flex: 1,

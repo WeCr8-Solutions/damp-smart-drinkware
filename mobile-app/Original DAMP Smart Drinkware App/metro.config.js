@@ -16,6 +16,9 @@ config.projectRoot = projectRoot;
 config.resolver.blockList = [
   // Ignore parent project files
   /^(?!.*node_modules).*\/\.\.\/\.\.\/.*/,
+  // Ignore ALL .netlify directories (prevent Haste collision)
+  /.*\.netlify.*/,
+  /.*netlify.*/,
   // Ignore website directory
   new RegExp(`${workspaceRoot}/website/.*`),
   // Ignore root node_modules (use mobile app's node_modules only)

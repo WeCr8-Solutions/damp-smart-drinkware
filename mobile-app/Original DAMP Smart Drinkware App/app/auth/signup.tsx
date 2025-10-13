@@ -11,8 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, Link } from 'expo-router';
 import { Droplets, Mail, Lock, Eye, EyeOff, CircleAlert as AlertCircle, CircleCheck as CheckCircle } from 'lucide-react-native';
-import { auth } from '@/firebase/config';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/services/auth';
 
 export default function SignupScreen() {
   const [email, setEmail] = useState('');
@@ -53,8 +52,8 @@ export default function SignupScreen() {
     setSuccess('');
 
     try {
-      console.log('📝 Attempting account creation...', { email: email.trim(), hasAuth: !!auth });
-      const userCredential = await createUserWithEmailAndPassword(auth, email.trim(), password);
+      console.log('📝 Attempting account creation...', { email: email.trim() });
+      const userCredential = await auth.signUpWithEmail(email.trim(), password);
       console.log('✅ Account created successfully!', userCredential.user.email);
       setSuccess('Account created successfully! Redirecting...');
       setTimeout(() => {
@@ -84,6 +83,7 @@ export default function SignupScreen() {
       setLoading(false);
     }
   };
+
 
   return (
     <LinearGradient

@@ -72,11 +72,12 @@ export default function HomeScreen() {
     loadUserData();
 
     // Listen for auth state changes
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user: any) => {
       if (user) {
         loadUserData();
       }
     });
+
 
     return () => {
       unsubscribe();
@@ -135,8 +136,12 @@ export default function HomeScreen() {
       colors={['#E0F7FF', '#F8FCFF']}
       style={styles.container}
     >
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right', 'bottom']}>
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Header */}
           <View style={styles.header}>
             <View>
@@ -275,7 +280,10 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  scrollContent: {
     paddingHorizontal: 20,
+    paddingBottom: 20, // Space above tab bar
   },
   header: {
     flexDirection: 'row',

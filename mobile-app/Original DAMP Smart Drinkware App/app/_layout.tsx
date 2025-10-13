@@ -92,18 +92,18 @@ export default function RootLayout() {
     <AuthProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
+          <StatusBar style="dark" />
           <Stack screenOptions={{ headerShown: false }}>
             {user ? (
               <>
                 <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="subscription" />
+                <Stack.Screen name="account" />
               </>
             ) : (
               <Stack.Screen name="auth" />
             )}
             <Stack.Screen name="+not-found" />
           </Stack>
-          <StatusBar style="dark" />
         </SafeAreaProvider>
       </GestureHandlerRootView>
     </AuthProvider>

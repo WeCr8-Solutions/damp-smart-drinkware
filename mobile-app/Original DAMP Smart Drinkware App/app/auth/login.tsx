@@ -11,8 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, Link } from 'expo-router';
 import { Droplets, Mail, Lock, Eye, EyeOff, CircleAlert as AlertCircle } from 'lucide-react-native';
-import { auth } from '@/firebase/config';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/services/auth';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -31,8 +30,8 @@ export default function LoginScreen() {
     setError('');
 
     try {
-      console.log('🔐 Attempting sign in...', { email: email.trim(), hasAuth: !!auth });
-      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      console.log('🔐 Attempting sign in...', { email: email.trim() });
+      const userCredential = await auth.signInWithEmail(email.trim(), password);
       console.log('✅ Sign in successful!', userCredential.user.email);
       router.replace('/(tabs)');
     } catch (err: any) {
@@ -59,6 +58,7 @@ export default function LoginScreen() {
       setLoading(false);
     }
   };
+
 
   return (
     <LinearGradient

@@ -39,8 +39,12 @@ export default function ZonesScreen() {
   const loadZones = () => {
     setLoading(true);
     try {
-      const userZones = user ? zoneManager.getUserZones(user.id) : [];
-      setZones(userZones);
+      if (user && user.uid) {
+        const userZones = zoneManager.getUserZones(user.uid);
+        setZones(userZones);
+      } else {
+        setZones([]);
+      }
     } catch (error) {
       Alert.alert('Error', 'Failed to load zones');
     } finally {
@@ -130,7 +134,7 @@ export default function ZonesScreen() {
           onPress: async () => {
             if (!user) return;
 
-            const result = await zoneManager.deleteZone(zone.id, user.id);
+            const result = await zoneManager.deleteZone(zone.id, user.uid);
             if (result.success) {
               loadZones();
               Alert.alert('Success', 'Zone deleted successfully');
@@ -158,7 +162,7 @@ export default function ZonesScreen() {
       colors={['#E0F7FF', '#F8FCFF']}
       style={styles.container}
     >
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right', 'bottom']}>
         {/* Header */}
         <View style={styles.header}>
           <View>
@@ -173,7 +177,11 @@ export default function ZonesScreen() {
           </TouchableOpacity>
         </View>
 
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Quick Stats */}
           <View style={styles.statsContainer}>
             <View style={styles.statCard}>
@@ -393,7 +401,10 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  scrollContent: {
     paddingHorizontal: 20,
+    paddingBottom: 20, // Space above tab bar
   },
   statsContainer: {
     flexDirection: 'row',

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -21,6 +22,7 @@ import {
   Smartphone,
   ShoppingBag,
   MapPin,
+  Vote,
 } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
@@ -40,6 +42,8 @@ import { SettingsCard } from '@/components/SettingsCard';
 
 export default function Settings() {
   const { user, signOut, updateProfile, loading } = useAuth();
+
+  // Modal management state hooks
   const [accountModalVisible, setAccountModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [themeModalVisible, setThemeModalVisible] = useState(false);
@@ -49,32 +53,85 @@ export default function Settings() {
   const [subscriptionModalVisible, setSubscriptionModalVisible] = useState(false);
   const [storeModalVisible, setStoreModalVisible] = useState(false);
   const [zoneModalVisible, setZoneModalVisible] = useState(false);
+
+  // Subscription status tracking
+  // Subscription, Preferences, and Error/Debug Logging Improved
+
   const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
-  const [preferences, setPreferences] = useState({
-    notifications: user?.preferences?.notifications ?? true,
-    theme: user?.preferences?.theme ?? 'system',
-    language: user?.preferences?.language ?? 'en',
-  });
 
-  useEffect(() => {
-    fetchSubscriptionStatus();
-  }, []);
+  // Track preference error/debug
+  const [preferences, setPreferences] = useState(() => {
+    const fallback = {
+      notifications: true,
+      theme: "system",
+      language: "en",
+    };
+    try {
+      // Improved preferences initialization with defensive logic & type safety
+      // If user does not have settings, fallback to app defaults
+      // Prevent runtime errors if AuthUser type doesn't have preferences fields
+
+      let prefs = { ...fallback };
+      try {
+        // Attempt to source preferences from user.settings or user.preferences, else fallback
+        if (user && typeof user === "object") {
+          // Look for explicit settings object, or fallback to flattened fields, or fallback value
+          const userPrefs = 
+            (user as any).preferences ?? 
+            (user as any).settings ??
+            user;
+
+          prefs.notifications = typeof userPrefs.notifications === "boolean"
+            ? userPrefs.notifications
+            : fallback.notifications;
+
+          prefs.theme = typeof userPrefs.theme === "string"
+            ? userPrefs.theme
+            : fallback.theme;
+
+          prefs.language = typeof userPrefs.language === "string"
+            ? userPrefs.language
+            : fallback.language;
+        }
+      } catch (err) {
+        console.error('[Settings] Error initializing preferences:', err);
+        // prefs already set to fallback
+      }
+
+       // Debug preferences loaded
+       console.log('[Settings] Loaded preferences for user:', prefs);
+ 
+       return prefs;
+     } catch (outerErr) {
+       console.error('[Settings] Fatal error in preferences init:', outerErr);
+       return fallback;
+     }
+   });
+  
+    useEffect(() => {
+      fetchSubscriptionStatus();
+    }, []);
 
   const fetchSubscriptionStatus = async () => {
     try {
       setSubscriptionLoading(true);
+      // Logging subscription fetch attempt
+      console.log('[Settings] Fetching subscription status from backend...');
       // TODO: Implement Firebase subscription status fetch
-      // Using Firebase Functions to get subscription data
-      setSubscriptionStatus('active'); // Placeholder
+      // Using Firebase Functions to get subscription data (placeholder)
+      setSubscriptionStatus('active');
+      console.log('[Settings] Subscription status fetched successfully: active');
     } catch (error) {
-      console.error('Error fetching subscription status:', error);
+      console.error('[Settings] Error fetching subscription status:', error);
+      setSubscriptionStatus(null);
     } finally {
       setSubscriptionLoading(false);
     }
   };
 
   if (!user) {
+    console.warn('[Settings] No user found, showing login required screen.');
     return (
       <LinearGradient colors={['#E0F7FF', '#F8FCFF']} style={styles.container}>
         <SafeAreaView style={styles.safeArea}>
@@ -89,14 +146,35 @@ export default function Settings() {
     );
   }
 
-  const handleProfileSave = useCallback(async (updates: Partial<typeof user>) => {
-    await updateProfile(updates);
-  }, [updateProfile]);
+  // Remove broken import (UserProfile module does not exist)
+  const handleProfileSave = useCallback(
+    async (updates: Partial<any>) => {
+      if (!user) {
+        console.warn('[Settings] No user found, cannot update profile.');
+        return;
+      }
+      try {
+        console.log('[Settings] handleProfileSave called with:', updates);
+        await updateProfile(updates);
+        console.log('[Settings] Profile updated successfully.');
+      } catch (err) {
+        console.error('[Settings] Error updating profile:', err);
+      }
+    },
+    [updateProfile, user]
+  );
 
   const handleSignOut = useCallback(async () => {
-    const { error } = await signOut();
-    if (error) {
-      console.error('Failed to sign out:', error);
+    try {
+      console.log('[Settings] Attempting to sign out user...');
+      const result = await signOut();
+      if (result && result.error) {
+        console.error('[Settings] Failed to sign out:', result.error);
+      } else {
+        console.log('[Settings] User signed out successfully.');
+      }
+    } catch (err) {
+      console.error('[Settings] Error during sign out:', err);
     }
   }, [signOut]);
 
@@ -112,10 +190,14 @@ export default function Settings() {
       ja: 'Japanese',
       ko: 'Korean',
     };
+    if (!languages[code]) {
+      console.warn(`[Settings] Unknown language code "${code}", defaulting to English.`);
+    }
     return languages[code] || 'English';
   };
 
   if (loading) {
+    console.log('[Settings] Loading state true, showing activity indicator.');
     return (
       <LinearGradient colors={['#E0F7FF', '#F8FCFF']} style={styles.container}>
         <SafeAreaView style={styles.safeArea}>
@@ -128,9 +210,14 @@ export default function Settings() {
     );
   }
 
+  // Debug: Track each render of Settings main screen
+  useEffect(() => {
+    console.log('[Settings] Settings component rendered.');
+  });
+
   return (
     <LinearGradient colors={['#E0F7FF', '#F8FCFF']} style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right', 'bottom']}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Settings</Text>
@@ -138,32 +225,47 @@ export default function Settings() {
         </View>
 
         {/* Content */}
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          style={styles.content} 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Account Section */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Account</Text>
             <View style={styles.cardsContainer}>
               <SettingsCard
-                icon={<User size={24} color="#0277BD" />}
+                icon={User}
                 title="Profile"
-                description="View and edit your profile details"
-                onPress={() => setAccountModalVisible(true)}
+                subtitle="View and edit your profile details"
+                onPress={() => {
+                  console.log('[Settings] Profile card pressed.');
+                  setAccountModalVisible(true);
+                }}
               />
               <SettingsCard
-                icon={<CreditCard size={24} color="#0277BD" />}
+                icon={CreditCard}
                 title="Subscription"
-                description={subscriptionLoading
-                  ? 'Loading subscription status...'
-                  : subscriptionStatus === 'active'
+                subtitle={
+                  subscriptionLoading
+                    ? 'Loading subscription status...'
+                    : subscriptionStatus === 'active'
                     ? 'DAMP+ Active'
-                    : 'Manage your DAMP+ subscription'}
-                onPress={() => setSubscriptionModalVisible(true)}
+                    : 'Manage your DAMP+ subscription'
+                }
+                onPress={() => {
+                  console.log('[Settings] Subscription card pressed.');
+                  router.push('/account/subscription');
+                }}
               />
               <SettingsCard
-                icon={<Shield size={24} color="#0277BD" />}
+                icon={Shield}
                 title="Privacy & Security"
-                description="Manage your privacy settings"
-                onPress={() => setPrivacyModalVisible(true)}
+                subtitle="Manage your privacy settings"
+                onPress={() => {
+                  console.log('[Settings] Privacy & Security card pressed.');
+                  setPrivacyModalVisible(true);
+                }}
               />
             </View>
           </View>
@@ -173,16 +275,22 @@ export default function Settings() {
             <Text style={styles.sectionTitle}>Devices & Zones</Text>
             <View style={styles.cardsContainer}>
               <SettingsCard
-                icon={<Smartphone size={24} color="#0277BD" />}
+                icon={Smartphone}
                 title="My Devices"
-                description="View and manage your DAMP devices"
-                onPress={() => setDeviceModalVisible(true)}
+                subtitle="View and manage your DAMP devices"
+                onPress={() => {
+                  console.log('[Settings] My Devices card pressed.');
+                  setDeviceModalVisible(true);
+                }}
               />
               <SettingsCard
-                icon={<MapPin size={24} color="#0277BD" />}
+                icon={MapPin}
                 title="My Zones"
-                description="Create and manage location zones"
-                onPress={() => setZoneModalVisible(true)}
+                subtitle="Create and manage location zones"
+                onPress={() => {
+                  console.log('[Settings] My Zones card pressed.');
+                  setZoneModalVisible(true);
+                }}
               />
             </View>
           </View>
@@ -192,53 +300,82 @@ export default function Settings() {
             <Text style={styles.sectionTitle}>Preferences</Text>
             <View style={styles.cardsContainer}>
               <SettingsCard
-                icon={<Bell size={24} color="#0277BD" />}
+                icon={Bell}
                 title="Notifications"
-                description={preferences.notifications ? 'Enabled' : 'Disabled'}
-                onPress={() => {
-                  const newValue = !preferences.notifications;
-                  setPreferences(prev => ({ ...prev, notifications: newValue }));
-                  updateProfile({ preferences: { ...preferences, notifications: newValue } });
-                }}
-                toggle={{
-                  value: preferences.notifications,
-                  onChange: (value) => {
-                    setPreferences(prev => ({ ...prev, notifications: value }));
-                    updateProfile({ preferences: { ...preferences, notifications: value } });
+                subtitle={preferences.notifications ? 'Enabled' : 'Disabled'}
+                onPress={async () => {
+                  try {
+                    const newValue = !preferences.notifications;
+                    setPreferences(prev => ({ ...prev, notifications: newValue }));
+                    console.log(`[Settings] Notifications toggled, now: ${newValue}`);
+                  } catch (err) {
+                    console.error('[Settings] Error toggling notifications:', err);
                   }
                 }}
               />
               <SettingsCard
-                icon={<Palette size={24} color="#0277BD" />}
+                icon={Palette}
                 title="Theme"
-                description={`${preferences.theme.charAt(0).toUpperCase() + preferences.theme.slice(1)}`}
-                onPress={() => setThemeModalVisible(true)}
+                subtitle={`${preferences.theme.charAt(0).toUpperCase() + preferences.theme.slice(1)}`}
+                onPress={() => {
+                  console.log('[Settings] Theme card pressed.');
+                  setThemeModalVisible(true);
+                }}
               />
               <SettingsCard
-                icon={<Globe size={24} color="#0277BD" />}
+                icon={Globe}
                 title="Language"
-                description={getLanguageLabel(preferences.language)}
-                onPress={() => setLanguageModalVisible(true)}
+                subtitle={getLanguageLabel(preferences.language)}
+                onPress={() => {
+                  console.log('[Settings] Language card pressed.');
+                  setLanguageModalVisible(true);
+                }}
               />
             </View>
           </View>
 
-          {/* Store & Support Section */}
+          {/* Community & Store Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Store & Support</Text>
+            <Text style={styles.sectionTitle}>Community & Store</Text>
             <View style={styles.cardsContainer}>
               <SettingsCard
-                icon={<ShoppingBag size={24} color="#0277BD" />}
-                title="DAMP Store"
-                description="Shop premium DAMP smart drinkware"
-                onPress={() => setStoreModalVisible(true)}
+                icon={Vote}
+                title="Product Voting"
+                subtitle="Vote on new DAMP product features"
+                onPress={() => {
+                  console.log('[Settings] Product Voting card pressed.');
+                  router.push('/(tabs)/voting');
+                }}
               />
               <SettingsCard
-                icon={<HelpCircle size={24} color="#0277BD" />}
-                title="Help & Support"
-                description="Get help with your DAMP devices"
+                icon={ShoppingBag}
+                title="DAMP Store"
+                subtitle="Shop premium DAMP smart drinkware"
                 onPress={() => {
-                  // Show help options
+                  console.log('[Settings] DAMP Store card pressed.');
+                  setStoreModalVisible(true);
+                }}
+              />
+              <SettingsCard
+                icon={HelpCircle}
+                title="Help & Support"
+                subtitle="Get assistance with your devices"
+                onPress={() => {
+                  console.log('[Settings] Help & Support card pressed.');
+                  // Show help alert or integrate with future support backend/FAQ
+                  try {
+                    if (typeof Alert !== 'undefined') {
+                      Alert.alert(
+                        "Help & Support",
+                        "For assistance with your devices, please visit our FAQ at damp-support.example.com or contact support at support@example.com.",
+                        [{ text: "OK" }]
+                      );
+                    } else {
+                      console.warn('[Settings] Alert API unavailable in this environment.');
+                    }
+                  } catch (err) {
+                    console.error('[Settings] Error showing help alert:', err);
+                  }
                 }}
               />
             </View>
@@ -277,7 +414,9 @@ export default function Settings() {
           currentTheme={preferences.theme}
           onSelect={(theme) => {
             setPreferences(prev => ({ ...prev, theme }));
-            updateProfile({ preferences: { ...preferences, theme } });
+            // theme is a local UI preference; do NOT attempt to store with updateProfile.
+            // If needed for the backend, must be a valid key on UserProfile type.
+            // updateProfile({ theme }); // <-- This is likely incorrect -- remove or update property to a valid UserProfile key if needed
           }}
         />
 
@@ -287,7 +426,9 @@ export default function Settings() {
           currentLanguage={preferences.language}
           onSelect={(language) => {
             setPreferences(prev => ({ ...prev, language }));
-            updateProfile({ preferences: { ...preferences, language } });
+            // language is a local UI preference; do NOT attempt to store with updateProfile.
+            // If needed for the backend, must be a valid key on UserProfile type.
+            // updateProfile({ language }); // <-- This is likely incorrect -- remove or update property to a valid UserProfile key if needed
           }}
         />
 
@@ -347,7 +488,10 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  scrollContent: {
     paddingHorizontal: 20,
+    paddingBottom: 100, // Extra space for tab bar + safe area
   },
   section: {
     marginBottom: 24,

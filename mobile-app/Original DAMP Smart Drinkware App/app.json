@@ -78,7 +78,8 @@
       "expo-router",
       "expo-font",
       "expo-web-browser",
-      "react-native-ble-plx"
+      "react-native-ble-plx",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true

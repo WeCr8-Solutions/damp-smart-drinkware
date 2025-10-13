@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Switch } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Bluetooth, Plus, Users } from 'lucide-react-native';
+import { Bluetooth, Plus, Users, ArrowLeft } from 'lucide-react-native';
+import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import DeviceList from '@/components/DeviceList';
 // Sample data initialization removed - using Firebase instead
@@ -13,10 +14,9 @@ export default function DevicesScreen() {
   const [subscriptionActive] = useState(true); // This would come from subscription context
 
   // Initialize sample data on first load
+  // Removed call to undefined function 'initializeWithSampleData'
   useEffect(() => {
-    if (user) {
-      initializeWithSampleData(true);
-    }
+    // You could perform any initialization related to the user here if needed
   }, [user]);
 
   const handleScanDevices = () => {
@@ -41,6 +41,20 @@ export default function DevicesScreen() {
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
+        {/* Navigation Header */}
+        <View style={styles.navigationHeader}>
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={styles.backButton}
+            accessible
+            accessibilityLabel="Go back"
+            accessibilityHint="Return to home screen"
+          >
+            <ArrowLeft size={24} color="#0277BD" />
+            <Text style={styles.backButtonText}>Back</Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.header}>
           <Text style={styles.title}>My Devices</Text>
           <TouchableOpacity
@@ -115,6 +129,28 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
+  },
+  navigationHeader: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E1F5FE',
+    backgroundColor: 'transparent',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    minHeight: 44, // WCAG tap target
+  },
+  backButtonText: {
+    fontSize: 16,
+    fontFamily: 'Inter-Medium',
+    color: '#0277BD',
   },
   header: {
     flexDirection: 'row',

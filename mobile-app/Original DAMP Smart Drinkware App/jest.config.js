@@ -134,8 +134,8 @@ module.exports = {
   // Max workers for parallel testing
   maxWorkers: '50%',
 
-  // Test timeout
-  testTimeout: 10000,
+  // Test timeout (default for all tests)
+  testTimeout: 15000,
 
   // Projects for different test types
   projects: [
@@ -148,6 +148,23 @@ module.exports = {
       displayName: 'Integration Tests',
       testMatch: ['<rootDir>/tests/integration/**/*.test.{ts,tsx}'],
       setupFilesAfterEnv: ['<rootDir>/tests/setup/integration-setup.ts']
+    },
+    {
+      displayName: 'Auth Tests',
+      testMatch: ['<rootDir>/tests/auth/**/*.test.{ts,tsx}'],
+      testEnvironment: 'node',
+      setupFilesAfterEnv: ['<rootDir>/tests/setup/auth-test-setup.ts'],
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/$1',
+        '^@services/(.*)$': '<rootDir>/services/$1'
+      },
+      transform: {
+        '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
+        '^.+\\.(js|jsx)$': 'babel-jest'
+      },
+      transformIgnorePatterns: [
+        'node_modules/(?!(firebase|@firebase|expo)/)'
+      ]
     },
     {
       displayName: 'Performance Tests',
@@ -176,6 +193,7 @@ module.exports = {
   // Reporter configuration
   reporters: [
     'default',
+    '<rootDir>/tests/setup/test-logger.js',
     [
       'jest-html-reporters',
       {

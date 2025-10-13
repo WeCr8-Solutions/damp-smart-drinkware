@@ -33,7 +33,9 @@
     "env:help": "echo '🔐 Environment Management Commands:' && echo '  env:secure - Secure existing .env files' && echo '  env:generate-keys - Generate secure random keys' && echo '  env:validate - Validate environment setup' && echo '  env:setup - Complete environment setup (secure + generate)'",
     "validate-env": "node scripts/validate-environment.js",
     "security-check": "npm run scan-secrets && npm run validate-env",
-    "security:full": "npm run env:secure:preview && npm run scan-secrets && npm run env:validate"
+    "security:full": "npm run env:secure:preview && npm run scan-secrets && npm run env:validate",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
   },
   "lint-staged": {
     "*": [
@@ -92,6 +94,8 @@
     "react-native": "^0.72.6",
     "react-native-web": "^0.19.6",
     "stripe": "^19.1.0",
-    "typescript": "^5.1.3"
+    "typescript": "^5.1.3",
+    "expo-splash-screen": "~0.20.5",
+    "expo-status-bar": "~1.6.0"
   }
 }
