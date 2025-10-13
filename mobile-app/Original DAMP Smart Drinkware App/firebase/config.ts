@@ -1,5 +1,12 @@
 import { FeatureFlags } from '@/config/feature-flags';
 
+// Import Firebase modules statically (required for Expo)
+import { initializeApp, getApps } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getFunctions } from 'firebase/functions';
+import { getStorage } from 'firebase/storage';
+
 // Simple Firebase configuration without complex imports
 // Mock implementations for when Firebase is disabled or fails
 const mockAuth = {
@@ -47,13 +54,6 @@ let auth: any = mockAuth;
 let db: any = mockDb;
 let functions: any = mockFunctions;
 let storage: any = mockStorage;
-
-// Import Firebase modules statically (required for Expo)
-import { initializeApp, getApps } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getFunctions } from 'firebase/functions';
-import { getStorage } from 'firebase/storage';
 
 // Simple Firebase initialization for web
 const initializeFirebaseForWeb = () => {
