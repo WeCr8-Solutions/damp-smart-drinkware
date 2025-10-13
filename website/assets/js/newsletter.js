@@ -133,20 +133,50 @@ class DAMPNewsletter {
     }
 
     async submitSubscription(email, preferences) {
-        if (window.firebaseServices?.emailService) {
-            // Use Firebase email service
-            const result = await window.firebaseServices.emailService.subscribeToNewsletter(email, {
-                ...preferences,
-                source: 'homepage_newsletter',
-                tags: ['homepage_subscriber', 'early_adopter']
+        // PRIMARY: Use Netlify function for persistent storage
+        try {
+            console.log('📧 Submitting to Netlify email storage...');
+            
+            const response = await fetch('/.netlify/functions/save-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    source: 'newsletter',
+                    name: '', // Can be extended with name field if added to form
+                    preferences: preferences
+                })
             });
 
-            console.log('✅ Newsletter subscription successful:', result);
-            return result;
-        } else {
-            // Fallback: Store in localStorage and show success
-            console.warn('⚠️ Firebase not available - using fallback storage');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
 
+            const data = await response.json();
+            console.log('✅ Newsletter subscription saved to Netlify:', data);
+            
+            // OPTIONAL: Also try Firebase if available
+            if (window.firebaseServices?.emailService) {
+                try {
+                    await window.firebaseServices.emailService.subscribeToNewsletter(email, {
+                        ...preferences,
+                        source: 'homepage_newsletter',
+                        tags: ['homepage_subscriber', 'early_adopter']
+                    });
+                    console.log('✅ Also saved to Firebase');
+                } catch (fbError) {
+                    console.warn('⚠️ Firebase save failed (non-critical):', fbError.message);
+                }
+            }
+
+            return { id: data.count, action: 'subscribed', count: data.count };
+
+        } catch (netlifyError) {
+            console.warn('⚠️ Netlify function not available, using localStorage fallback:', netlifyError);
+
+            // Fallback: Store in localStorage
             const subscriptionData = {
                 email,
                 preferences,
@@ -154,7 +184,6 @@ class DAMPNewsletter {
                 source: 'homepage_newsletter_fallback'
             };
 
-            // Store in localStorage for later sync
             const existingSubscriptions = JSON.parse(localStorage.getItem('damp_newsletter_fallback') || '[]');
             existingSubscriptions.push(subscriptionData);
             localStorage.setItem('damp_newsletter_fallback', JSON.stringify(existingSubscriptions));
