@@ -2174,9 +2174,19 @@
                 try {
                     console.log('📧 Newsletter signup:', email);
                     
-                    // TODO: Integrate with your email service (Mailchimp, SendGrid, etc.)
-                    // For now, we'll simulate success
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    // Save to Netlify Blob storage
+                    const response = await fetch('/.netlify/functions/save-email', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: email,
+                            source: 'presale_newsletter',
+                            name: ''
+                        })
+                    });
+
+                    const result = await response.json();
+                    console.log('✅ Newsletter saved to Netlify:', result);
                     
                     // Success feedback
                     newsletterSubmit.textContent = '✅ Subscribed!';
@@ -2197,7 +2207,7 @@
                 } catch (error) {
                     console.error('❌ Newsletter signup error:', error);
                     newsletterSubmit.textContent = '❌ Error';
-                    alert('⚠️ There was an error subscribing. Please try again or email us directly at support@dampdrink.com');
+                    alert('⚠️ There was an error subscribing. Please try again or email us directly at zach@wecr8.info');
                     
                     // Reset button after 2 seconds
                     setTimeout(() => {
