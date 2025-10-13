@@ -31,10 +31,30 @@ export default function LoginScreen() {
     setError('');
 
     try {
-      await signInWithEmailAndPassword(auth, email.trim(), password);
+      console.log('🔐 Attempting sign in...', { email: email.trim(), hasAuth: !!auth });
+      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      console.log('✅ Sign in successful!', userCredential.user.email);
       router.replace('/(tabs)');
-    } catch (err) {
-      setError('An unexpected error occurred');
+    } catch (err: any) {
+      console.error('❌ Sign in error:', err);
+      console.error('Error code:', err.code);
+      console.error('Error message:', err.message);
+      
+      // Show specific error messages
+      let errorMessage = 'An unexpected error occurred';
+      if (err.code === 'auth/invalid-email') {
+        errorMessage = 'Invalid email address format';
+      } else if (err.code === 'auth/user-not-found') {
+        errorMessage = 'No account found with this email';
+      } else if (err.code === 'auth/wrong-password') {
+        errorMessage = 'Incorrect password';
+      } else if (err.code === 'auth/too-many-requests') {
+        errorMessage = 'Too many failed attempts. Please try again later';
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -53,13 +53,33 @@ export default function SignupScreen() {
     setSuccess('');
 
     try {
-      await createUserWithEmailAndPassword(auth, email.trim(), password);
+      console.log('📝 Attempting account creation...', { email: email.trim(), hasAuth: !!auth });
+      const userCredential = await createUserWithEmailAndPassword(auth, email.trim(), password);
+      console.log('✅ Account created successfully!', userCredential.user.email);
       setSuccess('Account created successfully! Redirecting...');
       setTimeout(() => {
         router.replace('/(tabs)');
       }, 1500);
-    } catch (err) {
-      setError('An unexpected error occurred');
+    } catch (err: any) {
+      console.error('❌ Signup error:', err);
+      console.error('Error code:', err.code);
+      console.error('Error message:', err.message);
+      
+      // Show specific error messages
+      let errorMessage = 'An unexpected error occurred';
+      if (err.code === 'auth/email-already-in-use') {
+        errorMessage = 'This email is already registered. Try signing in instead.';
+      } else if (err.code === 'auth/invalid-email') {
+        errorMessage = 'Invalid email address format';
+      } else if (err.code === 'auth/weak-password') {
+        errorMessage = 'Password is too weak. Use at least 6 characters.';
+      } else if (err.code === 'auth/operation-not-allowed') {
+        errorMessage = 'Email/password sign-up is not enabled. Contact support.';
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
