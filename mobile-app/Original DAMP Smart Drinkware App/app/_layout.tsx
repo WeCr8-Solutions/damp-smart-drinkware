@@ -93,7 +93,7 @@ export default function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
           <Stack screenOptions={{ headerShown: false }}>
-            {session ? (
+            {user ? (
               <>
                 <Stack.Screen name="(tabs)" />
                 <Stack.Screen name="subscription" />

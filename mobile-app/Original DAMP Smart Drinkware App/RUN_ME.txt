@@ -1,0 +1,40 @@
+═══════════════════════════════════════════════════════════
+  DAMP MOBILE APP - COPY AND PASTE THESE COMMANDS
+═══════════════════════════════════════════════════════════
+
+1. NAVIGATE TO MOBILE APP DIRECTORY:
+
+cd "C:\Users\Zach\Documents\Projects\damp-smart-drinkware\mobile-app\Original DAMP Smart Drinkware App"
+
+
+2. VERIFY YOU'RE IN THE RIGHT PLACE:
+
+ls app.json
+
+
+3. START EXPO FOR ANDROID:
+
+npx expo start --android
+
+
+═══════════════════════════════════════════════════════════
+
+IMPORTANT: You MUST see this in the output:
+
+✅ Starting project at ...mobile-app\Original DAMP Smart Drinkware App
+
+If you see:
+❌ Starting project at C:\Users\Zach\Documents\Projects\damp-smart-drinkware
+
+Then you're in the WRONG directory!
+
+═══════════════════════════════════════════════════════════
+
+ALTERNATIVE: Double-click this file in File Explorer:
+
+mobile-app\Original DAMP Smart Drinkware App\START_ANDROID.bat
+
+(Right-click START_ANDROID.bat → Run as Administrator if needed)
+
+═══════════════════════════════════════════════════════════
+
