@@ -53,7 +53,11 @@ exports.handler = async (event, context) => {
             metadata: {
                 ...metadata,
                 timestamp: new Date().toISOString(),
-                source: metadata?.source || 'website'
+                source: metadata?.source || 'website',
+                refund_policy_version: '1.0',
+                expected_delivery: '90-120 days after goal met',
+                refund_eligible: 'true',
+                production_threshold: '500 reservations'
             },
             allow_promotion_codes: true,
             phone_number_collection: {

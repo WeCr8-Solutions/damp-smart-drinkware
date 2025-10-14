@@ -124,7 +124,7 @@ async function sendOrderConfirmationEmail(session) {
         return;
     }
     
-    // Email details
+    // Email details with refund policy information
     const emailData = {
         to: customerEmail,
         subject: `Order Confirmation - DAMP Smart Drinkware (Order #${session.id.substring(0, 12)})`,
@@ -138,7 +138,20 @@ async function sendOrderConfirmationEmail(session) {
         totalAmount: (session.amount_total / 100).toFixed(2),
         currency: session.currency.toUpperCase(),
         items: session.line_items?.data || [],
-        metadata: session.metadata || {}
+        metadata: session.metadata || {},
+        refundPolicy: {
+            fullRefundIf: 'Goal not met or within 30 days before production',
+            processingTime: '5-10 business days',
+            expectedDelivery: '90-120 days after 500 reservations reached',
+            contactEmail: 'support@dampdrink.com',
+            policyUrl: 'https://dampdrink.com/pages/terms.html#refund-policy'
+        },
+        deliveryTimeline: {
+            manufacturing: '30-45 days',
+            qualityTesting: '14-21 days',
+            shipping: '30-45 days',
+            total: '90-120 days after goal met'
+        }
     };
     
     // TODO: Integrate with email service (SendGrid, Postmark, etc.)
