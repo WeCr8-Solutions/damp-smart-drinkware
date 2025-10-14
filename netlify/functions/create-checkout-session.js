@@ -39,7 +39,7 @@ exports.handler = async (event, context) => {
         console.log('📦 Line items:', JSON.stringify(line_items, null, 2));
         console.log('🔐 Using Stripe key:', process.env.STRIPE_SECRET_KEY ? 'SET' : 'NOT SET');
 
-        // Create checkout session
+        // Create checkout session with email receipts enabled
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items,
@@ -48,19 +48,27 @@ exports.handler = async (event, context) => {
             cancel_url,
             billing_address_collection: 'required',
             shipping_address_collection: shipping_address_collection || {
-                allowed_countries: ['US'],
+                allowed_countries: ['US', 'CA', 'GB', 'AU', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'AT', 'CH'],
             },
             metadata: {
                 ...metadata,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                source: metadata?.source || 'website'
             },
             allow_promotion_codes: true,
             phone_number_collection: {
                 enabled: true,
             },
             automatic_tax: {
-                enabled: false, // Set to true if you have Stripe Tax enabled
-            }
+                enabled: false,
+            },
+            // Enable Stripe's automatic email receipts
+            consent_collection: {
+                terms_of_service: 'required'
+            },
+            // Stripe will send receipt automatically to customer_email
+            customer_creation: 'always',
+            // After successful payment, Stripe sends receipt email automatically
         });
 
         console.log('✅ Checkout session created:', session.id);

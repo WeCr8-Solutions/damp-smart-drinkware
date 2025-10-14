@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#00ff88">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <title>Order Confirmed! - DAMP Smart Drinkware</title>
+    <meta name="description" content="Your DAMP order is confirmed! Check your email for receipt and order details.">
+    
+    <link rel="icon" type="image/x-icon" href="../assets/images/logo/favicon.ico">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .success-container {
+            max-width: 700px;
+            width: 100%;
+        }
+        
+        .success-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 50px 40px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 25px;
+            animation: bounce 1.5s ease-in-out 3;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .success-title {
+            font-size: clamp(2.2rem, 5vw, 3rem);
+            font-weight: 900;
+            background: linear-gradient(45deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+        
+        .success-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        .order-details {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .order-details h3 {
+            color: #00ff88;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            text-align: center;
+        }
+        
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .order-row:last-child {
+            border-bottom: none;
+        }
+        
+        .order-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+        }
+        
+        .order-value {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .items-list {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .next-steps {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .next-steps h3 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            text-align: center;
+        }
+        
+        .step-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .step-number {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.05rem;
+        }
+        
+        .step-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            padding: 16px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #00d4ff;
+            border: 2px solid #00d4ff;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+        
+        .email-notice {
+            background: rgba(255, 165, 2, 0.15);
+            border-left: 4px solid #ffa502;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: left;
+        }
+        
+        .email-notice p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .loading {
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .success-card {
+                padding: 40px 25px;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .order-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-card">
+            <div class="success-icon">🎉</div>
+            
+            <h1 class="success-title">Order Confirmed!</h1>
+            
+            <p class="success-subtitle">
+                Thank you for your purchase! Your order has been successfully processed and you'll receive a confirmation email shortly.
+            </p>
+            
+            <!-- Email Confirmation Notice -->
+            <div class="email-notice">
+                <p>
+                    📧 <strong>Check your email!</strong> We've sent your receipt and order confirmation to the email address you provided during checkout.
+                </p>
+            </div>
+            
+            <!-- Order Details -->
+            <div class="order-details" id="orderDetailsSection">
+                <h3>📋 Order Details</h3>
+                
+                <div id="orderLoading" class="loading">
+                    Loading your order details...
+                </div>
+                
+                <div id="orderContent" style="display: none;">
+                    <div class="order-row">
+                        <span class="order-label">Order Number:</span>
+                        <span class="order-value" id="orderNumber">--</span>
+                    </div>
+                    
+                    <div class="order-row">
+                        <span class="order-label">Order Date:</span>
+                        <span class="order-value" id="orderDate">--</span>
+                    </div>
+                    
+                    <div id="itemsList" class="items-list">
+                        <!-- Items will be loaded here -->
+                    </div>
+                    
+                    <div class="order-row" style="font-size: 1.1rem; padding-top: 15px; margin-top: 10px; border-top: 2px solid rgba(0, 255, 136, 0.3);">
+                        <span class="order-label"><strong>Total Paid:</strong></span>
+                        <span class="order-value" style="color: #00ff88; font-size: 1.3rem;" id="totalAmount">--</span>
+                    </div>
+                    
+                    <div class="order-row">
+                        <span class="order-label">Payment Status:</span>
+                        <span class="order-value" style="color: #00ff88;">✓ Paid</span>
+                    </div>
+                    
+                    <div class="order-row">
+                        <span class="order-label">Email Sent To:</span>
+                        <span class="order-value" id="customerEmail">--</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- What's Next -->
+            <div class="next-steps">
+                <h3>🚀 What Happens Next?</h3>
+                
+                <ul class="step-list">
+                    <li class="step-item">
+                        <span class="step-number">1</span>
+                        <div class="step-content">
+                            <div class="step-title">Email Confirmation</div>
+                            <div class="step-text">
+                                Check your inbox for your order receipt with complete purchase details
+                            </div>
+                        </div>
+                    </li>
+                    
+                    <li class="step-item">
+                        <span class="step-number">2</span>
+                        <div class="step-content">
+                            <div class="step-title">Order Processing</div>
+                            <div class="step-text">
+                                Your order enters our fulfillment queue and we'll prepare your DAMP attachment
+                            </div>
+                        </div>
+                    </li>
+                    
+                    <li class="step-item">
+                        <span class="step-number">3</span>
+                        <div class="step-content">
+                            <div class="step-title">Updates & Tracking</div>
+                            <div class="step-text">
+                                We'll send you regular updates about your order status and shipping information
+                            </div>
+                        </div>
+                    </li>
+                    
+                    <li class="step-item">
+                        <span class="step-number">4</span>
+                        <div class="step-content">
+                            <div class="step-title">Delivery</div>
+                            <div class="step-text">
+                                Your DAMP attachment ships directly to you with full tracking details
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Actions -->
+            <div class="actions">
+                <a href="../index.html" class="btn btn-primary">
+                    Back to Home
+                </a>
+                <a href="../pages/support.html" class="btn btn-secondary">
+                    Contact Support
+                </a>
+            </div>
+            
+            <!-- Share -->
+            <div style="margin-top: 50px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; margin-bottom: 15px;">
+                    Love DAMP? Share with friends!
+                </p>
+                <p style="color: #00d4ff; font-size: 1.05rem; font-weight: 600;">
+                    #SmartCupRevolution 💚
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Get session ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        
+        console.log('🎉 Order Success Page - Session ID:', sessionId);
+        
+        async function loadOrderDetails() {
+            const orderLoading = document.getElementById('orderLoading');
+            const orderContent = document.getElementById('orderContent');
+            
+            if (!sessionId) {
+                console.warn('⚠️ No session ID found in URL');
+                showFallbackDetails();
+                return;
+            }
+            
+            try {
+                console.log('📡 Fetching session details from Stripe...');
+                
+                // Call Netlify function to retrieve session details
+                const response = await fetch(`/.netlify/functions/get-checkout-session?session_id=${sessionId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const session = await response.json();
+                console.log('✅ Session details loaded:', session);
+                
+                displayOrderDetails(session);
+                trackPurchase(session);
+                
+            } catch (error) {
+                console.error('❌ Error loading order details:', error);
+                showFallbackDetails();
+            }
+        }
+        
+        function displayOrderDetails(session) {
+            const orderLoading = document.getElementById('orderLoading');
+            const orderContent = document.getElementById('orderContent');
+            
+            orderLoading.style.display = 'none';
+            orderContent.style.display = 'block';
+            
+            // Order number
+            const orderNum = session.id || sessionId;
+            document.getElementById('orderNumber').textContent = orderNum.substring(0, 24) + '...';
+            
+            // Order date
+            const orderDate = session.created ? new Date(session.created * 1000) : new Date();
+            document.getElementById('orderDate').textContent = orderDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // Total amount
+            if (session.amount_total) {
+                document.getElementById('totalAmount').textContent = `$${(session.amount_total / 100).toFixed(2)}`;
+            }
+            
+            // Customer email
+            if (session.customer_details && session.customer_details.email) {
+                document.getElementById('customerEmail').textContent = session.customer_details.email;
+            } else if (session.customer_email) {
+                document.getElementById('customerEmail').textContent = session.customer_email;
+            }
+            
+            // Display line items
+            displayLineItems(session.line_items || []);
+        }
+        
+        function displayLineItems(items) {
+            const itemsList = document.getElementById('itemsList');
+            
+            if (!items || items.length === 0) {
+                itemsList.innerHTML = '<div class="item-row"><span>DAMP Smart Attachment</span><span>$29.99</span></div>';
+                return;
+            }
+            
+            itemsList.innerHTML = items.map(item => `
+                <div class="item-row">
+                    <span>${item.description || item.name || 'DAMP Product'} × ${item.quantity || 1}</span>
+                    <span>$${((item.amount_total || item.price || 0) / 100).toFixed(2)}</span>
+                </div>
+            `).join('');
+        }
+        
+        function showFallbackDetails() {
+            const orderLoading = document.getElementById('orderLoading');
+            const orderContent = document.getElementById('orderContent');
+            
+            orderLoading.style.display = 'none';
+            orderContent.style.display = 'block';
+            
+            document.getElementById('orderNumber').textContent = sessionId ? sessionId.substring(0, 24) + '...' : 'Check your email';
+            document.getElementById('orderDate').textContent = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('totalAmount').textContent = 'See email receipt';
+            document.getElementById('customerEmail').textContent = 'Confirmation sent';
+            
+            // Show generic item
+            document.getElementById('itemsList').innerHTML = `
+                <div class="item-row">
+                    <span>DAMP Smart Attachment</span>
+                    <span>See email</span>
+                </div>
+            `;
+        }
+        
+        function trackPurchase(session) {
+            // Track with Google Analytics
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'purchase', {
+                    transaction_id: session.id,
+                    value: (session.amount_total || 0) / 100,
+                    currency: 'USD',
+                    items: [{
+                        item_id: session.metadata?.product_id || 'damp-attachment',
+                        item_name: 'DAMP Smart Attachment',
+                        price: (session.amount_total || 0) / 100,
+                        quantity: 1
+                    }]
+                });
+                
+                console.log('✅ Purchase tracked in GA4');
+            }
+            
+            // Clear cart after successful purchase
+            try {
+                localStorage.removeItem('dampCart');
+                localStorage.removeItem('dampPreOrderCart');
+                console.log('✅ Cart cleared after purchase');
+            } catch (e) {
+                console.warn('Could not clear cart:', e);
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOrderDetails();
+            
+            // Track page view
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'page_view', {
+                    page_title: 'Order Success',
+                    page_location: window.location.href
+                });
+            }
+        });
+    </script>
+    
+    <!-- Google Analytics (if needed) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YW2BN4SVPQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-YW2BN4SVPQ');
+    </script>
+</body>
+</html>
