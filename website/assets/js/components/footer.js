@@ -27,7 +27,7 @@ class DAMPFooter extends HTMLElement {
                             <h2 style="color: var(--text-primary); font-size: 1.75rem; margin: 0;">DAMP Smart Drinkware</h2>
                         </div>
                         <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6; max-width: 700px; margin: 0 auto;">
-                            Never leave your drink behind with revolutionary BLE technology that keeps you connected to your favorite beverage.
+                            <strong style="color: #00d4ff;">Make any cup smart.</strong> Universal smart drinkware attachments that work with YETI, Stanley, Hydro Flask, and all bottles. Don't replace it—upgrade it.
                         </p>
                     </div>
 
