@@ -156,14 +156,6 @@ const PRODUCTS = {
         preOrderLookupKey: 'DAMP_SLV_V1_pre-order',
         defaultLookupKey: 'DAMP_SLV_V1_default'
     },
-    'baby-bottle': {
-        name: 'DAMP Baby Bottle',
-        price: 7999, // $79.99 in cents
-        originalPrice: 9999,
-        estimatedDelivery: '2026-Q1',
-        preOrderLookupKey: 'DAMP_BBB_V1_pre-order',
-        defaultLookupKey: 'DAMP_BBB_V1_default'
-    }
 };
 
 // Create checkout session for pre-orders

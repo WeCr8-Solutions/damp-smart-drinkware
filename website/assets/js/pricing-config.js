@@ -75,28 +75,6 @@ class DAMPPricingSystem {
                         default: 'DAMP_SLV_V1_default'
                     }
                 },
-                'baby-bottle': {
-                    id: 'baby-bottle',
-                    name: 'DAMP Baby Bottle',
-                    description: 'BPA-free smart baby bottle with monitoring',
-                    image: '/assets/images/optimized/products/baby-bottle/baby-bottle-large.png',
-                    category: 'hardware',
-                    inventory: 300,
-                    pricing: {
-                        base_price: 9999, // $99.99 in cents
-                        pre_order_price: 7999, // $79.99 in cents
-                        cost_price: 4000,
-                        currency: 'USD'
-                    },
-                    delivery: {
-                        pre_order_delivery: 'Q4 2025',
-                        standard_delivery: 'Q1 2026'
-                    },
-                    stripe_keys: {
-                        pre_order: 'DAMP_BBB_V1_pre-order',
-                        default: 'DAMP_BBB_V1_default'
-                    }
-                }
             },
 
             // Pricing tiers and phases
@@ -104,7 +82,7 @@ class DAMPPricingSystem {
                 pre_order: {
                     active: true,
                     start_date: '2025-01-01T00:00:00Z',
-                    end_date: '2025-06-30T23:59:59Z',
+                    end_date: '2026-03-17T23:59:59Z',
                     description: 'Early Bird Pre-Order Pricing',
                     badge: 'Early Bird Special'
                 },
@@ -135,7 +113,7 @@ class DAMPPricingSystem {
                     start_date: '2025-12-01T00:00:00Z',
                     end_date: '2025-12-31T23:59:59Z',
                     description: 'Holiday Special - 15% off orders over $50',
-                    applicable_products: ['damp-handle', 'silicone-bottom', 'cup-sleeve', 'baby-bottle'],
+                    applicable_products: ['damp-handle', 'silicone-bottom', 'cup-sleeve'],
                     usage_limit: 1000,
                     usage_count: 0
                 },
@@ -148,7 +126,7 @@ class DAMPPricingSystem {
                     start_date: '2025-07-01T00:00:00Z',
                     end_date: '2025-07-31T23:59:59Z',
                     description: 'Launch Special - $50 off orders over $100',
-                    applicable_products: ['damp-handle', 'baby-bottle'],
+                    applicable_products: ['damp-handle'],
                     usage_limit: 500,
                     usage_count: 0
                 }
@@ -175,14 +153,14 @@ class DAMPPricingSystem {
                     start_date: '2025-11-29T00:00:00Z',
                     end_date: '2025-11-29T23:59:59Z',
                     discount_percent: 25,
-                    applicable_products: ['damp-handle', 'silicone-bottom', 'cup-sleeve', 'baby-bottle']
+                    applicable_products: ['damp-handle', 'silicone-bottom', 'cup-sleeve']
                 },
                 'CYBER_MONDAY': {
                     active: false,
                     start_date: '2025-12-02T00:00:00Z',
                     end_date: '2025-12-02T23:59:59Z',
                     discount_percent: 30,
-                    applicable_products: ['damp-handle', 'silicone-bottom', 'cup-sleeve', 'baby-bottle']
+                    applicable_products: ['damp-handle', 'silicone-bottom', 'cup-sleeve']
                 }
             },
 
@@ -206,11 +184,11 @@ class DAMPPricingSystem {
                     description: 'Perfect for the whole family',
                     products: [
                         { id: 'damp-handle', quantity: 2 },
-                        { id: 'baby-bottle', quantity: 1 },
-                        { id: 'cup-sleeve', quantity: 1 }
+                        { id: 'cup-sleeve', quantity: 1 },
+                        { id: 'silicone-bottom', quantity: 1 }
                     ],
-                    bundle_price: 14999, // $149.99 instead of $164.97
-                    savings: 1498, // $14.98 savings
+                    bundle_price: 13499, // $134.99 instead of $144.97
+                    savings: 998, // $9.98 savings
                     badge: 'Family Special'
                 }
             },
