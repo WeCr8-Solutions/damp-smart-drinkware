@@ -25,13 +25,18 @@ class DAMPPerformanceMonitor {
             throw new Error('DAMPPerformanceMonitor must be run in a browser environment.');
         }
 
+        // Only enable debug in development (localhost, 127.0.0.1, or dev domains)
+        const isDevelopment = window.location.hostname === 'localhost' || 
+                             window.location.hostname === '127.0.0.1' ||
+                             window.location.hostname.includes('.web.app') === false; // Not production Firebase
+        
         this.options = {
             enableAnalytics: true,
             enableConsoleLogging: true,
             enableBeaconAPI: true,
             sampleRate: 1.0,
             endpoint: '/api/analytics/performance',
-            debug: window.location.hostname === 'localhost' && !window.navigator.userAgent.includes('Playwright'),
+            debug: isDevelopment && !window.navigator.userAgent.includes('Playwright'),
             ...options
         };
 
@@ -586,52 +591,200 @@ class DAMPPerformanceMonitor {
     // Debug Mode
     setupDebugMode() {
         if (typeof document === 'undefined' || typeof window === 'undefined') return;
+        
+        // Check if we're in production - don't show in production
+        const hostname = window.location.hostname;
+        const isProduction = hostname === 'dampdrink.com' || 
+                            hostname === 'www.dampdrink.com' ||
+                            hostname === 'damp-smart-drinkware.web.app' ||
+                            hostname.includes('netlify.app');
+        
+        if (isProduction) {
+            console.log('[DAMP Performance] Debug mode disabled in production');
+            return;
+        }
+        
+        console.log('[DAMP Performance] Debug mode enabled for development');
+        
         // Add debug panel
         const debugPanel = document.createElement('div');
         debugPanel.id = 'damp-debug-panel';
+        
+        // Make it draggable and non-blocking
+        let isDragging = false;
+        let currentX = 0;
+        let currentY = 0;
+        let initialX = 0;
+        let initialY = 0;
+        
+        // Get saved position from localStorage
+        const savedPosition = localStorage.getItem('damp-debug-panel-position');
+        const initialPosition = savedPosition ? JSON.parse(savedPosition) : { top: 10, right: 10 };
+        
         debugPanel.style.cssText = `
             position: fixed;
-            top: 10px;
-            right: 10px;
+            top: ${initialPosition.top}px;
+            right: ${initialPosition.right}px;
             width: 300px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.8);
+            padding: 0;
+            background: rgba(15, 15, 35, 0.95);
             color: white;
             font-family: monospace;
             font-size: 12px;
-            z-index: 10000;
-            border-radius: 5px;
-            max-height: 400px;
-            overflow-y: auto;
+            z-index: 9999;
+            border-radius: 8px;
+            max-height: 500px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            cursor: move;
+            user-select: none;
         `;
 
+        // Add header with close button
+        const header = document.createElement('div');
+        header.style.cssText = `
+            background: rgba(0, 212, 255, 0.2);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+            cursor: move;
+        `;
+        header.innerHTML = `
+            <strong style="color: #00d4ff;">📊 Performance Monitor</strong>
+            <button id="damp-debug-close" style="
+                background: rgba(255, 0, 0, 0.3);
+                border: none;
+                color: white;
+                width: 24px;
+                height: 24px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+                line-height: 1;
+                padding: 0;
+            ">×</button>
+        `;
+        
+        // Content area
+        const content = document.createElement('div');
+        content.id = 'damp-debug-content';
+        content.style.cssText = `
+            padding: 12px;
+            max-height: 450px;
+            overflow-y: auto;
+            font-size: 11px;
+            line-height: 1.6;
+        `;
+        
+        debugPanel.appendChild(header);
+        debugPanel.appendChild(content);
         document.body.appendChild(debugPanel);
+        
+        // Make draggable
+        const makeDraggable = (element) => {
+            const dragStart = (e) => {
+                if (e.target.id === 'damp-debug-close') return; // Don't drag when clicking close
+                
+                initialX = e.clientX || e.touches[0].clientX;
+                initialY = e.clientY || e.touches[0].clientY;
+                
+                const rect = element.getBoundingClientRect();
+                currentX = window.innerWidth - rect.right;
+                currentY = rect.top;
+                
+                isDragging = true;
+                element.style.cursor = 'grabbing';
+                
+                e.preventDefault();
+            };
+            
+            const drag = (e) => {
+                if (!isDragging) return;
+                
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                
+                const deltaX = (e.clientX || e.touches[0].clientX) - initialX;
+                const deltaY = (e.clientY || e.touches[0].clientY) - initialY;
+                
+                const newRight = Math.max(0, Math.min(window.innerWidth - 300, currentX - deltaX));
+                const newTop = Math.max(0, Math.min(window.innerHeight - 100, currentY + deltaY));
+                
+                element.style.right = `${newRight}px`;
+                element.style.top = `${newTop}px`;
+                element.style.left = 'auto';
+                element.style.bottom = 'auto';
+                
+                // Save position
+                localStorage.setItem('damp-debug-panel-position', JSON.stringify({
+                    top: newTop,
+                    right: newRight
+                }));
+            };
+            
+            const dragEnd = () => {
+                isDragging = false;
+                element.style.cursor = 'move';
+            };
+            
+            header.addEventListener('mousedown', dragStart);
+            header.addEventListener('touchstart', dragStart, { passive: false });
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('touchmove', drag, { passive: false });
+            document.addEventListener('mouseup', dragEnd);
+            document.addEventListener('touchend', dragEnd);
+        };
+        
+        makeDraggable(debugPanel);
+        
+        // Close button
+        const closeBtn = document.getElementById('damp-debug-close');
+        closeBtn.addEventListener('click', () => {
+            debugPanel.style.display = 'none';
+            localStorage.setItem('damp-debug-panel-hidden', 'true');
+        });
+        
+        // Check if panel was previously hidden
+        if (localStorage.getItem('damp-debug-panel-hidden') === 'true') {
+            debugPanel.style.display = 'none';
+        }
 
         // Update debug panel
         const updateDebugPanel = () => {
+            const content = document.getElementById('damp-debug-content');
+            if (!content) return;
+            
             const html = `
-                <strong>Performance Metrics</strong><br>
-                LCP: ${this.metrics.LCP?.value ? Math.round(this.metrics.LCP.value) + 'ms' : 'N/A'}<br>
-                FID: ${this.metrics.FID?.value ? Math.round(this.metrics.FID.value) + 'ms' : 'N/A'}<br>
-                CLS: ${this.metrics.CLS?.value ? this.metrics.CLS.value.toFixed(3) : 'N/A'}<br>
-                FCP: ${this.metrics.FCP?.value ? Math.round(this.metrics.FCP.value) + 'ms' : 'N/A'}<br>
-                TTFB: ${this.metrics.TTFB?.value ? Math.round(this.metrics.TTFB.value) + 'ms' : 'N/A'}<br>
-                <br>
-                <strong>User Experience</strong><br>
-                Scroll Depth: ${this.metrics.scrollDepth}%<br>
-                Time on Page: ${this.metrics.timeOnPage}s<br>
-                Visibility Changes: ${this.metrics.visibilityChanges}<br>
-                JS Errors: ${this.metrics.jsErrors.length}<br>
-                <br>
-                <strong>Resources</strong><br>
-                Loaded: ${this.metrics.resources.length}<br>
-                <br>
-                <strong>Device</strong><br>
-                Type: ${this.metrics.deviceType}<br>
-                Connection: ${this.metrics.connectionType?.effectiveType || 'N/A'}<br>
+                <div style="margin-bottom: 10px;">
+                    <strong style="color: #00d4ff;">Performance Metrics</strong><br>
+                    LCP: <span style="color: ${this.metrics.LCP?.value && this.metrics.LCP.value < 2500 ? '#0f0' : '#f00'}">${this.metrics.LCP?.value ? Math.round(this.metrics.LCP.value) + 'ms' : 'N/A'}</span><br>
+                    FID: <span style="color: ${this.metrics.FID?.value && this.metrics.FID.value < 100 ? '#0f0' : '#f00'}">${this.metrics.FID?.value ? Math.round(this.metrics.FID.value) + 'ms' : 'N/A'}</span><br>
+                    CLS: <span style="color: ${this.metrics.CLS?.value && this.metrics.CLS.value < 0.1 ? '#0f0' : '#f00'}">${this.metrics.CLS?.value ? this.metrics.CLS.value.toFixed(3) : 'N/A'}</span><br>
+                    FCP: ${this.metrics.FCP?.value ? Math.round(this.metrics.FCP.value) + 'ms' : 'N/A'}<br>
+                    TTFB: ${this.metrics.TTFB?.value ? Math.round(this.metrics.TTFB.value) + 'ms' : 'N/A'}<br>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <strong style="color: #00d4ff;">User Experience</strong><br>
+                    Scroll Depth: ${this.metrics.scrollDepth}%<br>
+                    Time on Page: ${this.metrics.timeOnPage}s<br>
+                    Visibility Changes: ${this.metrics.visibilityChanges}<br>
+                    JS Errors: <span style="color: ${this.metrics.jsErrors.length > 0 ? '#f00' : '#0f0'}">${this.metrics.jsErrors.length}</span><br>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <strong style="color: #00d4ff;">Resources</strong><br>
+                    Loaded: ${this.metrics.resources.length}<br>
+                </div>
+                <div>
+                    <strong style="color: #00d4ff;">Device</strong><br>
+                    Type: ${this.metrics.deviceType || 'N/A'}<br>
+                    Connection: ${this.metrics.connectionType?.effectiveType || 'N/A'}<br>
+                </div>
             `;
 
-            debugPanel.innerHTML = html;
+            content.innerHTML = html;
         };
 
         setInterval(updateDebugPanel, 1000);
