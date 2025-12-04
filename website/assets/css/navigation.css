@@ -647,19 +647,52 @@ damp-header {
     padding: 0 4px;
 }
 
+/* Quick Actions Container - Side-by-Side Layout */
+.mobile-nav-quick-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 0 12px;
+}
+
+/* Desktop: Side-by-side layout */
+@media (width >= 768px) {
+    .mobile-nav-quick-actions {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+}
+
 /* Mobile Nav Section Container */
 .mobile-nav-section {
     display: flex;
     flex-direction: column;
     gap: 3px;
-    margin-bottom: 10px;
-    padding: 0 12px;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+/* Auth and Featured sections within quick actions */
+.mobile-nav-quick-actions .mobile-nav-section {
+    margin-bottom: 0;
+    padding: 0;
 }
 
 /* Featured section (Get Started) - same styling as regular sections */
 .mobile-nav-section.featured-section {
     gap: 3px;
-    margin-bottom: 10px;
+    margin-bottom: 0;
+    background: rgb(0 212 255 / 3%);
+    border-radius: 8px;
+    border: 1px solid rgb(0 212 255 / 15%);
+    padding: 10px;
+}
+
+/* When inside quick actions container */
+.mobile-nav-quick-actions .mobile-nav-section.featured-section {
+    margin: 0;
+    padding: 10px;
 }
 
 /* ==========================================================================
@@ -1385,7 +1418,13 @@ damp-header {
     background: rgb(0 212 255 / 5%);
     border-radius: 8px;
     border: 1px solid rgb(0 212 255 / 20%);
-    margin: 0 12px 12px;
+    margin: 0;
+    padding: 10px;
+}
+
+/* When inside quick actions container */
+.mobile-nav-quick-actions .mobile-nav-section.auth-section {
+    margin: 0;
     padding: 10px;
 }
 
