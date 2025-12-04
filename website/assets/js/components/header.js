@@ -17,6 +17,7 @@ class DAMPHeader extends HTMLElement {
     connectedCallback() {
         this.detectPageContext();
         this.render();
+        this.logDeviceInfo();
         this.initializeNavigation();
         this.setupSmoothScrolling();
         this.setupAnalytics();
@@ -26,6 +27,90 @@ class DAMPHeader extends HTMLElement {
 
         // Log successful initialization
         this.securityLog('DAMP Navigation initialized successfully');
+    }
+
+    logDeviceInfo() {
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const screenWidth = window.screen.width;
+        const screenHeight = window.screen.height;
+        const devicePixelRatio = window.devicePixelRatio || 1;
+        const userAgent = navigator.userAgent;
+        
+        // Detect device type
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+        const isTablet = /iPad|Android/i.test(userAgent) && viewportWidth >= 768 && viewportWidth < 1024;
+        const isDesktop = viewportWidth >= 1024;
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        
+        const deviceType = isMobile ? 'mobile' : isTablet ? 'tablet' : isDesktop ? 'desktop' : 'unknown';
+        
+        // Get navigation element states
+        const hamburger = this.querySelector('.hamburger');
+        const navLinks = this.querySelector('.nav-links');
+        const mobileMenu = this.querySelector('.mobile-menu');
+        
+        const hamburgerStyle = hamburger ? window.getComputedStyle(hamburger) : null;
+        const navLinksStyle = navLinks ? window.getComputedStyle(navLinks) : null;
+        const mobileMenuStyle = mobileMenu ? window.getComputedStyle(mobileMenu) : null;
+        
+        const deviceInfo = {
+            deviceType,
+            viewport: {
+                width: viewportWidth,
+                height: viewportHeight
+            },
+            screen: {
+                width: screenWidth,
+                height: screenHeight
+            },
+            devicePixelRatio,
+            isMobile,
+            isTablet,
+            isDesktop,
+            isTouchDevice,
+            userAgent: userAgent.substring(0, 100), // Truncate for readability
+            navigation: {
+                hamburger: {
+                    exists: !!hamburger,
+                    display: hamburgerStyle?.display || 'N/A',
+                    visibility: hamburgerStyle?.visibility || 'N/A',
+                    opacity: hamburgerStyle?.opacity || 'N/A',
+                    zIndex: hamburgerStyle?.zIndex || 'N/A'
+                },
+                navLinks: {
+                    exists: !!navLinks,
+                    display: navLinksStyle?.display || 'N/A',
+                    visibility: navLinksStyle?.visibility || 'N/A'
+                },
+                mobileMenu: {
+                    exists: !!mobileMenu,
+                    display: mobileMenuStyle?.display || 'N/A',
+                    visibility: mobileMenuStyle?.visibility || 'N/A',
+                    transform: mobileMenuStyle?.transform || 'N/A'
+                }
+            }
+        };
+        
+        console.group('🍔 DAMP Navigation - Device Detection');
+        console.log('📱 Device Type:', deviceType.toUpperCase());
+        console.log('📐 Viewport:', `${viewportWidth}x${viewportHeight}px`);
+        console.log('🖥️ Screen:', `${screenWidth}x${screenHeight}px`);
+        console.log('👆 Touch Device:', isTouchDevice);
+        console.log('🔍 Device Details:', {
+            isMobile,
+            isTablet,
+            isDesktop,
+            devicePixelRatio
+        });
+        console.log('🧭 Navigation Elements:', deviceInfo.navigation);
+        console.log('🌐 User Agent:', userAgent);
+        console.groupEnd();
+        
+        // Store for debugging
+        this.deviceInfo = deviceInfo;
+        
+        return deviceInfo;
     }
 
     detectPageContext() {
@@ -388,10 +473,38 @@ class DAMPHeader extends HTMLElement {
         const mobileClose = this.querySelector('.mobile-close');
         const backdrop = this.querySelector('.mobile-menu-backdrop');
 
+        console.group('🍔 DAMP Navigation - Initialization');
+        console.log('🔍 Finding navigation elements...');
+        console.log('Hamburger:', hamburger ? '✅ Found' : '❌ Missing');
+        console.log('Mobile Menu:', mobileMenu ? '✅ Found' : '❌ Missing');
+        console.log('Close Button:', mobileClose ? '✅ Found' : '❌ Missing');
+        console.log('Backdrop:', backdrop ? '✅ Found' : '❌ Missing');
+
         if (!hamburger || !mobileMenu) {
+            console.error('❌ Critical navigation elements missing!');
             this.securityLog('Critical navigation elements missing', 'error');
+            console.groupEnd();
             return;
         }
+
+        // Log computed styles
+        const hamburgerStyle = window.getComputedStyle(hamburger);
+        const menuStyle = window.getComputedStyle(mobileMenu);
+        console.log('📊 Hamburger Styles:', {
+            display: hamburgerStyle.display,
+            visibility: hamburgerStyle.visibility,
+            opacity: hamburgerStyle.opacity,
+            zIndex: hamburgerStyle.zIndex,
+            position: hamburgerStyle.position
+        });
+        console.log('📊 Mobile Menu Styles:', {
+            display: menuStyle.display,
+            visibility: menuStyle.visibility,
+            transform: menuStyle.transform,
+            zIndex: menuStyle.zIndex
+        });
+        console.log('✅ Navigation elements found, setting up event listeners...');
+        console.groupEnd();
 
         // Clear any existing listeners to prevent conflicts
         this.removeAllEventListeners();
@@ -401,10 +514,30 @@ class DAMPHeader extends HTMLElement {
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation();
+            
+            const wasOpen = this.isMenuOpen;
+            const deviceType = this.deviceInfo?.deviceType || 'unknown';
+            const viewportWidth = window.innerWidth;
+            
+            console.log('🍔 Hamburger clicked!', {
+                wasOpen,
+                deviceType,
+                viewportWidth,
+                willBeOpen: !wasOpen
+            });
+            
             this.toggleMobileMenu();
+            
+            console.log('🍔 Menu toggled:', {
+                isNowOpen: this.isMenuOpen,
+                deviceType,
+                viewportWidth
+            });
+            
             this.trackAnalytics('mobile_menu_toggle', { 
                 action: this.isMenuOpen ? 'close' : 'open',
-                viewport: window.innerWidth >= 1024 ? 'desktop' : 'mobile'
+                viewport: window.innerWidth >= 1024 ? 'desktop' : 'mobile',
+                deviceType
             });
         });
 
@@ -546,7 +679,25 @@ class DAMPHeader extends HTMLElement {
 
         // Window resize handler
         this.addSecureEventListener(window, 'resize', this.debounce(() => {
+            const newWidth = window.innerWidth;
+            const wasDesktop = this.deviceInfo?.isDesktop;
+            const isNowDesktop = newWidth >= 1024;
+            
+            console.log('📐 Window Resized:', {
+                newWidth,
+                wasDesktop,
+                isNowDesktop,
+                deviceTypeChanged: wasDesktop !== isNowDesktop
+            });
+            
+            // Re-detect device info on significant resize
+            if (Math.abs(newWidth - (this.deviceInfo?.viewport?.width || 0)) > 100) {
+                console.log('🔄 Significant resize detected, re-detecting device...');
+                this.logDeviceInfo();
+            }
+            
             if (window.innerWidth > 768 && this.isMenuOpen) {
+                console.log('📱 Desktop detected, closing mobile menu');
                 this.closeMobileMenu();
             }
             this.updateSafeAreas();
@@ -590,13 +741,21 @@ class DAMPHeader extends HTMLElement {
             return;
         }
 
-        this.securityLog('Opening mobile menu');
-        console.log('[DAMP Header] Mobile menu elements:', {
-            menu: mobileMenu,
-            classList: Array.from(mobileMenu.classList),
-            computedDisplay: window.getComputedStyle(mobileMenu).display,
-            computedTransform: window.getComputedStyle(mobileMenu).transform
+        const deviceType = this.deviceInfo?.deviceType || 'unknown';
+        const viewportWidth = window.innerWidth;
+        
+        console.group('🍔 Opening Mobile Menu');
+        console.log('📱 Device Type:', deviceType);
+        console.log('📐 Viewport Width:', viewportWidth);
+        console.log('🔍 Menu State Before:', {
+            isMenuOpen: this.isMenuOpen,
+            menuClasses: Array.from(mobileMenu.classList),
+            menuDisplay: window.getComputedStyle(mobileMenu).display,
+            menuTransform: window.getComputedStyle(mobileMenu).transform,
+            menuVisibility: window.getComputedStyle(mobileMenu).visibility
         });
+        
+        this.securityLog('Opening mobile menu');
 
         this.isMenuOpen = true;
 
@@ -611,6 +770,21 @@ class DAMPHeader extends HTMLElement {
         // Prevent body scroll with safe area support
         document.body.style.overflow = 'hidden';
         document.body.classList.add('mobile-menu-open');
+        
+        // Log state after opening
+        setTimeout(() => {
+            console.log('🔍 Menu State After:', {
+                isMenuOpen: this.isMenuOpen,
+                menuClasses: Array.from(mobileMenu.classList),
+                menuDisplay: window.getComputedStyle(mobileMenu).display,
+                menuTransform: window.getComputedStyle(mobileMenu).transform,
+                menuVisibility: window.getComputedStyle(mobileMenu).visibility,
+                hamburgerClasses: Array.from(hamburger.classList),
+                bodyClasses: Array.from(document.body.classList)
+            });
+            console.log('✅ Menu opened successfully');
+            console.groupEnd();
+        }, 50);
 
         // Update safe areas
         this.updateSafeAreas();
@@ -640,6 +814,17 @@ class DAMPHeader extends HTMLElement {
 
         if (!hamburger || !mobileMenu) return;
 
+        const deviceType = this.deviceInfo?.deviceType || 'unknown';
+        const viewportWidth = window.innerWidth;
+        
+        console.group('🍔 Closing Mobile Menu');
+        console.log('📱 Device Type:', deviceType);
+        console.log('📐 Viewport Width:', viewportWidth);
+        console.log('🔍 Menu State Before:', {
+            isMenuOpen: this.isMenuOpen,
+            menuClasses: Array.from(mobileMenu.classList)
+        });
+
         this.securityLog('Closing mobile menu');
 
         this.isMenuOpen = false;
@@ -659,6 +844,14 @@ class DAMPHeader extends HTMLElement {
         // Return focus to hamburger
         setTimeout(() => {
             hamburger.focus();
+            console.log('🔍 Menu State After:', {
+                isMenuOpen: this.isMenuOpen,
+                menuClasses: Array.from(mobileMenu.classList),
+                menuDisplay: window.getComputedStyle(mobileMenu).display,
+                menuTransform: window.getComputedStyle(mobileMenu).transform
+            });
+            console.log('✅ Menu closed successfully');
+            console.groupEnd();
         }, 100);
     }
 
