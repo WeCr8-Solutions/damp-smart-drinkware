@@ -269,19 +269,53 @@ class DAMPBuildOptimizer {
     }
 
     basicMinifyJS(js) {
-        return js
+        // First, protect strings from minification
+        const stringPlaceholders = [];
+        let placeholderIndex = 0;
+        
+        // Replace all strings with placeholders
+        js = js.replace(/(['"`])(?:(?=(\\?))\2.)*?\1/g, (match) => {
+            const placeholder = `__STRING_${placeholderIndex++}__`;
+            stringPlaceholders.push(match);
+            return placeholder;
+        });
+        
+        // Now minify the code (strings are protected)
+        js = js
             // Remove single-line comments (but preserve URLs)
             .replace(/\/\/(?![^\r\n]*https?:\/\/)[^\r\n]*/g, '')
             // Remove multi-line comments
             .replace(/\/\*[\s\S]*?\*\//g, '')
-            // Remove extra whitespace
-            .replace(/\s+/g, ' ')
-            // Remove whitespace around operators
-            .replace(/\s*([=+\-*/%<>!&|^~?:;,(){}[\]])\s*/g, '$1')
+            // Normalize line endings
+            .replace(/\r\n/g, '\n')
+            .replace(/\r/g, '\n')
+            // Remove extra whitespace (but preserve single spaces)
+            .replace(/[ \t]+/g, ' ')
+            // Remove whitespace at start/end of lines
+            .replace(/^[ \t]+/gm, '')
+            .replace(/[ \t]+$/gm, '')
+            // Remove empty lines
+            .replace(/\n\s*\n/g, '\n')
+            // Remove whitespace around operators (but keep semicolons)
+            .replace(/\s*([=+\-*/%<>!&|^~?:])\s*/g, '$1')
+            // Preserve semicolons with spaces
+            .replace(/;\s*/g, ';')
+            // Remove whitespace around parentheses and braces (but preserve semicolons)
+            .replace(/\s*([(){}[\]])\s*/g, '$1')
             // Remove trailing semicolons before }
             .replace(/;}/g, '}')
+            // Ensure proper spacing after keywords
+            .replace(/\b(if|for|while|switch|function|class|return|new|await|async|const|let|var)\s*\(/g, '$1(')
+            .replace(/\b(if|for|while|switch|function|class|return|new|await|async|const|let|var)\s*\{/g, '$1{')
             // Remove leading/trailing whitespace
             .trim();
+        
+        // Restore strings
+        stringPlaceholders.forEach((str, index) => {
+            js = js.replace(`__STRING_${index}__`, str);
+        });
+        
+        return js;
     }
 
     findFiles(dir, extension) {
