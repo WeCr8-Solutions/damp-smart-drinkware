@@ -546,18 +546,7 @@
         </section>
 
         <!-- Footer -->
-        <footer style="background: rgb(255 255 255 / 3%); padding: 40px 0; text-align: center; border-top: 1px solid rgb(255 255 255 / 10%);">
-            <div class="container">
-                <p style="color: var(--text-muted); margin-bottom: 16px;">
-                    &copy; 2025 WeCr8 Solutions LLC. All rights reserved.
-                </p>
-                <p style="font-size: 0.875rem; color: var(--text-muted);">
-                    <a href="privacy.html" class="btn-link">Privacy Policy</a> •
-                    <a href="cookie-policy.html" class="btn-link">Cookie Policy</a> •
-                    <a href="../index.html" class="btn-link">Back to Home</a>
-                </p>
-            </div>
-        </footer>
+        <damp-footer></damp-footer>
     </div>
 
     <!-- Load Main CSS -->
@@ -625,5 +614,9 @@
         mobileAppScript.src = '/assets/js/mobile-app-redirect.js';
         mobileAppScript.async = true;
         document.head.appendChild(mobileAppScript);
-    </script></body>
+    </script>
+    
+    <!-- Footer Component -->
+    <script src="../assets/js/components/footer.js"></script>
+</body>
 </html>
