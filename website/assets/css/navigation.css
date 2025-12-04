@@ -793,25 +793,30 @@ damp-header {
     font-size: 0.9rem !important;
     min-height: 44px !important;
     max-height: 44px !important;
-    padding: 10px 12px !important;
+    padding: 10px 32px 10px 12px !important; /* Extra right padding for badge */
     white-space: nowrap !important;
+    overflow: visible !important;
 }
 
 .cart-badge,
 .cart-count {
     position: absolute;
-    top: -6px;
+    top: 6px;
     right: 8px;
     background: var(--success-color);
     color: var(--bg-primary);
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
+    border-radius: 12px;
+    min-width: 20px;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.7rem;
     font-weight: 600;
+    padding: 0 6px;
+    box-sizing: border-box;
+    line-height: 1;
+    z-index: 1;
 }
 
 /* ==========================================================================
