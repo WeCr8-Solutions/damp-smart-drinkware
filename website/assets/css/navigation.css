@@ -1564,14 +1564,39 @@
     }
 }
 
-/* Ensure hamburger is visible on desktop */
+/* Ensure hamburger is ALWAYS visible on all screen sizes */
 .hamburger {
     display: flex !important;
     z-index: 1100; /* Ensure it's on top */
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ensure visibility across all breakpoints */
+@media (min-width: 481px) {
+    .hamburger {
+        display: flex !important;
+        visibility: visible !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .hamburger {
+        display: flex !important;
+        visibility: visible !important;
+    }
 }
 
 @media (min-width: 1024px) {
     .hamburger {
         display: flex !important;
+        visibility: visible !important;
+    }
+}
+
+@media (min-width: 1440px) {
+    .hamburger {
+        display: flex !important;
+        visibility: visible !important;
     }
 }
