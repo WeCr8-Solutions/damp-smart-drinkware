@@ -24,17 +24,43 @@ Allow: /assets/css/navigation.css
 Allow: /assets/js/components/
 
 # ----------------------------------------------------------------------------
-# Sitemaps (Multiple formats for different content types)
+# Sitemap (Complete site structure)
 # ----------------------------------------------------------------------------
+# Main sitemap includes all pages organized by category:
+# - Homepage (priority: 1.0)
+# - Product pages (priority: 0.9-0.95)
+# - Commerce pages (pre-order, cart, checkout, success)
+# - Individual products (DAMP Handle, Silicone Bottom, Cup Sleeve, Baby Bottle)
+# - Stanley-compatible product variants
+# - SEO content pages (DAMP drinking guides, lifestyle content)
+# - Support & information (about, founders-note, press, investor-relations)
+# - User account pages (dashboard, profile, orders, devices, store)
+# - Legal pages (privacy, terms, cookie-policy)
+# - Authentication pages
+# Last updated: 2025-01-24
 Sitemap: https://dampdrink.com/sitemap.xml
-Sitemap: https://dampdrink.com/sitemap-products.xml
-Sitemap: https://dampdrink.com/sitemap-pages.xml
 
 # Priority Pages for Investors & Partners
 # High-value pages for business development
 Allow: /pages/investor-relations.html
 Allow: /pages/about.html
 Allow: /pages/press.html
+Allow: /pages/founders-note.html
+
+# High-Priority Product & Commerce Pages
+Allow: /pages/products.html
+Allow: /pages/pre-order.html
+Allow: /pages/pre-sale-funnel.html
+Allow: /pages/product-voting.html
+Allow: /pages/how-it-works.html
+
+# User Account & Management Pages
+Allow: /pages/dashboard.html
+Allow: /pages/profile.html
+Allow: /pages/orders.html
+Allow: /pages/devices.html
+Allow: /pages/store.html
+Allow: /pages/subscription.html
 
 # ----------------------------------------------------------------------------
 # AI & LLM Crawlers (Enhanced for ChatGPT, Claude, Perplexity, etc.)
@@ -197,7 +223,20 @@ Disallow: /
 # ============================================================================
 # Additional Information
 # ============================================================================
-# Last Updated: 2025-01-12
+# Last Updated: 2025-01-24
 # Contact: zach@wecr8.info
 # Website: https://dampdrink.com
+# 
+# Sitemap Statistics (as of 2025-01-24):
+# - Total URLs: 50+ pages
+# - Priority range: 0.1 (test pages) to 1.0 (homepage)
+# - Update frequency: Daily (product-voting) to Yearly (legal pages)
+# - Categories: Products, Commerce, Support, User Accounts, Legal, SEO Content
+# 
+# Key Page Types in Sitemap:
+# - Product Pages: 8 individual product pages + variants
+# - Commerce: Pre-order, cart, checkout, success pages
+# - Content: DAMP lifestyle guides, how-it-works, about, press
+# - User: Dashboard, profile, orders, devices, store
+# - Legal: Privacy, terms, cookie policy
 # ============================================================================ 

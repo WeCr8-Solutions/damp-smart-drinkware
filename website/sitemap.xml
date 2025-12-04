@@ -72,6 +72,8 @@
         <priority>0.6</priority>
     </url>
     
+    <!-- Note: order-success.html is also listed below in User Account section -->
+    
     <!-- Individual Product Pages -->
     <url>
         <loc>https://dampdrink.com/pages/damp-handle-v1.0.html</loc>
@@ -160,6 +162,13 @@
         <priority>0.8</priority>
     </url>
     
+    <url>
+        <loc>https://dampdrink.com/pages/founders-note.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.85</priority>
+    </url>
+    
     <!-- Press & Media Room -->
     <url>
         <loc>https://dampdrink.com/pages/press.html</loc>
@@ -219,6 +228,57 @@
         <lastmod>2025-01-15</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.85</priority>
+    </url>
+    
+    <!-- User Account & Management Pages -->
+    <url>
+        <loc>https://dampdrink.com/pages/dashboard.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://dampdrink.com/pages/profile.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <url>
+        <loc>https://dampdrink.com/pages/orders.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.75</priority>
+    </url>
+    
+    <url>
+        <loc>https://dampdrink.com/pages/devices.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.75</priority>
+    </url>
+    
+    <url>
+        <loc>https://dampdrink.com/pages/store.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://dampdrink.com/pages/order-success.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <!-- Authentication Pages -->
+    <url>
+        <loc>https://dampdrink.com/pages/auth.html</loc>
+        <lastmod>2025-01-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
     </url>
     
     <!-- Legal and Policy Pages -->

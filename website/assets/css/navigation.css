@@ -334,6 +334,14 @@
     contain: layout style; /* Performance optimization */
 }
 
+/* Desktop: Limit sidebar to 1/3 of viewport width (max 500px) */
+@media (width >= 1024px) {
+    .safe-area-mobile-menu {
+        width: min(33vw, 500px);
+        max-width: min(33vw, 500px);
+    }
+}
+
 .safe-area-mobile-menu.active {
     transform: translateX(0);
     visibility: visible;
@@ -427,6 +435,13 @@
     display: flex;
     flex-direction: column;
     padding: 20px 0;
+    overflow-y: auto;
+    min-height: 0; /* Prevents flex overflow issues */
+}
+
+.mobile-menu-content > nav {
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
 }
 
@@ -731,9 +746,11 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     padding: 20px;
-    margin-top: auto;
+    margin-top: 20px;
+    margin-bottom: 0;
     border-top: 1px solid var(--border-color);
     background: rgb(0 0 0 / 20%);
+    flex-shrink: 0;
 }
 
 .social-proof-item {
@@ -777,6 +794,8 @@
     border-top: 1px solid var(--border-color);
     background: rgb(0 0 0 / 20%);
     text-align: center;
+    flex-shrink: 0; /* Prevent footer from shrinking */
+    margin-top: 0;
 }
 
 .mobile-social-proof {

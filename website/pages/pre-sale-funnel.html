@@ -1098,6 +1098,7 @@
     <script src="../assets/js/components/safe-area-wrapper.js"></script>
     <script src="../assets/js/components/header.js"></script>
     <script src="../assets/js/auth-modal.js"></script>
+    <script src="../assets/js/api-service.js"></script>
 
     <!-- Stripe.js is loaded in <head> for early availability -->
 
@@ -1155,15 +1156,28 @@
                 console.log('📊 PreSaleFunnel: Fetching real sales data from Stripe...');
                 
                 try {
-                    // For now, fetch from Netlify function (will implement Stripe webhook data)
-                    const response = await fetch('/.netlify/functions/get-sales-stats');
-                    
-                    if (response.ok) {
-                        const data = await response.json();
+                    // Fetch sales stats using API service
+                    const apiService = window.DAMPApi;
+                    if (apiService) {
+                        const data = await apiService.getSalesStats();
                         console.log('✅ PreSaleFunnel: Sales data received:', data);
                         
                         // Update overall counter
                         const currentBackers = document.getElementById('current-backers');
+                        if (currentBackers && data.totalSales !== undefined) {
+                            currentBackers.textContent = data.totalSales;
+                            this.currentCount = data.totalSales;
+                        }
+                    } else {
+                        // Fallback to direct fetch
+                        const response = await fetch('/api/get-sales-stats');
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            console.log('✅ PreSaleFunnel: Sales data received:', data);
+                            
+                            // Update overall counter
+                            const currentBackers = document.getElementById('current-backers');
                         if (currentBackers && data.totalSales !== undefined) {
                             currentBackers.textContent = data.totalSales;
                             this.currentCount = data.totalSales;
@@ -1944,26 +1958,33 @@
                         }
                     } else {
                         // Production endpoint
-                        apiEndpoint = 'https://dampdrink.com/api/create-checkout-session';
+                        apiEndpoint = '/api/create-checkout-session';
                     }
                     console.log(`📡 PreSaleFunnel: Using API endpoint: ${apiEndpoint}`);
 
-                    const response = await fetch(apiEndpoint, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(checkoutData)
-                    });
+                    let session;
+                    if (apiService) {
+                        // Use unified API service
+                        session = await apiService.createCheckoutSession(checkoutData);
+                    } else {
+                        // Fallback to direct fetch
+                        const response = await fetch(apiEndpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(checkoutData)
+                        });
 
-                    console.log(`📡 PreSaleFunnel: Checkout session response status: ${response.status}`);
+                        console.log(`📡 PreSaleFunnel: Checkout session response status: ${response.status}`);
 
-                    if (!response.ok) {
-                        const errorData = await response.json().catch(() => ({}));
-                        throw new Error(errorData.error || `HTTP ${response.status}: Failed to create checkout session`);
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => ({}));
+                            throw new Error(errorData.error || `HTTP ${response.status}: Failed to create checkout session`);
+                        }
+
+                        session = await response.json();
                     }
-
-                    const session = await response.json();
                     console.log('✅ PreSaleFunnel: Checkout session created:', session);
 
                     if (session.error) {
@@ -2193,19 +2214,28 @@
                 try {
                     console.log('📧 Newsletter signup:', email);
                     
-                    // Save to Netlify Blob storage
-                    const response = await fetch('/.netlify/functions/save-email', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            email: email,
-                            source: 'presale_newsletter',
-                            name: ''
-                        })
-                    });
-
-                    const result = await response.json();
-                    console.log('✅ Newsletter saved to Netlify:', result);
+                    // Save email using API service
+                    const apiService = window.DAMPApi;
+                    let result;
+                    
+                    if (apiService) {
+                        // Use unified API service
+                        result = await apiService.saveEmail(email, '', 'presale_newsletter');
+                        console.log('✅ Newsletter saved:', result);
+                    } else {
+                        // Fallback to direct fetch
+                        const response = await fetch('/api/save-email', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                email: email,
+                                source: 'presale_newsletter',
+                                name: ''
+                            })
+                        });
+                        result = await response.json();
+                        console.log('✅ Newsletter saved:', result);
+                    }
                     
                     // Success feedback
                     newsletterSubmit.textContent = '✅ Subscribed!';

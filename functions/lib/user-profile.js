@@ -148,10 +148,10 @@ exports.uploadUserAvatar = (0, https_1.onCall)(async (request) => {
     }
     catch (error) {
         console.error('Error uploading avatar:', error);
-        if (error instanceof functions.https.HttpsError) {
+        if (error instanceof https_1.HttpsError) {
             throw error;
         }
-        throw new functions.https.HttpsError('internal', 'Failed to upload avatar');
+        throw new https_1.HttpsError('internal', 'Failed to upload avatar');
     }
 });
 /**
@@ -159,7 +159,7 @@ exports.uploadUserAvatar = (0, https_1.onCall)(async (request) => {
  */
 exports.getUserProfile = (0, https_1.onCall)(async (request) => {
     var _a, _b;
-    const { data, auth } = request;
+    const { auth } = request;
     if (!auth) {
         throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
     }
@@ -194,7 +194,7 @@ exports.getUserProfile = (0, https_1.onCall)(async (request) => {
     }
     catch (error) {
         console.error('Error getting user profile:', error);
-        throw new functions.https.HttpsError('internal', 'Failed to get profile');
+        throw new https_1.HttpsError('internal', 'Failed to get profile');
     }
 });
 /**
@@ -264,7 +264,7 @@ exports.updateNotificationPreferences = (0, https_1.onCall)(async (request) => {
  * Complete device setup wizard
  */
 exports.completeDeviceSetup = (0, https_1.onCall)(async (request) => {
-    const { data, auth } = request;
+    const { auth, data } = request;
     if (!auth) {
         throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
     }
@@ -328,7 +328,7 @@ exports.completeDeviceSetup = (0, https_1.onCall)(async (request) => {
  */
 exports.getPersonalizedGreeting = (0, https_1.onCall)(async (request) => {
     var _a;
-    const { data, auth } = request;
+    const { auth } = request;
     if (!auth) {
         throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
     }
@@ -390,7 +390,7 @@ exports.getPersonalizedGreeting = (0, https_1.onCall)(async (request) => {
  * Delete user account and all associated data
  */
 exports.deleteUserAccount = (0, https_1.onCall)(async (request) => {
-    const { data, auth } = request;
+    const { auth } = request;
     if (!auth) {
         throw new https_1.HttpsError('unauthenticated', 'User must be authenticated');
     }

@@ -1,15 +1,20 @@
 /**
- * Netlify Voting Service
- * Handles voting via Netlify Functions (Firebase only for auth)
+ * DAMP Voting Service
+ * Handles voting via API service (works with both Netlify and Firebase)
  */
 
 class NetlifyVotingService {
     constructor() {
+        // Use unified API service if available, otherwise fallback to Netlify
+        this.apiService = window.DAMPApi || null;
         this.baseUrl = window.location.hostname === 'localhost' 
             ? 'http://localhost:8888/.netlify/functions'
             : '/.netlify/functions';
         
-        console.log('🌐 Netlify Voting Service initialized:', this.baseUrl);
+        console.log('🌐 Voting Service initialized:', {
+            hasApiService: !!this.apiService,
+            baseUrl: this.baseUrl
+        });
     }
 
     /**
@@ -21,6 +26,13 @@ class NetlifyVotingService {
      */
     async submitVote(productId, fingerprint, userId = null, voteType = 'public') {
         try {
+            // Use unified API service if available
+            if (this.apiService) {
+                const data = await this.apiService.submitVote(productId, fingerprint, userId, voteType);
+                return { success: true, data };
+            }
+
+            // Fallback to direct fetch
             const response = await fetch(`${this.baseUrl}/submit-vote`, {
                 method: 'POST',
                 headers: {
@@ -60,6 +72,13 @@ class NetlifyVotingService {
      */
     async getResults() {
         try {
+            // Use unified API service if available
+            if (this.apiService) {
+                const data = await this.apiService.getVotingResults();
+                return { success: true, data };
+            }
+
+            // Fallback to direct fetch
             const response = await fetch(`${this.baseUrl}/get-voting-results`, {
                 method: 'GET',
                 headers: {
@@ -93,6 +112,13 @@ class NetlifyVotingService {
      */
     async checkVoteStatus(fingerprint, userId = null, voteType = 'public') {
         try {
+            // Use unified API service if available
+            if (this.apiService) {
+                const data = await this.apiService.checkVoteStatus(fingerprint, userId, voteType);
+                return { success: true, data };
+            }
+
+            // Fallback to direct fetch
             const response = await fetch(`${this.baseUrl}/check-vote-status`, {
                 method: 'POST',
                 headers: {

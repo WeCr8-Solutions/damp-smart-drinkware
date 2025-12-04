@@ -59,6 +59,7 @@ class DAMPHeader extends HTMLElement {
                         <li><a href="${this.basePath}pages/how-it-works.html" data-analytics="nav-how-it-works">How It Works</a></li>
                         <li><a href="${this.basePath}pages/products.html" data-analytics="nav-products">Products</a></li>
                         <li><a href="${this.basePath}pages/about.html" data-analytics="nav-about">About</a></li>
+                        <li><a href="${this.basePath}pages/founders-note.html" class="founders-note-link" data-analytics="nav-founders-note" style="color: #00d4ff; font-weight: 600;">Founder's Note</a></li>
                         <li><a href="${this.basePath}pages/damp-drinking-meaning.html" data-analytics="nav-damp-meaning">DAMP Lifestyle</a></li>
                         <li><a href="${this.basePath}pages/press.html" data-analytics="nav-press">Press</a></li>
                         <li><a href="${this.basePath}pages/support.html" data-analytics="nav-support">Support</a></li>
@@ -184,6 +185,10 @@ class DAMPHeader extends HTMLElement {
                                 <span class="mobile-nav-icon">ℹ️</span>
                                 <span class="mobile-nav-text">About DAMP</span>
                             </a>
+                            <a href="${this.basePath}pages/founders-note.html" class="founders-note-link" data-analytics="mobile-nav-founders-note">
+                                <span class="mobile-nav-icon">✍️</span>
+                                <span class="mobile-nav-text">Founder's Note</span>
+                            </a>
                             <a href="${this.basePath}pages/press.html" data-analytics="mobile-nav-press">
                                 <span class="mobile-nav-icon">📰</span>
                                 <span class="mobile-nav-text">Press & Media</span>
@@ -303,28 +308,54 @@ class DAMPHeader extends HTMLElement {
                                 <span class="mobile-nav-text">Warranty Info</span>
                             </a>
                         </div>
+
+                        <!-- Account & Management -->
+                        <div class="mobile-nav-section">
+                            <h3 class="mobile-nav-section-title">⚙️ Account</h3>
+                            <a href="${this.basePath}pages/dashboard.html" data-analytics="mobile-nav-dashboard">
+                                <span class="mobile-nav-icon">📊</span>
+                                <span class="mobile-nav-text">Dashboard</span>
+                            </a>
+                            <a href="${this.basePath}pages/devices.html" data-analytics="mobile-nav-devices">
+                                <span class="mobile-nav-icon">📱</span>
+                                <span class="mobile-nav-text">My Devices</span>
+                            </a>
+                            <a href="${this.basePath}pages/store.html" data-analytics="mobile-nav-store">
+                                <span class="mobile-nav-icon">🏪</span>
+                                <span class="mobile-nav-text">Store</span>
+                            </a>
+                        </div>
+
+                        <!-- Business & Investment -->
+                        <div class="mobile-nav-section">
+                            <h3 class="mobile-nav-section-title">💼 Business</h3>
+                            <a href="${this.basePath}pages/investor-relations.html" data-analytics="mobile-nav-investors">
+                                <span class="mobile-nav-icon">💼</span>
+                                <span class="mobile-nav-text">Investor Relations</span>
+                            </a>
+                        </div>
                     </nav>
 
-                    <!-- Quick Social Proof -->
-                    <div class="mobile-nav-social-proof">
+                    <!-- Quick Social Proof - Dynamic stats loaded from API -->
+                    <div class="mobile-nav-social-proof" id="mobile-social-proof" style="display: none;">
                         <div class="social-proof-item">
                             <span class="proof-icon">👥</span>
                             <div class="proof-content">
-                                <span class="proof-number" id="mobile-preorder-live">5,247+</span>
+                                <span class="proof-number" id="mobile-preorder-live">--</span>
                                 <span class="proof-label">Pre-Orders</span>
                             </div>
                         </div>
                         <div class="social-proof-item">
                             <span class="proof-icon">⭐</span>
                             <div class="proof-content">
-                                <span class="proof-number">4.9★</span>
+                                <span class="proof-number" id="mobile-rating-live">--</span>
                                 <span class="proof-label">Rating</span>
                             </div>
                         </div>
                         <div class="social-proof-item">
                             <span class="proof-icon">🌍</span>
                             <div class="proof-content">
-                                <span class="proof-number">50+</span>
+                                <span class="proof-number" id="mobile-countries-live">--</span>
                                 <span class="proof-label">Countries</span>
                             </div>
                         </div>
@@ -463,6 +494,27 @@ class DAMPHeader extends HTMLElement {
                     return;
                 }
 
+                // Handle founder's note link - open popup instead of navigating
+                if (link.classList.contains('founders-note-link')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.closeMobileMenu();
+                    if (window.dampFoundersNote) {
+                        window.dampFoundersNote.showManually();
+                    } else {
+                        // Fallback to navigation if component not loaded
+                        window.location.href = href;
+                    }
+                    if (analyticsAction) {
+                        this.trackAnalytics('mobile_nav_click', {
+                            link: analyticsAction,
+                            href: href,
+                            action: 'popup'
+                        });
+                    }
+                    return;
+                }
+
                 // Track the click
                 if (analyticsAction) {
                     this.trackAnalytics('mobile_nav_click', {
@@ -488,6 +540,9 @@ class DAMPHeader extends HTMLElement {
                 }
             });
         });
+
+        // Setup desktop founder's note links
+        this.setupFoundersNoteLinks();
 
         // Window resize handler
         this.addSecureEventListener(window, 'resize', this.debounce(() => {
@@ -883,11 +938,20 @@ class DAMPHeader extends HTMLElement {
     }
 
     // Update live statistics
-    updateLiveStats(preOrders = null, rating = null) {
+    updateLiveStats(preOrders = null, rating = null, countries = null) {
         const preOrderElement = this.querySelector('#mobile-preorder-live');
+        const ratingElement = this.querySelector('#mobile-rating-live');
+        const countriesElement = this.querySelector('#mobile-countries-live');
+        
         if (preOrderElement && preOrders) {
             // Animate number change
             this.animateNumberChange(preOrderElement, preOrders);
+        }
+        if (ratingElement && rating) {
+            ratingElement.textContent = `${rating}★`;
+        }
+        if (countriesElement && countries) {
+            countriesElement.textContent = `${countries}+`;
         }
     }
 
@@ -926,12 +990,35 @@ class DAMPHeader extends HTMLElement {
         return num + '+';
     }
 
+    // Setup founder's note links
+    setupFoundersNoteLinks() {
+        // Desktop links
+        const desktopLinks = this.querySelectorAll('.nav-links .founders-note-link');
+        desktopLinks.forEach(link => {
+            this.addSecureEventListener(link, 'click', (e) => {
+                e.preventDefault();
+                if (window.dampFoundersNote) {
+                    window.dampFoundersNote.showManually();
+                } else {
+                    // Fallback to navigation if component not loaded
+                    const href = link.getAttribute('href');
+                    if (href) window.location.href = href;
+                }
+                const analyticsAction = link.getAttribute('data-analytics');
+                if (analyticsAction) {
+                    this.trackAnalytics('nav_click', {
+                        link: analyticsAction,
+                        action: 'popup'
+                    });
+                }
+            });
+        });
+    }
+
     // Initialize dynamic updates
     initializeDynamicUpdates() {
-        // Simulate live updates (in real app, this would come from API)
-        setTimeout(() => {
-            this.updateLiveStats('5,289'); // Increase pre-orders
-        }, 30000); // After 30 seconds
+        // Load real stats from API if available
+        this.loadRealStats();
 
         // Listen for cart updates from other components
         window.addEventListener('cart:updated', (e) => {
@@ -940,11 +1027,87 @@ class DAMPHeader extends HTMLElement {
 
         // Listen for stats updates
         window.addEventListener('stats:updated', (e) => {
-            this.updateLiveStats(e.detail.preOrders, e.detail.rating);
+            this.updateLiveStats(e.detail.preOrders, e.detail.rating, e.detail.countries);
         });
 
         // Initialize authentication integration
         this.initializeAuthentication();
+    }
+
+    // Load real statistics from API
+    async loadRealStats() {
+        try {
+            // Check if stats API endpoint exists
+            // Try multiple possible endpoints
+            const possibleEndpoints = [
+                `${this.basePath}api/stats.json`,
+                `${this.basePath}api/stats`,
+                `${this.basePath}assets/data/stats.json`
+            ];
+            
+            let statsEndpoint = null;
+            for (const endpoint of possibleEndpoints) {
+                try {
+                    const testResponse = await fetch(endpoint, { method: 'HEAD' });
+                    if (testResponse.ok) {
+                        statsEndpoint = endpoint;
+                        break;
+                    }
+                } catch (e) {
+                    // Continue to next endpoint
+                }
+            }
+            
+            if (!statsEndpoint) {
+                // Hide social proof section if no API available
+                const socialProof = this.querySelector('#mobile-social-proof');
+                if (socialProof) {
+                    socialProof.style.display = 'none';
+                }
+                return;
+            }
+
+            const response = await fetch(statsEndpoint);
+            if (response.ok) {
+                const stats = await response.json();
+                this.updateSocialProof(stats);
+                
+                // Show social proof section
+                const socialProof = this.querySelector('#mobile-social-proof');
+                if (socialProof) {
+                    socialProof.style.display = 'grid';
+                }
+            } else {
+                // Hide if API fails
+                const socialProof = this.querySelector('#mobile-social-proof');
+                if (socialProof) {
+                    socialProof.style.display = 'none';
+                }
+            }
+        } catch (error) {
+            // Silently fail - hide social proof if API unavailable
+            const socialProof = this.querySelector('#mobile-social-proof');
+            if (socialProof) {
+                socialProof.style.display = 'none';
+            }
+        }
+    }
+
+    // Update social proof with real data
+    updateSocialProof(stats) {
+        const preOrderEl = this.querySelector('#mobile-preorder-live');
+        const ratingEl = this.querySelector('#mobile-rating-live');
+        const countriesEl = this.querySelector('#mobile-countries-live');
+
+        if (preOrderEl && stats.preOrders !== undefined) {
+            preOrderEl.textContent = this.formatStatNumber(stats.preOrders);
+        }
+        if (ratingEl && stats.rating !== undefined) {
+            ratingEl.textContent = `${stats.rating}★`;
+        }
+        if (countriesEl && stats.countries !== undefined) {
+            countriesEl.textContent = `${stats.countries}+`;
+        }
     }
 
     // Initialize authentication integration

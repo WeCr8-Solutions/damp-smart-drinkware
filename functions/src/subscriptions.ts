@@ -12,10 +12,16 @@ import Stripe from 'stripe';
 const stripeSecretKey = defineString('STRIPE_SECRET_KEY');
 const appUrl = defineString('APP_URL');
 
-// Initialize Stripe
-const stripe = new Stripe(stripeSecretKey.value(), {
-  apiVersion: '2023-10-16',
-});
+// Lazy Stripe initialization - only when needed
+let stripeInstance: Stripe | null = null;
+function getStripe(): Stripe {
+  if (!stripeInstance) {
+    stripeInstance = new Stripe(stripeSecretKey.value(), {
+      apiVersion: '2023-10-16',
+    });
+  }
+  return stripeInstance;
+}
 
 // Subscription Plans Configuration
 const SUBSCRIPTION_PLANS = {
@@ -75,7 +81,7 @@ async function getOrCreateStripeCustomer(userId: string, userEmail: string): Pro
   }
 
   // Create new Stripe customer
-  const customer = await stripe.customers.create({
+  const customer = await getStripe().customers.create({
     email: userEmail,
     metadata: {
       userId,
@@ -119,7 +125,7 @@ export const createSubscriptionCheckout = onCall(async (request) => {
     const customerId = await getOrCreateStripeCustomer(userId, userEmail);
 
     // Create checkout session
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
       mode: 'subscription',
@@ -173,14 +179,14 @@ export const handleSubscriptionSuccess = onCall(async (request) => {
 
   try {
     // Retrieve the session from Stripe
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const session = await getStripe().checkout.sessions.retrieve(sessionId);
 
     if (!session || session.metadata?.userId !== userId) {
       throw new HttpsError('permission-denied', 'Invalid session');
     }
 
     // Get subscription details from Stripe
-    const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
+    const subscription = await getStripe().subscriptions.retrieve(session.subscription as string);
 
     // Update user's subscription in Firestore
     const subscriptionData = {
@@ -258,7 +264,7 @@ export const manageSubscription = onCall(async (request) => {
       throw new HttpsError('not-found', 'No active subscription found');
     }
 
-    const currentSubscription = await stripe.subscriptions.retrieve(userData.subscription.stripeSubscriptionId);
+    const currentSubscription = await getStripe().subscriptions.retrieve(userData.subscription.stripeSubscriptionId);
 
     switch (action) {
       case 'upgrade':
@@ -273,7 +279,7 @@ export const manageSubscription = onCall(async (request) => {
         }
 
         // Update subscription with new price
-        const updatedSubscription = await stripe.subscriptions.update(currentSubscription.id, {
+        const updatedSubscription = await getStripe().subscriptions.update(currentSubscription.id, {
           items: [{
             id: currentSubscription.items.data[0].id,
             price: newPlan.stripePriceId,
@@ -292,6 +298,30 @@ export const manageSubscription = onCall(async (request) => {
 
         return { success: true, subscription: updatedSubscription };
       }
+      case 'cancel': {
+        const canceledSubscription = await getStripe().subscriptions.update(currentSubscription.id, {
+          cancel_at_period_end: true,
+        });
+
+        await admin.firestore().collection('users').doc(userId).update({
+          'subscription.cancelAtPeriodEnd': true,
+          'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
+        });
+
+        return { success: true, subscription: canceledSubscription };
+      }
+      case 'reactivate': {
+        const reactivatedSubscription = await getStripe().subscriptions.update(currentSubscription.id, {
+          cancel_at_period_end: false,
+        });
+
+        await admin.firestore().collection('users').doc(userId).update({
+          'subscription.cancelAtPeriodEnd': false,
+          'subscription.updatedAt': admin.firestore.FieldValue.serverTimestamp(),
+        });
+
+        return { success: true, subscription: reactivatedSubscription };
+      }
       default:
         throw new HttpsError('invalid-argument', 'Invalid subscription action');
     }
@@ -299,12 +329,13 @@ export const manageSubscription = onCall(async (request) => {
     console.error('Error managing subscription:', error);
     throw new HttpsError('internal', 'Failed to manage subscription');
   }
+});
 
 /**
  * Get subscription status
  */
 export const getSubscriptionStatus = onCall(async (request) => {
-  const { data, auth } = request;
+  const { auth } = request;
   
   if (!auth) {
     throw new HttpsError('unauthenticated', 'User must be authenticated');
@@ -329,7 +360,7 @@ export const getSubscriptionStatus = onCall(async (request) => {
     // If there's a Stripe subscription ID, get latest status from Stripe
     if (subscription.stripeSubscriptionId) {
       try {
-        const stripeSubscription = await stripe.subscriptions.retrieve(subscription.stripeSubscriptionId);
+        const stripeSubscription = await getStripe().subscriptions.retrieve(subscription.stripeSubscriptionId);
 
         // Update Firestore with latest Stripe data
         const updateData = {
@@ -386,7 +417,7 @@ export const handleStripeWebhook = onRequest(async (request, response) => {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(request.rawBody, sig, webhookSecret);
+    event = getStripe().webhooks.constructEvent(request.rawBody, sig, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err);
     response.status(400).send(`Webhook Error: ${err}`);

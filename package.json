@@ -34,6 +34,12 @@
     "validate-env": "node scripts/validate-environment.js",
     "security-check": "npm run scan-secrets && npm run validate-env",
     "security:full": "npm run env:secure:preview && npm run scan-secrets && npm run env:validate",
+    "remoteconfig:push": "node scripts/push-remote-config.js",
+    "remoteconfig:validate": "node -e \"const {validateRemoteConfigFile} = require('./scripts/push-remote-config.js'); validateRemoteConfigFile();\"",
+    "production:verify": "node scripts/verify-production-setup.js",
+    "production:deploy": "node scripts/deploy-production-firebase.js",
+    "production:deploy:hosting": "node scripts/deploy-production-firebase.js --hosting-only",
+    "production:deploy:functions": "node scripts/deploy-production-firebase.js --functions-only",
     "android": "expo run:android",
     "ios": "expo run:ios"
   },

@@ -9,7 +9,7 @@ let isInitialized = false;
 
 // Firebase configuration
 const getFirebaseConfig = () => ({
-    apiKey: window.FIREBASE_CONFIG?.apiKey || "your_firebase_api_key_here",
+    apiKey: window.FIREBASE_CONFIG?.apiKey || "AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w",
     authDomain: "damp-smart-drinkware.firebaseapp.com",
     projectId: "damp-smart-drinkware",
     storageBucket: "damp-smart-drinkware.firebasestorage.app",
@@ -84,7 +84,20 @@ export const initializeRemoteConfig = async () => {
         'battery_warning_threshold': 20,
         'notification_cooldown_minutes': 15,
         'app_maintenance_mode': false,
-        'support_contact_email': 'support@dampdrink.com'
+        'support_contact_email': 'support@dampdrink.com',
+        // Firebase configuration (fallback values)
+        'firebase_api_key': 'AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w',
+        'firebase_auth_domain': 'damp-smart-drinkware.firebaseapp.com',
+        'firebase_project_id': 'damp-smart-drinkware',
+        'firebase_storage_bucket': 'damp-smart-drinkware.firebasestorage.app',
+        'firebase_messaging_sender_id': '309818614427',
+        'firebase_app_id': '1:309818614427:web:db15a4851c05e58aa25c3e',
+        'firebase_measurement_id': 'G-YW2BN4SVPQ',
+        'firebase_database_url': 'https://damp-smart-drinkware-default-rtdb.firebaseio.com',
+        // Stripe configuration
+        'stripe_publishable_key': 'pk_test_your_publishable_key',
+        // Analytics
+        'google_analytics_id': 'G-YW2BN4SVPQ'
     };
 
     return remoteConfig;

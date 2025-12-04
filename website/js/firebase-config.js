@@ -7,7 +7,7 @@ import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: window.FIREBASE_CONFIG?.apiKey || window.DAMP_CONFIG?.firebase?.apiKey || "your_firebase_api_key_here",
+  apiKey: window.FIREBASE_CONFIG?.apiKey || window.DAMP_CONFIG?.firebase?.apiKey || "AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w",
   authDomain: "damp-smart-drinkware.firebaseapp.com",
   projectId: "damp-smart-drinkware",
   storageBucket: "damp-smart-drinkware.firebasestorage.app",
@@ -18,12 +18,12 @@ const firebaseConfig = {
 };
 
 // Validate configuration
-if (firebaseConfig.apiKey === "your_firebase_api_key_here") {
-  console.warn('⚠️ Firebase API key not configured - voting system will use fallback mode');
+if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "your_firebase_api_key_here") {
+  console.warn('⚠️ Firebase API key not configured - using fallback mode');
 }
 
 console.log('🔥 Firebase config loaded:', {
-  hasApiKey: firebaseConfig.apiKey !== "your_firebase_api_key_here",
+  hasApiKey: !!firebaseConfig.apiKey && firebaseConfig.apiKey !== "your_firebase_api_key_here",
   projectId: firebaseConfig.projectId
 });
 

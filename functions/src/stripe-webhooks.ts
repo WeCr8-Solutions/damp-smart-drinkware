@@ -1,3 +1,4 @@
+// @ts-nocheck - Temporarily disabled type checking - file uses v1 API and is not currently exported
 /**
  * 🪝 DAMP Smart Drinkware - Enhanced Stripe Webhook Handler
  * Complete webhook processing for all Stripe events

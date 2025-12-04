@@ -18,13 +18,14 @@ import { Logger } from './utils/logger.js';
 export const STORE_CONFIG = {
     // Firebase Configuration
     firebase: {
-        apiKey: "your-api-key",
+        apiKey: "AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w",
         authDomain: "damp-smart-drinkware.firebaseapp.com",
         projectId: "damp-smart-drinkware",
-        storageBucket: "damp-smart-drinkware.appspot.com",
-        messagingSenderId: "your-sender-id",
-        appId: "your-app-id",
-        measurementId: "your-measurement-id"
+        storageBucket: "damp-smart-drinkware.firebasestorage.app",
+        messagingSenderId: "309818614427",
+        appId: "1:309818614427:web:db15a4851c05e58aa25c3e",
+        measurementId: "G-YW2BN4SVPQ",
+        databaseURL: "https://damp-smart-drinkware-default-rtdb.firebaseio.com"
     },
 
     // Stripe Configuration

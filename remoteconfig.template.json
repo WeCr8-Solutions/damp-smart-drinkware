@@ -47,6 +47,66 @@
         "value": "support@dampdrink.com"
       },
       "description": "Support contact email displayed in the app"
+    },
+    "firebase_api_key": {
+      "defaultValue": {
+        "value": "AIzaSyAKkZEf6c3mTzDdOoDT6xmhhsmx1RP_G8w"
+      },
+      "description": "Firebase Web API Key (safe for client-side use)"
+    },
+    "firebase_auth_domain": {
+      "defaultValue": {
+        "value": "damp-smart-drinkware.firebaseapp.com"
+      },
+      "description": "Firebase Auth Domain"
+    },
+    "firebase_project_id": {
+      "defaultValue": {
+        "value": "damp-smart-drinkware"
+      },
+      "description": "Firebase Project ID"
+    },
+    "firebase_storage_bucket": {
+      "defaultValue": {
+        "value": "damp-smart-drinkware.firebasestorage.app"
+      },
+      "description": "Firebase Storage Bucket"
+    },
+    "firebase_messaging_sender_id": {
+      "defaultValue": {
+        "value": "309818614427"
+      },
+      "description": "Firebase Messaging Sender ID"
+    },
+    "firebase_app_id": {
+      "defaultValue": {
+        "value": "1:309818614427:web:db15a4851c05e58aa25c3e"
+      },
+      "description": "Firebase App ID"
+    },
+    "firebase_measurement_id": {
+      "defaultValue": {
+        "value": "G-YW2BN4SVPQ"
+      },
+      "description": "Firebase Analytics Measurement ID"
+    },
+    "firebase_database_url": {
+      "defaultValue": {
+        "value": "https://damp-smart-drinkware-default-rtdb.firebaseio.com"
+      },
+      "description": "Firebase Realtime Database URL"
+    },
+    "stripe_publishable_key": {
+      "defaultValue": {
+        "value": "pk_test_your_publishable_key"
+      },
+      "description": "Stripe Publishable Key (safe for client-side use). Update with actual key."
+    },
+    "google_analytics_id": {
+      "defaultValue": {
+        "value": "G-YW2BN4SVPQ"
+      },
+      "description": "Google Analytics Measurement ID"
     }
   }
 }
