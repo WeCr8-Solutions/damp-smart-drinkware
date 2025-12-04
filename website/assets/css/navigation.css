@@ -342,7 +342,8 @@
     }
 }
 
-.safe-area-mobile-menu.active {
+.safe-area-mobile-menu.active,
+.mobile-menu.active {
     transform: translateX(0);
     visibility: visible;
     animation: slideInMobileMenu 0.3s ease-out;
