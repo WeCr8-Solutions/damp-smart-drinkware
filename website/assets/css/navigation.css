@@ -162,20 +162,12 @@
    ========================================================================== */
 
 .nav-links {
-    display: none; /* Hidden on mobile, shown on desktop */
+    display: none !important; /* Always hidden - navigation is in hamburger menu only */
     list-style: none;
     gap: 30px;
     margin: 0;
     padding: 0;
     align-items: center;
-}
-
-/* Show desktop navigation on larger screens */
-@media (width >= 1024px) {
-    .nav-links {
-        display: flex;
-        animation: slideInFromTop 0.3s ease-out;
-    }
 }
 
 /* Smooth animation for desktop nav appearance */
@@ -1483,30 +1475,30 @@
 /* Desktop breakpoints */
 @media (width >= 1024px) {
     .nav-links {
-        display: none; /* Keep navigation in hamburger menu for clean layout */
+        display: none !important; /* Keep navigation in hamburger menu for clean layout */
     }
 
     .hamburger {
-        display: flex; /* Always show hamburger menu on all screen sizes */
+        display: flex !important; /* Always show hamburger menu on all screen sizes */
     }
 
     .auth-buttons {
-        display: none; /* Auth buttons only in hamburger menu */
+        display: none !important; /* Auth buttons only in hamburger menu */
     }
 }
 
 /* Large desktop */
 @media (width >= 1440px) {
     .nav-links {
-        display: none; /* Keep navigation in hamburger menu for clean layout */
+        display: none !important; /* Keep navigation in hamburger menu for clean layout */
     }
 
     .hamburger {
-        display: flex; /* Always show hamburger menu */
+        display: flex !important; /* Always show hamburger menu */
     }
 
     .auth-buttons {
-        display: none; /* Auth buttons only in hamburger menu */
+        display: none !important; /* Auth buttons only in hamburger menu */
     }
 }
 
