@@ -643,21 +643,13 @@ damp-header {
     padding: 0 4px;
 }
 
-/* Quick Actions Container - Side-by-Side Layout */
+/* Quick Actions Container - Stacked Layout */
 .mobile-nav-quick-actions {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 10px;
     margin-bottom: 10px;
     padding: 0 12px;
-}
-
-/* Desktop: Side-by-side layout */
-@media (width >= 768px) {
-    .mobile-nav-quick-actions {
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-    }
 }
 
 /* Mobile Nav Section Container */
@@ -675,7 +667,7 @@ damp-header {
     padding: 0;
 }
 
-/* Featured section (Get Started) - same styling as regular sections */
+/* Featured section (Get Started) - Same size as auth section */
 .mobile-nav-section.featured-section {
     gap: 3px;
     margin-bottom: 0;
@@ -683,12 +675,14 @@ damp-header {
     border-radius: 8px;
     border: 1px solid rgb(0 212 255 / 15%);
     padding: 10px;
+    min-height: fit-content;
 }
 
 /* When inside quick actions container */
 .mobile-nav-quick-actions .mobile-nav-section.featured-section {
     margin: 0;
     padding: 10px;
+    flex: 0 0 auto;
 }
 
 /* ==========================================================================
@@ -1415,25 +1409,37 @@ damp-header {
     color: var(--primary-color);
 }
 
-/* Mobile Authentication Section */
+/* Mobile Authentication Section - Same size as featured section */
 .mobile-nav-section.auth-section {
     background: rgb(0 212 255 / 5%);
     border-radius: 8px;
     border: 1px solid rgb(0 212 255 / 20%);
     margin: 0;
     padding: 10px;
+    min-height: fit-content;
 }
 
 /* When inside quick actions container */
 .mobile-nav-quick-actions .mobile-nav-section.auth-section {
     margin: 0;
     padding: 10px;
+    flex: 0 0 auto;
 }
 
 .mobile-auth-buttons {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 3px;
+}
+
+/* Ensure auth buttons match featured section buttons */
+.mobile-auth-buttons a,
+.mobile-nav-section.featured-section a {
+    min-height: 44px !important;
+    max-height: 44px !important;
+    padding: 10px 12px !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
 }
 
 /* Unified - already handled by .mobile-nav-link */
