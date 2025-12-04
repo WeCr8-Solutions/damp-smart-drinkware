@@ -499,7 +499,7 @@ damp-header {
     display: flex !important;
     align-items: center !important;
     gap: 10px !important;
-    padding: 8px 10px !important;
+    padding: 10px 12px !important;
     margin: 2px -12px !important;
     color: var(--text-color) !important;
     text-decoration: none !important;
@@ -508,10 +508,12 @@ damp-header {
     position: relative;
     overflow: hidden;
     will-change: transform, background-color;
-    min-height: 40px !important; /* Compact but accessible */
+    min-height: 44px !important; /* Consistent size for all buttons */
+    max-height: 44px !important; /* Prevent varying heights */
     font-size: 0.9rem !important;
     font-weight: 500 !important;
     line-height: 1.3 !important;
+    white-space: nowrap !important; /* Prevent text wrapping */
 }
 
 .mobile-nav-link::before {
@@ -617,23 +619,17 @@ damp-header {
     flex: 1;
 }
 
-/* Mobile Nav Content Container - for items with subtitles */
+/* Mobile Nav Content Container - simplified, no subtitles */
 .mobile-nav-content {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    align-items: center;
     flex: 1;
     min-width: 0;
 }
 
-/* Mobile Nav Subtitle - Smaller and optional */
+/* Mobile Nav Subtitle - Hidden for cleaner design */
 .mobile-nav-subtitle {
-    font-size: 0.7rem !important;
-    font-weight: 400 !important;
-    color: var(--text-secondary) !important;
-    line-height: 1.2 !important;
-    margin-top: 1px !important;
-    display: block;
+    display: none !important;
 }
 
 /* Mobile Nav Section Title */
@@ -760,8 +756,10 @@ damp-header {
     border: 2px solid #00d4ff !important;
     font-weight: 600 !important;
     font-size: 0.9rem !important;
-    min-height: 40px !important;
-    padding: 8px 10px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    padding: 10px 12px !important;
+    white-space: nowrap !important;
 }
 
 .mobile-nav-vote:hover,
@@ -778,9 +776,11 @@ damp-header {
     border-color: #6a4c93 !important;
     font-weight: 600 !important;
     font-size: 0.9rem !important;
-    min-height: 40px !important;
-    padding: 8px 10px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    padding: 10px 12px !important;
     margin-top: 0 !important;
+    white-space: nowrap !important;
 }
 
 .mobile-nav-subscription:hover,
@@ -797,8 +797,10 @@ damp-header {
     color: var(--success-color) !important;
     position: relative;
     font-size: 0.9rem !important;
-    min-height: 40px !important;
-    padding: 8px 10px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    padding: 10px 12px !important;
+    white-space: nowrap !important;
 }
 
 .cart-badge,
@@ -1446,8 +1448,10 @@ damp-header {
     border: 2px solid transparent !important;
     font-weight: 600 !important;
     font-size: 0.9rem !important;
-    min-height: 40px !important;
-    padding: 8px 10px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    padding: 10px 12px !important;
+    white-space: nowrap !important;
 }
 
 .mobile-auth-buttons .mobile-nav-cta-primary:hover,

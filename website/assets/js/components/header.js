@@ -195,22 +195,16 @@ class DAMPHeader extends HTMLElement {
                             <!-- Authentication Section -->
                             <div class="mobile-nav-section auth-section" id="mobileAuthSection">
                                 <h3 class="mobile-nav-section-title">🔐 Account</h3>
-                                <div class="mobile-auth-buttons" id="mobileAuthButtons">
-                                    <a class="mobile-nav-cta-primary" data-auth="signin" data-analytics="mobile-nav-signin">
-                                        <span class="mobile-nav-icon">🔑</span>
-                                        <div class="mobile-nav-content">
-                                            <span class="mobile-nav-text">Sign In</span>
-                                            <span class="mobile-nav-subtitle">Access your DAMP account</span>
-                                        </div>
-                                    </a>
-                                    <a data-auth="signup" data-analytics="mobile-nav-signup">
-                                        <span class="mobile-nav-icon">📝</span>
-                                        <div class="mobile-nav-content">
-                                            <span class="mobile-nav-text">Create Account</span>
-                                            <span class="mobile-nav-subtitle">Join the DAMP community</span>
-                                        </div>
-                                    </a>
-                                </div>
+                            <div class="mobile-auth-buttons" id="mobileAuthButtons">
+                                <a class="mobile-nav-cta-primary" data-auth="signin" data-analytics="mobile-nav-signin">
+                                    <span class="mobile-nav-icon">🔑</span>
+                                    <span class="mobile-nav-text">Sign In</span>
+                                </a>
+                                <a data-auth="signup" data-analytics="mobile-nav-signup">
+                                    <span class="mobile-nav-icon">📝</span>
+                                    <span class="mobile-nav-text">Create Account</span>
+                                </a>
+                            </div>
                                 <div class="mobile-user-info" id="mobileUserInfo" style="display: none;">
                                     <div class="mobile-user-profile">
                                         <span class="mobile-user-avatar">👤</span>
@@ -239,17 +233,11 @@ class DAMPHeader extends HTMLElement {
                                 <h3 class="mobile-nav-section-title">🚀 Get Started</h3>
                                 <a href="${this.basePath}pages/pre-sale-funnel.html" class="mobile-nav-cta-primary" data-analytics="mobile-nav-preorder-main">
                                     <span class="mobile-nav-icon">🛒</span>
-                                    <div class="mobile-nav-content">
-                                        <span class="mobile-nav-text">Pre-Order Now</span>
-                                        <span class="mobile-nav-subtitle">Starting $29.99 • Early Bird Pricing</span>
-                                    </div>
+                                    <span class="mobile-nav-text">Pre-Order Now</span>
                                 </a>
                                 <a href="${this.basePath}pages/product-voting.html" data-analytics="mobile-nav-voting-main">
                                     <span class="mobile-nav-icon">🗳️</span>
-                                    <div class="mobile-nav-content">
-                                        <span class="mobile-nav-text">Vote Next Product</span>
-                                        <span class="mobile-nav-subtitle">Help us prioritize development</span>
-                                    </div>
+                                    <span class="mobile-nav-text">Vote Next Product</span>
                                 </a>
                             </div>
                         </div>
