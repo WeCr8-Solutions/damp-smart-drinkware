@@ -308,9 +308,10 @@ class DAMPBuildOptimizer {
     copyOptimizedFiles() {
         console.log('📁 Copying additional files...');
 
-        // Copy HTML files
-        const htmlFiles = ['index.html', 'manifest.json', 'robots.txt', 'sitemap.xml'];
-        htmlFiles.forEach(file => {
+        // Copy HTML files and root files
+        const rootFiles = ['index.html', 'manifest.json', 'robots.txt', 'sitemap.xml', 
+                          'sw.js', 'firebase-messaging-sw.js', 'browserconfig.xml', 'ads.txt'];
+        rootFiles.forEach(file => {
             const src = path.join(this.projectRoot, file);
             const dest = path.join(this.distDir, file);
             if (fs.existsSync(src)) {
