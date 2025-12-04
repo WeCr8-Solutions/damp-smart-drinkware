@@ -99,16 +99,17 @@ body.founders-note-modal-open {
 }
 
 /* Hero button style - ensure it matches other btn-secondary buttons exactly */
+/* REMOVED: founders-note-hero-btn - now using consistent hero-nav-btn class */
 .founders-note-hero-btn.btn-secondary {
-    background: rgb(255 255 255 / 10%) !important;
-    border: 2px solid rgb(255 255 255 / 20%) !important;
-    backdrop-filter: blur(10px) !important;
-    color: white !important;
+    background: transparent !important;
+    color: #00d4ff !important;
+    border: 2px solid #00d4ff !important;
 }
 
 .founders-note-hero-btn.btn-secondary:hover {
-    background: rgb(255 255 255 / 15%) !important;
-    border-color: rgb(0 212 255 / 40%) !important;
+    background: #00d4ff !important;
+    color: #0f0f23 !important;
+    border-color: #00d4ff !important;
 }
 
 .founders-note-modal-overlay {
